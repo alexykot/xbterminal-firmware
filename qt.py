@@ -30,7 +30,7 @@ class Application(QtGui.QWidget):
 
         self.setGeometry(300, 300, 550, 550)
         self.setWindowTitle('Application')
-        self.show()
+        self.showFullScreen()
 
     def qr_gen(self):
         qr = qrcode.QRCode(
@@ -70,6 +70,8 @@ def main():
 
     app = QtGui.QApplication(sys.argv)
     ex = Application()
+
+    ex.qr_gen().save(filename)
     sys.exit(app.exec_())
 
 
