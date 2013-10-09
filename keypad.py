@@ -1,3 +1,4 @@
+#!/usr/bin/python2.7
 __author__ = 'tux'
 
 from matrix_keypad import RPi_GPIO
