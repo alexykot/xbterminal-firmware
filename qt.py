@@ -1,6 +1,7 @@
 __author__ = 'tux'
 
 import sys
+import os
 from PyQt4 import QtGui, QtCore
 from PIL import Image
 import qrcode
@@ -50,15 +51,25 @@ class Application(QtGui.QWidget):
             self.close()
 
 
+def current_dir():
+    dir = os.getcwd() + "/"
+    return dir
+
+
+def ensure_dir(f):
+    d = os.path.dirname(f)
+    if not os.path.exists(d):
+        os.makedirs(d)
+
+
 def main():
 
-    filename = "/home/tux/coding/nfc/image.png"
+    # Set filename for qr image, and ensure directory exists
+    filename = current_dir() + "/img/" + "qrcode.png"
+    ensure_dir(filename)
 
     app = QtGui.QApplication(sys.argv)
     ex = Application()
-
-    #ex.qr_gen().save(filename)
-
     sys.exit(app.exec_())
 
 
