@@ -11,9 +11,13 @@ from PyQt4 import QtCore, QtGui
 
 
 class Ui_Custom_Form(appui.Ui_Form):
-    def setupUi(self, Form):
-        super(Ui_Custom_Form, self).setupUi()
 
-        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")), self.stackedWidget.setCurrentIndex)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+    def __init__(self):
+        print "Calling child constructor"
 
+    #def childMethod(self):
+
+        #super(Ui_Custom_Form, self).__init__()
+
+        #QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")), self.stackedWidget.setCurrentIndex)
+        #QtCore.QMetaObject.connectSlotsByName(Form)

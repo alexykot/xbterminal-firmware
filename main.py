@@ -6,7 +6,7 @@ import os
 from PyQt4 import QtGui, QtCore
 from PIL import Image
 import qrcode
-import ui as appui
+import ui_child as appui
 #import keypad
 
 
