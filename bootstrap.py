@@ -7,4 +7,5 @@ sys.path.insert(0, include_path)
 
 import nfc_terminal
 
+nfc_terminal.defaults.PROJECT_ABS_PATH = include_path
 nfc_terminal.main.main()

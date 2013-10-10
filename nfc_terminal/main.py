@@ -1,16 +1,19 @@
 import time
 
-from nfc_terminal import config
+from nfc_terminal import defaults
 from nfc_terminal import gui
 from nfc_terminal import keypad
 from nfc_terminal import stages
+from nfc_terminal import helpers
 
 
 CURRENT_STAGE = None
 if CURRENT_STAGE is None:
-    CURRENT_STAGE = config.STAGES[0]
+    CURRENT_STAGE = defaults.STAGES[0]
 
 def main():
+    helpers.load_config()
+
     while True:
         if CURRENT_STAGE == 'standby':
             # obviously GUI dont need to be initalized every time, so some more code will be needed here.
