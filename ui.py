@@ -28,7 +28,7 @@ class Ui_Form(object):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(320, 240)
         self.listWidget = QtGui.QListWidget(Form)
-        self.listWidget.setEnabled(False)
+        self.listWidget.setEnabled(True)
         self.listWidget.setGeometry(QtCore.QRect(10, 190, 301, 41))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
         item = QtGui.QListWidgetItem()
@@ -43,7 +43,7 @@ class Ui_Form(object):
         self.idle_lbl = QtGui.QLabel(self.screen1)
         self.idle_lbl.setGeometry(QtCore.QRect(20, 30, 271, 181))
         font = QtGui.QFont()
-        font.setPointSize(30)
+        font.setPointSize(8)
         self.idle_lbl.setFont(font)
         self.idle_lbl.setWordWrap(True)
         self.idle_lbl.setObjectName(_fromUtf8("idle_lbl"))
@@ -56,8 +56,6 @@ class Ui_Form(object):
         self.stackedWidget.addWidget(self.screen2)
 
         self.retranslateUi(Form)
-        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")), self.stackedWidget.setCurrentIndex)
-        QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
@@ -68,6 +66,6 @@ class Ui_Form(object):
         item = self.listWidget.item(1)
         item.setText(_translate("Form", "Page 2", None))
         self.listWidget.setSortingEnabled(__sortingEnabled)
-        self.idle_lbl.setText(_translate("Form", "Please press ENTER to start", None))
+        #self.idle_lbl.setText(_translate("Form", "Please press ENTER to start", None))
         self.label_2.setText(_translate("Form", "page 2", None))
 

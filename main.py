@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
-    ui = appui.Ui_Form()
+    ui = appui.Ui_Custom_Form()
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec_())

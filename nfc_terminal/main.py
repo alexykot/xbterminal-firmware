@@ -1,8 +1,10 @@
+import time
+
 from nfc_terminal import config
 from nfc_terminal import gui
 from nfc_terminal import keypad
 from nfc_terminal import stages
-import time
+
 
 CURRENT_STAGE = None
 if CURRENT_STAGE is None:
