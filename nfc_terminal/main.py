@@ -16,27 +16,27 @@ def main():
             # obviously GUI dont need to be initalized every time, so some more code will be needed here.
             # this is just fake calls to explain general structure I imply
             gui.initStageGui()
-            keypad.checkKeyEntries()
-            stages.doWhateverNeededForStandby()
+            key_code = keypad.key_detect()
+            stages.doWhateverNeededForThisStage(key_code)
         elif CURRENT_STAGE == 'enter_amount':
             gui.initStageGui()
-            keypad.checkKeyEntries()
-            stages.doWhateverNeededForThisStage()
+            key_code = keypad.key_detect()
+            stages.doWhateverNeededForThisStage(key_code)
         elif CURRENT_STAGE == 'pay_nfc':
             gui.initStageGui()
-            keypad.checkKeyEntries()
-            stages.doWhateverNeededForThisStage()
+            key_code = keypad.key_detect()
+            stages.doWhateverNeededForThisStage(key_code)
         elif CURRENT_STAGE == 'pay_qr':
             gui.initStageGui()
-            keypad.checkKeyEntries()
-            stages.doWhateverNeededForThisStage()
+            key_code = keypad.key_detect()
+            stages.doWhateverNeededForThisStage(key_code)
         elif CURRENT_STAGE == 'payment_successful':
             gui.initStageGui()
-            keypad.checkKeyEntries()
-            stages.doWhateverNeededForThisStage()
+            key_code = keypad.key_detect()
+            stages.doWhateverNeededForThisStage(key_code)
         elif CURRENT_STAGE == 'payment_cancelled':
             gui.initStageGui()
-            keypad.checkKeyEntries()
-            stages.doWhateverNeededForThisStage()
+            key_code = keypad.key_detect()
+            stages.doWhateverNeededForThisStage(key_code)
 
         time.sleep(0.1)
