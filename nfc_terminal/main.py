@@ -1,10 +1,13 @@
 import time
+import sys
+from PyQt4 import QtGui, QtCore
 
 from nfc_terminal import defaults
 from nfc_terminal import gui
 from nfc_terminal import keypad
 from nfc_terminal import stages
 from nfc_terminal import helpers
+from nfc_terminal.helpers.log import write_msg_log
 
 
 CURRENT_STAGE = None
@@ -13,18 +16,31 @@ if CURRENT_STAGE is None:
 
 def main():
     helpers.load_config()
+    kp = keypad.keypad.keypad(columnCount=4)
 
     while True:
         if CURRENT_STAGE == 'standby':
-            # obviously GUI dont need to be initalized every time, so some more code will be needed here.
-            # this is just fake calls to explain general structure I imply
-            gui.initStageGui()
-            key_code = keypad.key_detect()
-            stages.doWhateverNeededForThisStage(key_code)
+            gui_initalized = False
+            if not gui_initalized:
+                app = QtGui.QApplication(sys.argv)
+                gui = gui.GUI()
+                gui_initalized = True
+
+            key_code = kp.getKey()
+            if key_code is not None:
+                CURRENT_STAGE = 'enter_amount'
+                continue
+
         elif CURRENT_STAGE == 'enter_amount':
-            gui.initStageGui()
-            key_code = keypad.key_detect()
-            stages.doWhateverNeededForThisStage(key_code)
+            gui_initalized = False
+            if not gui_initalized:
+                app = QtGui.QApplication(sys.argv)
+                gui = gui.GUI()
+                gui_initalized = True
+
+            key_code = kp.getKey()
+            if key_code is not None:
+                pass
         elif CURRENT_STAGE == 'pay_nfc':
             gui.initStageGui()
             key_code = keypad.key_detect()
@@ -42,4 +58,4 @@ def main():
             key_code = keypad.key_detect()
             stages.doWhateverNeededForThisStage(key_code)
 
-        time.sleep(0.1)
+        time.sleep(0.01)
