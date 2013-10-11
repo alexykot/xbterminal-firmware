@@ -5,10 +5,9 @@ import RPi.GPIO as GPIO
 class keypad():
     def __init__(self, columnCount=3):
         GPIO.setmode(GPIO.BCM)
-        print columnCount
+
         # CONSTANTS 
         if columnCount is 3:
-            print "thinks there is 3 columns"
             self.KEYPAD = [
                 [1,2,3],
                 [4,5,6],
@@ -20,7 +19,6 @@ class keypad():
             self.COLUMN      = [4,17,22]
 
         elif columnCount is 4:
-            print "thinks there are 4 columns"
             self.KEYPAD = [
                 [1,2,3,"A"],
                 [4,5,6,"B"],

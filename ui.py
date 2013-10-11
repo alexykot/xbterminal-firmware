@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Oct 10 12:39:09 2013
+# Created: Fri Oct 11 14:58:33 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -43,7 +43,7 @@ class Ui_Form(object):
         self.idle_lbl = QtGui.QLabel(self.screen1)
         self.idle_lbl.setGeometry(QtCore.QRect(20, 30, 271, 181))
         font = QtGui.QFont()
-        font.setPointSize(8)
+        font.setPointSize(30)
         self.idle_lbl.setFont(font)
         self.idle_lbl.setWordWrap(True)
         self.idle_lbl.setObjectName(_fromUtf8("idle_lbl"))
@@ -56,6 +56,8 @@ class Ui_Form(object):
         self.stackedWidget.addWidget(self.screen2)
 
         self.retranslateUi(Form)
+        #QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")), self.stackedWidget.setCurrentIndex)
+        QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
@@ -66,6 +68,6 @@ class Ui_Form(object):
         item = self.listWidget.item(1)
         item.setText(_translate("Form", "Page 2", None))
         self.listWidget.setSortingEnabled(__sortingEnabled)
-        #self.idle_lbl.setText(_translate("Form", "Please press ENTER to start", None))
+        self.idle_lbl.setText(_translate("Form", "Please press ENTER to start", None))
         self.label_2.setText(_translate("Form", "page 2", None))
 

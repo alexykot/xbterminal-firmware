@@ -8,7 +8,7 @@ import time
 kp = RPi_GPIO.keypad(columnCount=4)
 
 # check if a key is pressed:
-checkKeypad = kp.getKey()
+#checkKeypad = kp.getKey()
 
 def key_detect():
     # Loop while waiting for a keypress
@@ -17,11 +17,5 @@ def key_detect():
         digitPressed = kp.getKey()
         time.sleep(0.1)
     return digitPressed
-
-while True:
-    print key_detect()
-    if checkKeypad is 1:
-        print "Key pressed was 1"
-    time.sleep(0.1)
 
 GPIO.cleanup ()
