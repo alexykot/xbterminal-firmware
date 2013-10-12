@@ -44,19 +44,20 @@ def main():
                 gui_initialized = True
                 current_screen = main_win.ui.stackedWidget.currentIndex()
                 main_win.ui.listWidget.setVisible(False)
-                sys.exit(app.exec_())
+                app.sendPostedEvents()
+                app.processEvents()
                 #main.ui.listWidget.setVisible(False)
 
             write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
 
-            if gui_initialized is True and current_screen == 1:
-                CURRENT_STAGE = 'enter_amount'
-                continue
+            # if gui_initialized is True and current_screen == 1:
+            #     CURRENT_STAGE = 'enter_amount'
+            #     continue
 
-            key_code = kp.getKey()
-            if key_code is not None:
-                 CURRENT_STAGE = 'enter_amount'
-                 continue
+            # key_code = kp.getKey()
+            # if key_code is not None:
+            #      CURRENT_STAGE = 'enter_amount'
+            #      continue
         elif CURRENT_STAGE == 'enter_amount':
             write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
             # gui_initalized = False
@@ -89,5 +90,4 @@ def main():
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
 
-        print CURRENT_STAGE
         time.sleep(1)

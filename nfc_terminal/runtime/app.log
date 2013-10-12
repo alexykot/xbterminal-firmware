@@ -1,2 +1,97 @@
 Fri, 11 Oct 2013 18:25:55 -0000; WARNING: config missing at path "/mnt/hgfs/Projects/NFC_POST/Sources/nfc_terminal/config.json", creating default config
 Fri, 11 Oct 2013 18:27:34 -0000; DEBUG: config loaded from "/mnt/hgfs/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 18:02:05 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 18:02:05 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 18:02:05 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 18:02:05 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 18:02:06 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 18:08:34 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 18:08:34 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 18:08:34 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 18:08:34 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 18:08:34 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 18:08:34 -0000; DEBUG: STAGE: standby - GUI exec starting
+Sat, 12 Oct 2013 18:08:51 -0000; DEBUG: STAGE: standby - GUI exec ending
+Sat, 12 Oct 2013 22:22:11 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:22:11 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:22:11 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:22:11 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:22:11 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:22:11 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:22:22 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:22:22 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:22:22 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:22:22 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:22:22 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:22:25 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:22:39 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:22:39 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:22:39 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:22:39 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:22:39 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:22:39 -0000; DEBUG: STAGE: standby - GUI exec starting
+Sat, 12 Oct 2013 22:22:40 -0000; DEBUG: STAGE: standby - GUI exec ending
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: STAGE: standby - GUI exec starting
+Sat, 12 Oct 2013 22:36:28 -0000; DEBUG: STAGE: standby - GUI exec ending
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: STAGE: standby - GUI exec starting
+Sat, 12 Oct 2013 22:39:22 -0000; DEBUG: STAGE: standby - GUI exec ending
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: STAGE: standby - GUI exec starting
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: STAGE: standby - GUI exec ending
+Sat, 12 Oct 2013 22:39:29 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: STAGE: standby - GUI exec starting
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: STAGE: standby - GUI exec ending
+Sat, 12 Oct 2013 22:39:57 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:39:58 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:39:58 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:40:43 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:40:43 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:40:43 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:40:43 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:40:43 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:40:43 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:40:44 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:40:44 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:41:15 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:41:15 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:41:15 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:41:15 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:41:15 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:41:15 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:41:16 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:41:16 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:41:30 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:41:30 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:41:30 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:41:30 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:41:30 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:41:30 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:41:31 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:41:31 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:41:37 -0000; DEBUG: STAGE: Initialisation
+Sat, 12 Oct 2013 22:41:37 -0000; DEBUG: config loaded from "/home/alexykot/Work/Projects/NFC_POST/Sources/nfc_terminal/config.json"
+Sat, 12 Oct 2013 22:41:37 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:41:37 -0000; DEBUG: STAGE: standby - Trying to launch GUI
+Sat, 12 Oct 2013 22:41:37 -0000; DEBUG: STAGE: standby - GUI Loaded
+Sat, 12 Oct 2013 22:41:37 -0000; DEBUG: Current Screen - 0
+Sat, 12 Oct 2013 22:41:38 -0000; DEBUG: STAGE: standby
+Sat, 12 Oct 2013 22:41:38 -0000; DEBUG: STAGE: standby - Trying to launch GUI
