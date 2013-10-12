@@ -38,7 +38,8 @@ class GUI(QtGui.QWidget):
         self.Form.show()
 
         ''' Runtime GUI changes '''
-        self.ui.listWidget.setVisible(False)
+        #self.ui.listWidget.setVisible(False)
+
 
     ''' QT Keypress Events '''
     def keyPressEvent(self, k):
@@ -47,8 +48,7 @@ class GUI(QtGui.QWidget):
             self.close()
 
         if k.key() == QtCore.Qt.Key_Return:
-            QtCore.QObject.connect(self.ui.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")),
-                                   self.ui.stackedWidget.setCurrentIndex)
+            self.ui.stackedWidget.setCurrentIndex(1)
 
     def signals_slots(self):
         QtCore.QObject.connect(self.ui.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")),

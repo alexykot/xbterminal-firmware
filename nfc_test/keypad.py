@@ -1,7 +1,8 @@
 #!/usr/bin/python2.7
+from nfc_test.matrix_keypad import RPi_GPIO
+
 __author__ = 'tux'
 
-from matrix_keypad import RPi_GPIO
 import RPi.GPIO as GPIO
 import time
 
