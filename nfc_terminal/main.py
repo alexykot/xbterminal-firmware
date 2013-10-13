@@ -26,6 +26,7 @@ def main():
     CURRENT_STAGE = None
     if CURRENT_STAGE is None:
         CURRENT_STAGE = defaults.STAGES[0]
+    CURRENT_KEY = None
 
     try:
         kp = keypad.keypad(columnCount=4)
@@ -46,8 +47,17 @@ def main():
         except NameError:
             pass
 
+        try:
+            key_code = kp.getKey()
+            if key_code is not None:
+                write_msg_log("KEYPAD: Key pressed - {}".format(key_code), 'DEBUG')
+                CURRENT_KEY = key_code
+        except NameError:
+            pass
+
         # Lets setup the GUI before any other stage, then let it loop back to forced event setting
         if gui_initialized is False:
+
             write_msg_log("STAGE: {} - Trying to launch GUI".format("GUI"), 'DEBUG')
             app = QtGui.QApplication(sys.argv)
             main_win = gui.GUI()
@@ -58,19 +68,24 @@ def main():
             # Other specific GUI changes prior to loading
             main_win.ui.listWidget.setVisible(False)
 
-
         if CURRENT_STAGE == 'standby':
+
             if time_diff > 5:
                 write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
                 write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
                 time_const = time_current
 
-            # key_code = kp.getKey()
-            # if key_code is not None:
-            #      CURRENT_STAGE = 'enter_amount'
-            #      continue
+            if CURRENT_KEY == "D":
+                main_win.ui.stackedWidget.setCurrentIndex(1)
+                CURRENT_STAGE = 'enter_amount'
+                continue
+
         elif CURRENT_STAGE == 'enter_amount':
-            write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
+
+            if time_diff > 5:
+                write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
+                time_const = time_current
+
             # gui_initalized = False
             # if not gui_initalized:
             #     app = QtGui.QApplication(sys.argv)
