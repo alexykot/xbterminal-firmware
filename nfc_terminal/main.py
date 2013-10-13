@@ -23,9 +23,8 @@ def main():
     time_const = time.time()
     gui_initialized = False
     current_screen = None
-    CURRENT_STAGE = None
-    if CURRENT_STAGE is None:
-        CURRENT_STAGE = defaults.STAGES[0]
+    if defaults.CURRENT_STAGE is None:
+        defaults.CURRENT_STAGE = defaults.STAGES[0]
     CURRENT_KEY = None
 
     try:
@@ -57,7 +56,7 @@ def main():
 
         # Log what stage we are on and check screen
         if time_diff > 5:
-            write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
+            write_msg_log("STAGE: {}".format(defaults.CURRENT_STAGE), 'DEBUG')
             write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
             time_const = time_current
 
@@ -75,15 +74,16 @@ def main():
             # Other specific GUI changes prior to loading
             #main_win.ui.listWidget.setVisible(False)
 
-        if CURRENT_STAGE == 'standby':
+        if defaults.CURRENT_STAGE == 'standby':
 
-            if CURRENT_KEY == "D":
+            if CURRENT_KEY == "D" or defaults.CURRENT_STAGE == 'enter_amount':
+
                 main_win.ui.stackedWidget.setCurrentIndex(1)
                 current_screen = main_win.ui.stackedWidget.currentIndex()
                 CURRENT_STAGE = 'enter_amount'
                 continue
 
-        elif CURRENT_STAGE == 'enter_amount':
+        elif defaults.CURRENT_STAGE == 'enter_amount':
 
             entered_text = "0"
 
@@ -98,22 +98,22 @@ def main():
             # key_code = kp.getKey()
             # if key_code is not None:
             #     pass
-        elif CURRENT_STAGE == 'pay_nfc':
+        elif defaults.CURRENT_STAGE == 'pay_nfc':
             pass
             # gui.initStageGui()
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
-        elif CURRENT_STAGE == 'pay_qr':
+        elif defaults.CURRENT_STAGE == 'pay_qr':
             pass
             # gui.initStageGui()
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
-        elif CURRENT_STAGE == 'payment_successful':
+        elif defaults.CURRENT_STAGE == 'payment_successful':
             pass
             # gui.initStageGui()
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
-        elif CURRENT_STAGE == 'payment_cancelled':
+        elif defaults.CURRENT_STAGE == 'payment_cancelled':
             pass
             # gui.initStageGui()
             # key_code = keypad.key_detect()

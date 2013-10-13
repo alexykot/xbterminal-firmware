@@ -47,6 +47,7 @@ class GUI(QtGui.QWidget):
             self.close()
 
         if k.key() == QtCore.Qt.Key_Return:
+            defaults.CURRENT_STAGE = 'enter_amount'
             self.ui.stackedWidget.setCurrentIndex(1)
 
     def closeEvent(self, QCloseEvent):

@@ -5,7 +5,7 @@ STAGES = ('standby',
           'payment_successful',
           'payment_cancelled',
             )
-
+CURRENT_STAGE = None
 PROJECT_ABS_PATH = '' #initialized in bootstrap.py
 CONFIG_FILE_PATH = 'nfc_terminal/config.json'
 LOG_FILE_PATH = 'nfc_terminal/runtime/app.log'
