@@ -5,6 +5,7 @@ actions on the GUI if its done like this
 
 from PyQt4 import QtGui, QtCore
 from nfc_terminal.gui import ui as appui
+from nfc_terminal import defaults
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -27,8 +28,6 @@ class GUI(QtGui.QWidget):
 
         super(GUI, self).__init__()
         self.initUI()
-        #self.signals_slots()
-        #self.keypad_detect()
 
     def initUI(self):
 
@@ -50,6 +49,6 @@ class GUI(QtGui.QWidget):
         if k.key() == QtCore.Qt.Key_Return:
             self.ui.stackedWidget.setCurrentIndex(1)
 
-    def signals_slots(self):
-        QtCore.QObject.connect(self.ui.listWidget, QtCore.SIGNAL(_fromUtf8("currentRowChanged(int)")),
-                               self.ui.stackedWidget.setCurrentIndex)
+    def closeEvent(self, QCloseEvent):
+        defaults.GUI_STATE = 'inactive'
+

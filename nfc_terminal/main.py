@@ -55,6 +55,12 @@ def main():
         except NameError:
             pass
 
+        # Log what stage we are on and check screen
+        if time_diff > 5:
+            write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
+            write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
+            time_const = time_current
+
         # Lets setup the GUI before any other stage, then let it loop back to forced event setting
         if gui_initialized is False:
 
@@ -63,28 +69,25 @@ def main():
             main_win = gui.GUI()
             write_msg_log("STAGE: {} - GUI Loaded".format("GUI"), 'DEBUG')
             gui_initialized = True
+            defaults.GUI_STATE = 'active'
             current_screen = main_win.ui.stackedWidget.currentIndex()
 
             # Other specific GUI changes prior to loading
-            main_win.ui.listWidget.setVisible(False)
+            #main_win.ui.listWidget.setVisible(False)
 
         if CURRENT_STAGE == 'standby':
 
-            if time_diff > 5:
-                write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
-                write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
-                time_const = time_current
-
             if CURRENT_KEY == "D":
                 main_win.ui.stackedWidget.setCurrentIndex(1)
+                current_screen = main_win.ui.stackedWidget.currentIndex()
                 CURRENT_STAGE = 'enter_amount'
                 continue
 
         elif CURRENT_STAGE == 'enter_amount':
 
-            if time_diff > 5:
-                write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
-                time_const = time_current
+            entered_text = "0"
+
+            main_win.ui.lineEdit.setText(entered_text)
 
             # gui_initalized = False
             # if not gui_initalized:
@@ -116,5 +119,7 @@ def main():
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
 
+        if defaults.GUI_STATE == 'inactive':
+            sys.exit()
 
-        time.sleep(0.1)
+        time.sleep(0.05)

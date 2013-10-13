@@ -2458,3 +2458,25 @@ Sun, 13 Oct 2013 16:08:32 -0000; DEBUG: STAGE: standby
 Sun, 13 Oct 2013 16:08:32 -0000; DEBUG: Current Screen - 0
 Sun, 13 Oct 2013 16:08:37 -0000; DEBUG: STAGE: standby
 Sun, 13 Oct 2013 16:08:37 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 16:46:04 -0000; DEBUG: config loaded from "/home/tux/coding/nfc/nfc_terminal/config.json"
+Sun, 13 Oct 2013 16:46:04 -0000; DEBUG: STAGE: Initialisation
+Sun, 13 Oct 2013 16:46:04 -0000; DEBUG: STAGE: GUI - Trying to launch GUI
+Sun, 13 Oct 2013 16:46:04 -0000; DEBUG: STAGE: GUI - GUI Loaded
+Sun, 13 Oct 2013 16:46:09 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 16:46:09 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 16:46:14 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 16:46:14 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 16:46:19 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 16:46:19 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 16:46:24 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 16:46:24 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 17:09:00 -0000; DEBUG: config loaded from "/home/tux/coding/nfc/nfc_terminal/config.json"
+Sun, 13 Oct 2013 17:09:00 -0000; DEBUG: STAGE: Initialisation
+Sun, 13 Oct 2013 17:09:00 -0000; DEBUG: STAGE: GUI - Trying to launch GUI
+Sun, 13 Oct 2013 17:09:00 -0000; DEBUG: STAGE: GUI - GUI Loaded
+Sun, 13 Oct 2013 17:09:05 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 17:09:05 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 17:09:10 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 17:09:10 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 17:09:15 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 17:09:15 -0000; DEBUG: Current Screen - 0

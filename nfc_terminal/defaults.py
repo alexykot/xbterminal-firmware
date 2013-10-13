@@ -16,3 +16,4 @@ LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
 LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                      }
+GUI_STATE = 'inactive'
