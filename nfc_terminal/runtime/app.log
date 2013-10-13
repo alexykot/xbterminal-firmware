@@ -2500,3 +2500,7 @@ Sun, 13 Oct 2013 17:51:48 -0000; DEBUG: STAGE: standby
 Sun, 13 Oct 2013 17:51:48 -0000; DEBUG: Current Screen - 0
 Sun, 13 Oct 2013 17:51:53 -0000; DEBUG: STAGE: enter_amount
 Sun, 13 Oct 2013 17:51:53 -0000; DEBUG: Current Screen - 0
+Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: config loaded from "/home/tux/coding/nfc/nfc_terminal/config.json"
+Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: STAGE: Initialisation
+Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: STAGE: GUI - Trying to launch GUI
+Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: STAGE: GUI - GUI Loaded

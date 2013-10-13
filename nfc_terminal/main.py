@@ -80,7 +80,7 @@ def main():
 
                 main_win.ui.stackedWidget.setCurrentIndex(1)
                 current_screen = main_win.ui.stackedWidget.currentIndex()
-                CURRENT_STAGE = 'enter_amount'
+                defaults.CURRENT_STAGE = 'enter_amount'
                 continue
 
         elif defaults.CURRENT_STAGE == 'enter_amount':
