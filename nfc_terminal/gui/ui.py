@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Sun Oct 13 17:45:58 2013
+# Created: Sun Oct 13 19:25:45 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,8 +33,9 @@ class Ui_Form(object):
         self.screen1 = QtGui.QWidget()
         self.screen1.setObjectName(_fromUtf8("screen1"))
         self.idle_lbl = QtGui.QLabel(self.screen1)
-        self.idle_lbl.setGeometry(QtCore.QRect(20, 30, 271, 181))
+        self.idle_lbl.setGeometry(QtCore.QRect(20, 30, 271, 191))
         font = QtGui.QFont()
+        font.setFamily(_fromUtf8("DejaVu Sans"))
         font.setPointSize(30)
         self.idle_lbl.setFont(font)
         self.idle_lbl.setWordWrap(True)
@@ -43,8 +44,9 @@ class Ui_Form(object):
         self.screen2 = QtGui.QWidget()
         self.screen2.setObjectName(_fromUtf8("screen2"))
         self.amount = QtGui.QLabel(self.screen2)
-        self.amount.setGeometry(QtCore.QRect(30, 60, 271, 51))
+        self.amount.setGeometry(QtCore.QRect(20, 60, 291, 51))
         font = QtGui.QFont()
+        font.setFamily(_fromUtf8("DejaVu Sans"))
         font.setPointSize(30)
         self.amount.setFont(font)
         self.amount.setObjectName(_fromUtf8("amount"))
@@ -71,6 +73,6 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
-        self.idle_lbl.setText(_translate("Form", "Please press ENTER to start", None))
-        self.amount.setText(_translate("Form", "Enter Amount:", None))
+        self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">Please press</p><p align=\"center\"><span style=\" font-weight:600;\">ENTER</span></p><p align=\"center\">to begin</p></body></html>", None))
+        self.amount.setText(_translate("Form", "Enter Amount", None))
 

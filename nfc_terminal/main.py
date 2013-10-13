@@ -27,6 +27,10 @@ def main():
         defaults.CURRENT_STAGE = defaults.STAGES[0]
     CURRENT_KEY = None
 
+    # enter_amount global variables
+    entered_text = "0"
+    digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
     try:
         kp = keypad.keypad(columnCount=4)
     except NameError:
@@ -51,6 +55,7 @@ def main():
             if key_code is not None:
                 write_msg_log("KEYPAD: Key pressed - {}".format(key_code), 'DEBUG')
                 CURRENT_KEY = key_code
+                time.sleep(0.1)
         except NameError:
             pass
 
@@ -85,7 +90,18 @@ def main():
 
         elif defaults.CURRENT_STAGE == 'enter_amount':
 
-            entered_text = "0"
+            if key_code in digits:
+                if entered_text == "0" and key_code is not None:
+                    entered_text = str(key_code)
+                elif entered_text != "0" and key_code is not None:
+                    entered_text += str(key_code)
+
+            if key_code == "A":
+                write_msg_log("{}".format(entered_text), 'DEBUG')
+                backspace = entered_text[:-1]
+                write_msg_log("{}".format(backspace), 'DEBUG')
+                entered_text = backspace
+                write_msg_log("backspace", 'DEBUG')
 
             main_win.ui.lineEdit.setText(entered_text)
 
