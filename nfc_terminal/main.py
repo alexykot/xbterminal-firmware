@@ -16,43 +16,54 @@ except ImportError:
 
 def main():
 
-    write_msg_log("STAGE: Initialisation", 'DEBUG')
+    # Load configs
+    nfc_terminal.helpers.configs.load_config()
 
+    # Function global variables
+    time_const = time.time()
+    gui_initialized = False
+    current_screen = None
     CURRENT_STAGE = None
     if CURRENT_STAGE is None:
         CURRENT_STAGE = defaults.STAGES[0]
-
-    nfc_terminal.helpers.configs.load_config()
 
     try:
         kp = keypad.keypad(columnCount=4)
     except NameError:
         pass
 
+    write_msg_log("STAGE: Initialisation", 'DEBUG')
 
     while True:
+
+        time_current = time.time()
+        time_diff = time_current - time_const
+
+        # At beginning of each loop push events
+        try:
+            app.sendPostedEvents()
+            app.processEvents()
+        except NameError:
+            pass
+
+        # Lets setup the GUI before any other stage, then let it loop back to forced event setting
+        if gui_initialized is False:
+            write_msg_log("STAGE: {} - Trying to launch GUI".format("GUI"), 'DEBUG')
+            app = QtGui.QApplication(sys.argv)
+            main_win = gui.GUI()
+            write_msg_log("STAGE: {} - GUI Loaded".format("GUI"), 'DEBUG')
+            gui_initialized = True
+            current_screen = main_win.ui.stackedWidget.currentIndex()
+
+            # Other specific GUI changes prior to loading
+            main_win.ui.listWidget.setVisible(False)
+
+
         if CURRENT_STAGE == 'standby':
-            write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
-
-            gui_initialized = False
-            current_screen = None
-            if gui_initialized is False:
-                write_msg_log("STAGE: {} - Trying to launch GUI".format(CURRENT_STAGE), 'DEBUG')
-                app = QtGui.QApplication(sys.argv)
-                main_win = gui.GUI()
-                write_msg_log("STAGE: {} - GUI Loaded".format(CURRENT_STAGE), 'DEBUG')
-                gui_initialized = True
-                current_screen = main_win.ui.stackedWidget.currentIndex()
-                main_win.ui.listWidget.setVisible(False)
-                app.sendPostedEvents()
-                app.processEvents()
-                #main.ui.listWidget.setVisible(False)
-
-            write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
-
-            # if gui_initialized is True and current_screen == 1:
-            #     CURRENT_STAGE = 'enter_amount'
-            #     continue
+            if time_diff > 5:
+                write_msg_log("STAGE: {}".format(CURRENT_STAGE), 'DEBUG')
+                write_msg_log("Current Screen - {}".format(current_screen), 'DEBUG')
+                time_const = time_current
 
             # key_code = kp.getKey()
             # if key_code is not None:
@@ -90,4 +101,5 @@ def main():
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
 
-        time.sleep(1)
+
+        time.sleep(0.1)
