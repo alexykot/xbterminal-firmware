@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 STAGES = ('standby',
           'enter_amount',
           'pay_nfc',
@@ -18,3 +20,10 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
                      }
 GUI_STATE = 'inactive'
 ENTERED_AMOUNT = None
+
+EXTERNAL_CALLS_TIMEOUT = 15
+EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'nfc_post query bot',
+                                  'Origin': 'nfc_post',
+                                  }
+
+DEC_PLACES = Decimal('0.00')
