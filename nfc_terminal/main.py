@@ -78,6 +78,7 @@ def main():
 
             # Other specific GUI changes prior to loading
             #main_win.ui.listWidget.setVisible(False)
+            main_win.ui.cotinue_lbl.setVisible(False)
 
         if defaults.CURRENT_STAGE == 'standby':
 
@@ -90,9 +91,10 @@ def main():
 
         elif defaults.CURRENT_STAGE == 'enter_amount':
 
-            if key_code in digits:
+            if key_code in digits or key_code is ".":
                 if entered_text == "0" and key_code is not None:
                     entered_text = str(key_code)
+                    main_win.ui.cotinue_lbl.setVisible(True)
                 elif entered_text != "0" and key_code is not None:
                     entered_text += str(key_code)
 
@@ -103,17 +105,13 @@ def main():
                 entered_text = backspace
                 write_msg_log("backspace", 'DEBUG')
 
-            main_win.ui.lineEdit.setText(entered_text)
+            main_win.ui.amount_text.setText(entered_text)
 
-            # gui_initalized = False
-            # if not gui_initalized:
-            #     app = QtGui.QApplication(sys.argv)
-            #     gui = gui.GUI()
-            #     gui_initalized = True
-            #
-            # key_code = kp.getKey()
-            # if key_code is not None:
-            #     pass
+            if key_code is "D":
+                defaults.CURRENT_STAGE = 'pay_nfc'
+                main_win.ui.stackedWidget.setCurrentIndex(2)
+                current_screen = main_win.ui.stackedWidget.currentIndex()
+
         elif defaults.CURRENT_STAGE == 'pay_nfc':
             pass
             # gui.initStageGui()

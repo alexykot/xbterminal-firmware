@@ -2504,3 +2504,9 @@ Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: config loaded from "/home/tux/coding/nfc
 Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: STAGE: Initialisation
 Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: STAGE: GUI - Trying to launch GUI
 Sun, 13 Oct 2013 17:54:38 -0000; DEBUG: STAGE: GUI - GUI Loaded
+Sun, 13 Oct 2013 18:47:07 -0000; DEBUG: config loaded from "/home/tux/coding/nfc/nfc_terminal/config.json"
+Sun, 13 Oct 2013 18:47:07 -0000; DEBUG: STAGE: Initialisation
+Sun, 13 Oct 2013 18:47:07 -0000; DEBUG: STAGE: GUI - Trying to launch GUI
+Sun, 13 Oct 2013 18:47:07 -0000; DEBUG: STAGE: GUI - GUI Loaded
+Sun, 13 Oct 2013 18:47:12 -0000; DEBUG: STAGE: standby
+Sun, 13 Oct 2013 18:47:12 -0000; DEBUG: Current Screen - 0
