@@ -17,3 +17,4 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                      }
 GUI_STATE = 'inactive'
+ENTERED_AMOUNT = None

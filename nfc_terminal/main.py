@@ -78,7 +78,7 @@ def main():
 
             # Other specific GUI changes prior to loading
             #main_win.ui.listWidget.setVisible(False)
-            main_win.ui.cotinue_lbl.setVisible(False)
+            main_win.ui.continue_lbl.setVisible(False)
 
         if defaults.CURRENT_STAGE == 'standby':
 
@@ -94,7 +94,7 @@ def main():
             if key_code in digits or key_code is ".":
                 if entered_text == "0" and key_code is not None:
                     entered_text = str(key_code)
-                    main_win.ui.cotinue_lbl.setVisible(True)
+                    main_win.ui.continue_lbl.setVisible(True)
                 elif entered_text != "0" and key_code is not None:
                     entered_text += str(key_code)
 
@@ -108,12 +108,13 @@ def main():
             main_win.ui.amount_text.setText(entered_text)
 
             if key_code is "D":
+                defaults.ENTERED_AMOUNT = entered_text
                 defaults.CURRENT_STAGE = 'pay_nfc'
                 main_win.ui.stackedWidget.setCurrentIndex(2)
                 current_screen = main_win.ui.stackedWidget.currentIndex()
 
         elif defaults.CURRENT_STAGE == 'pay_nfc':
-            pass
+            main_win.ui.gbp_amount_lbl.setText(defaults.ENTERED_AMOUNT)
             # gui.initStageGui()
             # key_code = keypad.key_detect()
             # stages.doWhateverNeededForThisStage(key_code)
