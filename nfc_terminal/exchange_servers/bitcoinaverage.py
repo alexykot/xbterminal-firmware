@@ -46,12 +46,12 @@ def getExchangeRate(cls, currency_code):
 
 def convertToBtc(self, price_fiat, currency_code):
     rate_btc = self.getExchangeRate(currency_code)
-    price_fiat = Decimal(price_fiat).quantize(defaults.DEC_PLACES)
+    price_fiat = Decimal(price_fiat).quantize(defaults.FIAT_DEC_PLACES)
     price_btc = price_fiat / rate_btc
     return price_btc
 
 def convertToFiat(self, price_btc, currency_code):
     rate_btc = self.getExchangeRate(currency_code)
-    price_btc = Decimal(price_btc).quantize(defaults.DEC_PLACES)
+    price_btc = Decimal(price_btc).quantize(defaults.BTC_DEC_PLACES)
     price_fiat = price_btc * rate_btc
     return price_fiat

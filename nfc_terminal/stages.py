@@ -13,17 +13,22 @@ def getTransactionAddress():
     raise NotImplemented()
 
 
-def getTotalBtcAmount(total_fiat_amount):
-    total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.DEC_PLACES)
+def getBtcSharesAmounts(total_fiat_amount):
+    total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.FIAT_DEC_PLACES)
     our_fee_fiat_amount = total_fiat_amount * defaults.OUR_FEE_SHARE
-    instanttofiat_fiat_amount = total_fiat_amount * defaults.INSTANT_FIAT_SHARE
-    merchants_btc_fiat_amount = total_fiat_amount - instanttofiat_fiat_amount - our_fee_fiat_amount
+    instantfiat_fiat_amount = total_fiat_amount * defaults.INSTANT_FIAT_SHARE
+    merchants_btc_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
 
     our_fee_btc_amount = exchange_servers.bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
-    instanttofiat_btc_amount = getattr(exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instanttofiat_fiat_amount, defaults.MERCHANT_CURRENCY)
+    instantfiat_btc_amount = getattr(exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount, defaults.MERCHANT_CURRENCY)
     merchants_btc_fiat_amount = exchange_servers.bitcoinaverage.convertToBtc(merchants_btc_fiat_amount, defaults.MERCHANT_CURRENCY)
 
-    total_btc_amount = our_fee_btc_amount + instanttofiat_btc_amount + merchants_btc_fiat_amount
-    return total_btc_amount
+    return our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount
 
+def getInstantFiatBtcAddress(instantfiat_fiat_amount):
+    pass
 
+def getMerchantBtcAddress(instantfiat_fiat_amount):
+    global nfc_terminal
+
+    return nfc_terminal.config['merchant_btc_address']

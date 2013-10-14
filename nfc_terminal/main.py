@@ -1,3 +1,4 @@
+from decimal import Decimal
 import time
 import sys
 from PyQt4 import QtGui, QtCore
@@ -23,6 +24,7 @@ def main():
     nfc_terminal.runtime = {}
     nfc_terminal.runtime['CURRENT_STAGE'] = defaults.STAGES[0]
     nfc_terminal.runtime['entered_text'] = '0.00'
+    nfc_terminal.runtime['amount_to_pay_btc'] = None
     nfc_terminal.runtime['key_pressed'] = None
 
     try:
@@ -74,12 +76,31 @@ def main():
             elif nfc_terminal.runtime['key_pressed'] is "B":
                 nfc_terminal.runtime['entered_text'] = '0.00'
                 main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
+        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc' or nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
+            if nfc_terminal.runtime['amount_to_pay_btc'] is None:
+                amount_to_pay_fiat = Decimal(nfc_terminal.runtime['entered_text']).quantize(defaults.FIAT_DEC_PLACES)
+                our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount = stages.getBtcSharesAmounts(amount_to_pay_fiat)
 
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc':
-            main_win.ui.gbp_amount_lbl.setText(nfc_terminal.runtime['entered_text'])
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
-            main_win.ui.gbp_amount_lbl.setText(nfc_terminal.runtime['entered_text'])
-            pass
+                nfc_terminal.runtime['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
+                nfc_terminal.runtime['rate_btc'] = amount_to_pay_fiat / nfc_terminal.runtime['amount_to_pay_btc']
+
+                nfc_terminal.runtime['transaction_address'] = stages.getTransactionAddress(nfc_terminal.runtime['amount_to_pay_btc'])
+
+                main_win.ui.fiat_amount.setText(amount_to_pay_fiat.quantize('0.00'))
+                main_win.ui.btc_amount.setText(nfc_terminal.runtime['amount_to_pay_btc'])
+                main_win.ui.exchange_rate.setText(nfc_terminal.runtime['rate_btc'])
+
+            if nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc':
+                if nfc_terminal.runtime['key_pressed'] is "#":
+                    nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_qr'
+                    continue
+
+            if nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
+                #draw QR here
+                pass
+
+            stages.checkTransactionDone(nfc_terminal.runtime['transaction_address'], nfc_terminal.runtime['amount_to_pay_btc'])
+
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'payment_successful':
             pass
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'payment_cancelled':
