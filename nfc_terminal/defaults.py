@@ -25,5 +25,12 @@ EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'nfc_post query bot',
                                   'Origin': 'nfc_post',
                                   }
+DEC_PLACES = Decimal('0.0000')
 
-DEC_PLACES = Decimal('0.00')
+
+#########################################
+# to be moved to online config
+MERCHANT_CURRENCY = 'GBP'
+OUR_FEE_SHARE = Decimal(0.005).quantize(DEC_PLACES)  #0.5%
+INSTANT_FIAT_SHARE = Decimal(0.8).quantize(DEC_PLACES)  #80% converted to fiat instantly
+INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
