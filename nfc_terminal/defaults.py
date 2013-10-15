@@ -1,5 +1,9 @@
 from decimal import Decimal
 
+from nfc_terminal.helpers.configs import formatDefaultAmountOutput
+
+
+
 STAGES = ('standby',
           'enter_amount',
           'pay_nfc',
@@ -23,6 +27,11 @@ EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'nfc_post query bot',
                                   'Origin': 'nfc_post',
                                   }
+OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
+OUTPUT_DEC_FRACTIONAL_SPLIT = '.'
+OUTPUT_DEC_THOUSANDS_SPLIT = ','
+OUTPUT_DEFAULT_VALUE = formatDefaultAmountOutput()
+
 FIAT_DEC_PLACES = Decimal('0.0000')
 BTC_DEC_PLACES = Decimal('0.00000000')
 
@@ -33,3 +42,4 @@ MERCHANT_CURRENCY = 'GBP'
 OUR_FEE_SHARE = Decimal(0.005).quantize(BTC_DEC_PLACES)  #0.5%
 INSTANT_FIAT_SHARE = Decimal(0.8).quantize(BTC_DEC_PLACES)  #80% converted to fiat instantly
 INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
+

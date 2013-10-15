@@ -34,3 +34,42 @@ def getMerchantBtcAddress(instantfiat_fiat_amount):
 
     return nfc_terminal.config['merchant_btc_address']
 
+def processAmountKeyInput(current_text, key_code):
+    def splitThousands(number, separator):
+        if len(number) <= 3:
+            return number
+        return splitThousands(number[:-3], separator) + separator + number[-3:]
+
+    global nfc_terminal
+
+    key_code = str(key_code)
+    current_text = current_text.split(defaults.OUTPUT_DEC_FRACTIONAL_SPLIT)
+    if len(current_text) != 2:
+        return defaults.OUTPUT_DEFAULT_VALUE
+
+    decimal_part = current_text[0]
+    fractional_part = current_text[1]
+
+    if key_code == '.':
+        nfc_terminal.runtime['current_text_piece'] = 'fractional'
+        return current_text
+    elif key_code == 'A':
+        if nfc_terminal.runtime['current_text_piece'] == 'decimal':
+            decimal_part = decimal_part[:-1]
+        elif nfc_terminal.runtime['current_text_piece'] == 'fractional':
+
+        nfc_terminal.runtime['entered_text'] = nfc_terminal.runtime['entered_text'][:-1]
+    elif key_code == 'B':
+        return defaults.OUTPUT_DEFAULT_VALUE
+    else:
+        if nfc_terminal.runtime['current_text_piece'] == 'decimal':
+            decimal_part = '%s%s' % (decimal_part, key_code)
+
+        if nfc_terminal.runtime['current_text_piece'] == 'fractional':
+            fractional_part = fractional_part.rstrip('0')
+            if len(fractional_part < 2):
+                fractional_part = '%s%s' % (fractional_part, key_code)
+
+    resulting_text = '%s.%s' % (decimal_part, fractional_part)
+    return resulting_text
+

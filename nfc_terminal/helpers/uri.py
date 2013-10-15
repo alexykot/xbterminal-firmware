@@ -1,6 +1,6 @@
 __author__ = 'tux'
 
-import sendnfc
+from nfc_terminal.helpers import sendnfc
 
 uri = "http://google.com/"
 

@@ -1,16 +1,14 @@
 import nfc
 import nfc.snep
 import threading
-import nfc_terminal
-
 
 def send_ndef_message(llc):
-    sp = nfc.ndef.UriRecord("http://google.com")
+    sp = nfc.ndef.UriRecord('https://bitcoinaverage.com/')
     snep = nfc.snep.SnepClient(llc)
     snep.put( nfc.ndef.Message(sp) )
 
 def connected(llc):
-    threading.Thread(target=nfc_terminal.helpers.sendnfc.send_ndef_message, args=(llc,)).start()
+    threading.Thread(target=send_ndef_message, args=(llc,)).start()
     return True
 
 clf = nfc.ContactlessFrontend("usb")

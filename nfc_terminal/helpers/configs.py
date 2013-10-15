@@ -38,3 +38,14 @@ def create_default_config():
     with open(config_file_abs_path, 'w') as config_file:
         config_file.write(json.dumps(default_config_data, indent=2, sort_keys=True, separators=(',', ': ')))
 
+
+def formatDefaultAmountOutput():
+    def strrepeat(string_to_expand, length):
+        return (string_to_expand * ((length/len(string_to_expand))+1))[:length]
+
+    decimal_part = '0'
+    fractional_part = strrepeat('0', defaults.OUTPUT_DEC_PLACES)
+
+    default_amount_output = '%s%s%s' % (decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+    return default_amount_output
+

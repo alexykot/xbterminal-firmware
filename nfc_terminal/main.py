@@ -23,9 +23,10 @@ def main():
     #init runtime data
     nfc_terminal.runtime = {}
     nfc_terminal.runtime['CURRENT_STAGE'] = defaults.STAGES[0]
-    nfc_terminal.runtime['entered_text'] = '0.00'
+    nfc_terminal.runtime['entered_text'] = defaults.OUTPUT_DEFAULT_VALUE
     nfc_terminal.runtime['amount_to_pay_btc'] = None
     nfc_terminal.runtime['key_pressed'] = None
+    nfc_terminal.runtime['current_text_piece'] = 'decimal'
 
     try:
         kp = keypad.keypad(columnCount=4)
@@ -49,7 +50,7 @@ def main():
             nfc_terminal.runtime['key_pressed'] = kp.getKey()
             if nfc_terminal.runtime['key_pressed'] is not None:
                 write_msg_log("KEYPAD: Key pressed - {}".format(nfc_terminal.runtime['key_pressed']), 'DEBUG')
-                time.sleep(0.1)
+                time.sleep(0.3)
         except NameError:
             pass
 
@@ -58,27 +59,25 @@ def main():
             if nfc_terminal.runtime['key_pressed'] == "D":
                 main_win.ui.stackedWidget.setCurrentIndex(1)
                 nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
+                main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
                 continue
 
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'enter_amount':
 
-            if isinstance(nfc_terminal.runtime['key_pressed'], (int, long)) or nfc_terminal.runtime['key_pressed'] == ".":
-                if nfc_terminal.runtime['entered_text'] == "0.00":
-                    nfc_terminal.runtime['entered_text'] = str(nfc_terminal.runtime['key_pressed'])
-                    main_win.ui.continue_lbl.setVisible(True)
-                else:
-                    nfc_terminal.runtime['entered_text'] += str(nfc_terminal.runtime['key_pressed'])
-                main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
-            elif nfc_terminal.runtime['key_pressed'] == "A":
-                nfc_terminal.runtime['entered_text'] = nfc_terminal.runtime['entered_text'][:-1]
+            if (isinstance(nfc_terminal.runtime['key_pressed'], (int, long))
+                or nfc_terminal.runtime['key_pressed'] == "."
+                or nfc_terminal.runtime['key_pressed'] == "A"):
+                nfc_terminal.runtime['entered_text'] = stages.processAmountInput(nfc_terminal.runtime['entered_text'], nfc_terminal.runtime['key_pressed'])
                 main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
             elif nfc_terminal.runtime['key_pressed'] is "D":
-                main_win.ui.stackedWidget.setCurrentIndex(2)
-                nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_nfc'
+                value_entered = Decimal(nfc_terminal.runtime['entered_text']).quantize(defaults.FIAT_DEC_PLACES)
+                if value_entered > 0:
+                    main_win.ui.stackedWidget.setCurrentIndex(2)
+                    nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_nfc'
+                else:
+                    #show error message here
+                    pass
                 continue
-            elif nfc_terminal.runtime['key_pressed'] is "B":
-                nfc_terminal.runtime['entered_text'] = '0.00'
-                main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
 
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc' or nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
             if nfc_terminal.runtime['amount_to_pay_btc'] is None:
