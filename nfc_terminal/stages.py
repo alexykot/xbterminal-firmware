@@ -1,7 +1,8 @@
 from decimal import Decimal
 
 from nfc_terminal import defaults
-from nfc_terminal import exchange_servers
+import exchange_servers
+from exchange_servers import bitcoinaverage
 
 
 class NotImplemented(Exception):
@@ -19,7 +20,7 @@ def getBtcSharesAmounts(total_fiat_amount):
     instantfiat_fiat_amount = total_fiat_amount * defaults.INSTANT_FIAT_SHARE
     merchants_btc_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
 
-    our_fee_btc_amount = exchange_servers.bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
+    our_fee_btc_amount = bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
     instantfiat_btc_amount = getattr(exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount, defaults.MERCHANT_CURRENCY)
     merchants_btc_fiat_amount = exchange_servers.bitcoinaverage.convertToBtc(merchants_btc_fiat_amount, defaults.MERCHANT_CURRENCY)
 
@@ -32,3 +33,4 @@ def getMerchantBtcAddress(instantfiat_fiat_amount):
     global nfc_terminal
 
     return nfc_terminal.config['merchant_btc_address']
+

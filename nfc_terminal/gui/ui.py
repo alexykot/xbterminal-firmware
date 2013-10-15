@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Mon Oct 14 14:35:57 2013
+# Created: Mon Oct 14 19:26:56 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -76,21 +76,27 @@ class Ui_Form(object):
         self.gbp_lbl_2 = QtGui.QLabel(self.screen3)
         self.gbp_lbl_2.setGeometry(QtCore.QRect(10, 20, 31, 61))
         self.gbp_lbl_2.setObjectName(_fromUtf8("gbp_lbl_2"))
-        self.gbp_amount_lbl = QtGui.QLabel(self.screen3)
-        self.gbp_amount_lbl.setGeometry(QtCore.QRect(50, 30, 131, 41))
+        self.fiat_amount = QtGui.QLabel(self.screen3)
+        self.fiat_amount.setGeometry(QtCore.QRect(50, 30, 161, 41))
         font = QtGui.QFont()
         font.setPointSize(30)
-        self.gbp_amount_lbl.setFont(font)
-        self.gbp_amount_lbl.setObjectName(_fromUtf8("gbp_amount_lbl"))
+        self.fiat_amount.setFont(font)
+        self.fiat_amount.setObjectName(_fromUtf8("fiat_amount"))
         self.btc_lbl = QtGui.QLabel(self.screen3)
         self.btc_lbl.setGeometry(QtCore.QRect(10, 60, 31, 61))
         self.btc_lbl.setObjectName(_fromUtf8("btc_lbl"))
-        self.btc_amount_lbl = QtGui.QLabel(self.screen3)
-        self.btc_amount_lbl.setGeometry(QtCore.QRect(50, 70, 131, 41))
+        self.btc_amount = QtGui.QLabel(self.screen3)
+        self.btc_amount.setGeometry(QtCore.QRect(50, 70, 161, 41))
         font = QtGui.QFont()
         font.setPointSize(30)
-        self.btc_amount_lbl.setFont(font)
-        self.btc_amount_lbl.setObjectName(_fromUtf8("btc_amount_lbl"))
+        self.btc_amount.setFont(font)
+        self.btc_amount.setObjectName(_fromUtf8("btc_amount"))
+        self.exchange_rate_lbl = QtGui.QLabel(self.screen3)
+        self.exchange_rate_lbl.setGeometry(QtCore.QRect(10, 120, 111, 41))
+        self.exchange_rate_lbl.setObjectName(_fromUtf8("exchange_rate_lbl"))
+        self.exchange_rate = QtGui.QLabel(self.screen3)
+        self.exchange_rate.setGeometry(QtCore.QRect(130, 130, 66, 21))
+        self.exchange_rate.setObjectName(_fromUtf8("exchange_rate"))
         self.stackedWidget.addWidget(self.screen3)
         self.screen4 = QtGui.QWidget()
         self.screen4.setObjectName(_fromUtf8("screen4"))
@@ -117,8 +123,10 @@ class Ui_Form(object):
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
         self.gbp_lbl.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">£</span></p></body></html>", None))
         self.gbp_lbl_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">£</span></p></body></html>", None))
-        self.gbp_amount_lbl.setText(_translate("Form", "0", None))
+        self.fiat_amount.setText(_translate("Form", "0", None))
         self.btc_lbl.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">฿</span></p></body></html>", None))
-        self.btc_amount_lbl.setText(_translate("Form", "0", None))
+        self.btc_amount.setText(_translate("Form", "0", None))
+        self.exchange_rate_lbl.setText(_translate("Form", "exchange rate", None))
+        self.exchange_rate.setText(_translate("Form", "0", None))
         self.idle_lbl_2.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Successful</p></body></html>", None))
 

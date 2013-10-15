@@ -54,11 +54,14 @@ def main():
             pass
 
         if nfc_terminal.runtime['CURRENT_STAGE'] == 'standby':
+
             if nfc_terminal.runtime['key_pressed'] == "D":
                 main_win.ui.stackedWidget.setCurrentIndex(1)
                 nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
                 continue
+
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'enter_amount':
+
             if isinstance(nfc_terminal.runtime['key_pressed'], (int, long)) or nfc_terminal.runtime['key_pressed'] == ".":
                 if nfc_terminal.runtime['entered_text'] == "0.00":
                     nfc_terminal.runtime['entered_text'] = str(nfc_terminal.runtime['key_pressed'])
@@ -76,6 +79,7 @@ def main():
             elif nfc_terminal.runtime['key_pressed'] is "B":
                 nfc_terminal.runtime['entered_text'] = '0.00'
                 main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
+
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc' or nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
             if nfc_terminal.runtime['amount_to_pay_btc'] is None:
                 amount_to_pay_fiat = Decimal(nfc_terminal.runtime['entered_text']).quantize(defaults.FIAT_DEC_PLACES)
