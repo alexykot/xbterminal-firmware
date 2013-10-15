@@ -50,7 +50,7 @@ def main():
             nfc_terminal.runtime['key_pressed'] = kp.getKey()
             if nfc_terminal.runtime['key_pressed'] is not None:
                 write_msg_log("KEYPAD: Key pressed - {}".format(nfc_terminal.runtime['key_pressed']), 'DEBUG')
-                time.sleep(0.3)
+                time.sleep(0.2)
         except NameError:
             pass
 
@@ -66,8 +66,9 @@ def main():
 
             if (isinstance(nfc_terminal.runtime['key_pressed'], (int, long))
                 or nfc_terminal.runtime['key_pressed'] == "."
-                or nfc_terminal.runtime['key_pressed'] == "A"):
-                nfc_terminal.runtime['entered_text'] = stages.processAmountInput(nfc_terminal.runtime['entered_text'], nfc_terminal.runtime['key_pressed'])
+                or nfc_terminal.runtime['key_pressed'] == "A"
+                or nfc_terminal.runtime['key_pressed'] == "B"):
+                nfc_terminal.runtime['entered_text'] = stages.processAmountKeyInput(nfc_terminal.runtime['entered_text'], nfc_terminal.runtime['key_pressed'])
                 main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
             elif nfc_terminal.runtime['key_pressed'] is "D":
                 value_entered = Decimal(nfc_terminal.runtime['entered_text']).quantize(defaults.FIAT_DEC_PLACES)
