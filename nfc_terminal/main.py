@@ -22,13 +22,13 @@ def main():
     nfc_terminal.gui.runtime = {}
     nfc_terminal.gui.runtime['app'], nfc_terminal.gui.runtime['main_win'] = gui.initGUI()
     ui = nfc_terminal.gui.runtime['main_win'].ui
-    run = nfc_terminal.runtime
 
     # Load configs
     nfc_terminal.helpers.configs.load_config()
 
     #init runtime data
-    run = {}
+    nfc_terminal.runtime = {}
+    run = nfc_terminal.runtime
     run['CURRENT_STAGE'] = defaults.STAGES[0]
     run['text_entered'] = defaults.OUTPUT_DEFAULT_VALUE
     run['amount_to_pay_fiat'] = None
