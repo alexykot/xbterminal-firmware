@@ -40,6 +40,7 @@ def main():
     nfc_terminal.gui.runtime = {}
     nfc_terminal.gui.runtime['app'], nfc_terminal.gui.runtime['main_win'] = gui.initGUI()
     ui = nfc_terminal.gui.runtime['main_win'].ui
+    run = nfc_terminal.runtime
 
     while True:
         # At beginning of each loop push events
@@ -49,70 +50,70 @@ def main():
         except NameError:
             pass
 
-        nfc_terminal.runtime['key_pressed'] = None
+        run['key_pressed'] = None
         try:
-            nfc_terminal.runtime['key_pressed'] = kp.getKey()
-            if nfc_terminal.runtime['key_pressed'] is not None:
-                write_msg_log("KEYPAD: Key pressed - {}".format(nfc_terminal.runtime['key_pressed']), 'DEBUG')
+            run['key_pressed'] = kp.getKey()
+            if run['key_pressed'] is not None:
+                write_msg_log("KEYPAD: Key pressed - {}".format(run['key_pressed']), 'DEBUG')
                 time.sleep(0.2)
         except NameError:
             pass
 
-        if nfc_terminal.runtime['CURRENT_STAGE'] == 'standby':
+        if run['CURRENT_STAGE'] == 'standby':
 
-            if nfc_terminal.runtime['key_pressed'] == "D":
+            if run['key_pressed'] == "D":
                 ui.stackedWidget.setCurrentIndex(1)
-                nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-                ui.amount_text.setText(nfc_terminal.runtime['text_entered'])
+                run['CURRENT_STAGE'] = 'enter_amount'
+                ui.amount_text.setText(run['text_entered'])
                 continue
 
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'enter_amount':
+        elif run['CURRENT_STAGE'] == 'enter_amount':
 
-            if (isinstance(nfc_terminal.runtime['key_pressed'], (int, long))
-                or nfc_terminal.runtime['key_pressed'] == "."
-                or nfc_terminal.runtime['key_pressed'] == "A"
-                or nfc_terminal.runtime['key_pressed'] == "B"):
+            if (isinstance(run['key_pressed'], (int, long))
+                or run['key_pressed'] == "."
+                or run['key_pressed'] == "A"
+                or run['key_pressed'] == "B"):
 
                 ui.amount_text.setStyleSheet('background: #FFF')
 
-                nfc_terminal.runtime['text_entered'] = stages.processAmountKeyInput(nfc_terminal.runtime['text_entered'], nfc_terminal.runtime['key_pressed'])
-                ui.amount_text.setText(nfc_terminal.runtime['text_entered'])
-            elif nfc_terminal.runtime['key_pressed'] is "D":
-                nfc_terminal.runtime['amount_to_pay_fiat'] = stages.amountInputToDecimal(nfc_terminal.runtime['text_entered'])
-                if nfc_terminal.runtime['amount_to_pay_fiat'] > 0:
+                run['text_entered'] = stages.processAmountKeyInput(run['text_entered'], run['key_pressed'])
+                ui.amount_text.setText(run['text_entered'])
+            elif run['key_pressed'] is "D":
+                run['amount_to_pay_fiat'] = stages.amountInputToDecimal(run['text_entered'])
+                if run['amount_to_pay_fiat'] > 0:
                     ui.stackedWidget.setCurrentIndex(2)
-                    nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_nfc'
+                    run['CURRENT_STAGE'] = 'pay_nfc'
                 else:
                     ui.amount_text.setStyleSheet('background: #B33A3A')
                     ui.continue_lbl.setText("error: no amount entered")
                     pass
                 continue
 
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc' or nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
-            if nfc_terminal.runtime['amount_to_pay_fiat'] is None:
+        elif run['CURRENT_STAGE'] == 'pay_nfc' or run['CURRENT_STAGE'] == 'pay_qr':
+            if run['amount_to_pay_fiat'] is None:
                 ui.stackedWidget.setCurrentIndex(1)
-                nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
+                run['CURRENT_STAGE'] = 'enter_amount'
                 continue
 
-            if nfc_terminal.runtime['amount_to_pay_btc'] is None:
-                our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount = stages.getBtcSharesAmounts(nfc_terminal.runtime['amount_to_pay_fiat'])
+            if run['amount_to_pay_btc'] is None:
+                our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount = stages.getBtcSharesAmounts(run['amount_to_pay_fiat'])
 
-                nfc_terminal.runtime['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
-                nfc_terminal.runtime['rate_btc'] = nfc_terminal.runtime['amount_to_pay_fiat'] / nfc_terminal.runtime['amount_to_pay_btc']
+                run['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
+                run['rate_btc'] = run['amount_to_pay_fiat'] / run['amount_to_pay_btc']
 
-                nfc_terminal.runtime['transaction_address'] = stages.getTransactionAddress(nfc_terminal.runtime['amount_to_pay_btc'])
+                run['transaction_address'] = stages.getTransactionAddress(run['amount_to_pay_btc'])
 
-                ui.fiat_amount.setText(stages.amountDecimalToOutput(nfc_terminal.runtime['amount_to_pay_fiat']))
-                ui.btc_amount.setText(str(nfc_terminal.runtime['amount_to_pay_btc']))
-                ui.exchange_rate.setText(stages.amountDecimalToOutput(nfc_terminal.runtime['rate_btc']))
+                ui.fiat_amount.setText(stages.amountDecimalToOutput(run['amount_to_pay_fiat']))
+                ui.btc_amount.setText(str(run['amount_to_pay_btc']))
+                ui.exchange_rate.setText(stages.amountDecimalToOutput(run['rate_btc']))
 
-            if nfc_terminal.runtime['key_pressed'] == "A":
+            if run['key_pressed'] == "A":
 
-                nfc_terminal.runtime['amount_to_pay_btc'] = None
-                nfc_terminal.runtime['rate_btc'] = None
-                nfc_terminal.runtime['transaction_address'] = None
-                nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-                nfc_terminal.runtime['text_entered'] = stages.processAmountKeyInput("", 'B')
+                run['amount_to_pay_btc'] = None
+                run['rate_btc'] = None
+                run['transaction_address'] = None
+                run['CURRENT_STAGE'] = 'enter_amount'
+                run['text_entered'] = stages.processAmountKeyInput("", 'B')
 
                 ui.amount_text.setText("0.00")
                 ui.fiat_amount.setText("0")
@@ -122,24 +123,24 @@ def main():
                 ui.continue_lbl.setText("")
                 continue
 
-            if nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc':
-                if nfc_terminal.runtime['key_pressed'] == "#":
-                    nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_qr'
+            if run['CURRENT_STAGE'] == 'pay_nfc':
+                if run['key_pressed'] == "#":
+                    run['CURRENT_STAGE'] = 'pay_qr'
                     continue
 
-            if nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
+            if run['CURRENT_STAGE'] == 'pay_qr':
                 #draw QR here
                 pass
 
-            if stages.checkTransactionDone(nfc_terminal.runtime['transaction_address'], nfc_terminal.runtime['amount_to_pay_btc']):
-                nfc_terminal.runtime['CURRENT_STAGE'] = 'payment_successful'
+            if stages.checkTransactionDone(run['transaction_address'], run['amount_to_pay_btc']):
+                run['CURRENT_STAGE'] = 'payment_successful'
                 continue
 
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'payment_successful':
+        elif run['CURRENT_STAGE'] == 'payment_successful':
             pass
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'payment_cancelled':
+        elif run['CURRENT_STAGE'] == 'payment_cancelled':
             pass
-        elif nfc_terminal.runtime['CURRENT_STAGE'] == 'application_halt':
+        elif run['CURRENT_STAGE'] == 'application_halt':
             sys.exit()
 
         time.sleep(0.05)
