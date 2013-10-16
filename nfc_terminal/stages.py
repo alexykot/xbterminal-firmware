@@ -64,6 +64,7 @@ def processAmountKeyInput(current_text, key_code):
             fractional_part = fractional_part.lstrip('_')
             decimal_part = decimal_part[:-1]
     elif key_code == 'B':
+        nfc_terminal.runtime['current_text_piece'] = 'decimal'
         return defaults.OUTPUT_DEFAULT_VALUE
     else:
         if nfc_terminal.runtime['current_text_piece'] == 'decimal':
