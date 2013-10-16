@@ -70,6 +70,7 @@ def main():
                 or nfc_terminal.runtime['key_pressed'] == "."
                 or nfc_terminal.runtime['key_pressed'] == "A"
                 or nfc_terminal.runtime['key_pressed'] == "B"):
+                main_win.ui.amount_text.setStyleSheet('background: #FFF')
                 nfc_terminal.runtime['text_entered'] = stages.processAmountKeyInput(nfc_terminal.runtime['text_entered'], nfc_terminal.runtime['key_pressed'])
                 main_win.ui.amount_text.setText(nfc_terminal.runtime['text_entered'])
             elif nfc_terminal.runtime['key_pressed'] is "D":
@@ -78,7 +79,7 @@ def main():
                     main_win.ui.stackedWidget.setCurrentIndex(2)
                     nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_nfc'
                 else:
-                    #show error message here
+                    main_win.ui.amount_text.setStyleSheet('background: #B33A3A')
                     pass
                 continue
 
