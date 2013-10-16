@@ -27,7 +27,7 @@ def initGUI():
 
     app = QtGui.QApplication(sys.argv)
     main_win = GUI()
-    main_win.ui.continue_lbl.setVisible(False)
+    main_win.ui.continue_lbl.setText("")
 
     return app, main_win
 

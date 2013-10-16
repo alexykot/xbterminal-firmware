@@ -53,6 +53,7 @@ def processAmountKeyInput(current_text, key_code):
     if key_code == '.':
         nfc_terminal.runtime['current_text_piece'] = 'fractional'
         return current_text
+
     elif key_code == 'A':
         if nfc_terminal.runtime['current_text_piece'] == 'fractional':
             fractional_part = fractional_part.rstrip('_')
@@ -63,24 +64,29 @@ def processAmountKeyInput(current_text, key_code):
         if nfc_terminal.runtime['current_text_piece'] == 'decimal':
             fractional_part = fractional_part.lstrip('_')
             decimal_part = decimal_part[:-1]
+
     elif key_code == 'B':
+        nfc_terminal.gui.runtime['main_win'].ui.continue_lbl.setText("")
         nfc_terminal.runtime['current_text_piece'] = 'decimal'
         return defaults.OUTPUT_DEFAULT_VALUE
     else:
+
+        nfc_terminal.gui.runtime['main_win'].ui.continue_lbl.setText("press enter to continue")
+
         if nfc_terminal.runtime['current_text_piece'] == 'decimal':
             decimal_part = decimal_part.lstrip('_')
             if len(decimal_part) < (defaults.OUTPUT_TOTAL_PLACES - defaults.OUTPUT_DEC_PLACES):
-                decimal_part = '%s%s' % (decimal_part, key_code)
+                decimal_part = '{}{}'.format(decimal_part, key_code)
 
         if nfc_terminal.runtime['current_text_piece'] == 'fractional':
             fractional_part = fractional_part.rstrip('_')
             if len(fractional_part) < defaults.OUTPUT_DEC_PLACES:
-                fractional_part = '%s%s' % (fractional_part, key_code)
+                fractional_part = '{}{}'.format(fractional_part, key_code)
 
     decimal_part = misc_helpers.strpad(decimal_part, '_', 1, pad_left=True)
     fractional_part = misc_helpers.strpad(fractional_part, '_', defaults.OUTPUT_DEC_PLACES, pad_right=True)
     decimal_part = misc_helpers.splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
-    resulting_text = '%s%s%s' % (decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+    resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
     return resulting_text
 
 
@@ -98,5 +104,5 @@ def amountDecimalToOutput(amount_decimal):
     decimal_part = amount_decimal_list[0]
     fractional_part = amount_decimal_list[1]
     decimal_part = misc_helpers.splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
-    resulting_text = '%s%s%s' % (decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+    resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
     return resulting_text
