@@ -1,18 +1,19 @@
+# coding=utf-8
 from decimal import Decimal
 
+import nfc_terminal.helpers
+import nfc_terminal.helpers.misc
 
-def formatDefaultAmountOutput():
-    global OUTPUT_DEC_PLACES, OUTPUT_DEC_FRACTIONAL_SPLIT
 
-    def strrepeat(string_to_expand, length):
-        return (string_to_expand * ((length/len(string_to_expand))+1))[:length]
-
-    decimal_part = '_'
-    fractional_part = strrepeat('_', OUTPUT_DEC_PLACES)
-
-    default_amount_output = '%s%s%s' % (decimal_part, OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
-    return default_amount_output
-
+#########################################
+# to be moved to online config
+MERCHANT_CURRENCY = 'GBP'
+MERCHANT_CURRENCY_SIGN_PREFIX = u'£'
+MERCHANT_CURRENCY_SIGN_POSTFIX = ''
+OUR_FEE_SHARE = 0.005 #0.5%
+INSTANT_FIAT_SHARE = 0.8 #80% converted to fiat instantly
+INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
+#########################################
 
 STAGES = ('standby',
           'enter_amount',
@@ -38,19 +39,13 @@ EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'nfc_post query bot',
                                   'Origin': 'nfc_post',
                                   }
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
+OUTPUT_TOTAL_PLACES = 9 #total decimal places to show on screen
 OUTPUT_DEC_FRACTIONAL_SPLIT = '.'
 OUTPUT_DEC_THOUSANDS_SPLIT = ','
-OUTPUT_DEFAULT_VALUE = formatDefaultAmountOutput()
+OUTPUT_DEFAULT_VALUE = nfc_terminal.helpers.misc.formatDefaultAmountOutput(OUTPUT_DEC_PLACES, OUTPUT_DEC_FRACTIONAL_SPLIT)
 
 FIAT_DEC_PLACES = Decimal('0.0000')
 BTC_DEC_PLACES = Decimal('0.00000000')
 
-
-#########################################
-# to be moved to online config
-MERCHANT_CURRENCY = 'GBP'
-OUR_FEE_SHARE = Decimal(0.005).quantize(BTC_DEC_PLACES)  #0.5%
-INSTANT_FIAT_SHARE = Decimal(0.8).quantize(BTC_DEC_PLACES)  #80% converted to fiat instantly
-INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
 
 

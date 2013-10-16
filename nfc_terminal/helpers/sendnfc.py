@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import nfc
 import nfc.snep
 import threading

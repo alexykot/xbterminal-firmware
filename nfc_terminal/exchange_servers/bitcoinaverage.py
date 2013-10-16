@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 from eventlet.green import urllib2
 from eventlet.timeout import Timeout

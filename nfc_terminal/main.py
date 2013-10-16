@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 import time
 import sys
@@ -23,7 +24,8 @@ def main():
     #init runtime data
     nfc_terminal.runtime = {}
     nfc_terminal.runtime['CURRENT_STAGE'] = defaults.STAGES[0]
-    nfc_terminal.runtime['entered_text'] = defaults.OUTPUT_DEFAULT_VALUE
+    nfc_terminal.runtime['text_entered'] = defaults.OUTPUT_DEFAULT_VALUE
+    nfc_terminal.runtime['amount_to_pay_fiat'] = None
     nfc_terminal.runtime['amount_to_pay_btc'] = None
     nfc_terminal.runtime['key_pressed'] = None
     nfc_terminal.runtime['current_text_piece'] = 'decimal'
@@ -59,7 +61,7 @@ def main():
             if nfc_terminal.runtime['key_pressed'] == "D":
                 main_win.ui.stackedWidget.setCurrentIndex(1)
                 nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-                main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
+                main_win.ui.amount_text.setText(nfc_terminal.runtime['text_entered'])
                 continue
 
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'enter_amount':
@@ -68,11 +70,11 @@ def main():
                 or nfc_terminal.runtime['key_pressed'] == "."
                 or nfc_terminal.runtime['key_pressed'] == "A"
                 or nfc_terminal.runtime['key_pressed'] == "B"):
-                nfc_terminal.runtime['entered_text'] = stages.processAmountKeyInput(nfc_terminal.runtime['entered_text'], nfc_terminal.runtime['key_pressed'])
-                main_win.ui.amount_text.setText(nfc_terminal.runtime['entered_text'])
+                nfc_terminal.runtime['text_entered'] = stages.processAmountKeyInput(nfc_terminal.runtime['text_entered'], nfc_terminal.runtime['key_pressed'])
+                main_win.ui.amount_text.setText(nfc_terminal.runtime['text_entered'])
             elif nfc_terminal.runtime['key_pressed'] is "D":
-                value_entered = Decimal(nfc_terminal.runtime['entered_text']).quantize(defaults.FIAT_DEC_PLACES)
-                if value_entered > 0:
+                nfc_terminal.runtime['amount_to_pay_fiat'] = stages.amountInputToDecimal(nfc_terminal.runtime['text_entered'])
+                if nfc_terminal.runtime['amount_to_pay_fiat'] > 0:
                     main_win.ui.stackedWidget.setCurrentIndex(2)
                     nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_nfc'
                 else:
@@ -81,21 +83,33 @@ def main():
                 continue
 
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc' or nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_qr':
+            if nfc_terminal.runtime['amount_to_pay_fiat'] is None:
+                main_win.ui.stackedWidget.setCurrentIndex(1)
+                nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
+                continue
+
             if nfc_terminal.runtime['amount_to_pay_btc'] is None:
-                amount_to_pay_fiat = Decimal(nfc_terminal.runtime['entered_text']).quantize(defaults.FIAT_DEC_PLACES)
-                our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount = stages.getBtcSharesAmounts(amount_to_pay_fiat)
+                our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount = stages.getBtcSharesAmounts(nfc_terminal.runtime['amount_to_pay_fiat'])
 
                 nfc_terminal.runtime['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
-                nfc_terminal.runtime['rate_btc'] = amount_to_pay_fiat / nfc_terminal.runtime['amount_to_pay_btc']
+                nfc_terminal.runtime['rate_btc'] = nfc_terminal.runtime['amount_to_pay_fiat'] / nfc_terminal.runtime['amount_to_pay_btc']
 
                 nfc_terminal.runtime['transaction_address'] = stages.getTransactionAddress(nfc_terminal.runtime['amount_to_pay_btc'])
 
-                main_win.ui.fiat_amount.setText(amount_to_pay_fiat.quantize('0.00'))
-                main_win.ui.btc_amount.setText(nfc_terminal.runtime['amount_to_pay_btc'])
-                main_win.ui.exchange_rate.setText(nfc_terminal.runtime['rate_btc'])
+                main_win.ui.fiat_amount.setText(stages.amountDecimalToOutput(nfc_terminal.runtime['amount_to_pay_fiat']))
+                main_win.ui.btc_amount.setText(str(nfc_terminal.runtime['amount_to_pay_btc']))
+                main_win.ui.exchange_rate.setText(stages.amountDecimalToOutput(nfc_terminal.runtime['rate_btc']))
+
+            if nfc_terminal.runtime['key_pressed'] == "A":
+                main_win.ui.stackedWidget.setCurrentIndex(1)
+                nfc_terminal.runtime['amount_to_pay_btc'] = None
+                nfc_terminal.runtime['rate_btc'] = None
+                nfc_terminal.runtime['transaction_address'] = None
+                nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
+                continue
 
             if nfc_terminal.runtime['CURRENT_STAGE'] == 'pay_nfc':
-                if nfc_terminal.runtime['key_pressed'] is "#":
+                if nfc_terminal.runtime['key_pressed'] == "#":
                     nfc_terminal.runtime['CURRENT_STAGE'] = 'pay_qr'
                     continue
 
@@ -103,7 +117,9 @@ def main():
                 #draw QR here
                 pass
 
-            stages.checkTransactionDone(nfc_terminal.runtime['transaction_address'], nfc_terminal.runtime['amount_to_pay_btc'])
+            if stages.checkTransactionDone(nfc_terminal.runtime['transaction_address'], nfc_terminal.runtime['amount_to_pay_btc']):
+                nfc_terminal.runtime['CURRENT_STAGE'] = 'payment_successful'
+                continue
 
         elif nfc_terminal.runtime['CURRENT_STAGE'] == 'payment_successful':
             pass
