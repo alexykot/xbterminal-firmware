@@ -18,17 +18,23 @@ except ImportError:
 
 def main():
 
+    # Setup GUI and local variables
+    nfc_terminal.gui.runtime = {}
+    nfc_terminal.gui.runtime['app'], nfc_terminal.gui.runtime['main_win'] = gui.initGUI()
+    ui = nfc_terminal.gui.runtime['main_win'].ui
+    run = nfc_terminal.runtime
+
     # Load configs
     nfc_terminal.helpers.configs.load_config()
 
     #init runtime data
-    nfc_terminal.runtime = {}
-    nfc_terminal.runtime['CURRENT_STAGE'] = defaults.STAGES[0]
-    nfc_terminal.runtime['text_entered'] = defaults.OUTPUT_DEFAULT_VALUE
-    nfc_terminal.runtime['amount_to_pay_fiat'] = None
-    nfc_terminal.runtime['amount_to_pay_btc'] = None
-    nfc_terminal.runtime['key_pressed'] = None
-    nfc_terminal.runtime['current_text_piece'] = 'decimal'
+    run = {}
+    run['CURRENT_STAGE'] = defaults.STAGES[0]
+    run['text_entered'] = defaults.OUTPUT_DEFAULT_VALUE
+    run['amount_to_pay_fiat'] = None
+    run['amount_to_pay_btc'] = None
+    run['key_pressed'] = None
+    run['current_text_piece'] = 'decimal'
 
     try:
         kp = keypad.keypad(columnCount=4)
@@ -36,11 +42,6 @@ def main():
         pass
 
     write_msg_log("STAGE: Initialisation", 'DEBUG')
-
-    nfc_terminal.gui.runtime = {}
-    nfc_terminal.gui.runtime['app'], nfc_terminal.gui.runtime['main_win'] = gui.initGUI()
-    ui = nfc_terminal.gui.runtime['main_win'].ui
-    run = nfc_terminal.runtime
 
     while True:
         # At beginning of each loop push events
