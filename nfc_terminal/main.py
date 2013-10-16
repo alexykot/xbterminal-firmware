@@ -112,7 +112,7 @@ def main():
                 nfc_terminal.runtime['rate_btc'] = None
                 nfc_terminal.runtime['transaction_address'] = None
                 nfc_terminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-                nfc_terminal.runtime['text_entered'] = ""
+                nfc_terminal.runtime['text_entered'] = stages.processAmountKeyInput("", 'B')
 
                 ui.amount_text.setText("0.00")
                 ui.fiat_amount.setText("0")
