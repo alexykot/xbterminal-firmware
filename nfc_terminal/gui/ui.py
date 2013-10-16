@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Mon Oct 14 19:26:56 2013
+# Created: Wed Oct 16 17:01:15 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -67,15 +67,20 @@ class Ui_Form(object):
         self.continue_lbl.setFont(font)
         self.continue_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.continue_lbl.setObjectName(_fromUtf8("continue_lbl"))
-        self.gbp_lbl = QtGui.QLabel(self.screen2)
-        self.gbp_lbl.setGeometry(QtCore.QRect(30, 130, 31, 61))
-        self.gbp_lbl.setObjectName(_fromUtf8("gbp_lbl"))
+        self.currency_lbl = QtGui.QLabel(self.screen2)
+        self.currency_lbl.setGeometry(QtCore.QRect(30, 130, 31, 61))
+        font = QtGui.QFont()
+        font.setPointSize(36)
+        font.setBold(True)
+        font.setWeight(75)
+        self.currency_lbl.setFont(font)
+        self.currency_lbl.setObjectName(_fromUtf8("currency_lbl"))
         self.stackedWidget.addWidget(self.screen2)
         self.screen3 = QtGui.QWidget()
         self.screen3.setObjectName(_fromUtf8("screen3"))
-        self.gbp_lbl_2 = QtGui.QLabel(self.screen3)
-        self.gbp_lbl_2.setGeometry(QtCore.QRect(10, 20, 31, 61))
-        self.gbp_lbl_2.setObjectName(_fromUtf8("gbp_lbl_2"))
+        self.currency_lbl_2 = QtGui.QLabel(self.screen3)
+        self.currency_lbl_2.setGeometry(QtCore.QRect(10, 20, 31, 61))
+        self.currency_lbl_2.setObjectName(_fromUtf8("currency_lbl_2"))
         self.fiat_amount = QtGui.QLabel(self.screen3)
         self.fiat_amount.setGeometry(QtCore.QRect(50, 30, 161, 41))
         font = QtGui.QFont()
@@ -121,8 +126,8 @@ class Ui_Form(object):
         self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">Please press</p><p align=\"center\"><span style=\" font-weight:600;\">ENTER</span></p><p align=\"center\">to begin</p></body></html>", None))
         self.amount_lbl.setText(_translate("Form", "Enter Amount", None))
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
-        self.gbp_lbl.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">£</span></p></body></html>", None))
-        self.gbp_lbl_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">£</span></p></body></html>", None))
+        self.currency_lbl.setText(_translate("Form", "£", None))
+        self.currency_lbl_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">£</span></p></body></html>", None))
         self.fiat_amount.setText(_translate("Form", "0", None))
         self.btc_lbl.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">฿</span></p></body></html>", None))
         self.btc_amount.setText(_translate("Form", "0", None))

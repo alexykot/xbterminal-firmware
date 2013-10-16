@@ -28,6 +28,8 @@ def initGUI():
     app = QtGui.QApplication(sys.argv)
     main_win = GUI()
     main_win.ui.continue_lbl.setText("")
+    main_win.ui.currency_lbl.setText(defaults.MERCHANT_CURRENCY_SIGN_PREFIX)
+    main_win.ui.currency_lbl_2.setText(defaults.MERCHANT_CURRENCY_SIGN_PREFIX)
 
     return app, main_win
 
