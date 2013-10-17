@@ -65,7 +65,7 @@ def main():
             if run['key_pressed'] == "D":
                 ui.stackedWidget.setCurrentIndex(1)
                 run['CURRENT_STAGE'] = 'enter_amount'
-                ui.amount_text.setText(run['text_entered'])
+                ui.amount_text.setText("0.00")
                 continue
 
         elif run['CURRENT_STAGE'] == 'enter_amount':
@@ -77,8 +77,10 @@ def main():
 
                 ui.amount_text.setStyleSheet('background: #FFF')
 
-                run['text_entered'] = stages.processAmountKeyInput(run['text_entered'], run['key_pressed'])
+                run['text_entered'] = stages.processKeyInput(run['key_pressed'])
+                #run['text_entered'] = stages.processAmountKeyInput(run['text_entered'], run['key_pressed'])
                 ui.amount_text.setText(run['text_entered'])
+
             elif run['key_pressed'] is "D":
                 run['amount_to_pay_fiat'] = stages.amountInputToDecimal(run['text_entered'])
                 if run['amount_to_pay_fiat'] > 0:

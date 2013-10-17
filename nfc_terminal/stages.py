@@ -3,10 +3,12 @@ from decimal import Decimal
 
 import nfc_terminal
 import nfc_terminal.helpers
+from nfc_terminal.helpers.log import write_msg_log
 import nfc_terminal.helpers.misc as misc_helpers
 import nfc_terminal.exchange_servers
 from nfc_terminal import defaults
 from nfc_terminal.exchange_servers import bitcoinaverage
+from nfc_terminal.helpers.log import write_msg_log
 
 
 def getTransactionAddress(amount_to_pay_fiat):
@@ -106,3 +108,31 @@ def amountDecimalToOutput(amount_decimal):
     decimal_part = misc_helpers.splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
     resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
     return resulting_text
+
+def formatTextEntered(current_text):
+
+    new_text = float(current_text)/100
+
+    write_msg_log("formatted text - {}".format(new_text), 'DEBUG')
+
+    return str(new_text)
+
+def processKeyInput(key_code):
+
+    if defaults.OUTPUT_RUN_VALUE is None:
+        defaults.OUTPUT_RUN_VALUE = str(key_code)
+        return formatTextEntered(defaults.OUTPUT_RUN_VALUE)
+
+    if key_code == 'A':
+        defaults.OUTPUT_RUN_VALUE = defaults.OUTPUT_RUN_VALUE[:-1]
+        return formatTextEntered(defaults.OUTPUT_RUN_VALUE)
+
+    elif key_code == 'B':
+        pass
+
+    else:
+        v = str(defaults.OUTPUT_RUN_VALUE)
+        k = str(key_code)
+        defaults.OUTPUT_RUN_VALUE = v + k
+
+    return formatTextEntered(defaults.OUTPUT_RUN_VALUE)

@@ -42,7 +42,9 @@ OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
 OUTPUT_TOTAL_PLACES = 9 #total decimal places to show on screen
 OUTPUT_DEC_FRACTIONAL_SPLIT = '.'
 OUTPUT_DEC_THOUSANDS_SPLIT = ','
-OUTPUT_DEFAULT_VALUE = nfc_terminal.helpers.misc.formatDefaultAmountOutput(OUTPUT_DEC_PLACES, OUTPUT_DEC_FRACTIONAL_SPLIT)
+#OUTPUT_DEFAULT_VALUE = nfc_terminal.helpers.misc.formatDefaultAmountOutput(OUTPUT_DEC_PLACES, OUTPUT_DEC_FRACTIONAL_SPLIT)
+OUTPUT_DEFAULT_VALUE = None
+OUTPUT_RUN_VALUE = None
 
 FIAT_DEC_PLACES = Decimal('0.0000')
 BTC_DEC_PLACES = Decimal('0.00000000')
