@@ -112,27 +112,26 @@ def amountDecimalToOutput(amount_decimal):
 def formatTextEntered(current_text):
 
     new_text = float(current_text)/100
-
-    write_msg_log("formatted text - {}".format(new_text), 'DEBUG')
-
     return str(new_text)
 
 def processKeyInput(key_code):
 
-    if defaults.OUTPUT_RUN_VALUE is None:
-        defaults.OUTPUT_RUN_VALUE = str(key_code)
-        return formatTextEntered(defaults.OUTPUT_RUN_VALUE)
+    if defaults.DISPLAY_RUN_VALUE is None:
+        defaults.DISPLAY_RUN_VALUE = str(key_code)
+        return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
 
     if key_code == 'A':
-        defaults.OUTPUT_RUN_VALUE = defaults.OUTPUT_RUN_VALUE[:-1]
-        return formatTextEntered(defaults.OUTPUT_RUN_VALUE)
+        if defaults.DISPLAY_RUN_VALUE is not None:
+            defaults.DISPLAY_RUN_VALUE = defaults.DISPLAY_RUN_VALUE[:-1]
+            return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
 
     elif key_code == 'B':
-        pass
+        defaults.DISPLAY_RUN_VALUE = None
+        return "0.00"
 
     else:
-        v = str(defaults.OUTPUT_RUN_VALUE)
+        v = str(defaults.DISPLAY_RUN_VALUE)
         k = str(key_code)
-        defaults.OUTPUT_RUN_VALUE = v + k
+        defaults.DISPLAY_RUN_VALUE = v + k
 
-    return formatTextEntered(defaults.OUTPUT_RUN_VALUE)
+    return formatTextEntered(defaults.DISPLAY_RUN_VALUE)

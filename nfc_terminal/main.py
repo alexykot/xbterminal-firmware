@@ -30,7 +30,7 @@ def main():
     nfc_terminal.runtime = {}
     run = nfc_terminal.runtime
     run['CURRENT_STAGE'] = defaults.STAGES[0]
-    run['text_entered'] = defaults.OUTPUT_DEFAULT_VALUE
+    run['text_entered'] = defaults.DISPLAY_DEFAULT_VALUE
     run['amount_to_pay_fiat'] = None
     run['amount_to_pay_btc'] = None
     run['key_pressed'] = None
