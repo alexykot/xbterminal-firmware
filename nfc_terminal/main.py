@@ -10,6 +10,9 @@ from nfc_terminal.gui import gui
 from nfc_terminal import stages
 from nfc_terminal.helpers.configs import load_config
 from nfc_terminal.helpers.log import write_msg_log
+from nfc_terminal.helpers import qr
+from nfc_terminal.helpers import uri
+
 try:
     from nfc_terminal.keypad import keypad
 except ImportError:
@@ -132,7 +135,12 @@ def main():
                     continue
 
             if run['CURRENT_STAGE'] == 'pay_qr':
-                #draw QR here
+                f = qr.current_dir() + "/nfc_terminal/images/" + "qrcode.png"
+                qr.ensure_dir(f)
+                qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(f)
+                ui.stackedWidget.setCurrentIndex(3)
+                ui.qr_image.setPixmap(QtGui.QPixmap('/home/pi/app/nfc_terminal/images/qrcode.png'))
+
                 pass
 
             if stages.checkTransactionDone(run['transaction_address'], run['amount_to_pay_btc']):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'tux'
 
-from nfc_terminal.helpers import sendnfc
+from nfc_terminal import defaults
 
-uri = "http://google.com/"
 
-send = sendnfc.NFCClient()
+def formatUri(amount):
+    uri = 'bitcoin:' + defaults.MERCHANT_BITCOIN_ADDRESS + '?label=' + defaults.MERCHANT_NAME + '&amount=' + str(amount)
+    return uri

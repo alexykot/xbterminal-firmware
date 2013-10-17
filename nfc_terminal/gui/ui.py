@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Oct 17 15:29:28 2013
+# Created: Thu Oct 17 15:39:53 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -118,7 +118,7 @@ class Ui_Form(object):
         self.qr_image = QtGui.QLabel(self.screen4)
         self.qr_image.setGeometry(QtCore.QRect(50, 50, 211, 181))
         self.qr_image.setText(_fromUtf8(""))
-        self.qr_image.setPixmap(QtGui.QPixmap(_fromUtf8("../../../pi/app/nfc_terminal/images/nfc.gif")))
+        self.qr_image.setScaledContents(True)
         self.qr_image.setObjectName(_fromUtf8("qr_image"))
         self.qr_title_lbl = QtGui.QLabel(self.screen4)
         self.qr_title_lbl.setGeometry(QtCore.QRect(25, 10, 271, 20))
