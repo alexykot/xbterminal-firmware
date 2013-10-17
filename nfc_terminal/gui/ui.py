@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Wed Oct 16 17:01:15 2013
+# Created: Thu Oct 17 15:29:28 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -80,6 +80,11 @@ class Ui_Form(object):
         self.screen3.setObjectName(_fromUtf8("screen3"))
         self.currency_lbl_2 = QtGui.QLabel(self.screen3)
         self.currency_lbl_2.setGeometry(QtCore.QRect(10, 20, 31, 61))
+        font = QtGui.QFont()
+        font.setPointSize(36)
+        font.setBold(True)
+        font.setWeight(75)
+        self.currency_lbl_2.setFont(font)
         self.currency_lbl_2.setObjectName(_fromUtf8("currency_lbl_2"))
         self.fiat_amount = QtGui.QLabel(self.screen3)
         self.fiat_amount.setGeometry(QtCore.QRect(50, 30, 161, 41))
@@ -89,6 +94,11 @@ class Ui_Form(object):
         self.fiat_amount.setObjectName(_fromUtf8("fiat_amount"))
         self.btc_lbl = QtGui.QLabel(self.screen3)
         self.btc_lbl.setGeometry(QtCore.QRect(10, 60, 31, 61))
+        font = QtGui.QFont()
+        font.setPointSize(36)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btc_lbl.setFont(font)
         self.btc_lbl.setObjectName(_fromUtf8("btc_lbl"))
         self.btc_amount = QtGui.QLabel(self.screen3)
         self.btc_amount.setGeometry(QtCore.QRect(50, 70, 161, 41))
@@ -105,6 +115,14 @@ class Ui_Form(object):
         self.stackedWidget.addWidget(self.screen3)
         self.screen4 = QtGui.QWidget()
         self.screen4.setObjectName(_fromUtf8("screen4"))
+        self.qr_image = QtGui.QLabel(self.screen4)
+        self.qr_image.setGeometry(QtCore.QRect(50, 50, 211, 181))
+        self.qr_image.setText(_fromUtf8(""))
+        self.qr_image.setPixmap(QtGui.QPixmap(_fromUtf8("../../../pi/app/nfc_terminal/images/nfc.gif")))
+        self.qr_image.setObjectName(_fromUtf8("qr_image"))
+        self.qr_title_lbl = QtGui.QLabel(self.screen4)
+        self.qr_title_lbl.setGeometry(QtCore.QRect(25, 10, 271, 20))
+        self.qr_title_lbl.setObjectName(_fromUtf8("qr_title_lbl"))
         self.stackedWidget.addWidget(self.screen4)
         self.screen5 = QtGui.QWidget()
         self.screen5.setObjectName(_fromUtf8("screen5"))
@@ -127,11 +145,12 @@ class Ui_Form(object):
         self.amount_lbl.setText(_translate("Form", "Enter Amount", None))
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
         self.currency_lbl.setText(_translate("Form", "£", None))
-        self.currency_lbl_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">£</span></p></body></html>", None))
+        self.currency_lbl_2.setText(_translate("Form", "£", None))
         self.fiat_amount.setText(_translate("Form", "0", None))
-        self.btc_lbl.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:36pt; font-weight:600;\">฿</span></p></body></html>", None))
+        self.btc_lbl.setText(_translate("Form", "฿", None))
         self.btc_amount.setText(_translate("Form", "0", None))
         self.exchange_rate_lbl.setText(_translate("Form", "exchange rate", None))
         self.exchange_rate.setText(_translate("Form", "0", None))
+        self.qr_title_lbl.setText(_translate("Form", "Scan QR Code to complete payment", None))
         self.idle_lbl_2.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Successful</p></body></html>", None))
 
