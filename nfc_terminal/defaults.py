@@ -51,6 +51,7 @@ DISPLAY_RUN_VALUE = None
 
 FIAT_DEC_PLACES = Decimal('0.0000')
 BTC_DEC_PLACES = Decimal('0.00000000')
+BTC_DEFAULT_FEE = Decimal('0.0001')
 
 
 
