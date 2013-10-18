@@ -139,6 +139,7 @@ def main():
                 qr.ensure_dir(f)
                 qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(f)
                 ui.stackedWidget.setCurrentIndex(3)
+                ui.qr_address_lbl.setText(defaults.MERCHANT_BITCOIN_ADDRESS)
                 ui.qr_image.setPixmap(QtGui.QPixmap('/home/pi/app/nfc_terminal/images/qrcode.png'))
 
                 pass

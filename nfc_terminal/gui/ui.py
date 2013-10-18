@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Oct 17 15:39:53 2013
+# Created: Fri Oct 18 19:01:10 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -116,13 +116,18 @@ class Ui_Form(object):
         self.screen4 = QtGui.QWidget()
         self.screen4.setObjectName(_fromUtf8("screen4"))
         self.qr_image = QtGui.QLabel(self.screen4)
-        self.qr_image.setGeometry(QtCore.QRect(50, 50, 211, 181))
+        self.qr_image.setGeometry(QtCore.QRect(50, 60, 211, 181))
         self.qr_image.setText(_fromUtf8(""))
         self.qr_image.setScaledContents(True)
         self.qr_image.setObjectName(_fromUtf8("qr_image"))
         self.qr_title_lbl = QtGui.QLabel(self.screen4)
-        self.qr_title_lbl.setGeometry(QtCore.QRect(25, 10, 271, 20))
+        self.qr_title_lbl.setGeometry(QtCore.QRect(20, 10, 271, 20))
         self.qr_title_lbl.setObjectName(_fromUtf8("qr_title_lbl"))
+        self.qr_address_lbl = QtGui.QLabel(self.screen4)
+        self.qr_address_lbl.setGeometry(QtCore.QRect(10, 30, 301, 20))
+        self.qr_address_lbl.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.qr_address_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.qr_address_lbl.setObjectName(_fromUtf8("qr_address_lbl"))
         self.stackedWidget.addWidget(self.screen4)
         self.screen5 = QtGui.QWidget()
         self.screen5.setObjectName(_fromUtf8("screen5"))
@@ -152,5 +157,6 @@ class Ui_Form(object):
         self.exchange_rate_lbl.setText(_translate("Form", "exchange rate", None))
         self.exchange_rate.setText(_translate("Form", "0", None))
         self.qr_title_lbl.setText(_translate("Form", "Scan QR Code to complete payment", None))
+        self.qr_address_lbl.setText(_translate("Form", ".", None))
         self.idle_lbl_2.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Successful</p></body></html>", None))
 
