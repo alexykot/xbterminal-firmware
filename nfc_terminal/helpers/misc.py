@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
 
 import nfc_terminal
 import nfc_terminal.defaults
@@ -32,3 +33,8 @@ def formatDefaultAmountOutput(decimal_places, fractional_split):
     default_amount_output = '{0}{1}{2}'.format(decimal_part, fractional_split, fractional_part)
     return default_amount_output
 
+
+def satoshi2BTC(satoshi):
+    satoshi = Decimal(satoshi)
+    btc = satoshi / Decimal('100000000')
+    return btc.quantize(nfc_terminal.defaults.BTC_DEC_PLACES)
