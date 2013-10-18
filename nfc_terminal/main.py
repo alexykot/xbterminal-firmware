@@ -107,7 +107,16 @@ def main():
                 run['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
                 run['rate_btc'] = run['amount_to_pay_fiat'] / run['amount_to_pay_btc']
 
-                run['transaction_address'] = stages.getTransactionAddress(run['amount_to_pay_btc'])
+                run.transactions_addresses = {}
+                (run.transactions_addresses['local'],
+                 run.transactions_addresses['instantfiat'],
+                 run.transactions_addresses['merchant'],
+                 run.transactions_addresses['fee']) = stages.getTransactionAddresses(instantfiat_btc_amount,
+                                                                                     merchants_btc_fiat_amount,
+                                                                                     our_fee_btc_amount)
+                run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run.transactions_addresses['local'],
+                                                                      run['amount_to_pay_btc'], )
+                #init NFC here
 
                 ui.fiat_amount.setText(stages.amountDecimalToOutput(run['amount_to_pay_fiat']))
                 ui.btc_amount.setText(str(run['amount_to_pay_btc']))
@@ -117,7 +126,7 @@ def main():
 
                 run['amount_to_pay_btc'] = None
                 run['rate_btc'] = None
-                run['transaction_address'] = None
+                run.transactions_addresses = None
                 run['CURRENT_STAGE'] = 'enter_amount'
                 run['text_entered'] = stages.processAmountKeyInput("", 'B')
 
@@ -139,12 +148,10 @@ def main():
                 qr.ensure_dir(f)
                 qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(f)
                 ui.stackedWidget.setCurrentIndex(3)
-                ui.qr_address_lbl.setText(defaults.MERCHANT_BITCOIN_ADDRESS)
+                ui.qr_address_lbl.setText(run.transactions_addresses['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap('/home/pi/app/nfc_terminal/images/qrcode.png'))
 
-                pass
-
-            if stages.checkTransactionDone(run['transaction_address'], run['amount_to_pay_btc']):
+            if stages.checkTransactionDone(run.transactions_addresses['local'], run['amount_to_pay_btc']):
                 run['CURRENT_STAGE'] = 'payment_successful'
                 continue
 

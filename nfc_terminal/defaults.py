@@ -7,14 +7,18 @@ import nfc_terminal.helpers.misc
 
 #########################################
 # to be moved to online config
+MERCHANT_NAME = 'Test Merchant'
+MERCHANT_TRANSACTION_DESCRIPTION = 'Test Payment'
 MERCHANT_CURRENCY = 'GBP'
 MERCHANT_CURRENCY_SIGN_PREFIX = u'£'
 MERCHANT_CURRENCY_SIGN_POSTFIX = ''
 MERCHANT_BITCOIN_ADDRESS = '1EG9WVHe2LSBEQUkxWL4aJDnVtpoULwfSb'
 MERCHANT_NAME = "bitcointerminal"
 OUR_FEE_SHARE = 0.005 #0.5%
+OUR_FEE_BITCOIN_ADDRESS = '1EG9WVHe2LSBEQUkxWL4aJDnVtpoULwfSb' #0.5%
 INSTANT_FIAT_SHARE = 0.8 #80% converted to fiat instantly
 INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
+
 #########################################
 
 STAGES = ('standby',
@@ -52,6 +56,5 @@ DISPLAY_RUN_VALUE = None
 FIAT_DEC_PLACES = Decimal('0.0000')
 BTC_DEC_PLACES = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.0001')
-
 
 

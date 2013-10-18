@@ -23,6 +23,9 @@ class NetworkError(Exception):
 
 BA_TICKER_API_URL = "https://api.bitcoinaverage.com/ticker/all"
 
+def getPaymentAddress(amount):
+    return '1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz'
+
 def getExchangeRate(currency_code):
     try:
         with Timeout(defaults.EXTERNAL_CALLS_TIMEOUT):

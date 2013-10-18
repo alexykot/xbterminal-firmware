@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import urllib2
 
 import nfc_terminal
 import nfc_terminal.helpers
@@ -9,10 +10,19 @@ import nfc_terminal.exchange_servers
 from nfc_terminal import defaults
 from nfc_terminal.exchange_servers import bitcoinaverage
 from nfc_terminal.helpers.log import write_msg_log
+from nfc_terminal import blockchain
 
 
-def getTransactionAddress(amount_to_pay_fiat):
-    return '1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz'
+def getTransactionAddresses(instantfiat_amout, merchants_amount, fee_amount):
+    local_addr = blockchain.getFreshAddress()
+    merchant_addr = defaults.MERCHANT_BITCOIN_ADDRESS
+    instantfiat_addr = None
+    if instantfiat_amout > 0:
+        instantfiat_addr = getattr(nfc_terminal.exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).getPaymentAddress(instantfiat_amout)
+
+    fee_addr = defaults.OUR_FEE_BITCOIN_ADDRESS
+
+    return local_addr, instantfiat_addr, merchant_addr, fee_addr
 
 def getBtcSharesAmounts(total_fiat_amount):
     global nfc_terminal, bitcoinaverage
@@ -23,6 +33,7 @@ def getBtcSharesAmounts(total_fiat_amount):
     merchants_btc_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
 
     our_fee_btc_amount = bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
+    our_fee_btc_amount = our_fee_btc_amount + defaults.BTC_DEFAULT_FEE #second fee paid for multiout transaction
     instantfiat_btc_amount = getattr(nfc_terminal.exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount, defaults.MERCHANT_CURRENCY)
     merchants_btc_fiat_amount = bitcoinaverage.convertToBtc(merchants_btc_fiat_amount, defaults.MERCHANT_CURRENCY)
 
@@ -135,3 +146,13 @@ def processKeyInput(key_code):
         defaults.DISPLAY_RUN_VALUE = v + k
 
     return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+
+def getBitcoinURI(payment_addr, amount_btc):
+    #bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJEDGL?amount=20.3X8&label=Luke-Jr&message=Donation%20for%20project%20xyz
+    amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
+    uri = 'bitcoin:{}?amount={}X8&label={}&message='.format(payment_addr,
+                                                            amount_btc,
+                                                            defaults.MERCHANT_NAME,
+                                                            defaults.MERCHANT_TRANSACTION_DESCRIPTION)
+    return urllib2.quote(uri.encode('utf8'))
+
