@@ -12,10 +12,10 @@ MERCHANT_TRANSACTION_DESCRIPTION = 'Test Payment'
 MERCHANT_CURRENCY = 'GBP'
 MERCHANT_CURRENCY_SIGN_PREFIX = u'£'
 MERCHANT_CURRENCY_SIGN_POSTFIX = ''
-MERCHANT_BITCOIN_ADDRESS = '1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz'
+MERCHANT_BITCOIN_ADDRESS = '1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz' #my default main address in bitcoinqt wallet
 MERCHANT_NAME = "bitcointerminal"
 OUR_FEE_SHARE = 0.005 #0.5%
-OUR_FEE_BITCOIN_ADDRESS = '1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz' #0.5%
+OUR_FEE_BITCOIN_ADDRESS = '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz' #test address for fees in my bitcoinqt wallet
 INSTANT_FIAT_SHARE = 0.0 #converted to fiat instantly
 INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
 
@@ -40,6 +40,8 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                      }
 
+IN_PERSON_TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
+
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'nfc_post query bot',
                                   'Origin': 'nfc_post',
@@ -53,7 +55,7 @@ OUTPUT_DEC_THOUSANDS_SPLIT = ','
 DISPLAY_DEFAULT_VALUE = None
 DISPLAY_RUN_VALUE = None
 
-FIAT_DEC_PLACES = Decimal('0.0000')
+FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.0001')
 

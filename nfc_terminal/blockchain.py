@@ -141,7 +141,9 @@ def getFreshAddress():
     account = wallet.accounts[0]
     address = account.get_address(0, int(random.random()*1000))
 
-    return address
+    #return address
+    return "1NcqxYbmP1mtoH5FJF7goRCebZz8cgA7eg" #one of the existing addresses in test electrum wallet, empty
+
 
 
 def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
@@ -153,5 +155,8 @@ def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
 
 
     tx = _make_transaction(outputs, fee, from_addr, change_addr)
-    r, h = wallet.sendtx(tx)
-    return r, h
+    result, hash = wallet.sendtx(tx)
+    if result:
+        return hash
+    else:
+        return False

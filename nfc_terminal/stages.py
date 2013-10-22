@@ -24,24 +24,39 @@ def getTransactionAddresses(instantfiat_amout, merchants_amount, fee_amount):
 
     return local_addr, instantfiat_addr, merchant_addr, fee_addr
 
+def createOutgoingTransaction(addresses, amounts):
+    outputs = [(addresses['fee'], amounts['fee'])]
+    if amounts['merchant'] > 0:
+        outputs.append((addresses['merchant'], amounts['merchant']))
+    if amounts['instantfiat'] > 0:
+        outputs.append((addresses['instantfiat'], amounts['instantfiat']))
+
+    result = blockchain.sendTransaction(outputs, from_addr=addresses['local'])
+    if result:
+        return result
+    else:
+        #raise Exception here
+        pass
+
 def getBtcSharesAmounts(total_fiat_amount):
     global nfc_terminal, bitcoinaverage
 
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.FIAT_DEC_PLACES)
-    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.FIAT_DEC_PLACES)
+    our_fee_fiat_amount = Decimal(our_fee_fiat_amount).quantize(defaults.FIAT_DEC_PLACES)
     instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.INSTANT_FIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
     merchants_btc_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
 
+    Decimal().quantize(defaults.BTC_DEC_PLACES)
+
     our_fee_btc_amount = bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
-    our_fee_btc_amount = our_fee_btc_amount + defaults.BTC_DEFAULT_FEE #second fee paid for multiout transaction
-    instantfiat_btc_amount = getattr(nfc_terminal.exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount, defaults.MERCHANT_CURRENCY)
+    our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_btc_amount = our_fee_btc_amount + defaults.BTC_DEFAULT_FEE #tx fee to be paid for multiout transaction
+    instantfiat_btc_amount = getattr(nfc_terminal.exchange_servers,
+                                     defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount,
+                                                                                          defaults.MERCHANT_CURRENCY)
     merchants_btc_fiat_amount = bitcoinaverage.convertToBtc(merchants_btc_fiat_amount, defaults.MERCHANT_CURRENCY)
-
     return our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount
-
-def checkTransactionDone(transaction_address, amount_to_pay_btc):
-    #not implemented
-    return False
 
 def getInstantFiatBtcAddress(instantfiat_fiat_amount):
     pass
@@ -157,4 +172,3 @@ def getBitcoinURI(payment_addr, amount_btc):
                                                                 )
     # return urllib2.quote(uri.encode('utf8'))
     return uri
-
