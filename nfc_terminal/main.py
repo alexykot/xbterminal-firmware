@@ -107,15 +107,32 @@ def main():
                 run['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
                 run['rate_btc'] = run['amount_to_pay_fiat'] / run['amount_to_pay_btc']
 
-                run.transactions_addresses = {}
-                (run.transactions_addresses['local'],
-                 run.transactions_addresses['instantfiat'],
-                 run.transactions_addresses['merchant'],
-                 run.transactions_addresses['fee']) = stages.getTransactionAddresses(instantfiat_btc_amount,
+                run['transactions_addresses'] = {}
+                (run['transactions_addresses']['local'],
+                 run['transactions_addresses']['instantfiat'],
+                 run['transactions_addresses']['merchant'],
+                 run['transactions_addresses']['fee']) = stages.getTransactionAddresses(instantfiat_btc_amount,
                                                                                      merchants_btc_fiat_amount,
                                                                                      our_fee_btc_amount)
-                run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run.transactions_addresses['local'],
+
+
+
+                run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amount_to_pay_btc'], )
+                print ''
+                print '<<<'
+                print "instantfiat: " + str(instantfiat_btc_amount)
+                print "merchant: " + str(merchants_btc_fiat_amount)
+                print "fee: " + str(our_fee_btc_amount)
+                print "total: " + str(run['amount_to_pay_btc'])
+                print "URI: " + str(run['transaction_bitcoin_uri'])
+                print "local address: " + str(run['transactions_addresses']['local'])
+                print "instantfiat address: " + str(run['transactions_addresses']['instantfiat'])
+                print "merchant address: " + str(run['transactions_addresses']['merchant'])
+                print "fee address: " + str(run['transactions_addresses']['fee'])
+                print '>>>'
+                print ''
+
                 #init NFC here
 
                 ui.fiat_amount.setText(stages.amountDecimalToOutput(run['amount_to_pay_fiat']))
@@ -126,9 +143,9 @@ def main():
 
                 run['amount_to_pay_btc'] = None
                 run['rate_btc'] = None
-                run.transactions_addresses = None
+                run['transactions_addresses'] = None
                 run['CURRENT_STAGE'] = 'enter_amount'
-                run['text_entered'] = stages.processAmountKeyInput("", 'B')
+                run['text_entered'] = stages.processKeyInput("")
 
                 ui.amount_text.setText("0.00")
                 ui.fiat_amount.setText("0")
@@ -148,10 +165,10 @@ def main():
                 qr.ensure_dir(f)
                 qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(f)
                 ui.stackedWidget.setCurrentIndex(3)
-                ui.qr_address_lbl.setText(run.transactions_addresses['local'])
+                ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap('/home/pi/app/nfc_terminal/images/qrcode.png'))
 
-            if stages.checkTransactionDone(run.transactions_addresses['local'], run['amount_to_pay_btc']):
+            if stages.checkTransactionDone(run['transactions_addresses']['local'], run['amount_to_pay_btc']):
                 run['CURRENT_STAGE'] = 'payment_successful'
                 continue
 

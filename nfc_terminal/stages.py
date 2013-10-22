@@ -150,9 +150,11 @@ def processKeyInput(key_code):
 def getBitcoinURI(payment_addr, amount_btc):
     #bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJEDGL?amount=20.3X8&label=Luke-Jr&message=Donation%20for%20project%20xyz
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
-    uri = 'bitcoin:{}?amount={}X8&label={}&message='.format(payment_addr,
+    uri = 'bitcoin:{}?amount={}X8&label={}&message={}'.format(payment_addr,
                                                             amount_btc,
-                                                            defaults.MERCHANT_NAME,
-                                                            defaults.MERCHANT_TRANSACTION_DESCRIPTION)
-    return urllib2.quote(uri.encode('utf8'))
+                                                            urllib2.quote(str(defaults.MERCHANT_NAME).encode('utf8')),
+                                                            urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
+                                                                )
+    # return urllib2.quote(uri.encode('utf8'))
+    return uri
 
