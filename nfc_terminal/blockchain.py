@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import random
-import sys
-from decimal import Decimal
-from electrum import Interface
 from electrum import Wallet, WalletStorage, SimpleConfig, Transaction, Network, bitcoin
 
 
@@ -24,18 +20,17 @@ def _init():
 
     if network is None:
         network = Network(config)
-        network.start(wait=True)
+        if not network.start(wait=True):
+            print "Not connected, aborting."
+            exit()
+
         network.start_interfaces()
 
     if wallet is None:
         storage = WalletStorage(config)
         wallet = Wallet(storage)
-        if not storage.file_exists:
-            wallet.seed = ''
-            wallet.create_watching_only_wallet(MASTER_CHAIN,MASTER_PUBLIC_KEY)
-
-        wallet.synchronize = lambda: None # prevent address creation by the wallet
         wallet.start_threads(network)
+        wallet.update()
 
 def _get_transaction( tx_hash, tx_height):
     global network
@@ -138,12 +133,11 @@ def getFreshAddress():
     _init()
     global network, wallet
 
-    account = wallet.accounts[0]
-    address = account.get_address(0, int(random.random()*1000))
+    account = wallet.accounts["m/0'/0"]
+    address = account.create_new_address(0)
+    wallet.save_accounts()
 
-    #return address
-    return "1NcqxYbmP1mtoH5FJF7goRCebZz8cgA7eg" #one of the existing addresses in test electrum wallet, empty
-
+    return address
 
 
 def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
@@ -160,3 +154,6 @@ def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
         return hash
     else:
         return False
+
+
+

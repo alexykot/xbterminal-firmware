@@ -65,7 +65,6 @@ def main():
             pass
 
         if run['CURRENT_STAGE'] == 'standby':
-
             if run['key_pressed'] == "D":
                 ui.stackedWidget.setCurrentIndex(1)
                 run['CURRENT_STAGE'] = 'enter_amount'
@@ -73,7 +72,6 @@ def main():
                 continue
 
         elif run['CURRENT_STAGE'] == 'enter_amount':
-
             if (isinstance(run['key_pressed'], (int, long))
                 or run['key_pressed'] == "."
                 or run['key_pressed'] == "A"
@@ -182,7 +180,7 @@ def main():
                                                                     },
                                                            addresses=run['transactions_addresses'])
 
-                print '>>> tx hash: ' + tx_hash
+                print '>>> tx hash: ' + str(tx_hash)
                 exit()
                 run['CURRENT_STAGE'] = 'payment_successful'
                 continue
@@ -211,4 +209,4 @@ def main():
         elif run['CURRENT_STAGE'] == 'application_halt':
             sys.exit()
 
-        time.sleep(0.2)
+        time.sleep(0.5)

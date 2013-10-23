@@ -8,19 +8,7 @@ sys.path.insert(0, local_path)
 
 import nfc_terminal.blockchain as electrum_adapter
 
-
-data = electrum_adapter.getAddressBalance('1NHbJbCt69BmM4kXBq6DJ9JB9MZh2xhh3E')
-# data = electrum_adapter.getFreshAddress()
-# data = electrum_adapter.sendTransaction([('1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz', 0.0001), ("1EG9WVHe2LSBEQUkxWL4aJDnVtpoULwfSb", 0.0001)],
-#                                         from_addr='1NHbJbCt69BmM4kXBq6DJ9JB9MZh2xhh3E')
-
-print ''
-print '<<<'
+# data = electrum_adapter.getAddressBalance('1vBnjSt5MZTQa6CCjZfRatgNX2hcBVJKW')
+data = electrum_adapter.getFreshAddress()
+# data = electrum_adapter.sendTransaction([('1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz', 0.0010)])
 print data
-print '>>>'
-print ''
-
-
-
-
-
