@@ -105,36 +105,40 @@ def main():
             if run['amount_to_pay_btc'] is None:
                 our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount = stages.getBtcSharesAmounts(run['amount_to_pay_fiat'])
 
-                run['amount_to_pay_btc'] = our_fee_btc_amount + instantfiat_btc_amount + merchants_btc_fiat_amount
+                run['amount_to_pay_btc'] = (our_fee_btc_amount
+                                            + instantfiat_btc_amount
+                                            + merchants_btc_fiat_amount
+                                            + defaults.BTC_DEFAULT_FEE) #tx fee to be paid for forwarding transaction
                 run['rate_btc'] = run['amount_to_pay_fiat'] / run['amount_to_pay_btc']
 
-                # run['transactions_addresses'] = {}
-                # (run['transactions_addresses']['local'],
-                #  run['transactions_addresses']['instantfiat'],
-                #  run['transactions_addresses']['merchant'],
-                #  run['transactions_addresses']['fee']) = stages.getTransactionAddresses(instantfiat_btc_amount,
-                #                                                                      merchants_btc_fiat_amount,
-                #                                                                      our_fee_btc_amount)
-                # run['payment_requested_timestamp'] = time.time()
-                # run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
-                #                                                       run['amount_to_pay_btc'], )
-                # #init NFC here
-                #
-                #
-                # print ''
-                # print '<<<'
-                # print "fiat to pay: " + str(run['amount_to_pay_fiat'].quantize(defaults.FIAT_DEC_PLACES))
-                # print "instantfiat: " + str(instantfiat_btc_amount.quantize(defaults.FIAT_DEC_PLACES))
-                # print "merchant: " + str(merchants_btc_fiat_amount.quantize(defaults.FIAT_DEC_PLACES))
-                # print "fee: " + str(our_fee_btc_amount.quantize(defaults.FIAT_DEC_PLACES))
-                # print "total: " + str(run['amount_to_pay_btc'].quantize(defaults.FIAT_DEC_PLACES))
-                # print ''
-                # print "local address: " + str(run['transactions_addresses']['local'])
-                # print "instantfiat address: " + str(run['transactions_addresses']['instantfiat'])
-                # print "merchant address: " + str(run['transactions_addresses']['merchant'])
-                # print "fee address: " + str(run['transactions_addresses']['fee'])
-                # print '>>>'
-                # print ''
+                run['transactions_addresses'] = {}
+                (run['transactions_addresses']['local'],
+                run['transactions_addresses']['instantfiat'],
+                run['transactions_addresses']['merchant'],
+                run['transactions_addresses']['fee']) = stages.getTransactionAddresses(instantfiat_btc_amount,
+                                                                                       merchants_btc_fiat_amount,
+                                                                                       our_fee_btc_amount)
+                run['payment_requested_timestamp'] = time.time()
+                run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
+                                                                      run['amount_to_pay_btc'], )
+                #init NFC here
+
+
+                print ''
+                print '<<<'
+                print "fiat to pay: " + str(run['amount_to_pay_fiat'])
+                print "instantfiat: " + str(instantfiat_btc_amount)
+                print "merchant: " + str(merchants_btc_fiat_amount)
+                print "fee: " + str(our_fee_btc_amount)
+                print "tx_fee: " + str(defaults.BTC_DEFAULT_FEE)
+                print "total: " + str(run['amount_to_pay_btc'])
+                print ''
+                print "local address: " + str(run['transactions_addresses']['local'])
+                print "instantfiat address: " + str(run['transactions_addresses']['instantfiat'])
+                print "merchant address: " + str(run['transactions_addresses']['merchant'])
+                print "fee address: " + str(run['transactions_addresses']['fee'])
+                print '>>>'
+                print ''
 
 
                 ui.fiat_amount.setText(stages.amountDecimalToOutput(run['amount_to_pay_fiat']))
@@ -170,38 +174,39 @@ def main():
                 ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
 
-            # current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
-            # if current_balance >= run['amount_to_pay_btc']:
-            #     print '>>> balance found: ' + str(current_balance)
-            #     if current_balance > run['amount_to_pay_btc']:
-            #         our_fee_btc_amount = our_fee_btc_amount + current_balance - run['amount_to_pay_btc'] #overpayment goes to our fee
-            #     tx_hash = stages.createOutgoingTransaction(amounts={'instantfiat': instantfiat_btc_amount,
-            #                                                         'merchant': merchants_btc_fiat_amount,
-            #                                                         'fee': our_fee_btc_amount,
-            #                                                         },
-            #                                                addresses=run['transactions_addresses'])
-            #
-            #     print '>>> tx hash: ' + str(tx_hash)
-            #     exit()
-            #     run['CURRENT_STAGE'] = 'payment_successful'
-            #     continue
-            #
-            # if run['payment_requested_timestamp'] + defaults.IN_PERSON_TRANSACTION_TIMEOUT < time.time():
-            #     run['amount_to_pay_btc'] = None
-            #     run['rate_btc'] = None
-            #     run['transactions_addresses'] = None
-            #     run['payment_requested_timestamp'] = None
-            #     run['text_entered'] = stages.processKeyInput("")
-            #
-            #     ui.amount_text.setText("0.00")
-            #     ui.fiat_amount.setText("0")
-            #     ui.btc_amount.setText("0")
-            #     ui.exchange_rate.setText("0")
-            #     ui.stackedWidget.setCurrentIndex(1)
-            #     ui.continue_lbl.setText("")
-            #
-            #     run['CURRENT_STAGE'] = 'payment_cancelled'
-            #     continue
+            current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
+            if current_balance >= run['amount_to_pay_btc']:
+                print '>>> balance found: ' + str(current_balance)
+                if current_balance > run['amount_to_pay_btc']:
+                    our_fee_btc_amount = our_fee_btc_amount + current_balance - run['amount_to_pay_btc'] #overpayment goes to our fee
+                tx_hash = stages.createOutgoingTransaction(amounts={'instantfiat': instantfiat_btc_amount,
+                                                                    'merchant': merchants_btc_fiat_amount,
+                                                                    'fee': our_fee_btc_amount,
+                                                                    },
+                                                           addresses=run['transactions_addresses'])
+
+                print '>>> tx hash: ' + str(tx_hash)
+                exit()
+                run['CURRENT_STAGE'] = 'payment_successful'
+                continue
+
+            if run['payment_requested_timestamp'] + defaults.IN_PERSON_TRANSACTION_TIMEOUT < time.time():
+                run['amount_to_pay_btc'] = None
+                run['rate_btc'] = None
+                run['transactions_addresses'] = None
+                run['payment_requested_timestamp'] = None
+                run['text_entered'] = stages.processKeyInput("")
+
+                ui.amount_text.setText("0.00")
+                ui.fiat_amount.setText("0")
+                ui.btc_amount.setText("0")
+                ui.exchange_rate.setText("0")
+                ui.stackedWidget.setCurrentIndex(1)
+                ui.continue_lbl.setText("")
+
+                run['CURRENT_STAGE'] = 'payment_cancelled'
+                continue
+            time.sleep(0.5)
 
         elif run['CURRENT_STAGE'] == 'payment_successful':
             pass
@@ -210,4 +215,4 @@ def main():
         elif run['CURRENT_STAGE'] == 'application_halt':
             sys.exit()
 
-        time.sleep(0.5)
+        time.sleep(0.2)

@@ -31,6 +31,11 @@ def createOutgoingTransaction(addresses, amounts):
     if amounts['instantfiat'] > 0:
         outputs.append((addresses['instantfiat'], amounts['instantfiat']))
 
+
+    print '>>> creating transaction from '+addresses['local']
+    print 'for outputs:'
+    print outputs
+
     result = blockchain.sendTransaction(outputs, from_addr=addresses['local'])
     if result:
         return result
@@ -51,7 +56,7 @@ def getBtcSharesAmounts(total_fiat_amount):
 
     our_fee_btc_amount = bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
     our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
-    our_fee_btc_amount = our_fee_btc_amount + defaults.BTC_DEFAULT_FEE #tx fee to be paid for multiout transaction
+    our_fee_btc_amount = our_fee_btc_amount
     instantfiat_btc_amount = getattr(nfc_terminal.exchange_servers,
                                      defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount,
                                                                                           defaults.MERCHANT_CURRENCY)
