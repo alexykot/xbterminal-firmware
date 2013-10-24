@@ -7,8 +7,10 @@ from nfc_terminal.helpers.misc import satoshi2BTC
 
 
 WALLET_PATH = '/root/.electrum/electrum.dat'
-MASTER_PUBLIC_KEY = 'public_key'
-MASTER_CHAIN = 'chain'
+WALLET_GAP_LIMIT = 1
+
+# MASTER_PUBLIC_KEY = 'public_key'
+# MASTER_CHAIN = 'chain'
 
 network = None
 wallet = None
@@ -28,6 +30,8 @@ def _init():
 
     if wallet is None:
         storage = WalletStorage(config)
+        if not storage.file_exists:
+            createWalletFile(storage)
         wallet = Wallet(storage)
         wallet.start_threads(network)
         wallet.update()
@@ -133,6 +137,8 @@ def getFreshAddress():
     _init()
     global network, wallet
 
+    print wallet.seed_version
+
     account = wallet.accounts["m/0'/0"]
     address = account.create_new_address(0)
     wallet.save_accounts()
@@ -155,5 +161,13 @@ def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
     else:
         return False
 
+def createWalletFile(storage):
+    global wallet
 
-
+    wallet = Wallet(storage)
+    wallet.init_seed(None)
+    wallet.save_seed()
+    wallet.create_accounts()
+    wallet.synchronize()
+    wallet.set_fee(defaults.BTC_DEFAULT_FEE*100000000)
+    wallet.change_gap_limit(WALLET_GAP_LIMIT)
