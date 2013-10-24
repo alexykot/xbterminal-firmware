@@ -2,6 +2,7 @@
 from decimal import Decimal
 import time
 import sys
+import os
 from PyQt4 import QtGui, QtCore
 
 import nfc_terminal
@@ -31,6 +32,7 @@ def main():
     nfc_terminal.helpers.configs.load_config()
 
     #init runtime data
+    defaults.QR_IMAGE_PATH = os.path.join(defaults.PROJECT_ABS_PATH, 'nfc_terminal', 'images', 'qr.png')
     nfc_terminal.runtime = {}
     run = nfc_terminal.runtime
     run['CURRENT_STAGE'] = defaults.STAGES[0]
@@ -162,12 +164,11 @@ def main():
                     continue
 
             if run['CURRENT_STAGE'] == 'pay_qr':
-                f = qr.current_dir() + "/nfc_terminal/images/" + "qrcode.png"
-                qr.ensure_dir(f)
-                qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(f)
+                qr.ensure_dir(defaults.QR_IMAGE_PATH)
+                qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(defaults.QR_IMAGE_PATH)
                 ui.stackedWidget.setCurrentIndex(3)
                 ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
-                ui.qr_image.setPixmap(QtGui.QPixmap('/home/pi/app/nfc_terminal/images/qrcode.png'))
+                ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
 
             current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
             if current_balance >= run['amount_to_pay_btc']:

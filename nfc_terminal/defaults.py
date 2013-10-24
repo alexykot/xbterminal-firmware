@@ -31,6 +31,7 @@ STAGES = ('standby',
             )
 PROJECT_ABS_PATH = '' #initialized in bootstrap.py
 CONFIG_FILE_PATH = 'nfc_terminal/config.json'
+QR_IMAGE_PATH = '' #initialised in bootstrap.py
 LOG_FILE_PATH = 'nfc_terminal/runtime/app.log'
 LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
                      'ERROR':'ERROR',
