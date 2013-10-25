@@ -106,7 +106,7 @@ def _update_tx_outputs(tx, prevout_values):
         key = tx.hash() + ':%d' % i
         prevout_values[key] = value
 
-def _make_transaction(outputs, fee=None, from_addr=None, source_addr=None):
+def _make_transaction(outputs, fee=None, from_addr=None, change_addr=None):
     global wallet
 
     total = 0
@@ -117,7 +117,8 @@ def _make_transaction(outputs, fee=None, from_addr=None, source_addr=None):
         final_outputs.append((to_address, amount))
 
     if fee: fee = int(100000000*fee)
-    return wallet.mktx(final_outputs, None, fee, from_addr, source_addr)
+    print from_addr
+    return wallet.mktx(outputs=final_outputs, password=None, fee=fee, domain=from_addr, change_addr=change_addr)
 
 
 def getAddressBalance(address, exclude_unconfirmed=False):
@@ -148,9 +149,16 @@ def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
     _init()
     global network, wallet
 
+    transactions = get_history('17qJqwGw3BtoG2twm7W2PNsRHojPv98ED8')
+    print transactions
+    exit()
+
+
     if fee is None:
         fee = defaults.BTC_DEFAULT_FEE
 
+    if from_addr is not None:
+        from_addr = [from_addr]
 
     tx = _make_transaction(outputs, fee, from_addr, change_addr)
     result, hash = wallet.sendtx(tx)
