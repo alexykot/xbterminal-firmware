@@ -1,34 +1,45 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
-from decimal import Decimal
 import sys
 import os
 
 local_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, local_path)
 
+from decimal import Decimal
 import nfc_terminal.blockchain as electrum_adapter
+import nfc_terminal.defaults as defaults
 
-# for address in ["14PztPGEj4NErunhQYvWehBGRLq9shxu2P",
-#                 "19yqsWTV5LidMGw5JCXqMxQzTnrg2EKiJy",
-#                 "16HDgJ4xxBTH4VNtEWywnkc5hVbpQwmmmX",
-#                 "1NfqHQVdaBHbYxmusjnRmxRA9yrGYMsB3H",
-#                 "18oEwAiBYNwMddrY8xNz1ew3kBRMX7byc4",
-#                 "12NCUyS2KyHtgFBsAEQTFL5mY3W4CchFF3",
-#                 "1NGyHmWRpZs8gKidJmbrP2TpgsokRM3Ewh",
-#                 "14GXCfUfyY5gGogXYzzpaocgJQvrVdYPxa",
-#                 "1LwxPETXsCAReUStDpXUjnCHEy9YkRqKo9"
-#                 ]:
-#     balance = electrum_adapter.getAddressBalance(address)
-#     print address + ' - ' + str(balance)
 
-# data = electrum_adapter.getAddressBalance('1NfqHQVdaBHbYxmusjnRmxRA9yrGYMsB3H')
+total = Decimal('0.00000000')
+for address in [
+    "14PztPGEj4NErunhQYvWehBGRLq9shxu2P",
+    "19yqsWTV5LidMGw5JCXqMxQzTnrg2EKiJy",
+    "16HDgJ4xxBTH4VNtEWywnkc5hVbpQwmmmX",
+    "1NfqHQVdaBHbYxmusjnRmxRA9yrGYMsB3H",
+    "18oEwAiBYNwMddrY8xNz1ew3kBRMX7byc4",
+    "12NCUyS2KyHtgFBsAEQTFL5mY3W4CchFF3",
+    "1NGyHmWRpZs8gKidJmbrP2TpgsokRM3Ewh",
+    "14GXCfUfyY5gGogXYzzpaocgJQvrVdYPxa",
+    "17qJqwGw3BtoG2twm7W2PNsRHojPv98ED8",
+    "1MbrfP1K94qZ3pj1Q9mV7z1cdEZKP6qLam",
+    "1HJ2QXR1aDNQwF4tRkFHzUNuKKovz6byGL",
+    "17LojgmtdGyyGNMrVCoWVJwpWhhTumeGJJ",
+    "1LwxPETXsCAReUStDpXUjnCHEy9YkRqKo9"
+]:
+    balance = electrum_adapter.getAddressBalance(address)
+    total = total + balance
+    print address + ' - ' + str(balance)
+
+print total
+
+# data = electrum_adapter.getAddressBalance('17qJqwGw3BtoG2twm7W2PNsRHojPv98ED8')
 # data = electrum_adapter.getFreshAddress()
-data = electrum_adapter.sendTransaction([('1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz', Decimal('3.9E-7')),
-                                         ('1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz', Decimal('0.00007735'))],
-                                        from_addr='17qJqwGw3BtoG2twm7W2PNsRHojPv98ED8')
-print data
-
+# data = electrum_adapter.sendTransaction([('1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz', Decimal('3.9E-7')),
+#                                          ('1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz', Decimal('0.00007735'))],
+#                                         from_addr='17qJqwGw3BtoG2twm7W2PNsRHojPv98ED8')
+# print data
+#
 
 # fiat to pay: 0.01000000
 # instantfiat: 0E-8
