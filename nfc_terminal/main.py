@@ -215,8 +215,4 @@ def main():
         elif run['CURRENT_STAGE'] == 'application_halt':
             sys.exit()
 
-<<<<<<< HEAD
         time.sleep(0.05)
-=======
-        time.sleep(0.2)
->>>>>>> e26e653a4d33126ea8919361beb2dcdd69bc5674
