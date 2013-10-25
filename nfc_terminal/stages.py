@@ -138,29 +138,38 @@ def amountDecimalToOutput(amount_decimal):
 def formatTextEntered(current_text):
 
     new_text = float(current_text)/100
-    return str(new_text)
+    write_msg_log(current_text)
+    write_msg_log(new_text)
+    write_msg_log("{0:.2f}".format(new_text))
+    return "{0:.2f}".format(new_text)
 
 def processKeyInput(key_code):
 
+
+
+
+'''
     if defaults.DISPLAY_RUN_VALUE is None:
         defaults.DISPLAY_RUN_VALUE = str(key_code)
         return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
 
     if key_code == 'A':
-        if defaults.DISPLAY_RUN_VALUE is not None:
+        if len(defaults.DISPLAY_DEFAULT_VALUE) >= 1:
             defaults.DISPLAY_RUN_VALUE = defaults.DISPLAY_RUN_VALUE[:-1]
             return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+        else:
+            return "0.00"
 
-    elif key_code == 'B':
+    if key_code == 'B':
         defaults.DISPLAY_RUN_VALUE = None
         return "0.00"
 
-    else:
+    if defaults.DISPLAY_DEFAULT_VALUE is not None:
         v = str(defaults.DISPLAY_RUN_VALUE)
         k = str(key_code)
         defaults.DISPLAY_RUN_VALUE = v + k
-
-    return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+        return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+'''
 
 def getBitcoinURI(payment_addr, amount_btc):
     #bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJEDGL?amount=20.3X8&label=Luke-Jr&message=Donation%20for%20project%20xyz

@@ -62,7 +62,7 @@ def main():
             run['key_pressed'] = kp.getKey()
             if run['key_pressed'] is not None:
                 write_msg_log("KEYPAD: Key pressed - {}".format(run['key_pressed']), 'DEBUG')
-                time.sleep(0.2)
+                time.sleep(0.1)
         except NameError:
             pass
 
@@ -167,7 +167,7 @@ def main():
                 qr.ensure_dir(defaults.QR_IMAGE_PATH)
                 qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(defaults.QR_IMAGE_PATH)
                 ui.stackedWidget.setCurrentIndex(3)
-                ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
+                #ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
 
             # current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
@@ -210,4 +210,4 @@ def main():
         elif run['CURRENT_STAGE'] == 'application_halt':
             sys.exit()
 
-        time.sleep(0.5)
+        time.sleep(0.05)
