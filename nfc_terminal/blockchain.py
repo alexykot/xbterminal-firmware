@@ -30,8 +30,8 @@ def _init():
 
     if wallet is None:
         storage = WalletStorage(config)
-        if not storage.file_exists:
-            createWalletFile(storage)
+        # if not storage.file_exists:
+        #     createWalletFile(storage)
         wallet = Wallet(storage)
         wallet.start_threads(network)
         wallet.update()
@@ -137,8 +137,6 @@ def getFreshAddress():
     _init()
     global network, wallet
 
-    print wallet.seed_version
-
     account = wallet.accounts["m/0'/0"]
     address = account.create_new_address(0)
     wallet.save_accounts()
@@ -151,23 +149,24 @@ def sendTransaction(outputs, from_addr=None, fee=None, change_addr=None):
     global network, wallet
 
     if fee is None:
-        fee = float(defaults.BTC_DEFAULT_FEE)
+        fee = defaults.BTC_DEFAULT_FEE
 
 
     tx = _make_transaction(outputs, fee, from_addr, change_addr)
     result, hash = wallet.sendtx(tx)
+    print result, hash
     if result:
         return hash
     else:
         return False
 
-def createWalletFile(storage):
-    global wallet
-
-    wallet = Wallet(storage)
-    wallet.init_seed(None)
-    wallet.save_seed()
-    wallet.create_accounts()
-    wallet.synchronize()
-    wallet.set_fee(defaults.BTC_DEFAULT_FEE*100000000)
-    wallet.change_gap_limit(WALLET_GAP_LIMIT)
+# def createWalletFile(storage):
+#     global wallet
+#
+#     wallet = Wallet(storage)
+#     wallet.init_seed(None)
+#     wallet.save_seed()
+#     wallet.create_accounts()
+#     wallet.synchronize()
+#     wallet.set_fee(defaults.BTC_DEFAULT_FEE*100000000)
+#     wallet.change_gap_limit(WALLET_GAP_LIMIT)
