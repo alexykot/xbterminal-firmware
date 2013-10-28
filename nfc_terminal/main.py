@@ -36,11 +36,12 @@ def main():
     nfc_terminal.runtime = {}
     run = nfc_terminal.runtime
     run['CURRENT_STAGE'] = defaults.STAGES[0]
-    run['text_entered'] = defaults.DISPLAY_DEFAULT_VALUE
     run['amount_to_pay_fiat'] = None
     run['amount_to_pay_btc'] = None
     run['key_pressed'] = None
     run['current_text_piece'] = 'decimal'
+    run['display_run_value'] = ''
+    run['display_value'] = ''
 
     try:
         kp = keypad.keypad(columnCount=4)
@@ -81,9 +82,15 @@ def main():
 
                 ui.amount_text.setStyleSheet('background: #FFF')
 
-                run['text_entered'] = stages.processKeyInput(run['key_pressed'])
+                run['display_run_value'] = stages.processKeyInput(run['display_run_value'], run['key_pressed'])
+                print '>>>'
+                print "display_run_value - {}".format(run['display_run_value'])
+
+                run['display_value'] = stages.formatTextEntered(run['display_run_value'])
+                print "display_value - {}".format(run['display_value'])
+
                 #run['text_entered'] = stages.processAmountKeyInput(run['text_entered'], run['key_pressed'])
-                ui.amount_text.setText(run['text_entered'])
+                ui.amount_text.setText(run['display_value'])
 
             elif run['key_pressed'] is "D":
                 run['amount_to_pay_fiat'] = stages.amountInputToDecimal(run['text_entered'])

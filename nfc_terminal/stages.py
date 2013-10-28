@@ -140,36 +140,39 @@ def amountDecimalToOutput(amount_decimal):
     resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
     return resulting_text
 
+
 def formatTextEntered(current_text):
 
-    new_text = float(current_text)/100
-    write_msg_log(current_text)
-    write_msg_log(new_text)
-    write_msg_log("{0:.2f}".format(new_text))
-    return "{0:.2f}".format(new_text)
-
-def processKeyInput(key_code):
+    if current_text is '':
+        return "0.00"
+    else:
+        new_text = float(current_text)/100
+        return "{0:.2f}".format(new_text)
 
 
-    if defaults.DISPLAY_RUN_VALUE is None:
-        defaults.DISPLAY_RUN_VALUE = str(key_code)
-        return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+def processKeyInput(current_text, key_code):
+
+    if current_text is '' and key_code != 'A' and key_code != 'B':
+        current_text = str(key_code)
+        return current_text
 
     if key_code == 'A':
-        if defaults.DISPLAY_RUN_VALUE is not None:
-            defaults.DISPLAY_RUN_VALUE = defaults.DISPLAY_RUN_VALUE[:-1]
-            return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+        if current_text is not '' and len(current_text) >= 2:
+            current_text = current_text[:-1]
+            return current_text
+        else:
+            return ''
+
 
     elif key_code == 'B':
-        defaults.DISPLAY_RUN_VALUE = None
-        return "0.00"
+        return ''
 
     else:
-        v = str(defaults.DISPLAY_RUN_VALUE)
+        v = str(current_text)
         k = str(key_code)
-        defaults.DISPLAY_RUN_VALUE = v + k
+        current_text = v + k
 
-    return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+    return current_text
 
 
 def getBitcoinURI(payment_addr, amount_btc):
