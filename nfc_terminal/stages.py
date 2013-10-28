@@ -71,6 +71,7 @@ def getMerchantBtcAddress(instantfiat_fiat_amount):
 
     return nfc_terminal.config['merchant_btc_address']
 
+''' Keeping for now for reference purposes
 def processAmountKeyInput(current_text, key_code):
     global nfc_terminal, misc_helpers
 
@@ -121,7 +122,7 @@ def processAmountKeyInput(current_text, key_code):
     decimal_part = misc_helpers.splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
     resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
     return resulting_text
-
+'''
 
 def amountInputToDecimal(amount_input):
     amount_input = amount_input.replace(defaults.OUTPUT_DEC_THOUSANDS_SPLIT, '')

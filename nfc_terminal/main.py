@@ -83,13 +83,8 @@ def main():
                 ui.amount_text.setStyleSheet('background: #FFF')
 
                 run['display_run_value'] = stages.processKeyInput(run['display_run_value'], run['key_pressed'])
-                print '>>>'
-                print "display_run_value - {}".format(run['display_run_value'])
-
                 run['display_value'] = stages.formatTextEntered(run['display_run_value'])
-                print "display_value - {}".format(run['display_value'])
 
-                #run['text_entered'] = stages.processAmountKeyInput(run['text_entered'], run['key_pressed'])
                 ui.amount_text.setText(run['display_value'])
 
             elif run['key_pressed'] is "D":
