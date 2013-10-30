@@ -20,7 +20,6 @@ try:
 except ImportError:
     pass
 
-
 def main():
 
     # Setup GUI and local variables
@@ -43,6 +42,8 @@ def main():
     run['display_run_value'] = ''
     run['display_value'] = ''
 
+    blockchain.init()
+
     try:
         kp = keypad.keypad(columnCount=4)
     except NameError:
@@ -63,7 +64,7 @@ def main():
             run['key_pressed'] = kp.getKey()
             if run['key_pressed'] is not None:
                 write_msg_log("KEYPAD: Key pressed - {}".format(run['key_pressed']), 'DEBUG')
-                time.sleep(0.1)
+                time.sleep(0.2)
         except NameError:
             pass
 
@@ -142,7 +143,6 @@ def main():
                 print '>>>'
                 print ''
 
-
                 ui.fiat_amount.setText(stages.amountDecimalToOutput(run['amount_to_pay_fiat']))
                 ui.btc_amount.setText(str(run['amount_to_pay_btc']))
                 ui.exchange_rate.setText(stages.amountDecimalToOutput(run['rate_btc']))
@@ -177,8 +177,8 @@ def main():
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
 
             current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
+            print '>>> current balance: ' + str(current_balance)
             if current_balance >= run['amount_to_pay_btc']:
-                print '>>> balance found: ' + str(current_balance)
                 if current_balance > run['amount_to_pay_btc']:
                     our_fee_btc_amount = our_fee_btc_amount + current_balance - run['amount_to_pay_btc'] #overpayment goes to our fee
                 tx_hash = stages.createOutgoingTransaction(amounts={'instantfiat': instantfiat_btc_amount,
@@ -208,13 +208,14 @@ def main():
 
                 run['CURRENT_STAGE'] = 'payment_cancelled'
                 continue
-            time.sleep(0.5)
+            time.sleep(1)
 
         elif run['CURRENT_STAGE'] == 'payment_successful':
             pass
         elif run['CURRENT_STAGE'] == 'payment_cancelled':
             pass
         elif run['CURRENT_STAGE'] == 'application_halt':
+            blockchain.stop()
             sys.exit()
 
-        time.sleep(0.05)
+        time.sleep(0.2)

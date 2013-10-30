@@ -58,3 +58,9 @@ BTC_DEC_PLACES = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.0001')
 
 
+BITCOIND_HOST = '192.168.51.136'  #set to 'localhost' to use localhost with no login/pass
+BITCOIND_PORT = 8332
+BITCOIND_USER = 'root'
+BITCOIND_PASS = 'password'
+
+

@@ -25,18 +25,19 @@ def getTransactionAddresses(instantfiat_amout, merchants_amount, fee_amount):
     return local_addr, instantfiat_addr, merchant_addr, fee_addr
 
 def createOutgoingTransaction(addresses, amounts):
-    outputs = [(addresses['fee'], amounts['fee'])]
+    outputs = {}
+    outputs[addresses['fee']] = amounts['fee']
     if amounts['merchant'] > 0:
-        outputs.append((addresses['merchant'], amounts['merchant']))
+        outputs[addresses['merchant']] = amounts['merchant']
     if amounts['instantfiat'] > 0:
-        outputs.append((addresses['instantfiat'], amounts['instantfiat']))
+        outputs[addresses['instantfiat']] = amounts['instantfiat']
 
 
     print '>>> creating transaction from '+addresses['local']
     print 'for outputs:'
     print outputs
 
-    result = blockchain.sendTransaction(outputs, from_addr=addresses['local'])
+    result = blockchain.sendTransaction(outputs)
     if result:
         return result
     else:
@@ -143,19 +144,16 @@ def amountDecimalToOutput(amount_decimal):
 
 
 def formatTextEntered(current_text):
+    new_text = float(current_text)/100
+    write_msg_log(current_text)
+    write_msg_log(new_text)
+    write_msg_log("{0:.2f}".format(new_text))
+    return "{0:.2f}".format(new_text)
 
-    if current_text is '':
-        return "0.00"
-    else:
-        new_text = float(current_text)/100
-        return "{0:.2f}".format(new_text)
-
-
-def processKeyInput(current_text, key_code):
-
-    if current_text is '' and key_code != 'A' and key_code != 'B':
-        current_text = str(key_code)
-        return current_text
+def processKeyInput(key_code):
+    if defaults.DISPLAY_RUN_VALUE is None:
+        defaults.DISPLAY_RUN_VALUE = str(key_code)
+        return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
 
     if key_code == 'A':
         if current_text is not '' and len(current_text) >= 2:

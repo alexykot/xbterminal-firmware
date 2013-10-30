@@ -38,3 +38,7 @@ def satoshi2BTC(satoshi):
     satoshi = Decimal(satoshi)
     btc = satoshi / Decimal('100000000')
     return btc.quantize(nfc_terminal.defaults.BTC_DEC_PLACES)
+
+def BTC2satoshi(btc):
+    satoshi = btc * Decimal('100000000')
+    return int(satoshi)
