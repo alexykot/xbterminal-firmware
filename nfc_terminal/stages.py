@@ -143,17 +143,20 @@ def amountDecimalToOutput(amount_decimal):
     return resulting_text
 
 
-def formatTextEntered(current_text):
-    new_text = float(current_text)/100
-    write_msg_log(current_text)
-    write_msg_log(new_text)
-    write_msg_log("{0:.2f}".format(new_text))
-    return "{0:.2f}".format(new_text)
 
-def processKeyInput(key_code):
-    if defaults.DISPLAY_RUN_VALUE is None:
-        defaults.DISPLAY_RUN_VALUE = str(key_code)
-        return formatTextEntered(defaults.DISPLAY_RUN_VALUE)
+def formatTextEntered(current_text):
+    if current_text is '':
+        return "0.00"
+    else:
+        new_text = float(current_text)/100
+        return "{0:.2f}".format(new_text)
+
+
+def processKeyInput(current_text, key_code):
+
+    if current_text is '' and key_code != 'A' and key_code != 'B':
+        current_text = str(key_code)
+        return current_text
 
     if key_code == 'A':
         if current_text is not '' and len(current_text) >= 2:
@@ -172,6 +175,7 @@ def processKeyInput(key_code):
         current_text = v + k
 
     return current_text
+
 
 
 def getBitcoinURI(payment_addr, amount_btc):

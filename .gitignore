@@ -1,4 +1,5 @@
 .idea/*
 *.pyc
 nfc_terminal/runtime/*
+bitcoinrpc/*
 
