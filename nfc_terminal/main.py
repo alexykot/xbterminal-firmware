@@ -89,7 +89,7 @@ def main():
                 ui.amount_text.setText(run['display_value'])
 
             elif run['key_pressed'] is "D":
-                run['amount_to_pay_fiat'] = stages.amountInputToDecimal(run['text_entered'])
+                run['amount_to_pay_fiat'] = stages.amountInputToDecimal(run['display_value'])
                 if run['amount_to_pay_fiat'] > 0:
                     ui.stackedWidget.setCurrentIndex(2)
                     run['CURRENT_STAGE'] = 'pay_nfc'
@@ -152,7 +152,7 @@ def main():
                 run['rate_btc'] = None
                 run['transactions_addresses'] = None
                 run['payment_requested_timestamp'] = None
-                run['text_entered'] = stages.processKeyInput("")
+                run['display_value'] = stages.processKeyInput("")
 
                 ui.amount_text.setText("0.00")
                 ui.fiat_amount.setText("0")
@@ -177,18 +177,16 @@ def main():
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
 
             current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
-            print '>>> current balance: ' + str(current_balance)
             if current_balance >= run['amount_to_pay_btc']:
                 if current_balance > run['amount_to_pay_btc']:
                     our_fee_btc_amount = our_fee_btc_amount + current_balance - run['amount_to_pay_btc'] #overpayment goes to our fee
-                tx_hash = stages.createOutgoingTransaction(amounts={'instantfiat': instantfiat_btc_amount,
-                                                                    'merchant': merchants_btc_fiat_amount,
-                                                                    'fee': our_fee_btc_amount,
-                                                                    },
+                amounts = {'instantfiat': instantfiat_btc_amount,
+                           'merchant': merchants_btc_fiat_amount,
+                           'fee': our_fee_btc_amount,
+                            }
+                tx_hash = stages.createOutgoingTransaction(amounts=amounts,
                                                            addresses=run['transactions_addresses'])
 
-                print '>>> tx hash: ' + str(tx_hash)
-                exit()
                 run['CURRENT_STAGE'] = 'payment_successful'
                 continue
 
@@ -197,7 +195,7 @@ def main():
                 run['rate_btc'] = None
                 run['transactions_addresses'] = None
                 run['payment_requested_timestamp'] = None
-                run['text_entered'] = stages.processKeyInput("")
+                run['display_value'] = stages.processKeyInput("")
 
                 ui.amount_text.setText("0.00")
                 ui.fiat_amount.setText("0")
@@ -211,6 +209,7 @@ def main():
             time.sleep(1)
 
         elif run['CURRENT_STAGE'] == 'payment_successful':
+            print 'payment_successful!!!'
             pass
         elif run['CURRENT_STAGE'] == 'payment_cancelled':
             pass
@@ -219,3 +218,4 @@ def main():
             sys.exit()
 
         time.sleep(0.2)
+

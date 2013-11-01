@@ -9,16 +9,8 @@ from eventlet.green import httplib
 import sys
 
 from nfc_terminal import defaults
+from nfc_terminal.exceptions import NetworkError, CurrencyNotRecognized
 from nfc_terminal.helpers.log import write_msg_log
-
-
-class CurrencyNotRecognized(Exception):
-    exchange_name = None
-    strerror = u'currency code not recognized'
-
-class NetworkError(Exception):
-    exchange_name = None
-    strerror = u'network error while retrieving price'
 
 
 BA_TICKER_API_URL = "https://api.bitcoinaverage.com/ticker/all"

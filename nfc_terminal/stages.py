@@ -33,11 +33,8 @@ def createOutgoingTransaction(addresses, amounts):
         outputs[addresses['instantfiat']] = amounts['instantfiat']
 
 
-    print '>>> creating transaction from '+addresses['local']
-    print 'for outputs:'
-    print outputs
-
-    result = blockchain.sendTransaction(outputs)
+    # result = blockchain.sendTransaction(outputs)
+    result = blockchain.sendRawTransaction(outputs, from_addr=addresses['local'])
     if result:
         return result
     else:
@@ -53,15 +50,23 @@ def getBtcSharesAmounts(total_fiat_amount):
     instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.INSTANT_FIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
     merchants_btc_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
 
-    Decimal().quantize(defaults.BTC_DEC_PLACES)
-
     our_fee_btc_amount = bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
     our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
     our_fee_btc_amount = our_fee_btc_amount
+
     instantfiat_btc_amount = getattr(nfc_terminal.exchange_servers,
                                      defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount,
                                                                                           defaults.MERCHANT_CURRENCY)
+
     merchants_btc_fiat_amount = bitcoinaverage.convertToBtc(merchants_btc_fiat_amount, defaults.MERCHANT_CURRENCY)
+
+    if our_fee_btc_amount < defaults.BTC_MIN_OUTPUT:
+        our_fee_btc_amount = defaults.BTC_MIN_OUTPUT
+    if instantfiat_btc_amount > 0 and instantfiat_btc_amount < defaults.BTC_MIN_OUTPUT:
+        instantfiat_btc_amount = defaults.BTC_MIN_OUTPUT
+    if merchants_btc_fiat_amount > 0 and merchants_btc_fiat_amount < defaults.BTC_MIN_OUTPUT:
+        merchants_btc_fiat_amount = defaults.BTC_MIN_OUTPUT
+
     return our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount
 
 def getInstantFiatBtcAddress(instantfiat_fiat_amount):
@@ -179,12 +184,11 @@ def processKeyInput(current_text, key_code):
 
 
 def getBitcoinURI(payment_addr, amount_btc):
-    #bitcoin:1NS17iag9jJgTHD1VXjvLCEnZuQ3rJEDGL?amount=20.3X8&label=Luke-Jr&message=Donation%20for%20project%20xyz
+
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
     uri = 'bitcoin:{}?amount={}X8&label={}&message={}'.format(payment_addr,
-                                                            amount_btc,
-                                                            urllib2.quote(str(defaults.MERCHANT_NAME).encode('utf8')),
-                                                            urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
+                                                              amount_btc,
+                                                              urllib2.quote(str(defaults.MERCHANT_NAME).encode('utf8')),
+                                                              urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
                                                                 )
-    # return urllib2.quote(uri.encode('utf8'))
     return uri

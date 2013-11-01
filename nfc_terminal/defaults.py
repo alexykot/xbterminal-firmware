@@ -44,8 +44,8 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
 IN_PERSON_TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
 
 EXTERNAL_CALLS_TIMEOUT = 15
-EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'nfc_post query bot',
-                                  'Origin': 'nfc_post',
+EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
+                                  'Origin': 'XBTerminal device',
                                   }
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
 OUTPUT_TOTAL_PLACES = 9 #total decimal places to show on screen
@@ -54,9 +54,9 @@ OUTPUT_DEC_THOUSANDS_SPLIT = ','
 #OUTPUT_DEFAULT_VALUE = nfc_terminal.helpers.misc.formatDefaultAmountOutput(OUTPUT_DEC_PLACES, OUTPUT_DEC_FRACTIONAL_SPLIT)
 
 FIAT_DEC_PLACES = Decimal('0.00000000')
-BTC_DEC_PLACES = Decimal('0.00000000')
-BTC_DEFAULT_FEE = Decimal('0.0001')
-
+BTC_DEC_PLACES  = Decimal('0.00000000')
+BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
+BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
 BITCOIND_HOST = '192.168.51.136'  #set to 'localhost' to use localhost with no login/pass
 BITCOIND_PORT = 8332
