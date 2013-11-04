@@ -3,26 +3,12 @@ from decimal import Decimal
 import urllib2
 
 import xbterminal
-import xbterminal.helpers
-from xbterminal.helpers.log import write_msg_log
+import xbterminal.instantfiat
 import xbterminal.helpers.misc as misc_helpers
-import xbterminal.exchange_servers
+from xbterminal import bitcoinaverage
 from xbterminal import defaults
-from xbterminal.exchange_servers import bitcoinaverage
-from xbterminal.helpers.log import write_msg_log
 from xbterminal import blockchain
 
-
-def getTransactionAddresses(instantfiat_amout, merchants_amount, fee_amount):
-    local_addr = blockchain.getFreshAddress()
-    merchant_addr = defaults.MERCHANT_BITCOIN_ADDRESS
-    instantfiat_addr = None
-    if instantfiat_amout > 0:
-        instantfiat_addr = getattr(xbterminal.exchange_servers, defaults.INSTANT_FIAT_EXCHANGE_SERVICE).getPaymentAddress(instantfiat_amout)
-
-    fee_addr = defaults.OUR_FEE_BITCOIN_ADDRESS
-
-    return local_addr, instantfiat_addr, merchant_addr, fee_addr
 
 def createOutgoingTransaction(addresses, amounts):
     outputs = {}
@@ -41,41 +27,46 @@ def createOutgoingTransaction(addresses, amounts):
         #raise Exception here
         pass
 
-def getBtcSharesAmounts(total_fiat_amount):
-    global xbterminal, bitcoinaverage
 
-    total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.FIAT_DEC_PLACES)
-    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.FIAT_DEC_PLACES)
-    our_fee_fiat_amount = Decimal(our_fee_fiat_amount).quantize(defaults.FIAT_DEC_PLACES)
-    instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.INSTANT_FIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
-    merchants_btc_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
-
-    our_fee_btc_amount = bitcoinaverage.convertToBtc(our_fee_fiat_amount, defaults.MERCHANT_CURRENCY)
+def getOurFeeBtcAmount(total_fiat_amount, btc_exchange_rate):
+    total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_btc_amount = our_fee_fiat_amount / btc_exchange_rate
     our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
-    our_fee_btc_amount = our_fee_btc_amount
-
-    instantfiat_btc_amount = getattr(xbterminal.exchange_servers,
-                                     defaults.INSTANT_FIAT_EXCHANGE_SERVICE).convertToBtc(instantfiat_fiat_amount,
-                                                                                          defaults.MERCHANT_CURRENCY)
-
-    merchants_btc_fiat_amount = bitcoinaverage.convertToBtc(merchants_btc_fiat_amount, defaults.MERCHANT_CURRENCY)
 
     if our_fee_btc_amount < defaults.BTC_MIN_OUTPUT:
-        our_fee_btc_amount = defaults.BTC_MIN_OUTPUT
-    if instantfiat_btc_amount > 0 and instantfiat_btc_amount < defaults.BTC_MIN_OUTPUT:
-        instantfiat_btc_amount = defaults.BTC_MIN_OUTPUT
-    if merchants_btc_fiat_amount > 0 and merchants_btc_fiat_amount < defaults.BTC_MIN_OUTPUT:
-        merchants_btc_fiat_amount = defaults.BTC_MIN_OUTPUT
+        our_fee_btc_amount = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
 
-    return our_fee_btc_amount, instantfiat_btc_amount, merchants_btc_fiat_amount
+    return our_fee_btc_amount
 
-def getInstantFiatBtcAddress(instantfiat_fiat_amount):
-    pass
 
-def getMerchantBtcAddress(instantfiat_fiat_amount):
+def getMerchantBtcAmount(total_fiat_amount, btc_exchange_rate):
+    total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.MERCHANT_INSTANTFIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    merchants_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
+    merchants_btc_amount = merchants_fiat_amount / btc_exchange_rate
+    merchants_btc_amount = Decimal(merchants_btc_amount).quantize(defaults.BTC_DEC_PLACES)
+
+    if merchants_btc_amount < defaults.BTC_MIN_OUTPUT:
+        merchants_btc_amount = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
+
+    return merchants_btc_amount
+
+
+def createInvoice(total_fiat_amount):
     global xbterminal
 
-    return xbterminal.config['merchant_btc_address']
+    total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
+    instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.MERCHANT_INSTANTFIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
+
+    invoice_data = getattr(xbterminal.instantfiat, defaults.MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE).createInvoice(instantfiat_fiat_amount)
+
+    exchange_rate = invoice_data['amount_btc'] / total_fiat_amount
+
+    return invoice_data['amount_btc'], invoice_data['invoice_id'], invoice_data['address'], exchange_rate
+
+
 
 ''' Keeping for now for reference purposes
 def processAmountKeyInput(current_text, key_code):
@@ -130,11 +121,13 @@ def processAmountKeyInput(current_text, key_code):
     return resulting_text
 '''
 
+
 def amountInputToDecimal(amount_input):
     amount_input = amount_input.replace(defaults.OUTPUT_DEC_THOUSANDS_SPLIT, '')
     amount_input = amount_input.replace(defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, '.')
     amount_input = amount_input.replace('_', '0')
     return Decimal(amount_input).quantize(defaults.FIAT_DEC_PLACES)
+
 
 def amountDecimalToOutput(amount_decimal):
     output_precision = '0.'+misc_helpers.strrepeat('0', defaults.OUTPUT_DEC_PLACES)
@@ -148,7 +141,6 @@ def amountDecimalToOutput(amount_decimal):
     return resulting_text
 
 
-
 def formatTextEntered(current_text):
     if current_text is '':
         return "0.00"
@@ -158,7 +150,6 @@ def formatTextEntered(current_text):
 
 
 def processKeyInput(current_text, key_code):
-
     if current_text is '' and key_code != 'A' and key_code != 'B':
         current_text = str(key_code)
         return current_text
@@ -169,11 +160,8 @@ def processKeyInput(current_text, key_code):
             return current_text
         else:
             return ''
-
-
     elif key_code == 'B':
         return ''
-
     else:
         v = str(current_text)
         k = str(key_code)
@@ -182,9 +170,7 @@ def processKeyInput(current_text, key_code):
     return current_text
 
 
-
 def getBitcoinURI(payment_addr, amount_btc):
-
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
     uri = 'bitcoin:{}?amount={}X8&label={}&message={}'.format(payment_addr,
                                                               amount_btc,

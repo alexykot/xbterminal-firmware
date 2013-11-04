@@ -51,16 +51,11 @@ def sendTransaction(outputs):
     for output_address in outputs:
         todict[output_address] = float(outputs[output_address])
 
-    print 'sending to:'
-    print todict
+    tx_hash = connection.sendmany(fromaccount='',
+                                  todict=todict,
+                                  minconf=0)
 
-    hash = connection.sendmany(fromaccount='',
-                               todict=todict,
-                               minconf=0)
-
-
-
-    return hash
+    return tx_hash
 
 
 # Sends transaction from given address using all currently unspent inputs for that address.

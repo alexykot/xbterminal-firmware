@@ -13,12 +13,13 @@ MERCHANT_CURRENCY = 'GBP'
 MERCHANT_CURRENCY_SIGN_PREFIX = u'£'
 MERCHANT_CURRENCY_SIGN_POSTFIX = ''
 MERCHANT_BITCOIN_ADDRESS = '1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz' #my default main address in bitcoinqt wallet
-MERCHANT_NAME = "bitcointerminal"
+MERCHANT_DEVICE_NAME = "bitcointerminal"
 OUR_FEE_SHARE = 0.005 #0.5%
 OUR_FEE_BITCOIN_ADDRESS = '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz' #test address for fees in my bitcoinqt wallet
-INSTANT_FIAT_SHARE = 0.0 #converted to fiat instantly
-INSTANT_FIAT_EXCHANGE_SERVICE = 'bitcoinaverage'
-
+MERCHANT_INSTANTFIAT_SHARE = 0.0 #converted to fiat instantly
+MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE = 'bips'
+MERCHANT_INSTANTFIAT_API_KEY = 'f8dafc7f7bbc000cfe4e01c604770f0e'
+MERCHANT_INSTANTFIAT_TRANSACTION_SPEED = 'high'
 #########################################
 
 STAGES = ('standby',
