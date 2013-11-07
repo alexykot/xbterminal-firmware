@@ -172,9 +172,11 @@ def processKeyInput(current_text, key_code):
 
 def getBitcoinURI(payment_addr, amount_btc):
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
-    uri = 'bitcoin:{}?amount={}X8&label={}&message={}'.format(payment_addr,
-                                                              amount_btc,
-                                                              urllib2.quote(str(defaults.MERCHANT_NAME).encode('utf8')),
-                                                              urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
+    uri = 'bitcoin:{}?amount={}&label={}&message={}'.format(payment_addr,
+                                                            amount_btc,
+                                                            urllib2.quote(str(defaults.MERCHANT_NAME).encode('utf8')),
+                                                            urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
                                                                 )
     return uri
+    #bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001X8&label=test_payment&message=thisisatest
+

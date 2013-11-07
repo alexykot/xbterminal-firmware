@@ -2,4 +2,5 @@
 *.pyc
 xbterminal/runtime/*
 bitcoinrpc/*
+nfcpy/*
 
