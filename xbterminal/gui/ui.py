@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri Oct 18 19:01:10 2013
-#      by: PyQt4 UI code generator 4.10
+# Created: Thu Nov  7 20:52:09 2013
+#      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -140,6 +140,17 @@ class Ui_Form(object):
         self.idle_lbl_2.setWordWrap(True)
         self.idle_lbl_2.setObjectName(_fromUtf8("idle_lbl_2"))
         self.stackedWidget.addWidget(self.screen5)
+        self.screen6 = QtGui.QWidget()
+        self.screen6.setObjectName(_fromUtf8("screen6"))
+        self.idle_lbl_3 = QtGui.QLabel(self.screen6)
+        self.idle_lbl_3.setGeometry(QtCore.QRect(20, 20, 271, 191))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("DejaVu Sans"))
+        font.setPointSize(30)
+        self.idle_lbl_3.setFont(font)
+        self.idle_lbl_3.setWordWrap(True)
+        self.idle_lbl_3.setObjectName(_fromUtf8("idle_lbl_3"))
+        self.stackedWidget.addWidget(self.screen6)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -159,4 +170,5 @@ class Ui_Form(object):
         self.qr_title_lbl.setText(_translate("Form", "Scan QR Code to complete payment", None))
         self.qr_address_lbl.setText(_translate("Form", ".", None))
         self.idle_lbl_2.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Successful</p></body></html>", None))
+        self.idle_lbl_3.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Failed</p></body></html>", None))
 
