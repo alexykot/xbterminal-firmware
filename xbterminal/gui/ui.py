@@ -157,7 +157,18 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
-        self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">Please press</p><p align=\"center\"><span style=\" font-weight:600;\">ENTER</span></p><p align=\"center\">to begin</p></body></html>", None))
+        self.idle_lbl.setText(_translate("Form", """
+<html>
+<head/>
+<body>
+    <font size="1">
+        <p align=\"center\">Please press</p>
+        <p align=\"center\"><span style=\" font-weight:600;\">any key</span></p>
+        <p align=\"center\">to begin</p>
+    </font>
+</body>
+</html>
+    """, None))
         self.amount_lbl.setText(_translate("Form", "Enter Amount", None))
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
         self.currency_lbl.setText(_translate("Form", "£", None))

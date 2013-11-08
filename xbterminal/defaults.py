@@ -8,7 +8,7 @@ import xbterminal.helpers.misc
 #########################################
 # to be moved to online config
 MERCHANT_NAME = 'Test Merchant'
-MERCHANT_TRANSACTION_DESCRIPTION = 'Test Payment'
+MERCHANT_TRANSACTION_DESCRIPTION = 'Payment to te'
 MERCHANT_CURRENCY = 'GBP'
 MERCHANT_CURRENCY_SIGN_PREFIX = u'£'
 MERCHANT_CURRENCY_SIGN_POSTFIX = ''
@@ -49,10 +49,9 @@ EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
                                   'Origin': 'XBTerminal device',
                                   }
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
-OUTPUT_TOTAL_PLACES = 9 #total decimal places to show on screen
+OUTPUT_TOTAL_PLACES = 7 #total decimal places to show on screen
 OUTPUT_DEC_FRACTIONAL_SPLIT = '.'
 OUTPUT_DEC_THOUSANDS_SPLIT = ','
-#OUTPUT_DEFAULT_VALUE = xbterminal.helpers.misc.formatDefaultAmountOutput(OUTPUT_DEC_PLACES, OUTPUT_DEC_FRACTIONAL_SPLIT)
 
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES  = Decimal('0.00000000')

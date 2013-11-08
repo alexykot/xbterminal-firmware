@@ -41,8 +41,8 @@ def main():
     run['amount_to_pay_btc'] = None
     run['key_pressed'] = None
     run['current_text_piece'] = 'decimal'
-    run['display_run_value'] = ''
-    run['display_value'] = ''
+    run['display_value_unformatted'] = ''
+    run['display_value_formatted'] = ''
 
     blockchain.init()
 
@@ -71,27 +71,26 @@ def main():
             pass
 
         if run['CURRENT_STAGE'] == 'standby':
-            if run['key_pressed'] == "D":
+            if run['key_pressed'] is not None:
                 ui.stackedWidget.setCurrentIndex(1)
                 run['CURRENT_STAGE'] = 'enter_amount'
-                ui.amount_text.setText("0.00")
+                ui.amount_text.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
                 continue
 
         elif run['CURRENT_STAGE'] == 'enter_amount':
             if (isinstance(run['key_pressed'], (int, long))
-                or run['key_pressed'] == "."
                 or run['key_pressed'] == "A"
                 or run['key_pressed'] == "B"):
 
                 ui.amount_text.setStyleSheet('background: #FFF')
 
-                run['display_run_value'] = stages.processKeyInput(run['display_run_value'], run['key_pressed'])
-                run['display_value'] = stages.formatTextEntered(run['display_run_value'])
+                run['display_value_unformatted'] = stages.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
+                run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
-                ui.amount_text.setText(run['display_value'])
+                ui.amount_text.setText(run['display_value_formatted'])
 
             elif run['key_pressed'] is "D":
-                run['amount_to_pay_fiat'] = stages.amountInputToDecimal(run['display_value'])
+                run['amount_to_pay_fiat'] = stages.inputToDecimal(run['display_value_unformatted'])
                 if run['amount_to_pay_fiat'] > 0:
                     ui.stackedWidget.setCurrentIndex(2)
                     run['CURRENT_STAGE'] = 'prepare_payment'
@@ -159,19 +158,19 @@ def main():
                 print ''
 
         elif run['CURRENT_STAGE'] == 'pay_nfc' or run['CURRENT_STAGE'] == 'pay_qr':
-
-            ui.fiat_amount.setText(stages.amountDecimalToOutput(run['amount_to_pay_fiat']))
+            ui.fiat_amount.setText(stages.formatDecimal(run['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
             ui.btc_amount.setText(str(run['amount_to_pay_btc']))
-            ui.exchange_rate.setText(stages.amountDecimalToOutput(run['rate_btc']))
+            ui.exchange_rate.setText(stages.formatDecimal(run['rate_btc'], defaults.OUTPUT_DEC_PLACES))
 
             if run['key_pressed'] == "A" or run['payment_requested_timestamp'] + defaults.IN_PERSON_TRANSACTION_TIMEOUT < time.time():
                 run['amount_to_pay_btc'] = None
                 run['rate_btc'] = None
                 run['transactions_addresses'] = None
                 run['payment_requested_timestamp'] = None
-                run['display_value'] = stages.processKeyInput("")
+                run['display_value_unformatted'] = ''
+                run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
-                ui.amount_text.setText("0.00")
+                ui.amount_text.setText(run['display_value_formatted'])
                 ui.fiat_amount.setText("0")
                 ui.btc_amount.setText("0")
                 ui.exchange_rate.setText("0")

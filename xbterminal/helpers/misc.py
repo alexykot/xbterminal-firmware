@@ -26,14 +26,6 @@ def strpad(string_to_pad, chars_to_pad, length_to_pad, pad_left=False, pad_right
     else:
         return string_to_pad
 
-def formatDefaultAmountOutput(decimal_places, fractional_split):
-    decimal_part = '_'
-    fractional_part = strrepeat('_', decimal_places)
-
-    default_amount_output = '{0}{1}{2}'.format(decimal_part, fractional_split, fractional_part)
-    return default_amount_output
-
-
 def satoshi2BTC(satoshi):
     satoshi = Decimal(satoshi)
     btc = satoshi / Decimal('100000000')

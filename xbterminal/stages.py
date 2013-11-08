@@ -3,6 +3,7 @@ from decimal import Decimal
 import urllib2
 
 import xbterminal
+from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
 import xbterminal.instantfiat
 import xbterminal.helpers.misc as misc_helpers
 from xbterminal import bitcoinaverage
@@ -67,116 +68,71 @@ def createInvoice(total_fiat_amount):
     return invoice_data['amount_btc'], invoice_data['invoice_id'], invoice_data['address'], exchange_rate
 
 
-
-''' Keeping for now for reference purposes
-def processAmountKeyInput(current_text, key_code):
-    global xbterminal, misc_helpers
-
-    key_code = str(key_code)
-    current_text_split = current_text.split(defaults.OUTPUT_DEC_FRACTIONAL_SPLIT)
-    if len(current_text_split) != 2:
-        return defaults.OUTPUT_DEFAULT_VALUE
-
-    decimal_part = current_text_split[0]
-    decimal_part = decimal_part.replace(defaults.OUTPUT_DEC_THOUSANDS_SPLIT, '')
-    fractional_part = current_text_split[1]
-
-    if key_code == '.':
-        xbterminal.runtime['current_text_piece'] = 'fractional'
-        return current_text
-
-    elif key_code == 'A':
-        if xbterminal.runtime['current_text_piece'] == 'fractional':
-            fractional_part = fractional_part.rstrip('_')
-            if len(fractional_part) == 0:
-                xbterminal.runtime['current_text_piece'] = 'decimal'
-            else:
-                fractional_part = fractional_part[:-1]
-        if xbterminal.runtime['current_text_piece'] == 'decimal':
-            fractional_part = fractional_part.lstrip('_')
-            decimal_part = decimal_part[:-1]
-
-    elif key_code == 'B':
-        xbterminal.gui.runtime['main_win'].ui.continue_lbl.setText("")
-        xbterminal.runtime['current_text_piece'] = 'decimal'
-        return defaults.OUTPUT_DEFAULT_VALUE
-    else:
-
-        xbterminal.gui.runtime['main_win'].ui.continue_lbl.setText("press enter to continue")
-
-        if xbterminal.runtime['current_text_piece'] == 'decimal':
-            decimal_part = decimal_part.lstrip('_')
-            if len(decimal_part) < (defaults.OUTPUT_TOTAL_PLACES - defaults.OUTPUT_DEC_PLACES):
-                decimal_part = '{}{}'.format(decimal_part, key_code)
-
-        if xbterminal.runtime['current_text_piece'] == 'fractional':
-            fractional_part = fractional_part.rstrip('_')
-            if len(fractional_part) < defaults.OUTPUT_DEC_PLACES:
-                fractional_part = '{}{}'.format(fractional_part, key_code)
-
-    decimal_part = misc_helpers.strpad(decimal_part, '_', 1, pad_left=True)
-    fractional_part = misc_helpers.strpad(fractional_part, '_', defaults.OUTPUT_DEC_PLACES, pad_right=True)
-    decimal_part = misc_helpers.splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
-    resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
-    return resulting_text
-'''
-
-
-def amountInputToDecimal(amount_input):
-    amount_input = amount_input.replace(defaults.OUTPUT_DEC_THOUSANDS_SPLIT, '')
-    amount_input = amount_input.replace(defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, '.')
-    amount_input = amount_input.replace('_', '0')
+def inputToDecimal(display_value_unformatted):
+    amount_input = float(display_value_unformatted) / 10**defaults.OUTPUT_DEC_PLACES
     return Decimal(amount_input).quantize(defaults.FIAT_DEC_PLACES)
 
-
-def amountDecimalToOutput(amount_decimal):
-    output_precision = '0.'+misc_helpers.strrepeat('0', defaults.OUTPUT_DEC_PLACES)
-    amount_decimal = amount_decimal.quantize(Decimal(output_precision))
-    amount_decimal_str = str(amount_decimal)
-    amount_decimal_list = amount_decimal_str.split('.')
-    decimal_part = amount_decimal_list[0]
-    fractional_part = amount_decimal_list[1]
-    decimal_part = misc_helpers.splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
-    resulting_text = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
-    return resulting_text
-
-
-def formatTextEntered(current_text):
-    if current_text is '':
-        return "0.00"
-    else:
-        new_text = float(current_text)/100
-        return "{0:.2f}".format(new_text)
-
-
-def processKeyInput(current_text, key_code):
-    if current_text is '' and key_code != 'A' and key_code != 'B':
-        current_text = str(key_code)
-        return current_text
-
+def processKeyInput(display_value_unformatted, key_code):
+    display_value_unformatted = str(display_value_unformatted)
     if key_code == 'A':
-        if current_text is not '' and len(current_text) >= 2:
-            current_text = current_text[:-1]
-            return current_text
+        if display_value_unformatted is not '' and len(display_value_unformatted) >= 2:
+            display_value_unformatted = display_value_unformatted[:-1]
         else:
-            return ''
+            display_value_unformatted = ''
     elif key_code == 'B':
-        return ''
+        display_value_unformatted = ''
+    elif isinstance(key_code, (int, long)):
+        if len(display_value_unformatted) < defaults.OUTPUT_TOTAL_PLACES:
+            display_value_unformatted = str(display_value_unformatted) + str(key_code)
+
+    return display_value_unformatted
+
+def formatInput(display_value_unformatted, decimal_places):
+    if display_value_unformatted == '':
+        return "{}{}{}".format('0', defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, strrepeat('0', decimal_places))
     else:
-        v = str(current_text)
-        k = str(key_code)
-        current_text = v + k
+        fractional_part = int(display_value_unformatted) % (10**decimal_places)
+        decimal_part = (int(display_value_unformatted) - fractional_part) / (10**decimal_places)
+        decimal_part = str(int(decimal_part))
+        fractional_part = strpad(string_to_pad=str(int(fractional_part)),
+                                 chars_to_pad='0',
+                                 length_to_pad=decimal_places,
+                                 pad_left=True
+                                    )
 
-    return current_text
+        decimal_part = splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
+
+        display_value_formatted = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+        return display_value_formatted
+
+def formatDecimal(amount_decimal, decimal_places):
+    amount = float(amount_decimal)
+    amount_int = int(amount * (10**decimal_places))
+
+    fractional_part = amount_int % (10**decimal_places)
+    decimal_part = (amount_int - fractional_part) / (10**decimal_places)
+    decimal_part = str(int(decimal_part))
+    fractional_part = strpad(string_to_pad=str(int(fractional_part)),
+                             chars_to_pad='0',
+                             length_to_pad=decimal_places,
+                             pad_left=True
+                                )
+
+    decimal_part = splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
+
+    display_value_formatted = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+    return display_value_formatted
 
 
+# bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&label=test%20payment&message=this%20is%20a%20test
 def getBitcoinURI(payment_addr, amount_btc):
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
-    uri = 'bitcoin:{}?amount={}&label={}&message={}'.format(payment_addr,
-                                                            amount_btc,
-                                                            urllib2.quote(str(defaults.MERCHANT_NAME).encode('utf8')),
-                                                            urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
+    uri = 'bitcoin:{}?amount={}&message={}'.format(payment_addr,
+                                                   amount_btc,
+                                                   urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
                                                                 )
     return uri
-    #bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001X8&label=test_payment&message=thisisatest
 
+
+#longest
+# bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&message=this%20is%20a%20test1G%202bcoCKj%208s9%20GYheqQgU%205CHSLCtGj%20yP9Vz%2017srxna%20p4ikefG4hCn%201x6%207MUQjoQfqv%20qUwb1JV9nFhxot%20VYyUD26%20BbZB2ak1Yur8Z%20y7x%20w13dHs7s%20L7QdtLV%20i7hG8hWE3Fhasfeggryur5
