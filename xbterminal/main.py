@@ -12,10 +12,11 @@ from xbterminal import defaults
 from xbterminal import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
-from xbterminal.helpers.configs import load_config
+from xbterminal import helpers
+import xbterminal.helpers.nfcpy
+import xbterminal.helpers.qr
+import xbterminal.helpers.configs
 from xbterminal.helpers.log import write_msg_log
-from xbterminal.helpers import qr
-from xbterminal.helpers import uri
 
 try:
     from xbterminal.keypad import keypad
@@ -78,17 +79,18 @@ def main():
                 continue
 
         elif run['CURRENT_STAGE'] == 'enter_amount':
-            if (isinstance(run['key_pressed'], (int, long))
-                or run['key_pressed'] == "A"
-                or run['key_pressed'] == "B"):
+            if (isinstance(run['key_pressed'], (int, long)) or run['key_pressed'] == "A"):
+                if run['key_pressed'] == "A" and run['display_value_unformatted'] == '':
+                    ui.stackedWidget.setCurrentIndex(0)
+                    run['CURRENT_STAGE'] = 'standby'
+                    continue
 
                 ui.amount_text.setStyleSheet('background: #FFF')
-
                 run['display_value_unformatted'] = stages.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
+
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
                 ui.amount_text.setText(run['display_value_formatted'])
-
             elif run['key_pressed'] is "D":
                 run['amount_to_pay_fiat'] = stages.inputToDecimal(run['display_value_unformatted'])
                 if run['amount_to_pay_fiat'] > 0:
@@ -107,6 +109,7 @@ def main():
                 continue
 
             if run['amount_to_pay_btc'] is None:
+                run['qr_rendered'] = False
                 run['received_payment'] = False
                 run['invoice_paid'] = False
 
@@ -138,7 +141,8 @@ def main():
                 run['payment_requested_timestamp'] = time.time()
                 run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amount_to_pay_btc'])
-                #init NFC here
+
+                helpers.nfcpy.start(run['transaction_bitcoin_uri'])
 
 
                 print ''
@@ -157,7 +161,10 @@ def main():
                 print '>>>'
                 print ''
 
-        elif run['CURRENT_STAGE'] == 'pay_nfc' or run['CURRENT_STAGE'] == 'pay_qr':
+                run['CURRENT_STAGE'] = 'pay_nfc'
+                continue
+
+        elif run['CURRENT_STAGE'] == 'pay_nfc' or run['CURRENT_STAGE'] == 'pay_qr' or run['CURRENT_STAGE'] == 'pay_qr_addr_only':
             ui.fiat_amount.setText(stages.formatDecimal(run['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
             ui.btc_amount.setText(str(run['amount_to_pay_btc']))
             ui.exchange_rate.setText(stages.formatDecimal(run['rate_btc'], defaults.OUTPUT_DEC_PLACES))
@@ -167,31 +174,40 @@ def main():
                 run['rate_btc'] = None
                 run['transactions_addresses'] = None
                 run['payment_requested_timestamp'] = None
-                run['display_value_unformatted'] = ''
-                run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+                # run['display_value_unformatted'] = ''
+                # run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
-                ui.amount_text.setText(run['display_value_formatted'])
-                ui.fiat_amount.setText("0")
-                ui.btc_amount.setText("0")
-                ui.exchange_rate.setText("0")
+                # ui.amount_text.setText(run['display_value_formatted'])
+                # ui.fiat_amount.setText("0")
+                # ui.btc_amount.setText("0")
+                # ui.exchange_rate.setText("0")
+                # ui.continue_lbl.setText("")
                 ui.stackedWidget.setCurrentIndex(1)
-                ui.continue_lbl.setText("")
 
-                run['CURRENT_STAGE'] = 'payment_cancelled'
+                run['CURRENT_STAGE'] = 'enter_amount'
                 continue
 
-            if run['CURRENT_STAGE'] == 'pay_nfc':
-                if run['key_pressed'] == "#":
+            if run['key_pressed'] == "#":
+                if run['CURRENT_STAGE'] == 'pay_nfc':
                     run['CURRENT_STAGE'] = 'pay_qr'
-                    continue
+                elif run['CURRENT_STAGE'] == 'pay_qr':
+                    run['qr_rendered'] = False
+                    run['CURRENT_STAGE'] = 'pay_qr_addr_only'
+                elif run['CURRENT_STAGE'] == 'pay_qr_addr_only':
+                    run['qr_rendered'] = False
+                    run['CURRENT_STAGE'] = 'pay_qr'
+                continue
 
-            if run['CURRENT_STAGE'] == 'pay_qr':
-                qr.ensure_dir(defaults.QR_IMAGE_PATH)
-                qr.qr_gen(uri.formatUri(run['amount_to_pay_btc'])).save(defaults.QR_IMAGE_PATH)
+            if (run['CURRENT_STAGE'] == 'pay_qr' or run['CURRENT_STAGE'] == 'pay_qr_addr_only') and not run['qr_rendered']:
+                helpers.qr.ensure_dir(defaults.QR_IMAGE_PATH)
+                if run['CURRENT_STAGE'] == 'pay_qr':
+                    helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'], run['amount_to_pay_btc'])).save(defaults.QR_IMAGE_PATH)
+                else:
+                    helpers.qr.qr_gen(run['transactions_addresses']['local']).save(defaults.QR_IMAGE_PATH)
                 ui.stackedWidget.setCurrentIndex(3)
-                #ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
+                ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
-
+                run['qr_rendered'] = True
 
             if not run['received_payment']:
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
@@ -208,6 +224,8 @@ def main():
 
 
                     run['CURRENT_STAGE'] = 'payment_successful'
+                    ui.stackedWidget.setCurrentIndex(4)
+
                     continue
             elif run['invoice_id'] is not None and not run['invoice_paid']:
                 if getattr(xbterminal.instantfiat, defaults.MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE).isInvoicePaid(run['invoice_id']):
@@ -215,13 +233,24 @@ def main():
                     continue
 
         elif run['CURRENT_STAGE'] == 'payment_successful':
-            print 'payment_successful!!!'
+            helpers.nfcpy.stop()
+            if run['key_pressed'] is not None:
+                ui.stackedWidget.setCurrentIndex(0)
+                run['CURRENT_STAGE'] = 'enter_amount'
+                ui.amount_text.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+                continue
             pass
         elif run['CURRENT_STAGE'] == 'payment_cancelled':
+            helpers.nfcpy.stop()
+            if run['key_pressed'] is not None:
+                ui.stackedWidget.setCurrentIndex(0)
+                run['CURRENT_STAGE'] = 'enter_amount'
+                ui.amount_text.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+                continue
             pass
         elif run['CURRENT_STAGE'] == 'application_halt':
-            blockchain.stop()
+            helpers.nfcpy.stop()
             sys.exit()
 
-        time.sleep(0.2)
+        time.sleep(0.1)
 

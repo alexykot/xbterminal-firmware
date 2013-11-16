@@ -50,7 +50,7 @@ def getMerchantBtcAmount(total_fiat_amount, btc_exchange_rate):
     merchants_btc_amount = Decimal(merchants_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
     if merchants_btc_amount < defaults.BTC_MIN_OUTPUT:
-        merchants_btc_amount = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
+        merchants_btc_amount = defaults.BTC_MIN_OUTPUT.quantize(defaults.BTC_DEC_PLACES)
 
     return merchants_btc_amount
 
@@ -79,8 +79,6 @@ def processKeyInput(display_value_unformatted, key_code):
             display_value_unformatted = display_value_unformatted[:-1]
         else:
             display_value_unformatted = ''
-    elif key_code == 'B':
-        display_value_unformatted = ''
     elif isinstance(key_code, (int, long)):
         if len(display_value_unformatted) < defaults.OUTPUT_TOTAL_PLACES:
             display_value_unformatted = str(display_value_unformatted) + str(key_code)
@@ -127,12 +125,13 @@ def formatDecimal(amount_decimal, decimal_places):
 # bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&label=test%20payment&message=this%20is%20a%20test
 def getBitcoinURI(payment_addr, amount_btc):
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
-    uri = 'bitcoin:{}?amount={}&message={}'.format(payment_addr,
-                                                   amount_btc,
-                                                   urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
+    uri = 'bitcoin:{}?amount={}&label={}&message={}'.format(payment_addr,
+                                                            amount_btc,
+                                                            urllib2.quote(str(defaults.MERCHANT_NAME)).encode('utf8'),
+                                                            urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
                                                                 )
     return uri
 
 
-#longest
+#longest fitting into 57 blocks sized QR code
 # bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&message=this%20is%20a%20test1G%202bcoCKj%208s9%20GYheqQgU%205CHSLCtGj%20yP9Vz%2017srxna%20p4ikefG4hCn%201x6%207MUQjoQfqv%20qUwb1JV9nFhxot%20VYyUD26%20BbZB2ak1Yur8Z%20y7x%20w13dHs7s%20L7QdtLV%20i7hG8hWE3Fhasfeggryur5

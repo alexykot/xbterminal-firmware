@@ -8,7 +8,7 @@ from xbterminal.helpers.log import write_msg_log
 
 
 BIPS_CREATE_INVOICE_API_URL = "https://bips.me/api/v2/invoice"
-BIPS_CHECK_INVOICE_API_URL = "https://bitpay.com/api/invoice/{}"
+BIPS_CHECK_INVOICE_API_URL = "https://bips.me/api/v2/invoice/{}"
 
 def createInvoice(amount):
     headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS
@@ -29,14 +29,17 @@ def createInvoice(amount):
     return result
 
 
+#API endpoint used here is not implemented yet. need to test this code when this will be done on BIPS side
 def isInvoicePaid(invoice_id):
     invoice_url = BIPS_CHECK_INVOICE_API_URL.format(invoice_id)
-    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS
-    headers['Content-type'] = 'application/json'
-    requests.get(url=invoice_url,
-                 headers=headers,
-                 auth=(defaults.MERCHANT_INSTANTFIAT_API_KEY, ''))
+    result = requests.get(url=invoice_url,
+                          headers=defaults.EXTERNAL_CALLS_REQUEST_HEADERS,
+                          auth=(defaults.MERCHANT_INSTANTFIAT_API_KEY, '')).json()
 
-    return True
+    if result['status'] == 'paid':
+        return True
+    else:
+        return False
+
 
 
