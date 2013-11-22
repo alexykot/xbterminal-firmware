@@ -74,7 +74,6 @@ def sendRawTransaction(outputs, from_addr, change_addr=None):
         total_to_pay = total_to_pay + outputs[output_address]
         float_outputs[output_address] = float(outputs[output_address])
 
-
     unspent_tx_list = connection.listunspent(minconf=0)
     total_available_to_spend = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
     inputs = []
@@ -91,11 +90,18 @@ def sendRawTransaction(outputs, from_addr, change_addr=None):
     if total_available_to_spend > total_to_pay+defaults.BTC_DEFAULT_FEE:
         if change_addr not in outputs:
             outputs[change_addr] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
-        outputs[change_addr] = outputs[change_addr] + (total_available_to_spend - total_to_pay - defaults.BTC_DEFAULT_FEE)
+        change_amount = outputs[change_addr] + (total_available_to_spend - total_to_pay - defaults.BTC_DEFAULT_FEE)
+        if change_amount > 0:
+            outputs[change_addr] = change_amount
         float_outputs[change_addr] = float(outputs[change_addr])
 
+    nonempty_float_outputs = {}
 
-    raw_transaction_unsigned_hex = connection.createrawtransaction(inputs=inputs, outputs=float_outputs)
+    for address in float_outputs:
+        if float_outputs[address] > 0:
+            nonempty_float_outputs[address] = float_outputs[address]
+
+    raw_transaction_unsigned_hex = connection.createrawtransaction(inputs=inputs, outputs=nonempty_float_outputs)
     raw_transaction_signed = connection.signrawtransaction(raw_transaction_unsigned_hex)
     if raw_transaction_signed['complete']:
         raw_transaction_signed_hex = raw_transaction_signed['hex']

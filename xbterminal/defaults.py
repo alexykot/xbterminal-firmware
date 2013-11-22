@@ -43,7 +43,9 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                      }
 
-IN_PERSON_TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
+TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
+TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 10 #if transaction cancelled - how long to show "cancelled" message in seconds
+
 
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
@@ -59,7 +61,7 @@ BTC_DEC_PLACES  = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
-BITCOIND_HOST = '192.168.1.64'  #set to 'localhost' to use localhost with no login/pass
+BITCOIND_HOST = '192.168.51.120'  #set to 'localhost' to use localhost with no login/pass
 BITCOIND_PORT = 8332
 BITCOIND_USER = 'root'
 BITCOIND_PASS = 'password'

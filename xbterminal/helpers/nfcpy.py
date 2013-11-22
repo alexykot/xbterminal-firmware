@@ -5,36 +5,50 @@ import threading
 
 
 nfc_thread = None
-run_event = None
-def init_nfcpy(run_event, uri_to_send):
-    clf = nfc.ContactlessFrontend('usb')
-    connected = lambda llc: threading.Thread(target=llc.run).start()
-    llc = clf.connect(run_event=run_event, llcp={'on-connect': connected})
+class BitcoinSender(threading.Thread):
+    def __init__(self, bitcoin_uri):
+        self.terminate = False
+        self.uri = bitcoin_uri
+        super(BitcoinSender, self).__init__()
 
-    link_obj = nfc.ndef.UriRecord(uri_to_send)
+    def on_connect(self, llc):
+        threading.Thread(target=send_uri, args=(llc, self.uri)).start()
+        return llc
+
+    def terminate_callback_function(self):
+        return self.terminate
+
+    def run(self):
+        clf = nfc.ContactlessFrontend('usb')
+        clf.connect(llcp={'on-connect': self.on_connect},
+                    terminate=self.terminate_callback_function)
+        clf.close()
+
+
+def send_uri(llc, uri):
     snep = nfc.snep.SnepClient(llc)
-    snep.put(nfc.ndef.Message(link_obj))
+    snep.put(nfc.ndef.Message(nfc.ndef.UriRecord(uri)))
 
-    clf.close()
 
 def start(bitcoin_uri):
-    global nfc_thread, run_event
+    global nfc_thread
 
-    if nfc_thread is not None and nfc_thread.isAlive():
+    if nfc_thread is not None and nfc_thread.is_alive():
         stop()
 
-    run_event = threading.Event()
-    run_event.set()
-    nfc_thread = threading.Thread(target=init_nfcpy, args=(run_event, bitcoin_uri,))
+    nfc_thread = BitcoinSender(bitcoin_uri)
     nfc_thread.start()
 
-def stop():
-    global nfc_thread, run_event
+def is_active():
+    global nfc_thread
 
-    if run_event is not None and run_event.isSet():
-        run_event.clear()
+    return nfc_thread is not None and nfc_thread.is_alive()
+
+def stop():
+    global nfc_thread
+
+    if nfc_thread is not None and nfc_thread.is_alive():
+        nfc_thread.terminate = True
         nfc_thread.join()
 
     nfc_thread = None
-    run_event = None
-
