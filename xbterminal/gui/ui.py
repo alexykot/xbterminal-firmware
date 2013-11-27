@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Nov  7 20:52:09 2013
+# Created: Wed Nov 27 16:32:01 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,9 +26,9 @@ except AttributeError:
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
-        Form.resize(320, 240)
+        Form.resize(480, 272)
         self.stackedWidget = QtGui.QStackedWidget(Form)
-        self.stackedWidget.setGeometry(QtCore.QRect(0, 0, 320, 240))
+        self.stackedWidget.setGeometry(QtCore.QRect(0, 0, 480, 272))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("DejaVu Sans"))
         self.stackedWidget.setFont(font)
@@ -36,7 +36,7 @@ class Ui_Form(object):
         self.screen1 = QtGui.QWidget()
         self.screen1.setObjectName(_fromUtf8("screen1"))
         self.idle_lbl = QtGui.QLabel(self.screen1)
-        self.idle_lbl.setGeometry(QtCore.QRect(20, 30, 271, 191))
+        self.idle_lbl.setGeometry(QtCore.QRect(100, 40, 271, 191))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("DejaVu Sans"))
         font.setPointSize(30)
@@ -157,18 +157,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
-        self.idle_lbl.setText(_translate("Form", """
-<html>
-<head/>
-<body>
-    <font size="1">
-        <p align=\"center\">Please press</p>
-        <p align=\"center\"><span style=\" font-weight:600;\">any key</span></p>
-        <p align=\"center\">to begin</p>
-    </font>
-</body>
-</html>
-    """, None))
+        self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">Please press</p><p align=\"center\"><span style=\" font-weight:600;\">ENTER</span></p><p align=\"center\">to begin</p></body></html>", None))
         self.amount_lbl.setText(_translate("Form", "Enter Amount", None))
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
         self.currency_lbl.setText(_translate("Form", "£", None))

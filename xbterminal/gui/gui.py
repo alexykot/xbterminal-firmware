@@ -51,6 +51,7 @@ class GUI(QtGui.QWidget):
 
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
+        self.Form.showFullScreen()
 
 
     #QT Keypress Events
