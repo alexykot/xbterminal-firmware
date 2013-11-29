@@ -208,6 +208,7 @@ def main():
                 if not helpers.nfcpy.is_active():
                     helpers.nfcpy.start(run['transaction_bitcoin_uri'])
 
+                time.sleep(0.5) #hack for RPi, as it can't work faster
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
                 if current_balance >= run['amount_to_pay_btc']:
                     run['received_payment'] = True

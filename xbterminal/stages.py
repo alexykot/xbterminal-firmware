@@ -69,7 +69,7 @@ def createInvoice(total_fiat_amount):
 
 
 def inputToDecimal(display_value_unformatted):
-    amount_input = float(display_value_unformatted) / 10**defaults.OUTPUT_DEC_PLACES
+    amount_input = float(display_value_unformatted) / 10 * defaults.OUTPUT_DEC_PLACES
     return Decimal(amount_input).quantize(defaults.FIAT_DEC_PLACES)
 
 def processKeyInput(display_value_unformatted, key_code):
