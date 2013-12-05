@@ -24,14 +24,12 @@ except ImportError:
     pass
 
 def main():
+    xbterminal.helpers.configs.load_configs()
 
     # Setup GUI and local variables
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
     ui = xbterminal.gui.runtime['main_win'].ui
-
-    # Load configs
-    xbterminal.helpers.configs.load_config()
 
     #init runtime data
     defaults.QR_IMAGE_PATH = os.path.join(defaults.PROJECT_ABS_PATH, 'xbterminal', 'images', 'qr.png')
@@ -114,10 +112,10 @@ def main():
 
                 run['transactions_addresses'] = {}
                 run['transactions_addresses']['local'] = blockchain.getFreshAddress()
-                run['transactions_addresses']['merchant'] = defaults.MERCHANT_BITCOIN_ADDRESS
-                run['transactions_addresses']['fee'] = defaults.OUR_FEE_BITCOIN_ADDRESS
+                run['transactions_addresses']['merchant'] = xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS']
+                run['transactions_addresses']['fee'] = xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']
 
-                if defaults.MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE is not None and defaults.MERCHANT_INSTANTFIAT_SHARE > 0:
+                if xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'] is not None and xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE'] > 0:
                     (instantfiat_btc_amount,
                      run['instantfiat_invoice_id'],
                      run['transactions_addresses']['instantfiat'],
@@ -126,7 +124,7 @@ def main():
                     instantfiat_btc_amount = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
                     run['instantfiat_invoice_id'] = None
                     run['transactions_addresses']['instantfiat'] = None
-                    run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(defaults.MERCHANT_CURRENCY)
+                    run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(xbterminal.remote_config['MERCHANT_CURRENCY'])
 
                 our_fee_btc_amount = stages.getOurFeeBtcAmount(run['amount_to_pay_fiat'], run['exchange_rate'])
                 merchants_btc_amount = stages.getMerchantBtcAmount(run['amount_to_pay_fiat'], run['exchange_rate'])
@@ -141,23 +139,6 @@ def main():
                 run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amount_to_pay_btc'])
 
-                #
-                # print ''
-                # print '<<<'
-                # print "fiat to pay: " + str(run['amount_to_pay_fiat'])
-                # print "instantfiat: " + str(instantfiat_btc_amount)
-                # print "merchant: " + str(merchants_btc_amount)
-                # print "fee: " + str(our_fee_btc_amount)
-                # print "tx_fee: " + str(defaults.BTC_DEFAULT_FEE)
-                # print "total: " + str(run['amount_to_pay_btc'])
-                # print ''
-                # print "local address: " + str(run['transactions_addresses']['local'])
-                # print "instantfiat address: " + str(run['transactions_addresses']['instantfiat'])
-                # print "merchant address: " + str(run['transactions_addresses']['merchant'])
-                # print "fee address: " + str(run['transactions_addresses']['fee'])
-                # print '>>>'
-                # print ''
-                #
                 run['CURRENT_STAGE'] = 'pay_nfc'
                 continue
 
@@ -194,11 +175,10 @@ def main():
                 continue
 
             if (run['CURRENT_STAGE'] == 'pay_qr' or run['CURRENT_STAGE'] == 'pay_qr_addr_only') and not run['qr_rendered']:
-                helpers.qr.ensure_dir(defaults.QR_IMAGE_PATH)
                 if run['CURRENT_STAGE'] == 'pay_qr':
-                    helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'], run['amount_to_pay_btc'])).save(defaults.QR_IMAGE_PATH)
+                    helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'], run['amount_to_pay_btc']), defaults.QR_IMAGE_PATH)
                 else:
-                    helpers.qr.qr_gen(run['transactions_addresses']['local']).save(defaults.QR_IMAGE_PATH)
+                    helpers.qr.qr_gen(run['transactions_addresses']['local'], defaults.QR_IMAGE_PATH)
                 ui.stackedWidget.setCurrentIndex(3)
                 ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
@@ -241,7 +221,7 @@ def main():
 
                     continue
             elif run['invoice_id'] is not None and not run['invoice_paid']:
-                if getattr(xbterminal.instantfiat, defaults.MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE).isInvoicePaid(run['invoice_id']):
+                if getattr(xbterminal.instantfiat, xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE']).isInvoicePaid(run['invoice_id']):
                     run['CURRENT_STAGE'] = 'payment_successful'
                     continue
 

@@ -3,6 +3,7 @@ from decimal import Decimal
 import requests
 import re
 
+import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
 from xbterminal.helpers.log import write_msg_log
@@ -18,10 +19,10 @@ def createInvoice(amount):
     response = requests.post(url=BITPAY_CREATE_INVOICE_API_URL,
                              headers=headers,
                              data={'price': float(amount),
-                                   'currency': defaults.MERCHANT_CURRENCY,
-                                   'transactionSpeed': defaults.MERCHANT_INSTANTFIAT_TRANSACTION_SPEED
+                                   'currency': xbterminal.remote_config['MERCHANT_CURRENCY'],
+                                   'transactionSpeed': xbterminal.remote_config['MERCHANT_INSTANTFIAT_TRANSACTION_SPEED'],
                                     },
-                             auth=(defaults.MERCHANT_INSTANTFIAT_API_KEY, ''))
+                             auth=(xbterminal.remote_config['MERCHANT_INSTANTFIAT_API_KEY'], ''))
     response = response.json()
     result = {}
     result['invoice_id'] = response['invoice_id']
@@ -35,7 +36,7 @@ def isInvoicePaid(invoice_id):
     invoice_status_url = BITPAY_CHECK_INVOICE_API_URL.format(invoice_id)
     response = requests.get(url=invoice_status_url,
                             headers=defaults.EXTERNAL_CALLS_REQUEST_HEADERS,
-                            auth=(defaults.MERCHANT_INSTANTFIAT_API_KEY, '')).json()
+                            auth=(xbterminal.remote_config['MERCHANT_INSTANTFIAT_API_KEY'], '')).json()
 
     if response['status'] == 'paid':
         return True

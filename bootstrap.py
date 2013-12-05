@@ -12,3 +12,4 @@ import xbterminal.main
 
 xbterminal.defaults.PROJECT_ABS_PATH = include_path
 xbterminal.main.main()
+

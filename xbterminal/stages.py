@@ -31,7 +31,7 @@ def createOutgoingTransaction(addresses, amounts):
 
 def getOurFeeBtcAmount(total_fiat_amount, btc_exchange_rate):
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
-    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['OUR_FEE_SHARE']).quantize(defaults.BTC_DEC_PLACES)
     our_fee_btc_amount = our_fee_fiat_amount / btc_exchange_rate
     our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
@@ -43,8 +43,8 @@ def getOurFeeBtcAmount(total_fiat_amount, btc_exchange_rate):
 
 def getMerchantBtcAmount(total_fiat_amount, btc_exchange_rate):
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
-    our_fee_fiat_amount = total_fiat_amount * Decimal(defaults.OUR_FEE_SHARE).quantize(defaults.BTC_DEC_PLACES)
-    instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.MERCHANT_INSTANTFIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    our_fee_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['OUR_FEE_SHARE']).quantize(defaults.BTC_DEC_PLACES)
+    instantfiat_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE']).quantize(defaults.BTC_DEC_PLACES)
     merchants_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
     merchants_btc_amount = merchants_fiat_amount / btc_exchange_rate
     merchants_btc_amount = Decimal(merchants_btc_amount).quantize(defaults.BTC_DEC_PLACES)
@@ -59,9 +59,9 @@ def createInvoice(total_fiat_amount):
     global xbterminal
 
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
-    instantfiat_fiat_amount = total_fiat_amount * Decimal(defaults.MERCHANT_INSTANTFIAT_SHARE).quantize(defaults.BTC_DEC_PLACES)
+    instantfiat_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE']).quantize(defaults.BTC_DEC_PLACES)
 
-    invoice_data = getattr(xbterminal.instantfiat, defaults.MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE).createInvoice(instantfiat_fiat_amount)
+    invoice_data = getattr(xbterminal.instantfiat, xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE']).createInvoice(instantfiat_fiat_amount)
 
     exchange_rate = invoice_data['amount_btc'] / total_fiat_amount
 
@@ -69,7 +69,11 @@ def createInvoice(total_fiat_amount):
 
 
 def inputToDecimal(display_value_unformatted):
-    amount_input = float(display_value_unformatted) / 10 * defaults.OUTPUT_DEC_PLACES
+    if display_value_unformatted == '':
+        amount_input = 0.0
+    else:
+        amount_input = float(display_value_unformatted) / (10 ** defaults.OUTPUT_DEC_PLACES)
+
     return Decimal(amount_input).quantize(defaults.FIAT_DEC_PLACES)
 
 def processKeyInput(display_value_unformatted, key_code):
@@ -127,8 +131,8 @@ def getBitcoinURI(payment_addr, amount_btc):
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
     uri = 'bitcoin:{}?amount={}&label={}&message={}'.format(payment_addr,
                                                             amount_btc,
-                                                            urllib2.quote(str(defaults.MERCHANT_NAME)).encode('utf8'),
-                                                            urllib2.quote(str(defaults.MERCHANT_TRANSACTION_DESCRIPTION)).encode('utf8'),
+                                                            urllib2.quote(str(xbterminal.remote_config['MERCHANT_NAME'])).encode('utf8'),
+                                                            urllib2.quote(str(xbterminal.remote_config['MERCHANT_TRANSACTION_DESCRIPTION'])).encode('utf8'),
                                                                 )
     return uri
 

@@ -5,6 +5,7 @@ import sys
 import bitcoinrpc
 import bitcoinrpc.connection
 
+import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
 
@@ -66,7 +67,7 @@ def sendRawTransaction(outputs, from_addr, change_addr=None):
     transaction_hash = None
 
     if change_addr is None:
-        change_addr = defaults.OUR_FEE_BITCOIN_ADDRESS
+        change_addr = xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']
 
     float_outputs = {}
     total_to_pay = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
