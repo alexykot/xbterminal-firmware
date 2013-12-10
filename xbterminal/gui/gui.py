@@ -5,7 +5,7 @@ from PyQt4 import QtGui, QtCore
 import xbterminal
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
-from xbterminal.helpers.log import write_msg_log
+from xbterminal.helpers.log import log
 
 
 try:

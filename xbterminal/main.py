@@ -16,7 +16,7 @@ from xbterminal import helpers
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.configs
-from xbterminal.helpers.log import write_msg_log
+from xbterminal.helpers.log import log
 
 try:
     from xbterminal.keypad import keypad
@@ -43,6 +43,8 @@ def main():
     run['current_text_piece'] = 'decimal'
     run['display_value_unformatted'] = ''
     run['display_value_formatted'] = ''
+
+    xbterminal.local_config
 
     blockchain.init()
 

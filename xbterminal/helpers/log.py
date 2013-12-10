@@ -6,7 +6,7 @@ from email import utils
 import xbterminal
 
 
-def write_msg_log(message_text, message_type=None):
+def log(message_text, message_type=None):
     global xbterminal
     if message_type is None:
         message_type = xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR']

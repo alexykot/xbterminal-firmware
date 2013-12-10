@@ -6,7 +6,7 @@ import requests
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
-from xbterminal.helpers.log import write_msg_log
+from xbterminal.helpers.log import log
 
 
 BIPS_CREATE_INVOICE_API_URL = "https://bips.me/api/v2/invoice"

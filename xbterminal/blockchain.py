@@ -1,31 +1,82 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-import json
-import sys
+import os
+import socket
 import bitcoinrpc
 import bitcoinrpc.connection
+import time
+from subprocess import check_output
 
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
-
+from xbterminal.helpers.log import log
 
 connection = None
 
 class BitcoinConnection(bitcoinrpc.connection.BitcoinConnection):
     def sendrawtransaction(self, hex_raw_tx):
-
         self.proxy.sendrawtransaction(hex_raw_tx)
 
 def init():
     global connection
 
     if connection is None:
-        connection = BitcoinConnection(user=defaults.BITCOIND_USER,
-                                       password=defaults.BITCOIND_PASS,
-                                       host=defaults.BITCOIND_HOST,
-                                       port=defaults.BITCOIND_PORT,
-                                       use_https=False)
+        connection_test = BitcoinConnection(user=defaults.BITCOIND_USER,
+                                               password=defaults.BITCOIND_PASS,
+                                               host=defaults.BITCOIND_HOST,
+                                               port=defaults.BITCOIND_PORT,
+                                               use_https=False)
+        try:
+            connection_test.getinfo()
+        except socket.error:
+             _start_bitcoind()
+
+def _start_bitcoind():
+    global xbterminal
+
+    if 'last_started' in xbterminal.local_state and xbterminal.local_state['last_started'] + defaults.BITCOIND_MAX_BLOCKCHAIN_AGE < time.time():
+        _presync_blockchain()
+
+    check_output("bitcoind", shell=True)
+
+def _presync_blockchain():
+    for blockchain_server in defaults.BITCOIND_BLOCKCHAIN_SERVERS:
+        key_file_path = os.path.join(defaults.BITCOIND_BLOCKCHAIN_SERVERS_KEYS_PATH,
+                                     '{name}_{user}_rsa'.format(name=blockchain_server['name'],
+                                                                user=blockchain_server['user']))
+
+        if not os.path.exists(key_file_path):
+            log('{key_file} - key missing'.format(key_file=key_file_path), 'ERROR')
+            continue
+
+        command_blocks = []
+        command_blocks.append("rsync")
+        command_blocks.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
+                                                                             key_file_path=key_file_path))
+        command_blocks.append("-aqz --delete")
+        command_blocks.append("{user}@{addr}:{path}/blocks/".format(user=blockchain_server['user'],
+                                                                     addr=blockchain_server['addr'],
+                                                                     path=blockchain_server['path']))
+        command_blocks.append("/root/.bitcoin/blocks")
+        command_blocks = ' '.join(command_blocks)
+        output = check_output(command_blocks, shell=True)
+        if output != '':
+            log('blocks rsync failed, output: {rsync_output}'.format(rsync_output=output), 'ERROR')
+
+        command_chainstate = []
+        command_chainstate.append("rsync")
+        command_chainstate.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
+                                                                              key_file_path=key_file_path))
+        command_chainstate.append("-aqz --delete")
+        command_chainstate.append("{user}@{addr}:{path}/chainstate/".format(user=blockchain_server['user'],
+                                                                           addr=blockchain_server['addr'],
+                                                                           path=blockchain_server['path']))
+        command_chainstate.append("/root/.bitcoin/chainstate")
+        command_chainstate = ' '.join(command_chainstate)
+        output = check_output(command_chainstate, shell=True)
+        if output != '':
+            log('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output), 'ERROR')
 
 
 def getAddressBalance(address):
@@ -112,3 +163,4 @@ def sendRawTransaction(outputs, from_addr, change_addr=None):
     transaction_hash = connection.proxy.sendrawtransaction(raw_transaction_signed_hex)
 
     return transaction_hash
+

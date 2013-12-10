@@ -90,8 +90,10 @@ def processKeyInput(display_value_unformatted, key_code):
     return display_value_unformatted
 
 def formatInput(display_value_unformatted, decimal_places):
+    global xbterminal
+
     if display_value_unformatted == '':
-        return "{}{}{}".format('0', defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, strrepeat('0', decimal_places))
+        return "{}{}{}".format('0', xbterminal.remote_config['OUTPUT_DEC_FRACTIONAL_SPLIT'], strrepeat('0', decimal_places))
     else:
         fractional_part = int(display_value_unformatted) % (10**decimal_places)
         decimal_part = (int(display_value_unformatted) - fractional_part) / (10**decimal_places)
@@ -102,9 +104,9 @@ def formatInput(display_value_unformatted, decimal_places):
                                  pad_left=True
                                     )
 
-        decimal_part = splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
+        decimal_part = splitThousands(decimal_part, xbterminal.remote_config['OUTPUT_DEC_THOUSANDS_SPLIT'])
 
-        display_value_formatted = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+        display_value_formatted = '{}{}{}'.format(decimal_part, xbterminal.remote_config['OUTPUT_DEC_FRACTIONAL_SPLIT'], fractional_part)
         return display_value_formatted
 
 def formatDecimal(amount_decimal, decimal_places):
@@ -120,9 +122,9 @@ def formatDecimal(amount_decimal, decimal_places):
                              pad_left=True
                                 )
 
-    decimal_part = splitThousands(decimal_part, defaults.OUTPUT_DEC_THOUSANDS_SPLIT)
+    decimal_part = splitThousands(decimal_part, xbterminal.remote_config['OUTPUT_DEC_THOUSANDS_SPLIT'])
 
-    display_value_formatted = '{}{}{}'.format(decimal_part, defaults.OUTPUT_DEC_FRACTIONAL_SPLIT, fractional_part)
+    display_value_formatted = '{}{}{}'.format(decimal_part, xbterminal.remote_config['OUTPUT_DEC_FRACTIONAL_SPLIT'], fractional_part)
     return display_value_formatted
 
 

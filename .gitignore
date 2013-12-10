@@ -1,5 +1,6 @@
 .idea/*
 *.pyc
 xbterminal/runtime/*
-xbterminal/local_config.json*
+xbterminal/local_state.json
+xbterminal/device_key
 
