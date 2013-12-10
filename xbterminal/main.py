@@ -44,8 +44,6 @@ def main():
     run['display_value_unformatted'] = ''
     run['display_value_formatted'] = ''
 
-    xbterminal.local_config
-
     blockchain.init()
 
     try:
@@ -53,6 +51,10 @@ def main():
     except NameError:
         pass
 
+    xbterminal.local_state['last_started'] = time.time()
+    xbterminal.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
+
+    log('main loop starting', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
     while True:
         # At beginning of each loop push events
         try:

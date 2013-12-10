@@ -2,10 +2,10 @@
 from decimal import Decimal
 import os
 import socket
+import subprocess
 import bitcoinrpc
 import bitcoinrpc.connection
 import time
-from subprocess import check_output
 
 import xbterminal
 from xbterminal import defaults
@@ -30,53 +30,86 @@ def init():
         try:
             connection_test.getinfo()
         except socket.error:
-             _start_bitcoind()
+             _start_bitcoind(connection_test)
 
-def _start_bitcoind():
+def _start_bitcoind(connection_test):
     global xbterminal
 
-    if 'last_started' in xbterminal.local_state and xbterminal.local_state['last_started'] + defaults.BITCOIND_MAX_BLOCKCHAIN_AGE < time.time():
+    if 'last_started' not in xbterminal.local_state or xbterminal.local_state['last_started'] + defaults.BITCOIND_MAX_BLOCKCHAIN_AGE < time.time():
         _presync_blockchain()
 
-    check_output("bitcoind", shell=True)
+    log('bitcoind starting', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+    subprocess.Popen("bitcoind")
+    while True:
+        try:
+            test = connection_test.getinfo()
+            break
+        except socket.error:
+            time.sleep(1)
+    log('bitcoind started', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+
 
 def _presync_blockchain():
+    blocks_sync_successful = False
+    chainstate_sync_successful = False
     for blockchain_server in defaults.BITCOIND_BLOCKCHAIN_SERVERS:
         key_file_path = os.path.join(defaults.BITCOIND_BLOCKCHAIN_SERVERS_KEYS_PATH,
                                      '{name}_{user}_rsa'.format(name=blockchain_server['name'],
                                                                 user=blockchain_server['user']))
 
         if not os.path.exists(key_file_path):
-            log('{key_file} - key missing'.format(key_file=key_file_path), 'ERROR')
+            log('{key_file} - key missing'.format(key_file=key_file_path), xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
             continue
 
-        command_blocks = []
-        command_blocks.append("rsync")
-        command_blocks.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
-                                                                             key_file_path=key_file_path))
-        command_blocks.append("-aqz --delete")
-        command_blocks.append("{user}@{addr}:{path}/blocks/".format(user=blockchain_server['user'],
-                                                                     addr=blockchain_server['addr'],
-                                                                     path=blockchain_server['path']))
-        command_blocks.append("/root/.bitcoin/blocks")
-        command_blocks = ' '.join(command_blocks)
-        output = check_output(command_blocks, shell=True)
-        if output != '':
-            log('blocks rsync failed, output: {rsync_output}'.format(rsync_output=output), 'ERROR')
+        if not blocks_sync_successful:
+            log('blocks rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']),
+                xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            command_blocks = []
+            command_blocks.append("rsync")
+            command_blocks.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
+                                                                                 key_file_path=key_file_path))
+            command_blocks.append("-aqz --delete")
+            command_blocks.append("{user}@{addr}:{path}/blocks/".format(user=blockchain_server['user'],
+                                                                         addr=blockchain_server['addr'],
+                                                                         path=blockchain_server['path']))
+            command_blocks.append("/root/.bitcoin/blocks")
+            command_blocks = ' '.join(command_blocks)
+            try:
+                output = subprocess.check_output(command_blocks, shell=True)
+            except subprocess.CalledProcessError:
+                output = 'fail'
 
-        command_chainstate = []
-        command_chainstate.append("rsync")
-        command_chainstate.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
-                                                                              key_file_path=key_file_path))
-        command_chainstate.append("-aqz --delete")
-        command_chainstate.append("{user}@{addr}:{path}/chainstate/".format(user=blockchain_server['user'],
-                                                                           addr=blockchain_server['addr'],
-                                                                           path=blockchain_server['path']))
-        command_chainstate.append("/root/.bitcoin/chainstate")
-        command_chainstate = ' '.join(command_chainstate)
-        output = check_output(command_chainstate, shell=True)
-        if output != '':
-            log('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output), 'ERROR')
+            if output == '':
+                blocks_sync_successful = True
+            else:
+                log('blocks rsync failed, output: {rsync_output}'.format(rsync_output=output),
+                    xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+
+        if not chainstate_sync_successful:
+            log('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']),
+                xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            command_chainstate = []
+            command_chainstate.append("rsync")
+            command_chainstate.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
+                                                                                  key_file_path=key_file_path))
+            command_chainstate.append("-aqz --delete")
+            command_chainstate.append("{user}@{addr}:{path}/chainstate/".format(user=blockchain_server['user'],
+                                                                               addr=blockchain_server['addr'],
+                                                                               path=blockchain_server['path']))
+            command_chainstate.append("/root/.bitcoin/chainstate")
+            command_chainstate = ' '.join(command_chainstate)
+            try:
+                output = subprocess.check_output(command_chainstate, shell=True)
+            except subprocess.CalledProcessError:
+                output = 'fail'
+
+            if output == '':
+                blocks_sync_successful = True
+            else:
+                log('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output),
+                    xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+        if blocks_sync_successful and chainstate_sync_successful:
+            break
 
 
 def getAddressBalance(address):

@@ -1,6 +1,6 @@
 .idea/*
 *.pyc
 xbterminal/runtime/*
-xbterminal/local_state.json
+xbterminal/wifi/*
 xbterminal/device_key
-
+wifitest.py
