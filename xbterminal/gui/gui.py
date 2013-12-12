@@ -63,7 +63,7 @@ class GUI(QtGui.QWidget):
 
         if k.key() == QtCore.Qt.Key_Return:
             xbterminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-            self.ui.stackedWidget.setCurrentIndex(1)
+            self.ui.stackedWidget.setCurrentIndex(6)
 
     def closeEvent(self, QCloseEvent):
         global xbterminal
