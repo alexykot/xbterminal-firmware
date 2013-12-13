@@ -8,15 +8,17 @@ from PyQt4 import QtGui, QtCore
 import xbterminal
 import xbterminal.bitcoinaverage
 import xbterminal.instantfiat
+import xbterminal.gui
+import xbterminal.gui.ui
+import xbterminal.helpers.nfcpy
+import xbterminal.helpers.qr
+import xbterminal.helpers.configs
+import xbterminal.helpers.wireless
 from xbterminal import defaults
 from xbterminal import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
 from xbterminal import helpers
-import xbterminal.helpers.nfcpy
-import xbterminal.helpers.qr
-import xbterminal.helpers.configs
-import xbterminal.helpers.wireless
 from xbterminal.helpers.log import log
 
 try:
@@ -37,6 +39,7 @@ def main():
     xbterminal.runtime = {}
     run = xbterminal.runtime
     run['CURRENT_STAGE'] = defaults.STAGES['default']
+    run['stage_init'] = False
     run['amount_to_pay_fiat'] = None
     run['amount_to_pay_btc'] = None
     run['key_pressed'] = None
@@ -51,7 +54,10 @@ def main():
         run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'], xbterminal.local_state['wifi_pass'])
 
     if not run['wifi']['connected']:
-        run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
+        if 'wifi_ssid' in xbterminal.local_state:
+            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
+        else:
+            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
         run['wifi']['networks_last_listed_timestamp'] = 0
         run['wifi']['networks_list_selected_index'] = 0
         run['wifi']['networks_list_length'] = 0
@@ -298,15 +304,40 @@ def main():
             if ui.listWidget.currentItem() != None:
                 ui.wifi_lbl.setText("WiFi network - {ssid}".format(ssid=ui.listWidget.currentItem().text()))
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
-            ui.stackedWidget.setCurrentIndex(6)
-            if 'wifi_pass' not in xbterminal.local_state:
+            if not run['stage_init']:
+                ui.stackedWidget.setCurrentIndex(7)
+                ui.ssid_entered_lbl.setText(xbterminal.local_state['wifi_ssid'])
                 xbterminal.local_state['wifi_pass'] = ''
+                run['stage_init'] = True
 
             if run['key_pressed'] is not None:
+                ui.password_enter.setStyleSheet('background: #FFFFFF')
+
+                if kp.checkIsDone(run['key_pressed']):
+                    log('trying to connect to wifi, ssid: {ssid}, pass: {passkey}'.format(ssid=xbterminal.local_state['wifi_ssid'],
+                                                                                          passkey=xbterminal.local_state['wifi_pass']),
+                        xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+                    run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'], xbterminal.local_state['wifi_pass'])
+                    if run['wifi']['connected']:
+                        log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']),
+                            xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+                        run['stage_init'] = False
+                        run['CURRENT_STAGE'] = defaults.STAGES['wifi']['connected']
+                    else:
+                        ui.password_enter.setStyleSheet('background: #B33A3A')
+
                 xbterminal.local_state['wifi_pass'] = kp.formAlphaNumString(xbterminal.local_state['wifi_pass'],
                                                                             run['key_pressed'])
 
-            ui.wifi_lbl.setText(xbterminal.local_state['wifi_pass'])
+                char_selector_tupl = kp.getCharSelectorTupl(run['key_pressed'])
+                if char_selector_tupl is not None:
+                    char_select_str = xbterminal.gui.ui.formatCharSelectHelperHMTL(char_selector_tupl,
+                                                                                   xbterminal.local_state['wifi_pass'][-1])
+                else:
+                    char_select_str = ''
+                ui.label.setText(char_select_str)
+
+            ui.password_enter.setText(xbterminal.local_state['wifi_pass'])
 
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             xbterminal.helpers.configs.save_local_state()
