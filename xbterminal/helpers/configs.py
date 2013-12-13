@@ -18,9 +18,14 @@ def load_configs():
         pass
 
     with open(local_state_file_abs_path, 'rb') as state_file:
-        xbterminal.local_state = json.loads(state_file.read())
-        log('local state loaded from "{state_path}"'.format(state_path=local_state_file_abs_path),
-                      xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+        try:
+            xbterminal.local_state = json.loads(state_file.read())
+            log('local state loaded from "{state_path}"'.format(state_path=local_state_file_abs_path),
+                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+        except ValueError:
+            xbterminal.local_state = {}
+            save_local_state()
+            log('local state load error, local state purged', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
 
     device_key_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
                                                             xbterminal.defaults.DEVICE_KEY_FILE_PATH))

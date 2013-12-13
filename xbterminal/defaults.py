@@ -6,14 +6,21 @@ import xbterminal.helpers
 import xbterminal.helpers.misc
 
 
-STAGES = ('standby',
-          'enter_amount',
-          'pay_nfc',
-          'pay_qr',
-          'payment_successful',
-          'payment_cancelled',
-          'application_halt',
-            )
+STAGES = {'payment': {'enter_amount': 'enter_amount',
+                      'pay_nfc': 'pay_nfc',
+                      'pay_qr': 'pay_qr',
+                      'pay_qr_addr_only': 'pay_qr_addr_only',
+                      'payment_successful': 'payment_successful',
+                      'payment_cancelled': 'payment_cancelled',
+                      'prepare_payment': 'prepare_payment',
+                        },
+          'wifi': {'choose_ssid': 'choose_ssid',
+                   'enter_passkey': 'enter_passkey',
+                    },
+          'default': 'standby',
+          'application_halt': 'application_halt',
+          }
+
 PROJECT_ABS_PATH = '' #initialized in bootstrap.py
 PROJECT_LOCAL_PATH = 'xbterminal/'
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH,'device_key')

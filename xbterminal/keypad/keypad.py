@@ -1,7 +1,23 @@
 # -*- coding: utf-8 -*-
 import RPi.GPIO as GPIO
 import time
- 
+
+
+button_last_pressed = None
+cycle_index = -1
+alphanum_char_index = 0
+buttons_to_chars = {1: ('/', '%', '$', '&', '^', '*', '(', ')', '=', '-', '{', '}', '[', ']', ),
+                    2: ('a', 'b', 'c', 'A', 'B', 'C', ),
+                    3: ('d', 'e', 'f', 'D', 'E', 'F', ),
+                    4: ('g', 'h', 'i', 'G', 'H', 'I', ),
+                    5: ('j', 'k', 'l', 'J', 'K', 'L', ),
+                    6: ('m', 'n', 'o', 'M', 'N', 'O', ),
+                    7: ('p', 'q', 'r', 's', 'P', 'Q', 'R', 'S', ),
+                    8: ('t', 'u', 'v', 'T', 'U', 'V', ),
+                    9: ('w', 'x', 'y', 'z', 'W', 'X', 'Y', 'Z', ),
+                    0: ('#', '!', '@', '.', ',', '\\', '~', '<', '>', '_', '+', ':', ';', ),
+                    }
+
 class keypad():
     def __init__(self, columnCount=3):
         GPIO.setmode(GPIO.BCM)
@@ -79,7 +95,42 @@ class keypad():
         # Return the value of the key pressed
         self.exit()
         return self.KEYPAD[rowVal][colVal]
-         
+
+
+    #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
+    def toAlphaNum(self, button_pressed):
+        global button_last_pressed, cycle_index, buttons_to_chars
+
+        if button_pressed not in buttons_to_chars:
+            return button_pressed
+
+        if button_pressed != button_last_pressed or cycle_index+1 == len(buttons_to_chars[button_pressed]):
+            cycle_index = -1
+
+        cycle_index = cycle_index + 1
+        button_last_pressed = button_pressed
+
+        return buttons_to_chars[button_pressed][cycle_index]
+
+    def formAlphaNumString(self, current_string, button_pressed):
+        global alphanum_char_index
+
+        if button_pressed == 'D':
+            alphanum_char_index = alphanum_char_index + 1
+            return current_string
+
+        if button_pressed == 'A':
+            current_string = current_string[:-1]
+            return current_string
+
+        if button_pressed in ('B', 'C', '*', '#'):
+            return current_string
+
+        new_char = self.toAlphaNum(button_pressed)
+        new_string = current_string[0:alphanum_char_index] + new_char
+
+        return new_string
+
     def exit(self):
         # Reinitialize all rows and columns as input at exit
         for i in range(len(self.ROW)):

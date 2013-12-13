@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Wed Nov 27 16:32:01 2013
+1# Created: Wed Nov 27 16:32:01 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -151,6 +151,18 @@ class Ui_Form(object):
         self.idle_lbl_3.setWordWrap(True)
         self.idle_lbl_3.setObjectName(_fromUtf8("idle_lbl_3"))
         self.stackedWidget.addWidget(self.screen6)
+        self.page = QtGui.QWidget()
+        self.page.setObjectName(_fromUtf8("page"))
+        self.wifi_lbl = QtGui.QLabel(self.page)
+        self.wifi_lbl.setGeometry(QtCore.QRect(30, 20, 151, 21))
+        self.wifi_lbl.setObjectName(_fromUtf8("wifi_lbl"))
+        self.listWidget = QtGui.QListWidget(self.page)
+        self.listWidget.setGeometry(QtCore.QRect(30, 50, 421, 191))
+        self.listWidget.setObjectName(_fromUtf8("listWidget"))
+        self.stackedWidget.addWidget(self.page)
+        self.page_2 = QtGui.QWidget()
+        self.page_2.setObjectName(_fromUtf8("page_2"))
+        self.stackedWidget.addWidget(self.page_2)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -171,4 +183,5 @@ class Ui_Form(object):
         self.qr_address_lbl.setText(_translate("Form", ".", None))
         self.idle_lbl_2.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Successful</p></body></html>", None))
         self.idle_lbl_3.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Failed</p></body></html>", None))
+        self.wifi_lbl.setText(_translate("Form", "Wi-Fi", None))
 

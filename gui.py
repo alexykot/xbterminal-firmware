@@ -1,5 +1,7 @@
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import random
 import time
 import sys
 import os
@@ -50,6 +52,10 @@ def main():
             for i in wifi_list.values():
                 ui.listWidget.addItem(i)
             wifi_update = False
+
+
+
+        ui.listWidget.setCurrentRow()
 
         if ui.listWidget.currentItem() != None:
             run['wifi'] = "WiFi - {}".format(ui.listWidget.currentItem().text())

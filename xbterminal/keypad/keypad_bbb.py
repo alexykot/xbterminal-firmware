@@ -2,6 +2,21 @@ __author__ = 'tux'
 
 import Adafruit_BBIO.GPIO as GPIO
 
+
+button_last_pressed = None
+cycle_index = None
+buttons_to_chars = {1: ('/', '%', '$', '&', '^', '*', '(', ')', '=', '-', '{', '}', '[', ']',),
+                    2: ('a', 'b', 'c', 'a', 'b', 'c',),
+                    3: ('d', 'e', 'f', 'd', 'e', 'f',),
+                    4: ('g', 'h', 'i', 'g', 'h', 'i',),
+                    5: ('j', 'k', 'l', 'j', 'k', 'l',),
+                    6: ('m', 'n', 'o', 'm', 'n', 'o',),
+                    7: ('p', 'q', 'r', 's', 'p', 'q', 'r', 's',),
+                    8: ('t', 'u', 'v', 't', 'u', 'v',),
+                    9: ('w', 'x', 'y', 'z', 'w', 'x', 'y', 'z',),
+                    0: ('#', '!', '@', '.', ',', '\\', '~', '<', '>', '_', '+', ':', ';',),
+                    }
+
 class keypad():
     def __init__(self, columnCount = 4):
 
@@ -41,7 +56,6 @@ class keypad():
             return
 
     def getKey(self):
-
         # Set all columns as output low
         for j in range(len(self.COLUMN)):
             GPIO.setup(self.COLUMN[j], GPIO.OUT)
@@ -89,6 +103,22 @@ class keypad():
         self.exit()
         return self.KEYPAD[rowVal][colVal]
 
+
+    #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
+    def toAlphaNum(self, button_pressed):
+        global button_last_pressed, cycle_index, buttons_to_chars
+
+        if button_pressed not in buttons_to_chars:
+            return button_pressed
+
+        if button_pressed != button_last_pressed or cycle_index+1 == len(buttons_to_chars[button_pressed]):
+            cycle_index = -1
+
+        cycle_index = cycle_index
+
+        return buttons_to_chars[button_pressed][cycle_index]
+
+
     def exit(self):
         # Reinitialize all rows and columns as input at exit
         for i in range(len(self.ROW)):
@@ -96,14 +126,3 @@ class keypad():
         for j in range(len(self.COLUMN)):
                 GPIO.setup(self.COLUMN[j], GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-if __name__ == '__main__':
-    # Initialize the keypad class
-    kp = keypad()
-
-    # Loop while waiting for a keypress
-    digit = None
-    while digit == None:
-        digit = kp.getKey()
-
-    # Print the result
-    print digit
