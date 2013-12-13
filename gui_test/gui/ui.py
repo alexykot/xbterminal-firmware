@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Dec 12 10:08:33 2013
+# Created: Fri Dec 13 15:22:57 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -151,18 +151,34 @@ class Ui_Form(object):
         self.idle_lbl_3.setWordWrap(True)
         self.idle_lbl_3.setObjectName(_fromUtf8("idle_lbl_3"))
         self.stackedWidget.addWidget(self.screen6)
-        self.page = QtGui.QWidget()
-        self.page.setObjectName(_fromUtf8("page"))
-        self.wifi_lbl = QtGui.QLabel(self.page)
+        self.screen7 = QtGui.QWidget()
+        self.screen7.setObjectName(_fromUtf8("screen7"))
+        self.wifi_lbl = QtGui.QLabel(self.screen7)
         self.wifi_lbl.setGeometry(QtCore.QRect(30, 20, 151, 21))
         self.wifi_lbl.setObjectName(_fromUtf8("wifi_lbl"))
-        self.listWidget = QtGui.QListWidget(self.page)
+        self.listWidget = QtGui.QListWidget(self.screen7)
         self.listWidget.setGeometry(QtCore.QRect(30, 50, 421, 191))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
-        self.stackedWidget.addWidget(self.page)
-        self.page_2 = QtGui.QWidget()
-        self.page_2.setObjectName(_fromUtf8("page_2"))
-        self.stackedWidget.addWidget(self.page_2)
+        self.stackedWidget.addWidget(self.screen7)
+        self.screen8 = QtGui.QWidget()
+        self.screen8.setObjectName(_fromUtf8("screen8"))
+        self.ssid_lbl = QtGui.QLabel(self.screen8)
+        self.ssid_lbl.setGeometry(QtCore.QRect(20, 50, 41, 31))
+        self.ssid_lbl.setObjectName(_fromUtf8("ssid_lbl"))
+        self.ssid_entered_lbl = QtGui.QLabel(self.screen8)
+        self.ssid_entered_lbl.setGeometry(QtCore.QRect(130, 50, 271, 31))
+        self.ssid_entered_lbl.setText(_fromUtf8(""))
+        self.ssid_entered_lbl.setObjectName(_fromUtf8("ssid_entered_lbl"))
+        self.password_enter = QtGui.QLineEdit(self.screen8)
+        self.password_enter.setGeometry(QtCore.QRect(130, 96, 271, 31))
+        self.password_enter.setObjectName(_fromUtf8("password_enter"))
+        self.password_lbl = QtGui.QLabel(self.screen8)
+        self.password_lbl.setGeometry(QtCore.QRect(20, 100, 81, 21))
+        self.password_lbl.setObjectName(_fromUtf8("password_lbl"))
+        self.label = QtGui.QLabel(self.screen8)
+        self.label.setGeometry(QtCore.QRect(30, 160, 421, 61))
+        self.label.setObjectName(_fromUtf8("label"))
+        self.stackedWidget.addWidget(self.screen8)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -184,4 +200,7 @@ class Ui_Form(object):
         self.idle_lbl_2.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Successful</p></body></html>", None))
         self.idle_lbl_3.setText(_translate("Form", "<html><head/><body><p align=\"center\">Payment</p><p align=\"center\">Failed</p></body></html>", None))
         self.wifi_lbl.setText(_translate("Form", "Wi-Fi", None))
+        self.ssid_lbl.setText(_translate("Form", "SSID", None))
+        self.password_lbl.setText(_translate("Form", "Password", None))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\">2 a b c A B C</p></body></html>", None))
 

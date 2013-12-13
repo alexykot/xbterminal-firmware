@@ -16,7 +16,7 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
                         },
           'wifi': {'choose_ssid': 'choose_ssid',
                    'enter_passkey': 'enter_passkey',
-                    },
+                    },re
           'default': 'standby',
           'application_halt': 'application_halt',
           }
