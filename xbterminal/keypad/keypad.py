@@ -123,7 +123,7 @@ class keypad():
             current_string = current_string[:-1]
             return current_string
 
-        if button_pressed in ('B', 'C', '*', '#'):
+        if button_pressed in ('B', 'C', '.', '#'):
             return current_string
 
         new_char = self.toAlphaNum(button_pressed)

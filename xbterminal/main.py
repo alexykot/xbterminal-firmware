@@ -47,7 +47,7 @@ def main():
     run['wifi'] = {}
     run['wifi']['connected'] = False
 
-    if 'wifi_ssid' in xbterminal.local_state and 'wifi_pass' in xbterminal.local_state:
+    if 'wifi_ssid' in xbterminal.local_state and 'wifi_pass' in xbterminal.local_state and False:
         run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'], xbterminal.local_state['wifi_pass'])
 
     if not run['wifi']['connected']:
@@ -295,16 +295,19 @@ def main():
 
             ui.listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
 
-                # defaults.STAGES['wifi']['passkey'] = kp.formAlphaNumString(defaults.STAGES['wifi']['passkey'],
-                #                                                            run['key_pressed'])
-                #
-                # ui.wifi_lbl.setText(defaults.STAGES['wifi']['passkey'])
-
-
             if ui.listWidget.currentItem() != None:
                 ui.wifi_lbl.setText("WiFi network - {ssid}".format(ssid=ui.listWidget.currentItem().text()))
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
-            run['CURRENT_STAGE'] = defaults.STAGES['application_halt']
+            ui.stackedWidget.setCurrentIndex(6)
+            if 'wifi_pass' not in xbterminal.local_state:
+                xbterminal.local_state['wifi_pass'] = ''
+
+            if run['key_pressed'] is not None:
+                xbterminal.local_state['wifi_pass'] = kp.formAlphaNumString(xbterminal.local_state['wifi_pass'],
+                                                                            run['key_pressed'])
+
+            ui.wifi_lbl.setText(xbterminal.local_state['wifi_pass'])
+
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             xbterminal.helpers.configs.save_local_state()
             log('application halted', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
