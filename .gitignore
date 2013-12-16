@@ -1,6 +1,6 @@
 .idea/*
 *.pyc
 xbterminal/runtime/*
-xbterminal/wifi/*
+xbterminal/devwifi/*
 xbterminal/device_key
 wifitest.py

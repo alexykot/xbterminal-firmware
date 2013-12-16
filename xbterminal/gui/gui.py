@@ -26,13 +26,15 @@ def initGUI():
     global xbterminal
 
     app = QtGui.QApplication(sys.argv)
+
     main_win = GUI()
+    cursor = QtGui.QCursor(QtCore.Qt.BlankCursor)
+    main_win.setCursor(cursor)
     main_win.ui.continue_lbl.setText("")
     main_win.ui.currency_lbl.setText(xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
     main_win.ui.currency_lbl_2.setText(xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
 
     return app, main_win
-
 
 # Class to initiate GUI, at the moment i can only seem to perform actions on the GUI if its done like this
 class GUI(QtGui.QWidget):

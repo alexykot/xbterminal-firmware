@@ -18,7 +18,6 @@ from xbterminal import defaults
 from xbterminal import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
-from xbterminal import helpers
 from xbterminal.helpers.log import log
 
 try:
@@ -35,7 +34,7 @@ def main():
     ui = xbterminal.gui.runtime['main_win'].ui
 
     #init runtime data
-    defaults.QR_IMAGE_PATH = os.path.join(defaults.PROJECT_ABS_PATH, 'xbterminal', 'images', 'qr.png')
+    defaults.QR_IMAGE_PATH = os.path.join(defaults.RUNTIME_PATH, 'qr.png')
     xbterminal.runtime = {}
     run = xbterminal.runtime
     run['CURRENT_STAGE'] = defaults.STAGES['default']
@@ -50,17 +49,20 @@ def main():
     run['wifi'] = {}
     run['wifi']['connected'] = False
 
-    if 'wifi_ssid' in xbterminal.local_state and 'wifi_pass' in xbterminal.local_state and False:
-        run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'], xbterminal.local_state['wifi_pass'])
+    if xbterminal.helpers.wireless.is_wifi_available():
+        if 'wifi_ssid' in xbterminal.local_state and 'wifi_pass' in xbterminal.local_state and False:
+            run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'], xbterminal.local_state['wifi_pass'])
 
-    if not run['wifi']['connected']:
-        if 'wifi_ssid' in xbterminal.local_state:
-            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
-        else:
-            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
-        run['wifi']['networks_last_listed_timestamp'] = 0
-        run['wifi']['networks_list_selected_index'] = 0
-        run['wifi']['networks_list_length'] = 0
+        if not run['wifi']['connected']:
+            if 'wifi_ssid' in xbterminal.local_state:
+                run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
+            else:
+                run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
+            run['wifi']['networks_last_listed_timestamp'] = 0
+            run['wifi']['networks_list_selected_index'] = 0
+            run['wifi']['networks_list_length'] = 0
+    else:
+        log('no wifi found, hoping for wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
 
     #blockchain.init()
 
@@ -201,17 +203,19 @@ def main():
             if ((run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr'] or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr_addr_only'])
                 and not run['qr_rendered']):
                 if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
-                    helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'], run['amount_to_pay_btc']), defaults.QR_IMAGE_PATH)
+                    xbterminal.helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'],
+                                                                      run['amount_to_pay_btc']),
+                                                 defaults.QR_IMAGE_PATH)
                 else:
-                    helpers.qr.qr_gen(run['transactions_addresses']['local'], defaults.QR_IMAGE_PATH)
+                    xbterminal.helpers.qr.qr_gen(run['transactions_addresses']['local'], defaults.QR_IMAGE_PATH)
                 ui.stackedWidget.setCurrentIndex(3)
                 ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
                 run['qr_rendered'] = True
 
             if not run['received_payment']:
-                if not helpers.nfcpy.is_active():
-                    helpers.nfcpy.start(run['transaction_bitcoin_uri'])
+                if not xbterminal.helpers.nfcpy.is_active():
+                    xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
                     time.sleep(0.5)
 
                 time.sleep(0.5) #hack for RPi, as it can't work faster
@@ -251,7 +255,7 @@ def main():
                     continue
 
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['payment_successful']:
-            helpers.nfcpy.stop()
+            xbterminal.helpers.nfcpy.stop()
             if run['key_pressed'] is not None:
                 run['display_value_unformatted'] = ''
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
@@ -262,7 +266,7 @@ def main():
                 continue
             pass
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['payment_cancelled']:
-            helpers.nfcpy.stop()
+            xbterminal.helpers.nfcpy.stop()
             if run['key_pressed'] is not None:
                 run['display_value_unformatted'] = ''
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
@@ -342,7 +346,7 @@ def main():
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             xbterminal.helpers.configs.save_local_state()
             log('application halted', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
-            helpers.nfcpy.stop()
+            xbterminal.helpers.nfcpy.stop()
             sys.exit()
 
         if run['CURRENT_STAGE'] in defaults.STAGES['payment'] and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
