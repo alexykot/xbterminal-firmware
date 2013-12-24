@@ -1,6 +1,7 @@
 __author__ = 'tux'
 
 import Adafruit_BBIO.GPIO as GPIO
+import time
 
 
 button_last_pressed = None
@@ -153,4 +154,17 @@ class keypad():
                 GPIO.setup(self.ROW[i], GPIO.IN, pull_up_down=GPIO.PUD_UP)
         for j in range(len(self.COLUMN)):
                 GPIO.setup(self.COLUMN[j], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+
+if __name__ == '__main__':
+    # Initialize the keypad class
+    kp = keypad()
+
+    # Loop while waiting for a keypress
+    digit = None
+    while True:
+        digit = kp.getKey()
+        print digit
+        time.sleep(1)
+
 
