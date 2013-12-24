@@ -17,45 +17,61 @@ buttons_to_chars = {1: ('/', '%', '$', '&', '^', '*', '(', ')', '=', '-', '{', '
                     0: ('#', '!', '@', '.', ',', '\\', '~', '<', '>', '_', '+', ':', ';',),
                     }
 
+pins = {
+        'pin1': "P8_14",
+        'pin2': "P8_16",
+        'pin3': "P8_11",
+        'pin4': "P8_10",
+        'pin5': "P8_7",
+        'pin6': "P8_9",
+        'pin7': "P8_26",
+        'pin8': "P8_8",
+}
+
 class keypad():
-    def __init__(self, columnCount = 4):
+    def __init__(self):
 
-        # Define pins to use for 3x4 Keypad
-        pin1 = "P8_14"
-        pin2 = "P8_16"
-        pin3 = "P8_11"
-        pin4 = "P9_13"
-        pin5 = "P9_12"
-        pin6 = "P9_26"
-        pin7 = "P9_11"
-        pin8 = "P9_24"
+        global pins
 
-        # CONSTANTS
-        if columnCount is 3:
-            self.KEYPAD = [
-                [1,2,3],
-                [4,5,6],
-                [7,8,9],
-                ["*",0,"#"]
-            ]
-
-            self.ROW         = [pin7, pin6, pin5, pin4]
-            self.COLUMN      = [pin3, pin2, pin1]
-
-        elif columnCount is 4:
-            self.KEYPAD = [
-                [1,2,3,"A"],
-                [4,5,6,"B"],
-                [7,8,9,"C"],
-                ["*",0,"#","D"]
-            ]
-
-            self.ROW         = [pin8, pin7, pin6, pin5]
-            self.COLUMN      = [pin4, pin3, pin2, pin1]
-        else:
-            return
+        # self.KEYPAD = {17: 1,
+        #                49: 2,
+        #                81: 3,
+        #                18: 4,
+        #                50: 5,
+        #                82: 6,
+        #                20: 7,
+        #                52: 8,
+        #                84: 9,
+        #                56: 0,
+        #                145: 'A',
+        #                146: 'B',
+        #                148: 'C',
+        #                152: 'D',
+        #                88: '#',
+        #                24: '*',
+        #                 }
+        self.KEYPAD = {17: 1,
+                       18: 2,
+                       20: 3,
+                       49: 4,
+                       50: 5,
+                       52: 6,
+                       81: 7,
+                       82: 8,
+                       84: 9,
+                       146: 0,
+                       24: 'A',
+                       56: 'B',
+                       88: 'C',
+                       152: 'D',
+                       145: '*',
+                       148: '#',
+                        }
+        self.ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]
+        self.COLUMN = [pins['pin4'], pins['pin3'], pins['pin2'], pins['pin1']]
 
     def getKey(self):
+        bits_list = [0,0,0,0,0,0,0,0]
         # Set all columns as output low
         for j in range(len(self.COLUMN)):
             GPIO.setup(self.COLUMN[j], GPIO.OUT)
@@ -72,6 +88,7 @@ class keypad():
             tmpRead = GPIO.input(self.ROW[i])
             if tmpRead == 0:
                 rowVal = i
+                bits_list[7-i] = 1
 
         # if rowVal is not 0 thru 3 then no button was pressed and we can exit
         if rowVal <0 or rowVal >4:
@@ -80,7 +97,7 @@ class keypad():
 
         # Convert columns to input
         for j in range(len(self.COLUMN)):
-                GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
+            GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
 
         # Switch the i-th row found from scan to output
         GPIO.setup(self.ROW[rowVal], GPIO.OUT)
@@ -93,15 +110,26 @@ class keypad():
             tmpRead = GPIO.input(self.COLUMN[j])
             if tmpRead == 1:
                 colVal=j
+                bits_list[3-j] = 1
 
         # if colVal is not 0 thru 2 then no button was pressed and we can exit
-        if colVal <0 or colVal >2:
+        if colVal <0 or colVal >3:
             self.exit()
             return
 
+        for key, val in enumerate(bits_list):
+            bits_list[key] = str(val)
+        binary_str = ''.join(bits_list)
+        binary_str = '0b'+binary_str
+        keynum = int(binary_str, 2)
+        try:
+            key = self.KEYPAD[keynum]
+        except KeyError:
+            key = None
+
         # Return the value of the key pressed
         self.exit()
-        return self.KEYPAD[rowVal][colVal]
+        return key
 
 
     #this allows to use numeric keypad to enter digits, upper and lower letters and special chars

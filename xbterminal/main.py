@@ -19,11 +19,7 @@ from xbterminal import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
 from xbterminal.helpers.log import log
-
-try:
-    from xbterminal.keypad import keypad
-except ImportError:
-    pass
+from xbterminal.keypad import keypad_bbb as keypad
 
 def main():
     xbterminal.helpers.configs.load_configs()
@@ -67,7 +63,7 @@ def main():
     #blockchain.init()
 
     try:
-        kp = keypad.keypad(columnCount=4)
+        kp = keypad.keypad()
     except NameError:
         pass
 
