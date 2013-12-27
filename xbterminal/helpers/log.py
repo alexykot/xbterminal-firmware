@@ -9,7 +9,7 @@ import xbterminal
 def log(message_text, message_type=None):
     global xbterminal
     if message_type is None:
-        message_type = xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR']
+        message_type = xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG']
 
     timestamp = utils.formatdate(time.time())
 

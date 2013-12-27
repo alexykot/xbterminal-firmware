@@ -19,8 +19,12 @@ def load_configs():
 
     with open(local_state_file_abs_path, 'rb') as state_file:
         try:
-            xbterminal.local_state = json.loads(state_file.read())
+            local_state_contents = state_file.read()
+
+            xbterminal.local_state = json.loads(local_state_contents)
             log('local state loaded from "{state_path}"'.format(state_path=local_state_file_abs_path),
+                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            log('local state: {local_state}'.format(local_state=local_state_contents),
                           xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
         except ValueError:
             xbterminal.local_state = {}
@@ -44,6 +48,8 @@ def load_configs():
             result = requests.get(url=config_url)
             xbterminal.remote_config = result.json()
             log('remote config loaded from {config_url}'.format(config_url=config_url),
+                xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            log('remote config: {remote_config}'.format(remote_config=result.text),
                 xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
             save_remote_config_cache()
         except:
