@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri Dec 13 15:23:03 2013
+# Created: Thu Jan  2 09:07:26 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,6 +33,16 @@ class Ui_Form(object):
         font.setFamily(_fromUtf8("DejaVu Sans"))
         self.stackedWidget.setFont(font)
         self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
+        self.loading_screen = QtGui.QWidget()
+        self.loading_screen.setObjectName(_fromUtf8("loading_screen"))
+        self.progressBar = QtGui.QProgressBar(self.loading_screen)
+        self.progressBar.setGeometry(QtCore.QRect(180, 170, 118, 23))
+        self.progressBar.setProperty("value", 0)
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
+        self.label_2 = QtGui.QLabel(self.loading_screen)
+        self.label_2.setGeometry(QtCore.QRect(160, 90, 211, 41))
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.stackedWidget.addWidget(self.loading_screen)
         self.screen1 = QtGui.QWidget()
         self.screen1.setObjectName(_fromUtf8("screen1"))
         self.idle_lbl = QtGui.QLabel(self.screen1)
@@ -151,7 +161,6 @@ class Ui_Form(object):
         self.idle_lbl_3.setWordWrap(True)
         self.idle_lbl_3.setObjectName(_fromUtf8("idle_lbl_3"))
         self.stackedWidget.addWidget(self.screen6)
-
         self.screen7 = QtGui.QWidget()
         self.screen7.setObjectName(_fromUtf8("screen7"))
         self.wifi_lbl = QtGui.QLabel(self.screen7)
@@ -161,7 +170,6 @@ class Ui_Form(object):
         self.listWidget.setGeometry(QtCore.QRect(30, 50, 421, 191))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
         self.stackedWidget.addWidget(self.screen7)
-
         self.screen8 = QtGui.QWidget()
         self.screen8.setObjectName(_fromUtf8("screen8"))
         self.ssid_lbl = QtGui.QLabel(self.screen8)
@@ -187,6 +195,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
+        self.label_2.setText(_translate("Form", "Loading Please Wait", None))
         self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">Please press</p><p align=\"center\"><span style=\" font-weight:600;\">ENTER</span></p><p align=\"center\">to begin</p></body></html>", None))
         self.amount_lbl.setText(_translate("Form", "Enter Amount", None))
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
@@ -204,17 +213,5 @@ class Ui_Form(object):
         self.wifi_lbl.setText(_translate("Form", "Wi-Fi", None))
         self.ssid_lbl.setText(_translate("Form", "SSID", None))
         self.password_lbl.setText(_translate("Form", "Password", None))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\">2 a b c A B C</p></body></html>", None))
 
-
-def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
-    char_list = []
-
-    for index, char in enumerate(char_tupl):
-        if char_selected == char:
-            char_list.append("<strong><font color=\"#333333\" size=\"5\">{char_selected}</font></strong>".format(char_selected=char))
-        else:
-            char_list.append(str(char))
-
-    char_string = ' '.join(char_list)
-
-    return "<html><head/><body><p align=\"center\"><font color=\"#666666\">{char_string}</font></p></body></html>".format(char_string=char_string)

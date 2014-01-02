@@ -17,6 +17,8 @@ def main():
 
     wifi_update = True
 
+    progress = 0
+
     # Setup GUI and local variables
     gui_test.gui.runtime = {}
     gui_test.gui.runtime['app'], gui_test.gui.runtime['main_win'] = gui.initGUI()
@@ -48,14 +50,17 @@ def main():
             sys.exit()
 
         if wifi_update == True:
-            ui.stackedWidget.setCurrentIndex(6)
+            ui.stackedWidget.setCurrentIndex(0)
             for i in wifi_list.values():
                 ui.listWidget.addItem(i)
             wifi_update = False
 
 
 
-        ui.listWidget.setCurrentRow()
+        #ui.listWidget.setCurrentRow()
+
+        progress = progress + 1
+        ui.progressBar.setValue(progress)
 
         if ui.listWidget.currentItem() != None:
             run['wifi'] = "WiFi - {}".format(ui.listWidget.currentItem().text())
