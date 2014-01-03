@@ -33,6 +33,7 @@ class Ui_Form(object):
         font.setFamily(_fromUtf8("DejaVu Sans"))
         self.stackedWidget.setFont(font)
         self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
+
         self.screen1 = QtGui.QWidget()
         self.screen1.setObjectName(_fromUtf8("screen1"))
         self.idle_lbl = QtGui.QLabel(self.screen1)
@@ -44,6 +45,7 @@ class Ui_Form(object):
         self.idle_lbl.setWordWrap(True)
         self.idle_lbl.setObjectName(_fromUtf8("idle_lbl"))
         self.stackedWidget.addWidget(self.screen1)
+
         self.screen2 = QtGui.QWidget()
         self.screen2.setObjectName(_fromUtf8("screen2"))
         self.amount_lbl = QtGui.QLabel(self.screen2)
@@ -60,6 +62,7 @@ class Ui_Form(object):
         self.amount_text.setFont(font)
         self.amount_text.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.amount_text.setObjectName(_fromUtf8("amount_text"))
+        self.amount_text.setCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
         self.continue_lbl = QtGui.QLabel(self.screen2)
         self.continue_lbl.setGeometry(QtCore.QRect(240, 180, 181, 20))
         font = QtGui.QFont()
@@ -76,6 +79,7 @@ class Ui_Form(object):
         self.currency_lbl.setFont(font)
         self.currency_lbl.setObjectName(_fromUtf8("currency_lbl"))
         self.stackedWidget.addWidget(self.screen2)
+
         self.screen3 = QtGui.QWidget()
         self.screen3.setObjectName(_fromUtf8("screen3"))
         self.currency_lbl_2 = QtGui.QLabel(self.screen3)
@@ -113,6 +117,7 @@ class Ui_Form(object):
         self.exchange_rate.setGeometry(QtCore.QRect(130, 130, 161, 21))
         self.exchange_rate.setObjectName(_fromUtf8("exchange_rate"))
         self.stackedWidget.addWidget(self.screen3)
+
         self.screen4 = QtGui.QWidget()
         self.screen4.setObjectName(_fromUtf8("screen4"))
         self.qr_image = QtGui.QLabel(self.screen4)
@@ -129,6 +134,7 @@ class Ui_Form(object):
         self.qr_address_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.qr_address_lbl.setObjectName(_fromUtf8("qr_address_lbl"))
         self.stackedWidget.addWidget(self.screen4)
+
         self.screen5 = QtGui.QWidget()
         self.screen5.setObjectName(_fromUtf8("screen5"))
         self.idle_lbl_2 = QtGui.QLabel(self.screen5)
@@ -140,6 +146,7 @@ class Ui_Form(object):
         self.idle_lbl_2.setWordWrap(True)
         self.idle_lbl_2.setObjectName(_fromUtf8("idle_lbl_2"))
         self.stackedWidget.addWidget(self.screen5)
+
         self.screen6 = QtGui.QWidget()
         self.screen6.setObjectName(_fromUtf8("screen6"))
         self.idle_lbl_3 = QtGui.QLabel(self.screen6)

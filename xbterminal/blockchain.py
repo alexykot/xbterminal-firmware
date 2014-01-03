@@ -22,36 +22,44 @@ def init():
     global connection
 
     if connection is None:
-        connection_test = BitcoinConnection(user=defaults.BITCOIND_USER,
-                                               password=defaults.BITCOIND_PASS,
-                                               host=defaults.BITCOIND_HOST,
-                                               port=defaults.BITCOIND_PORT,
-                                               use_https=False)
+        connection_probe = BitcoinConnection(user=defaults.BITCOIND_USER,
+                                       password=defaults.BITCOIND_PASS,
+                                       host=defaults.BITCOIND_HOST,
+                                       port=defaults.BITCOIND_PORT,
+                                       use_https=False)
         try:
-            connection_test.getinfo()
+            connection_probe.getinfo()
+            connection = connection_probe
         except socket.error:
-             _start_bitcoind(connection_test)
+            connection = _start_bitcoind(connection_probe)
 
-def _start_bitcoind(connection_test):
+    log('blockchain init done')
+
+
+
+def _start_bitcoind(connection_probe):
     global xbterminal
 
     if 'last_started' not in xbterminal.local_state or xbterminal.local_state['last_started'] + defaults.BITCOIND_MAX_BLOCKCHAIN_AGE < time.time():
         _presync_blockchain()
 
-    log('bitcoind starting', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+    log('bitcoind starting')
     subprocess.Popen("bitcoind")
     while True:
         try:
-            test = connection_test.getinfo()
+            connection_probe.getinfo()
             break
         except socket.error:
             time.sleep(1)
-    log('bitcoind started', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+    log('bitcoind started')
+
+    return connection_probe
 
 
 def _presync_blockchain():
     blocks_sync_successful = False
     chainstate_sync_successful = False
+    log('blockchain presync starting')
     for blockchain_server in defaults.BITCOIND_BLOCKCHAIN_SERVERS:
         key_file_path = os.path.join(defaults.BITCOIND_BLOCKCHAIN_SERVERS_KEYS_PATH,
                                      '{name}_{user}_rsa'.format(name=blockchain_server['name'],
@@ -86,8 +94,7 @@ def _presync_blockchain():
                     xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
 
         if not chainstate_sync_successful:
-            log('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']),
-                xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            log('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
             command_chainstate = []
             command_chainstate.append("rsync")
             command_chainstate.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
@@ -109,7 +116,10 @@ def _presync_blockchain():
                 log('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output),
                     xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
         if blocks_sync_successful and chainstate_sync_successful:
-            break
+            log('blockchain presync successful')
+            return
+    log('blockchain presync failed')
+
 
 
 def getAddressBalance(address):

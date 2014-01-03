@@ -26,10 +26,9 @@ def initGUI():
     global xbterminal
 
     app = QtGui.QApplication(sys.argv)
+    app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
 
     main_win = GUI()
-    cursor = QtGui.QCursor(QtCore.Qt.BlankCursor)
-    main_win.setCursor(cursor)
     main_win.ui.continue_lbl.setText("")
     main_win.ui.currency_lbl.setText(xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
     main_win.ui.currency_lbl_2.setText(xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])

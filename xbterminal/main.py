@@ -76,7 +76,7 @@ def main():
     else:
         log('no wifi found, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
 
-    #blockchain.init()
+    blockchain.init()
 
     keypad = xbterminal.keypad.keypad.keypad()
 
