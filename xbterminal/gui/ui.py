@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri Dec 13 15:23:03 2013
+# Created: Thu Jan  2 09:07:26 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,6 +33,17 @@ class Ui_Form(object):
         font.setFamily(_fromUtf8("DejaVu Sans"))
         self.stackedWidget.setFont(font)
         self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
+
+        self.loading_screen = QtGui.QWidget()
+        self.loading_screen.setObjectName(_fromUtf8("loading_screen"))
+        self.progressBar = QtGui.QProgressBar(self.loading_screen)
+        self.progressBar.setGeometry(QtCore.QRect(180, 170, 118, 23))
+        self.progressBar.setProperty("value", 0)
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
+        self.label_2 = QtGui.QLabel(self.loading_screen)
+        self.label_2.setGeometry(QtCore.QRect(160, 90, 211, 41))
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.stackedWidget.addWidget(self.loading_screen)
 
         self.screen1 = QtGui.QWidget()
         self.screen1.setObjectName(_fromUtf8("screen1"))
@@ -194,6 +205,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
+        self.label_2.setText(_translate("Form", "Loading Please Wait", None))
         self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">Please press</p><p align=\"center\"><span style=\" font-weight:600;\">ENTER</span></p><p align=\"center\">to begin</p></body></html>", None))
         self.amount_lbl.setText(_translate("Form", "Enter Amount", None))
         self.continue_lbl.setText(_translate("Form", "press enter to continue", None))
@@ -211,6 +223,7 @@ class Ui_Form(object):
         self.wifi_lbl.setText(_translate("Form", "Wi-Fi", None))
         self.ssid_lbl.setText(_translate("Form", "SSID", None))
         self.password_lbl.setText(_translate("Form", "Password", None))
+        self.label.setText(_translate("Form", "<html><head/><body><p align=\"center\">2 a b c A B C</p></body></html>", None))
 
 
 def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
@@ -225,3 +238,4 @@ def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
     char_string = ' '.join(char_list)
 
     return "<html><head/><body><p align=\"center\"><font color=\"#666666\">{char_string}</font></p></body></html>".format(char_string=char_string)
+        

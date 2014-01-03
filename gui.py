@@ -11,11 +11,17 @@ import gui_test
 import gui_test.defaults as defaults
 from gui_test.gui import gui
 
+
+global current_screen
+current_screen = 0
+
 def main():
 
     wifi_list = {1: "wifi_1", 2: "wifi_2", 3: "wifi_3"}
 
     wifi_update = True
+
+    progress = 0
 
     # Setup GUI and local variables
     gui_test.gui.runtime = {}
@@ -25,6 +31,7 @@ def main():
 
     gui_test.runtime = {}
     run = gui_test.runtime
+    run['CURRENT_SCREEN'] = 0
     run['CURRENT_STAGE'] = defaults.STAGES[0]
     run['amount_to_pay_fiat'] = None
     run['amount_to_pay_btc'] = None
@@ -37,6 +44,7 @@ def main():
 
 
     while True:
+
         # At beginning of each loop push events
         try:
             gui_test.gui.runtime['app'].sendPostedEvents()
@@ -44,18 +52,23 @@ def main():
         except NameError:
             pass
 
+        run['CURRENT_SCREEN'] = ui.stackedWidget.currentIndex() + 1
+
         if run['CURRENT_STAGE'] == 'application_halt':
             sys.exit()
 
-        if wifi_update == True:
-            ui.stackedWidget.setCurrentIndex(6)
-            for i in wifi_list.values():
-                ui.listWidget.addItem(i)
-            wifi_update = False
+        #if wifi_update == True:
+        #    ui.stackedWidget.setCurrentIndex(1)
+        #    for i in wifi_list.values():
+        #        ui.listWidget.addItem(i)
+        #    wifi_update = False
 
 
 
-        ui.listWidget.setCurrentRow()
+        #ui.listWidget.setCurrentRow()
+
+        progress = progress + 1
+        ui.progressBar.setValue(progress)
 
         if ui.listWidget.currentItem() != None:
             run['wifi'] = "WiFi - {}".format(ui.listWidget.currentItem().text())

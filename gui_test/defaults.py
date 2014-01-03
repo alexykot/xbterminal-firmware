@@ -6,6 +6,8 @@ import xbterminal.helpers
 import xbterminal.helpers.misc
 
 
+CURRENT_SCREEN = 0
+
 STAGES = ('standby',
           'enter_amount',
           'pay_nfc',

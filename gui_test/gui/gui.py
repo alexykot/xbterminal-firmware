@@ -58,8 +58,7 @@ class GUI(QtGui.QWidget):
             self.close()
 
         if k.key() == QtCore.Qt.Key_Return:
-            gui_test.runtime['CURRENT_STAGE'] = 'enter_amount'
-            self.ui.stackedWidget.setCurrentIndex(6)
+            self.ui.stackedWidget.setCurrentIndex(gui_test.runtime['CURRENT_SCREEN'])
 
     def closeEvent(self, QCloseEvent):
         global gui_test
