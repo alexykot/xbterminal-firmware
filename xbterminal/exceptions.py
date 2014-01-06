@@ -15,3 +15,7 @@ class NotEnoughFunds(Exception):
 class PrivateKeysMissing(Exception):
     exchange_name = None
     strerror = u'private keys required for transaction signing are missing'
+
+class ConfigLoadError(Exception):
+    exchange_name = None
+    strerror = u'configuration load failure'

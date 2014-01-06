@@ -7,6 +7,7 @@ import unicodedata
 from PyQt4 import QtGui, QtCore
 
 import xbterminal
+from xbterminal.exceptions import ConfigLoadError
 import xbterminal.keypad
 import xbterminal.keypad.keypad
 import xbterminal.bitcoinaverage
@@ -24,12 +25,15 @@ from xbterminal import stages
 from xbterminal.helpers.log import log
 
 def main():
-    xbterminal.helpers.configs.load_configs()
-
+    log('starting')
     # Setup GUI and local variables
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
     ui = xbterminal.gui.runtime['main_win'].ui
+    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
+
+    xbterminal.helpers.configs.load_local_state()
+    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
 
     #init runtime data
     defaults.QR_IMAGE_PATH = os.path.join(defaults.RUNTIME_PATH, 'qr.png')
@@ -75,14 +79,24 @@ def main():
             run['wifi']['networks_list_length'] = 0
     else:
         log('no wifi found, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
+    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
+
+    try:
+        xbterminal.helpers.configs.load_remote_config()
+    except ConfigLoadError:
+        log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+        exit()
 
     blockchain.init()
+    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
 
     keypad = xbterminal.keypad.keypad.keypad()
+    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
 
     xbterminal.local_state['last_started'] = time.time()
     xbterminal.helpers.configs.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
 
+    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
     log('main loop starting')
     while True:
         # At beginning of each loop push events
@@ -96,7 +110,7 @@ def main():
         try:
             run['key_pressed'] = keypad.getKey()
             if run['key_pressed'] is not None:
-                if run['key_pressed'] == '*':
+                if run['key_pressed'] == 'escape':
                     exit()
                 run['last_activity_timestamp'] = time.time()
                 time.sleep(0.2)
@@ -105,19 +119,20 @@ def main():
 
         if run['CURRENT_STAGE'] == defaults.STAGES['default']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(0)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['default'])
                 run['stage_init'] = True
 
             if run['key_pressed'] is not None:
-                ui.stackedWidget.setCurrentIndex(1)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 ui.amount_text.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+                run['stage_init'] = False
                 continue
 
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
-            if (isinstance(run['key_pressed'], (int, long)) or run['key_pressed'] == "A"):
-                if run['key_pressed'] == "A" and run['display_value_unformatted'] == '':
-                    ui.stackedWidget.setCurrentIndex(0)
+            if (isinstance(run['key_pressed'], (int, long)) or run['key_pressed'] == 'backspace'):
+                if run['key_pressed'] == 'backspace' and run['display_value_unformatted'] == '':
+                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['default'])
                     run['CURRENT_STAGE'] = defaults.STAGES['default']
                     continue
 
@@ -127,20 +142,20 @@ def main():
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
                 ui.amount_text.setText(run['display_value_formatted'])
-            elif run['key_pressed'] is "D":
+            elif run['key_pressed'] is 'enter':
                 run['amount_to_pay_fiat'] = stages.inputToDecimal(run['display_value_unformatted'])
                 if run['amount_to_pay_fiat'] > 0:
-                    ui.stackedWidget.setCurrentIndex(2)
-                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['prepare_payment']
+                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_nfc'])
+                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['payment_loading']
                 else:
                     ui.amount_text.setStyleSheet('background: #B33A3A')
                     ui.continue_lbl.setText("error: no amount entered")
                     pass
                 continue
 
-        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['prepare_payment']:
+        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['payment_loading']:
             if run['amount_to_pay_fiat'] is None:
-                ui.stackedWidget.setCurrentIndex(1)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
@@ -189,7 +204,7 @@ def main():
             ui.btc_amount.setText(str(run['amount_to_pay_btc']))
             ui.exchange_rate.setText(stages.formatDecimal(run['rate_btc'], defaults.OUTPUT_DEC_PLACES))
 
-            if run['key_pressed'] == "A":
+            if run['key_pressed'] == 'backspace':
                 run['amount_to_pay_btc'] = None
                 run['amount_to_pay_fiat'] = None
                 run['rate_btc'] = None
@@ -200,12 +215,12 @@ def main():
                 ui.exchange_rate.setText("0")
                 ui.continue_lbl.setText("")
 
-                ui.stackedWidget.setCurrentIndex(1)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
 
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
-            if run['key_pressed'] == "#":
+            if run['key_pressed'] == 'qr_code':
                 if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']:
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
@@ -225,7 +240,7 @@ def main():
                                                  defaults.QR_IMAGE_PATH)
                 else:
                     xbterminal.helpers.qr.qr_gen(run['transactions_addresses']['local'], defaults.QR_IMAGE_PATH)
-                ui.stackedWidget.setCurrentIndex(3)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_qr'])
                 ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                 ui.qr_image.setPixmap(QtGui.QPixmap(defaults.QR_IMAGE_PATH))
                 run['qr_rendered'] = True
@@ -264,7 +279,7 @@ def main():
                     ui.continue_lbl.setText("")
 
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['payment_successful']
-                    ui.stackedWidget.setCurrentIndex(4)
+                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['payment_successful'])
 
                     continue
             elif run['invoice_id'] is not None and not run['invoice_paid']:
@@ -280,7 +295,7 @@ def main():
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
                 ui.amount_text.setText(run['display_value_formatted'])
 
-                ui.stackedWidget.setCurrentIndex(1)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
             pass
@@ -291,12 +306,12 @@ def main():
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
                 ui.amount_text.setText(run['display_value_formatted'])
 
-                ui.stackedWidget.setCurrentIndex(1)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['payment_cancelled'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
             pass
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['choose_ssid']:
-            ui.stackedWidget.setCurrentIndex(6)
+            ui.stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
             if run['wifi']['networks_last_listed_timestamp'] + 15 < time.time():
                 networks_list = xbterminal.helpers.wireless.discover_networks()
                 run['wifi']['networks_last_listed_timestamp'] = time.time()
@@ -317,7 +332,7 @@ def main():
                                                                       (run['wifi']['networks_list_length']-1))
                 elif run['key_pressed'] == 2:
                     run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index']-1, 0)
-                elif run['key_pressed'] == 'D':
+                elif run['key_pressed'] == 'enter':
                     xbterminal.local_state['wifi_ssid'] = str(ui.listWidget.currentItem().text())
                     xbterminal.helpers.configs.save_local_state()
                     run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
@@ -329,7 +344,7 @@ def main():
                 ui.wifi_lbl.setText("WiFi network - {ssid}".format(ssid=ui.listWidget.currentItem().text()))
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(7)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])
                 ui.ssid_entered_lbl.setText(xbterminal.local_state['wifi_ssid'])
                 xbterminal.local_state['wifi_pass'] = ''
                 run['stage_init'] = True
@@ -347,14 +362,21 @@ def main():
                         log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
                         xbterminal.helpers.configs.save_local_state()
                         #@TODO add "wifi connected" message GUI output here
-                        run['stage_init'] = False
                         run['CURRENT_STAGE'] = defaults.STAGES['default']
+                        run['stage_init'] = False
                         continue
                     else:
                         ui.password_enter.setStyleSheet('background: #B33A3A')
-
-                xbterminal.local_state['wifi_pass'] = keypad.createAlphaNumString(xbterminal.local_state['wifi_pass'],
-                                                                                    run['key_pressed'])
+                elif keypad.checkIsCancelled(xbterminal.local_state['wifi_pass'], run['key_pressed']):
+                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
+                    run['stage_init'] = False
+                    del xbterminal.local_state['wifi_ssid']
+                    del xbterminal.local_state['wifi_pass']
+                    xbterminal.helpers.configs.save_local_state()
+                    continue
+                else:
+                    xbterminal.local_state['wifi_pass'] = keypad.createAlphaNumString(xbterminal.local_state['wifi_pass'],
+                                                                                        run['key_pressed'])
 
                 char_selector_tupl = keypad.getCharSelectorTupl(run['key_pressed'])
                 if char_selector_tupl is not None:
@@ -393,10 +415,10 @@ def main():
                 run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
-                ui.stackedWidget.setCurrentIndex(5)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['payment_cancelled'])
                 run['CURRENT_STAGE'] = 'payment_cancelled'
             else:
-                ui.stackedWidget.setCurrentIndex(0)
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['default'])
                 run['CURRENT_STAGE'] = 'standby'
             continue
 

@@ -44,13 +44,13 @@ class keypad():
     def createAlphaNumString(self, current_string, button_pressed):
         global _alphanum_char_index, _cycle_index, _button_last_pressed
 
-        if button_pressed == 'D':
+        if button_pressed == 'enter':
             _alphanum_char_index = _alphanum_char_index + 1
             _button_last_pressed = button_pressed
             _cycle_index = -1
             return current_string
 
-        if button_pressed == 'A':
+        if button_pressed == 'backspace':
             current_string = current_string[:-1]
             if _cycle_index == -1:
                 _alphanum_char_index = max(_alphanum_char_index - 1, 0)
@@ -58,8 +58,7 @@ class keypad():
             _cycle_index = -1
             return current_string
 
-        if button_pressed in ('B', 'C', '.', '#'):
-            _button_last_pressed = button_pressed
+        if button_pressed in ('escape', 'qr_code'):
             return current_string
 
         new_char = self.toAlphaNum(button_pressed)
@@ -79,7 +78,13 @@ class keypad():
     def checkIsDone(self, button_pressed):
         global _button_last_pressed
 
-        if button_pressed == 'D' and  _button_last_pressed == 'D':
+        if button_pressed == 'enter' and _button_last_pressed == 'enter':
+            return True
+
+        return False
+
+    def checkIsCancelled(self, current_string, button_pressed):
+        if button_pressed == 'backspace' and current_string == '':
             return True
 
         return False

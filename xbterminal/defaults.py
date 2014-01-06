@@ -12,7 +12,7 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
                       'pay_qr_addr_only': 'pay_qr_addr_only',
                       'payment_successful': 'payment_successful',
                       'payment_cancelled': 'payment_cancelled',
-                      'prepare_payment': 'prepare_payment',
+                      'payment_loading': 'payment_loading',
                         },
           'wifi': {'choose_ssid': 'choose_ssid',
                    'enter_passkey': 'enter_passkey',
@@ -20,6 +20,27 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
           'default': 'standby',
           'application_halt': 'application_halt',
           }
+
+SCREENS = {'loading': 0,
+           'default': 1,
+           'choose_ssid': 7,
+           'enter_passkey': 8,
+           'enter_amount': 2,
+           'pay_nfc': 3,
+           'pay_qr': 4,
+           'payment_successful': 5,
+           'payment_cancelled': 6,
+           #'payment_loading': -1,
+    }
+
+LOAD_PROGRESS_LEVELS = {'gui_init': 2,
+                        'local_config_load': 3,
+                        'wifi_init': 35,
+                        'remote_config_load': 50,
+                        'blockchain_init': 95,
+                        'keypad_init': 99,
+                        'finish': 100,
+                        }
 
 PROJECT_ABS_PATH = '' #initialized in bootstrap.py
 PROJECT_LOCAL_PATH = 'xbterminal/'

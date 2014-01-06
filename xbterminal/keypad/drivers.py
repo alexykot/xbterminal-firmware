@@ -88,6 +88,23 @@ class keypadDriverBBB():
                 'pin7': "P8_26",
                 'pin8': "P8_8",
         }
+
+        self.KEY_MAP = {0:0,
+                        1:1,
+                        2:2,
+                        3:3,
+                        4:4,
+                        5:5,
+                        6:6,
+                        7:7,
+                        8:8,
+                        9:9,
+                        'A':'backspace',
+                        'D':'enter',
+                        '#':'qr_code',
+                        '*':'escape',
+                        }
+
         self.KEYPAD = {17: 1,
                        18: 2,
                        20: 3,
@@ -167,7 +184,10 @@ class keypadDriverBBB():
 
         # Return the value of the key pressed
         self.exit()
-        return key
+        try:
+            return self.KEY_MAP[key]
+        except KeyError:
+            return None
 
     def exit(self):
         # Reinitialize all rows and columns as input at exit

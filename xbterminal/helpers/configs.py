@@ -6,30 +6,11 @@ import requests
 
 import xbterminal
 import xbterminal.defaults
+from xbterminal.exceptions import ConfigLoadError
 from xbterminal.helpers.log import log
 
-def load_configs():
+def load_remote_config():
     global xbterminal
-
-    local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                              xbterminal.defaults.STATE_FILE_PATH))
-
-    with open(local_state_file_abs_path, 'a') as config_file:
-        pass
-
-    with open(local_state_file_abs_path, 'rb') as state_file:
-        try:
-            local_state_contents = state_file.read()
-
-            xbterminal.local_state = json.loads(local_state_contents)
-            log('local state loaded from "{state_path}"'.format(state_path=local_state_file_abs_path),
-                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
-            log('local state: {local_state}'.format(local_state=local_state_contents),
-                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
-        except ValueError:
-            xbterminal.local_state = {}
-            save_local_state()
-            log('local state load error, local state purged', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
 
     device_key_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
                                                             xbterminal.defaults.DEVICE_KEY_FILE_PATH))
@@ -55,11 +36,32 @@ def load_configs():
         except:
             log('remote config {config_url} unreachable, trying to load cache'.format(config_url=config_url),
                       xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
-            load_remote_config_cache()
+            try:
+                load_remote_config_cache()
+            except IOError:
+                raise ConfigLoadError()
 
-    if not hasattr(xbterminal, 'remote_config'):
-        log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
-        exit()
+
+def load_local_state():
+    local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
+                                                              xbterminal.defaults.STATE_FILE_PATH))
+
+    with open(local_state_file_abs_path, 'a') as config_file:
+        pass
+
+    with open(local_state_file_abs_path, 'rb') as state_file:
+        try:
+            local_state_contents = state_file.read()
+
+            xbterminal.local_state = json.loads(local_state_contents)
+            log('local state loaded from "{state_path}"'.format(state_path=local_state_file_abs_path),
+                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            log('local state: {local_state}'.format(local_state=local_state_contents),
+                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+        except ValueError:
+            xbterminal.local_state = {}
+            save_local_state()
+            log('local state load error, local state purged', xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
 
 
 def save_local_state():
@@ -88,7 +90,7 @@ def load_remote_config_cache():
     if not os.path.exists(remote_config_cache_file_abs_path):
         log('config cache file {cache_path} not exists, cache load failed'.format(cache_path=remote_config_cache_file_abs_path),
             xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
-        return
+        raise IOError
 
     with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
         xbterminal.remote_config = json.loads(cache_file.read())
