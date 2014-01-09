@@ -31,7 +31,7 @@ def main():
 
     gui_test.runtime = {}
     run = gui_test.runtime
-    run['CURRENT_SCREEN'] = 0
+    run['CURRENT_SCREEN'] = "wait_scn"
     run['CURRENT_STAGE'] = defaults.STAGES[0]
     run['amount_to_pay_fiat'] = None
     run['amount_to_pay_btc'] = None
@@ -41,6 +41,8 @@ def main():
     run['display_value_unformatted'] = ''
     run['display_value_formatted'] = ''
     run['wifi'] = 'WiFi'
+
+    ui.stackedWidget.currentIndex("wait_scn")
 
 
     while True:
@@ -63,6 +65,8 @@ def main():
         #        ui.listWidget.addItem(i)
         #    wifi_update = False
 
+        #if ui.cancel_btn.connect.clicked() == True:
+        #    ui.stackedWidget.currentIndex(0)
 
 
         #ui.listWidget.setCurrentRow()
