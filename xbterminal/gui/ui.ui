@@ -16,18 +16,18 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>229</red>
+        <green>229</green>
+        <blue>229</blue>
        </color>
       </brush>
      </colorrole>
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>230</red>
+        <green>230</green>
+        <blue>230</blue>
        </color>
       </brush>
      </colorrole>
@@ -36,18 +36,18 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>229</red>
+        <green>229</green>
+        <blue>229</blue>
        </color>
       </brush>
      </colorrole>
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>230</red>
+        <green>230</green>
+        <blue>230</blue>
        </color>
       </brush>
      </colorrole>
@@ -56,23 +56,26 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>230</red>
+        <green>230</green>
+        <blue>230</blue>
        </color>
       </brush>
      </colorrole>
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
+        <red>230</red>
+        <green>230</green>
+        <blue>230</blue>
        </color>
       </brush>
      </colorrole>
     </disabled>
    </palette>
+  </property>
+  <property name="cursor">
+   <cursorShape>BlankCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -81,23 +84,93 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>41</y>
+     <y>40</y>
      <width>480</width>
      <height>231</height>
     </rect>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="WindowText">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>60</red>
+         <green>60</green>
+         <blue>60</blue>
+        </color>
+       </brush>
+      </colorrole>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="WindowText">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>60</red>
+         <green>60</green>
+         <blue>60</blue>
+        </color>
+       </brush>
+      </colorrole>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="WindowText">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>106</red>
+         <green>104</green>
+         <blue>100</blue>
+        </color>
+       </brush>
+      </colorrole>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>230</red>
+         <green>230</green>
+         <blue>230</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
    </property>
    <property name="font">
     <font>
      <family>DejaVu Sans</family>
     </font>
    </property>
+   <property name="cursor">
+    <cursorShape>BlankCursor</cursorShape>
+   </property>
+   <property name="currentIndex">
+    <number>5</number>
+   </property>
    <widget class="QWidget" name="loading_screen">
     <widget class="QProgressBar" name="progressBar">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>110</y>
-       <width>148</width>
+       <x>110</x>
+       <y>90</y>
+       <width>281</width>
        <height>23</height>
       </rect>
      </property>
@@ -111,14 +184,197 @@
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>60</y>
-       <width>211</width>
-       <height>41</height>
+       <x>150</x>
+       <y>120</y>
+       <width>161</width>
+       <height>16</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>Loading Please Wait</string>
+      <string>please wait</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="nfc_screen">
+    <widget class="QLabel" name="advice_lbl_2">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>0</y>
+       <width>261</width>
+       <height>201</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>26</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>TOUCH NFC
+
+ NOW</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="show_qrButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>150</y>
+       <width>151</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>show QR code</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="currency_lbl_3">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>£</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="fiat_amount_2">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>10.00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="btc_amount_2">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>12.05</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="btc_lbl_2">
+     <property name="geometry">
+      <rect>
+       <x>25</x>
+       <y>70</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>m฿</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="exchange_rate_3">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>100</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.845</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="exchange_rate_lbl_2">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>100</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>rate</string>
      </property>
     </widget>
    </widget>
@@ -126,20 +382,57 @@
     <widget class="QLabel" name="idle_lbl">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>20</y>
-       <width>271</width>
-       <height>191</height>
+       <x>60</x>
+       <y>0</y>
+       <width>361</width>
+       <height>211</height>
       </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
      </property>
      <property name="font">
       <font>
-       <family>DejaVu Sans</family>
-       <pointsize>30</pointsize>
+       <family>Arial</family>
+       <pointsize>32</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Please press&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ENTER&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;to begin&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;press&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;any key&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;to begin&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -151,58 +444,72 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>40</y>
-       <width>291</width>
+       <y>20</y>
+       <width>331</width>
        <height>51</height>
       </rect>
      </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
      <property name="font">
       <font>
-       <family>DejaVu Sans</family>
-       <pointsize>30</pointsize>
+       <family>Arial</family>
+       <pointsize>20</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>Enter Amount</string>
+      <string>amount</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="amount_text">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>100</y>
-       <width>361</width>
+       <x>100</x>
+       <y>70</y>
+       <width>321</width>
        <height>51</height>
       </rect>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>26</pointsize>
       </font>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="continue_lbl">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>180</y>
-       <width>181</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>DejaVu Sans</family>
-      </font>
-     </property>
-     <property name="text">
-      <string>press enter to continue</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -211,70 +518,70 @@
     <widget class="QLabel" name="currency_lbl">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>100</y>
-       <width>31</width>
-       <height>61</height>
+       <x>40</x>
+       <y>80</y>
+       <width>41</width>
+       <height>41</height>
       </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>36</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>BlankCursor</cursorShape>
      </property>
      <property name="text">
       <string>£</string>
      </property>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>189</y>
-       <width>87</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
-      </property>
-      <item>
-       <widget class="QPushButton" name="next_btn">
-        <property name="text">
-         <string>Next</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>190</y>
-       <width>87</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QPushButton" name="cancel_btn">
-        <property name="text">
-         <string>Cancel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="rate_scn">
     <widget class="QLabel" name="currency_lbl_2">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>120</x>
        <y>20</y>
        <width>31</width>
        <height>61</height>
@@ -282,9 +589,10 @@
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>36</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -294,142 +602,137 @@
     <widget class="QLabel" name="fiat_amount">
      <property name="geometry">
       <rect>
-       <x>50</x>
+       <x>170</x>
        <y>30</y>
-       <width>361</width>
+       <width>181</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>30</pointsize>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>10.00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="btc_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>31</width>
+       <x>75</x>
+       <y>70</y>
+       <width>81</width>
        <height>61</height>
       </rect>
      </property>
      <property name="font">
       <font>
+       <family>Arial</family>
        <pointsize>36</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
-      <string>฿</string>
+      <string>m฿</string>
      </property>
     </widget>
     <widget class="QLabel" name="btc_amount">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>70</y>
-       <width>371</width>
+       <x>130</x>
+       <y>80</y>
+       <width>221</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>30</pointsize>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>12.05</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="exchange_rate_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>111</width>
+       <x>20</x>
+       <y>130</y>
+       <width>151</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>exchange rate</string>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate">
+    <widget class="QLabel" name="advice_lbl">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>130</y>
+       <x>80</x>
+       <y>180</y>
+       <width>321</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>press enter to accept payment</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="exchange_rate_2">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>140</y>
        <width>161</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>0</string>
+      <string>0.845</string>
      </property>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_2">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>190</y>
-       <width>178</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
-      </property>
-      <item>
-       <widget class="QPushButton" name="back_btn_2">
-        <property name="text">
-         <string>Back</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="next_btn_2">
-        <property name="text">
-         <string>Next</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>190</y>
-       <width>87</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QPushButton" name="cancel_btn_2">
-        <property name="text">
-         <string>Cancel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="qr_scn">
     <widget class="QLabel" name="qr_image">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>60</y>
-       <width>211</width>
-       <height>181</height>
+       <x>240</x>
+       <y>10</y>
+       <width>201</width>
+       <height>171</height>
       </rect>
      </property>
      <property name="text">
@@ -439,36 +742,175 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="qr_title_lbl">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>10</y>
-       <width>301</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Scan QR Code to complete payment</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="qr_address_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>451</width>
-       <height>20</height>
+       <x>190</x>
+       <y>190</y>
+       <width>291</width>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="cursor">
       <cursorShape>ArrowCursor</cursorShape>
      </property>
      <property name="text">
-      <string>.</string>
+      <string>1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="exchange_rate_4">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>100</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.845</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="btc_amount_3">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>12.05</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="btc_lbl_3">
+     <property name="geometry">
+      <rect>
+       <x>25</x>
+       <y>70</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>m฿</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="exchange_rate_lbl_3">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>100</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>rate</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="fiat_amount_3">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>10.00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="currency_lbl_4">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>£</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="show_qrButton_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>150</y>
+       <width>151</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>send NFC</string>
      </property>
     </widget>
    </widget>
@@ -484,8 +926,8 @@
      </property>
      <property name="font">
       <font>
-       <family>DejaVu Sans</family>
-       <pointsize>30</pointsize>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
       </font>
      </property>
      <property name="text">
@@ -501,15 +943,15 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>20</y>
+       <y>10</y>
        <width>271</width>
        <height>191</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>DejaVu Sans</family>
-       <pointsize>30</pointsize>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
       </font>
      </property>
      <property name="text">
@@ -526,22 +968,70 @@
       <rect>
        <x>30</x>
        <y>10</y>
-       <width>151</width>
+       <width>251</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>59</red>
+           <green>59</green>
+           <blue>59</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>Wi-Fi</string>
+      <string>available Wi-Fi networks</string>
      </property>
     </widget>
     <widget class="QListWidget" name="listWidget">
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>30</y>
+       <y>40</y>
        <width>421</width>
-       <height>191</height>
+       <height>151</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
      </property>
     </widget>
    </widget>
@@ -549,60 +1039,241 @@
     <widget class="QLabel" name="ssid_lbl">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>50</y>
-       <width>41</width>
-       <height>31</height>
+       <x>30</x>
+       <y>10</y>
+       <width>101</width>
+       <height>21</height>
       </rect>
      </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>SSID</string>
+      <string>selected WiFi</string>
      </property>
     </widget>
     <widget class="QLabel" name="ssid_entered_lbl">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>50</y>
-       <width>271</width>
-       <height>31</height>
+       <x>140</x>
+       <y>10</y>
+       <width>281</width>
+       <height>21</height>
       </rect>
      </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string/>
+      <string>65A High Steet</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="password_enter">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>96</y>
+       <x>140</x>
+       <y>46</y>
        <width>271</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>asasdad</string>
      </property>
     </widget>
     <widget class="QLabel" name="password_lbl">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>100</y>
-       <width>81</width>
+       <x>51</x>
+       <y>50</y>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>Password</string>
+      <string>password</string>
      </property>
     </widget>
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>160</y>
-       <width>421</width>
-       <height>61</height>
+       <x>100</x>
+       <y>80</y>
+       <width>321</width>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;2 a b c A B C&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -613,22 +1284,31 @@
     <widget class="QLabel" name="wait_lbl">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>70</y>
+       <x>140</x>
+       <y>120</y>
        <width>181</width>
-       <height>31</height>
+       <height>16</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>Please Wait</string>
+      <string>please wait</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QProgressBar" name="progressBar_2">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>110</y>
-       <width>131</width>
+       <x>110</x>
+       <y>90</y>
+       <width>281</width>
        <height>23</height>
       </rect>
      </property>
@@ -641,30 +1321,12 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QLabel" name="background">
-   <property name="geometry">
-    <rect>
-     <x>-10</x>
-     <y>0</y>
-     <width>501</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel {
-	background: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(204, 204, 204, 255))
-}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QLabel" name="logo">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>0</x>
      <y>0</y>
-     <width>231</width>
+     <width>241</width>
      <height>41</height>
     </rect>
    </property>
@@ -672,12 +1334,9 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>xbterminal/gui/logo.png</pixmap>
+    <pixmap>D:/Personal/Google Drive/Work/XBTerminal/designs/logo_device1.png</pixmap>
    </property>
   </widget>
-  <zorder>background</zorder>
-  <zorder>stackedWidget</zorder>
-  <zorder>logo</zorder>
  </widget>
  <resources/>
  <connections/>

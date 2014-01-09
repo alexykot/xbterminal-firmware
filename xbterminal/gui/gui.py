@@ -30,7 +30,6 @@ def initGUI():
     app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
 
     main_win = GUI()
-    main_win.ui.continue_lbl.setText("")
 
     return app, main_win
 
@@ -48,6 +47,8 @@ class GUI(QtGui.QWidget):
         self.ui = appui.Ui_Form()
         self.ui.setupUi(self.Form)
         self.Form.show()
+        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8("/root/XBTerminal/xbterminal/gui/images/logo.png")))
+        self.ui.qr_image.setPixmap(QtGui.QPixmap(_fromUtf8("/root/XBTerminal/xbterminal/gui/images/test_qrcode.png")))
 
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
@@ -75,3 +76,5 @@ def advanceLoadingProgressBar(level):
 
     xbterminal.gui.runtime['main_win'].ui.progressBar.setValue(level)
     time.sleep(0.3)
+
+

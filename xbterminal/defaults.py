@@ -33,12 +33,13 @@ SCREENS = {'loading': 0,
            #'payment_loading': -1,
     }
 
-LOAD_PROGRESS_LEVELS = {'gui_init': 2,
+LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
+                        'gui_init': 2,
                         'local_config_load': 3,
+                        'keypad_init': 6,
                         'wifi_init': 35,
                         'remote_config_load': 50,
                         'blockchain_init': 95,
-                        'keypad_init': 99,
                         'finish': 100,
                         }
 
@@ -50,6 +51,7 @@ LOG_FILE_PATH = os.path.join(RUNTIME_PATH,'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH,'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH,'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH,'remote_config_cache')
+QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
 LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
                      'ERROR':'ERROR',
