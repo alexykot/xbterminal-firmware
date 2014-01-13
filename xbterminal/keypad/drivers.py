@@ -177,6 +177,7 @@ class keypadDriverBBB():
         binary_str = ''.join(bits_list)
         binary_str = '0b'+binary_str
         keynum = int(binary_str, 2)
+        print keynum
         try:
             key = self.KEYPAD[keynum]
         except KeyError:

@@ -42,8 +42,6 @@ def main():
     run['display_value_formatted'] = ''
     run['wifi'] = 'WiFi'
 
-    ui.stackedWidget.currentIndex("wait_scn")
-
 
     while True:
 
