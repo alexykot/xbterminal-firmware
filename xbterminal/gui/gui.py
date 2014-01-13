@@ -47,8 +47,8 @@ class GUI(QtGui.QWidget):
         self.ui = appui.Ui_Form()
         self.ui.setupUi(self.Form)
         self.Form.show()
-        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8("/home/debian/XBTerminal/xbterminal/gui/images/logo.png")))
-        self.ui.qr_image.setPixmap(QtGui.QPixmap(_fromUtf8("/home/debian/XBTerminal/xbterminal/gui/images/test_qrcode.png")))
+        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8("./xbterminal/gui/images/logo.png")))
+        self.ui.qr_image.setPixmap(QtGui.QPixmap(_fromUtf8("./xbterminal/gui/images/test_qrcode.png")))
 
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
