@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 from PyQt4 import QtGui, QtCore
 import time
@@ -47,8 +48,7 @@ class GUI(QtGui.QWidget):
         self.ui = appui.Ui_Form()
         self.ui.setupUi(self.Form)
         self.Form.show()
-        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8("./xbterminal/gui/images/logo.png")))
-        self.ui.qr_image.setPixmap(QtGui.QPixmap(_fromUtf8("./xbterminal/gui/images/test_qrcode.png")))
+        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(defaults.PROJECT_ABS_PATH, defaults.UI_IMAGES_PATH, 'logo.png'))))
 
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
@@ -74,7 +74,7 @@ class GUI(QtGui.QWidget):
 def advanceLoadingProgressBar(level):
     global xbterminal
 
-    xbterminal.gui.runtime['main_win'].ui.progressBar.setValue(level)
+    xbterminal.gui.runtime['main_win'].ui.progressBar_percent.setValue(level)
     time.sleep(0.3)
 
 

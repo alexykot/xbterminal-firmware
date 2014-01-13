@@ -71,7 +71,7 @@ def main():
         except NameError:
             pass
 
-        if screen_index == len(defaults.SCREENS):
+        if screen_index > len(defaults.SCREENS):
             screen_index = 0
 
         if wifi_init == False and screen_index == defaults.SCREENS['choose_ssid']:
@@ -84,6 +84,7 @@ def main():
                 screen_index = screen_index + 1
             elif  key_pressed == 'backspace':
                 screen_index = screen_index - 1
+            print screen_index
             ui.stackedWidget.setCurrentIndex(screen_index)
 
         time.sleep(0.1)

@@ -162,10 +162,10 @@
     <cursorShape>BlankCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>10</number>
    </property>
-   <widget class="QWidget" name="loading_screen">
-    <widget class="QProgressBar" name="progressBar">
+   <widget class="QWidget" name="load_percent_scrn">
+    <widget class="QProgressBar" name="progressBar_percent">
      <property name="geometry">
       <rect>
        <x>110</x>
@@ -181,7 +181,7 @@
       <number>0</number>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="percent_load_lbl">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -197,15 +197,15 @@
       </font>
      </property>
      <property name="text">
-      <string>please wait</string>
+      <string>loading, please wait</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="nfc_screen">
-    <widget class="QLabel" name="advice_lbl_2">
+   <widget class="QWidget" name="pay_nfc_scrn">
+    <widget class="QLabel" name="nfc_advice_lbl">
      <property name="geometry">
       <rect>
        <x>210</x>
@@ -250,7 +250,7 @@
       <string>show QR code</string>
      </property>
     </widget>
-    <widget class="QLabel" name="currency_lbl_3">
+    <widget class="QLabel" name="currency_lbl_nfc">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -271,7 +271,7 @@
       <string>£</string>
      </property>
     </widget>
-    <widget class="QLabel" name="fiat_amount_2">
+    <widget class="QLabel" name="fiat_amount_nfc">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -293,7 +293,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="btc_amount_2">
+    <widget class="QLabel" name="btc_amount_nfc">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -315,7 +315,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="btc_lbl_2">
+    <widget class="QLabel" name="btc_lbl_nfc">
      <property name="geometry">
       <rect>
        <x>25</x>
@@ -336,7 +336,7 @@
       <string>m฿</string>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate_3">
+    <widget class="QLabel" name="exchange_rate_nfc">
      <property name="geometry">
       <rect>
        <x>60</x>
@@ -358,7 +358,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate_lbl_2">
+    <widget class="QLabel" name="exchange_rate_lbl_nfc">
      <property name="geometry">
       <rect>
        <x>15</x>
@@ -378,7 +378,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="enter_scn">
+   <widget class="QWidget" name="idle_scrn">
     <widget class="QLabel" name="idle_lbl">
      <property name="geometry">
       <rect>
@@ -439,7 +439,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="amount_scn">
+   <widget class="QWidget" name="enter_amount_scrn">
     <widget class="QLabel" name="amount_lbl">
      <property name="geometry">
       <rect>
@@ -496,7 +496,7 @@
       <string>amount</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="amount_text">
+    <widget class="QLineEdit" name="amount_input">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -576,9 +576,69 @@
       <string>£</string>
      </property>
     </widget>
+    <widget class="QLabel" name="error_text_lbl">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>130</y>
+       <width>321</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
    </widget>
-   <widget class="QWidget" name="rate_scn">
-    <widget class="QLabel" name="currency_lbl_2">
+   <widget class="QWidget" name="pay_rates_scrn">
+    <widget class="QLabel" name="currency_lbl_rates">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -705,7 +765,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate_2">
+    <widget class="QLabel" name="exchange_rate_amount">
      <property name="geometry">
       <rect>
        <x>280</x>
@@ -725,7 +785,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="qr_scn">
+   <widget class="QWidget" name="pay_qr_scrn">
     <widget class="QLabel" name="qr_image">
      <property name="geometry">
       <rect>
@@ -767,7 +827,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate_4">
+    <widget class="QLabel" name="exchange_rate_qr">
      <property name="geometry">
       <rect>
        <x>60</x>
@@ -789,7 +849,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="btc_amount_3">
+    <widget class="QLabel" name="btc_amount_qr">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -811,7 +871,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="btc_lbl_3">
+    <widget class="QLabel" name="btc_lbl_qr">
      <property name="geometry">
       <rect>
        <x>25</x>
@@ -832,7 +892,7 @@
       <string>m฿</string>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate_lbl_3">
+    <widget class="QLabel" name="exchange_rate_lbl_qr">
      <property name="geometry">
       <rect>
        <x>15</x>
@@ -851,7 +911,7 @@
       <string>rate</string>
      </property>
     </widget>
-    <widget class="QLabel" name="fiat_amount_3">
+    <widget class="QLabel" name="fiat_amount_qr">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -873,7 +933,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="currency_lbl_4">
+    <widget class="QLabel" name="currency_lbl_qr">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -894,7 +954,7 @@
       <string>£</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="show_qrButton_2">
+    <widget class="QPushButton" name="send_nfcButton">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -914,8 +974,8 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="success_scn">
-    <widget class="QLabel" name="idle_lbl_2">
+   <widget class="QWidget" name="pay_success_scrn">
+    <widget class="QLabel" name="pay_success_lbl">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -938,8 +998,8 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="failed_scn">
-    <widget class="QLabel" name="idle_lbl_3">
+   <widget class="QWidget" name="pay_cancel_scrn">
+    <widget class="QLabel" name="pay_cancel_lbl">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -955,14 +1015,14 @@
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Payment&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Failed&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Payment&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Cancelled&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="wifi_list_scn">
+   <widget class="QWidget" name="choose_ssid_scrn">
     <widget class="QLabel" name="wifi_lbl">
      <property name="geometry">
       <rect>
@@ -1019,7 +1079,7 @@
       <string>available Wi-Fi networks</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="listWidget">
+    <widget class="QListWidget" name="wifi_listWidget">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -1035,7 +1095,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="wifi_pass_scn">
+   <widget class="QWidget" name="enter_passkey_scrn">
     <widget class="QLabel" name="ssid_lbl">
      <property name="geometry">
       <rect>
@@ -1148,7 +1208,7 @@
       <string>65A High Steet</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="password_enter">
+    <widget class="QLineEdit" name="password_input">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -1223,7 +1283,7 @@
       <string>password</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="input_hepl_lbl">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -1280,8 +1340,8 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="wait_scn">
-    <widget class="QLabel" name="wait_lbl">
+   <widget class="QWidget" name="load_indefinite_scrn">
+    <widget class="QLabel" name="indefinite_load_lbl">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -1297,13 +1357,13 @@
       </font>
      </property>
      <property name="text">
-      <string>please wait</string>
+      <string>loading, please wait</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QProgressBar" name="progressBar_2">
+    <widget class="QProgressBar" name="progressBar_indefinite">
      <property name="geometry">
       <rect>
        <x>110</x>

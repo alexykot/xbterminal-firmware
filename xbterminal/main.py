@@ -34,7 +34,7 @@ def main():
     run['init']['internet'] = False
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
-    run['CURRENT_STAGE'] = defaults.STAGES['default']
+    run['CURRENT_STAGE'] = defaults.STAGES['idle']
     run['stage_init'] = False
     run['amount_to_pay_fiat'] = None
     run['amount_to_pay_btc'] = None
@@ -130,46 +130,54 @@ def main():
         except NameError:
             pass
 
-        if run['CURRENT_STAGE'] == defaults.STAGES['default']:
+        if run['CURRENT_STAGE'] == defaults.STAGES['idle']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['default'])
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['idle'])
                 run['stage_init'] = True
 
             if run['key_pressed'] is not None:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
-                ui.amount_text.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
                 run['stage_init'] = False
                 continue
 
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
+            if not run['stage_init']:
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
+                ui.amount_input.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+                run['stage_init'] = True
+
             if (isinstance(run['key_pressed'], (int, long)) or run['key_pressed'] == 'backspace'):
                 if run['key_pressed'] == 'backspace' and run['display_value_unformatted'] == '':
-                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['default'])
-                    run['CURRENT_STAGE'] = defaults.STAGES['default']
+                    run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['idle']
                     continue
 
-                ui.amount_text.setStyleSheet('background: #FFF')
+                ui.amount_input.setStyleSheet('background: #FFF')
+                ui.error_text_lbl.setText("")
                 run['display_value_unformatted'] = stages.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
 
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
-                ui.amount_text.setText(run['display_value_formatted'])
+                ui.amount_input.setText(run['display_value_formatted'])
             elif run['key_pressed'] is 'enter':
                 run['amount_to_pay_fiat'] = stages.inputToDecimal(run['display_value_unformatted'])
                 if run['amount_to_pay_fiat'] > 0:
-                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_nfc'])
-                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['payment_loading']
+                    run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_loading']
                 else:
-                    ui.amount_text.setStyleSheet('background: #B33A3A')
-                    ui.continue_lbl.setText("error: no amount entered")
+                    ui.amount_input.setStyleSheet('background: #B33A3A')
+                    ui.error_text_lbl.setText("no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
                     pass
-                continue
 
-        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['payment_loading']:
+        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_loading']:
+            if not run['stage_init']:
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
+                ui.indefinite_load_lbl.setText('preparing payment')
+                run['stage_init'] = True
+
             if run['amount_to_pay_fiat'] is None:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
+                run['stage_init'] = False
                 continue
 
             if run['amount_to_pay_btc'] is None:
@@ -207,15 +215,17 @@ def main():
                 run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amount_to_pay_btc'])
 
+                run['stage_init'] = True
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_nfc']
                 continue
 
         elif (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']
-              or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']
-              or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr_addr_only']):
-            ui.fiat_amount.setText(stages.formatDecimal(run['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-            ui.btc_amount.setText(str(run['amount_to_pay_btc']))
-            ui.exchange_rate.setText(stages.formatDecimal(run['rate_btc'], defaults.OUTPUT_DEC_PLACES))
+              or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
+            if not run['stage_init']:
+                ui.fiat_amount.setText(stages.formatDecimal(run['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+                ui.btc_amount.setText(str(run['amount_to_pay_btc']))
+                ui.exchange_rate.setText(stages.formatDecimal(run['rate_btc'], defaults.OUTPUT_DEC_PLACES))
+                run['stage_init'] = True
 
             if run['key_pressed'] == 'backspace':
                 run['amount_to_pay_btc'] = None
@@ -244,9 +254,7 @@ def main():
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 continue
 
-            if ((run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']
-                 or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr_addr_only'])
-                and not run['qr_rendered']):
+            if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr'] and not run['qr_rendered']:
                 if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
                     xbterminal.helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amount_to_pay_btc']),
@@ -292,7 +300,7 @@ def main():
                     ui.continue_lbl.setText("")
 
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['payment_successful']
-                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['payment_successful'])
+                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_success'])
 
                     continue
             elif run['invoice_id'] is not None and not run['invoice_paid']:
@@ -306,7 +314,7 @@ def main():
             if run['key_pressed'] is not None:
                 run['display_value_unformatted'] = ''
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-                ui.amount_text.setText(run['display_value_formatted'])
+                ui.amount_input.setText(run['display_value_formatted'])
 
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
@@ -317,9 +325,9 @@ def main():
             if run['key_pressed'] is not None:
                 run['display_value_unformatted'] = ''
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-                ui.amount_text.setText(run['display_value_formatted'])
+                ui.amount_input.setText(run['display_value_formatted'])
 
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['payment_cancelled'])
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
             pass
@@ -375,7 +383,7 @@ def main():
                         log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
                         xbterminal.helpers.configs.save_local_state()
                         #@TODO add "wifi connected" message GUI output here
-                        run['CURRENT_STAGE'] = defaults.STAGES['default']
+                        run['CURRENT_STAGE'] = defaults.STAGES['idle']
                         run['stage_init'] = False
                         continue
                     else:
@@ -410,7 +418,7 @@ def main():
             and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time()):
             run['display_value_unformatted'] = ''
             run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-            ui.amount_text.setText(run['display_value_formatted'])
+            ui.amount_input.setText(run['display_value_formatted'])
 
             run['amount_to_pay_btc'] = None
             run['amount_to_pay_fiat'] = None
@@ -423,16 +431,15 @@ def main():
             ui.continue_lbl.setText("")
 
             if (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']
-                or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']
-                or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr_addr_only']):
+                or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
                 run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['payment_cancelled'])
-                run['CURRENT_STAGE'] = 'payment_cancelled'
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
+                run['CURRENT_STAGE'] = defaults.STAGES['pay_cancel']
             else:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['default'])
-                run['CURRENT_STAGE'] = 'standby'
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['idle'])
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
             continue
 
 

@@ -78,7 +78,7 @@ def inputToDecimal(display_value_unformatted):
 
 def processKeyInput(display_value_unformatted, key_code):
     display_value_unformatted = str(display_value_unformatted)
-    if key_code == 'A':
+    if key_code == 'backspace':
         if display_value_unformatted is not '' and len(display_value_unformatted) >= 2:
             display_value_unformatted = display_value_unformatted[:-1]
         else:

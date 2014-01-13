@@ -7,30 +7,31 @@ import xbterminal.helpers.misc
 
 
 STAGES = {'payment': {'enter_amount': 'enter_amount',
+                      'pay_loading': 'pay_loading',
+                      'pay_rates': 'pay_rates',
                       'pay_nfc': 'pay_nfc',
                       'pay_qr': 'pay_qr',
-                      'pay_qr_addr_only': 'pay_qr_addr_only',
                       'payment_successful': 'payment_successful',
                       'payment_cancelled': 'payment_cancelled',
-                      'payment_loading': 'payment_loading',
                         },
           'wifi': {'choose_ssid': 'choose_ssid',
                    'enter_passkey': 'enter_passkey',
                     },
-          'default': 'standby',
+          'idle': 'idle',
           'application_halt': 'application_halt',
           }
 
-SCREENS = {'loading': 0,
-           'default': 1,
-           'choose_ssid': 7,
-           'enter_passkey': 8,
-           'enter_amount': 2,
-           'pay_nfc': 3,
-           'pay_qr': 4,
-           'payment_successful': 5,
-           'payment_cancelled': 6,
-           #'payment_loading': -1,
+SCREENS = {'load_percent': 0,
+           'load_indefinite': 10,
+           'idle': 2,
+           'choose_ssid': 8,
+           'enter_passkey': 9,
+           'enter_amount': 3,
+           'pay_rates': 4,
+           'pay_nfc': 1,
+           'pay_qr': 5,
+           'pay_success': 6,
+           'pay_cancel': 7,
     }
 
 LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
@@ -51,7 +52,7 @@ LOG_FILE_PATH = os.path.join(RUNTIME_PATH,'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH,'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH,'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH,'remote_config_cache')
-QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
+UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 
 LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
                      'ERROR':'ERROR',
