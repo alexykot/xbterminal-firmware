@@ -45,6 +45,7 @@ def main():
     run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
+    flag = True
 
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
@@ -62,7 +63,9 @@ def main():
 
     log('main loop starting')
     while True:
-        if not run['init']['internet']:
+        if (not run['init']['internet']
+            and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['choose_ssid']
+            and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['enter_passkey']):
             if xbterminal.helpers.wireless.is_wifi_available():
                 try:
                     if xbterminal.local_state['wifi_ssid'] != '' and xbterminal.local_state['wifi_pass'] != '':
@@ -101,6 +104,7 @@ def main():
         if run['init']['internet'] and not run['init']['remote_config']:
             try:
                 xbterminal.helpers.configs.load_remote_config()
+                ui.merchant_name_lbl.setText('{} '.format(xbterminal.remote_config['MERCHANT_NAME'])) #trailing space required
                 run['init']['remote_config'] = True
             except ConfigLoadError:
                 log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
@@ -320,6 +324,7 @@ def main():
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
             pass
+
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['payment_cancelled']:
             xbterminal.helpers.nfcpy.stop()
             if run['key_pressed'] is not None:
@@ -331,9 +336,13 @@ def main():
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
             pass
+
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['choose_ssid']:
-            ui.stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
-            if run['wifi']['networks_last_listed_timestamp'] + 15 < time.time():
+            if not run['stage_init']:
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
+                run['stage_init'] = True
+
+            if run['wifi']['networks_last_listed_timestamp'] + 30 < time.time():
                 networks_list = xbterminal.helpers.wireless.discover_networks()
                 run['wifi']['networks_last_listed_timestamp'] = time.time()
                 if run['wifi']['networks_list_length'] != len(networks_list):
@@ -357,12 +366,11 @@ def main():
                     xbterminal.local_state['wifi_ssid'] = str(ui.wifi_listWidget.currentItem().text())
                     xbterminal.helpers.configs.save_local_state()
                     run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
+                    run['stage_init'] = False
                     continue
 
             ui.wifi_listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
 
-            if ui.wifi_listWidget.currentItem() != None:
-                ui.wifi_lbl.setText("WiFi network - {ssid}".format(ssid=ui.wifi_listWidget.currentItem().text()))
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])
@@ -371,7 +379,7 @@ def main():
                 run['stage_init'] = True
 
             if run['key_pressed'] is not None:
-                ui.password_enter.setStyleSheet('background: #FFFFFF')
+                ui.password_input.setStyleSheet('background: #FFFFFF')
 
                 if keypad.checkIsDone(run['key_pressed']):
                     log('trying to connect to wifi, '
@@ -380,20 +388,20 @@ def main():
                     run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
                                                                                    xbterminal.local_state['wifi_pass'])
                     if run['wifi']['connected']:
+                        run['init']['internet'] = True
                         log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
                         xbterminal.helpers.configs.save_local_state()
-                        #@TODO add "wifi connected" message GUI output here
-                        run['CURRENT_STAGE'] = defaults.STAGES['idle']
+                        run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
                         run['stage_init'] = False
                         continue
                     else:
-                        ui.password_enter.setStyleSheet('background: #B33A3A')
+                        ui.password_input.setStyleSheet('background: #B33A3A')
                 elif keypad.checkIsCancelled(xbterminal.local_state['wifi_pass'], run['key_pressed']):
-                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
-                    run['stage_init'] = False
                     del xbterminal.local_state['wifi_ssid']
                     del xbterminal.local_state['wifi_pass']
                     xbterminal.helpers.configs.save_local_state()
+                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
+                    run['stage_init'] = False
                     continue
                 else:
                     xbterminal.local_state['wifi_pass'] = keypad.createAlphaNumString(xbterminal.local_state['wifi_pass'],
@@ -401,13 +409,24 @@ def main():
 
                 char_selector_tupl = keypad.getCharSelectorTupl(run['key_pressed'])
                 if char_selector_tupl is not None:
-                    char_select_str = xbterminal.gui.ui.formatCharSelectHelperHMTL(char_selector_tupl,
-                                                                                   xbterminal.local_state['wifi_pass'][-1])
+                    char_select_str = gui.formatCharSelectHelperHMTL(char_selector_tupl,
+                                                                     xbterminal.local_state['wifi_pass'][-1])
                 else:
                     char_select_str = ''
-                ui.label.setText(char_select_str)
+                ui.input_help_lbl.setText(char_select_str)
 
-            ui.password_enter.setText(xbterminal.local_state['wifi_pass'])
+            ui.password_input.setText(xbterminal.local_state['wifi_pass'])
+
+        elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['wifi_connected']:
+            if not run['stage_init']:
+                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['wifi_connected'])
+                run['stage_init'] = True
+                continue
+            time.sleep(3)
+            run['CURRENT_STAGE'] = defaults.STAGES['idle']
+            run['stage_init'] = False
+            continue
+
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             xbterminal.helpers.configs.save_local_state()
             log('application halted')

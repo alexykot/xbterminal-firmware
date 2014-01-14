@@ -77,4 +77,15 @@ def advanceLoadingProgressBar(level):
     xbterminal.gui.runtime['main_win'].ui.progressBar_percent.setValue(level)
     time.sleep(0.3)
 
+def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
+    char_list = []
 
+    for index, char in enumerate(char_tupl):
+        if char_selected == char:
+            char_list.append("<strong><font color=\"#333333\" size=\"5\">{char_selected}</font></strong>".format(char_selected=char))
+        else:
+            char_list.append(str(char))
+
+    char_string = ' '.join(char_list)
+
+    return "<html><head/><body><p align=\"center\"><font color=\"#666666\">{char_string}</font></p></body></html>".format(char_string=char_string)

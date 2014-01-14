@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
+import xbterminal
+
 GPIO = None
 
 class keypadDriverBBB():
@@ -33,23 +35,41 @@ class keypadDriverBBB():
                         '#':'qr_code',
                         '*':'escape',
                         }
-
-        self.KEYPAD  = {81: 1,
-                       84: 2,
-                       88: 3,
-                       49: 4,
-                       52: 5,
-                       56: 6,
-                       17: 7,
-                       20: 8,
-                       56: 9,
-                       156: 0,
-                       82: 'A',
-                       50: 'B',
-                       26: 'C',
-                       146: 'D',
-                       145: '*',
-                       152: '#',}
+        
+        if xbterminal.local_state['keypad_schema'] == 'alex':
+            self.KEYPAD  = {17: 1,
+                           18: 2,
+                           20: 3,
+                           49: 4,
+                           50: 5,
+                           52: 6,
+                           81: 7,
+                           82: 8,
+                           84: 9,
+                           146: 0,
+                           24: 'A',
+                           56: 'B',
+                           88: 'C',
+                           152: 'D',
+                           145: '*',
+                           148: '#',}
+        else:
+            self.KEYPAD  = {81: 1,
+                           84: 2,
+                           88: 3,
+                           49: 4,
+                           52: 5,
+                           56: 6,
+                           17: 7,
+                           20: 8,
+                           56: 9,
+                           156: 0,
+                           82: 'A',
+                           50: 'B',
+                           26: 'C',
+                           146: 'D',
+                           145: '*',
+                           152: '#',}
 
         self.ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]
         self.COLUMN = [pins['pin4'], pins['pin3'], pins['pin2'], pins['pin1']]
@@ -106,7 +126,7 @@ class keypadDriverBBB():
         binary_str = ''.join(bits_list)
         binary_str = '0b'+binary_str
         keynum = int(binary_str, 2)
-        print keynum
+
         try:
             key = self.KEYPAD[keynum]
         except KeyError:
@@ -115,7 +135,6 @@ class keypadDriverBBB():
         # Return the value of the key pressed
         self.exit()
         try:
-            print self.KEY_MAP[key]
             return self.KEY_MAP[key]
         except KeyError:
             return None
