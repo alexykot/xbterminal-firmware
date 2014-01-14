@@ -162,7 +162,7 @@
     <cursorShape>BlankCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>10</number>
+    <number>8</number>
    </property>
    <widget class="QWidget" name="load_percent_scrn">
     <widget class="QProgressBar" name="progressBar_percent">

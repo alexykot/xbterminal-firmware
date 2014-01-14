@@ -338,10 +338,10 @@ def main():
                 run['wifi']['networks_last_listed_timestamp'] = time.time()
                 if run['wifi']['networks_list_length'] != len(networks_list):
                     run['wifi']['networks_list_length'] = len(networks_list)
-                    ui.listWidget.clear()
+                    ui.wifi_listWidget.clear()
                     network_index = 0
                     for network in networks_list:
-                        ui.listWidget.addItem(network['ssid'])
+                        ui.wifi_listWidget.addItem(network['ssid'])
                         if ('wifi_ssid' in xbterminal.local_state
                             and xbterminal.local_state['wifi_ssid'] == network['ssid']):
                             run['wifi']['networks_list_selected_index'] = network_index
@@ -354,15 +354,15 @@ def main():
                 elif run['key_pressed'] == 2:
                     run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index']-1, 0)
                 elif run['key_pressed'] == 'enter':
-                    xbterminal.local_state['wifi_ssid'] = str(ui.listWidget.currentItem().text())
+                    xbterminal.local_state['wifi_ssid'] = str(ui.wifi_listWidget.currentItem().text())
                     xbterminal.helpers.configs.save_local_state()
                     run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
                     continue
 
-            ui.listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
+            ui.wifi_listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
 
-            if ui.listWidget.currentItem() != None:
-                ui.wifi_lbl.setText("WiFi network - {ssid}".format(ssid=ui.listWidget.currentItem().text()))
+            if ui.wifi_listWidget.currentItem() != None:
+                ui.wifi_lbl.setText("WiFi network - {ssid}".format(ssid=ui.wifi_listWidget.currentItem().text()))
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])

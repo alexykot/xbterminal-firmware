@@ -27,6 +27,7 @@ def main():
     gui_test.gui.runtime = {}
     gui_test.gui.runtime['app'], gui_test.gui.runtime['main_win'] = gui.initGUI()
     ui = gui_test.gui.runtime['main_win'].ui
+    ui.stackedWidget.setCurrentIndex(0)
 
 
     gui_test.runtime = {}
