@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/root/XBTerminal/xbterminal/gui/ui.ui'
 #
-# Created: Tue Jan 14 21:46:09 2014
+# Created: Wed Jan 15 21:32:59 2014
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -404,13 +404,13 @@ class Ui_Form(object):
         self.nfc_advice_lbl.setFont(font)
         self.nfc_advice_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.nfc_advice_lbl.setObjectName(_fromUtf8("nfc_advice_lbl"))
-        self.show_qrButton = QtGui.QPushButton(self.pay_nfc_scrn)
-        self.show_qrButton.setGeometry(QtCore.QRect(20, 150, 151, 61))
+        self.show_qr_btn = QtGui.QPushButton(self.pay_nfc_scrn)
+        self.show_qr_btn.setGeometry(QtCore.QRect(20, 150, 151, 61))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
         font.setPointSize(14)
-        self.show_qrButton.setFont(font)
-        self.show_qrButton.setObjectName(_fromUtf8("show_qrButton"))
+        self.show_qr_btn.setFont(font)
+        self.show_qr_btn.setObjectName(_fromUtf8("show_qr_btn"))
         self.currency_lbl_nfc = QtGui.QLabel(self.pay_nfc_scrn)
         self.currency_lbl_nfc.setGeometry(QtCore.QRect(40, 40, 16, 16))
         font = QtGui.QFont()
@@ -537,24 +537,32 @@ class Ui_Form(object):
         self.pay_success_scrn = QtGui.QWidget()
         self.pay_success_scrn.setObjectName(_fromUtf8("pay_success_scrn"))
         self.pay_success_lbl = QtGui.QLabel(self.pay_success_scrn)
-        self.pay_success_lbl.setGeometry(QtCore.QRect(20, 50, 441, 161))
+        self.pay_success_lbl.setGeometry(QtCore.QRect(20, 40, 441, 61))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(36)
+        font.setPointSize(28)
         self.pay_success_lbl.setFont(font)
-        self.pay_success_lbl.setWordWrap(True)
+        self.pay_success_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.pay_success_lbl.setObjectName(_fromUtf8("pay_success_lbl"))
+        self.touch_for_receipt_lbl = QtGui.QLabel(self.pay_success_scrn)
+        self.touch_for_receipt_lbl.setGeometry(QtCore.QRect(30, 120, 441, 61))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(14)
+        self.touch_for_receipt_lbl.setFont(font)
+        self.touch_for_receipt_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.touch_for_receipt_lbl.setObjectName(_fromUtf8("touch_for_receipt_lbl"))
         self.stackedWidget.addWidget(self.pay_success_scrn)
         self.pay_cancel_scrn = QtGui.QWidget()
         self.pay_cancel_scrn.setObjectName(_fromUtf8("pay_cancel_scrn"))
-        self.pay_cancel_lbl = QtGui.QLabel(self.pay_cancel_scrn)
-        self.pay_cancel_lbl.setGeometry(QtCore.QRect(30, 70, 421, 61))
+        self.exchange_rate_lbl_qr_2 = QtGui.QLabel(self.pay_cancel_scrn)
+        self.exchange_rate_lbl_qr_2.setGeometry(QtCore.QRect(20, 40, 441, 61))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(36)
-        self.pay_cancel_lbl.setFont(font)
-        self.pay_cancel_lbl.setWordWrap(True)
-        self.pay_cancel_lbl.setObjectName(_fromUtf8("pay_cancel_lbl"))
+        font.setPointSize(28)
+        self.exchange_rate_lbl_qr_2.setFont(font)
+        self.exchange_rate_lbl_qr_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.exchange_rate_lbl_qr_2.setObjectName(_fromUtf8("exchange_rate_lbl_qr_2"))
         self.stackedWidget.addWidget(self.pay_cancel_scrn)
         self.logo = QtGui.QLabel(Form)
         self.logo.setGeometry(QtCore.QRect(0, 0, 241, 41))
@@ -575,7 +583,7 @@ class Ui_Form(object):
         self.merchant_name_lbl.setObjectName(_fromUtf8("merchant_name_lbl"))
 
         self.retranslateUi(Form)
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -600,7 +608,7 @@ class Ui_Form(object):
         self.nfc_advice_lbl.setText(QtGui.QApplication.translate("Form", "TO PAY\n"
 "TOUCH NFC\n"
 "NOW", None, QtGui.QApplication.UnicodeUTF8))
-        self.show_qrButton.setText(QtGui.QApplication.translate("Form", "show QR code", None, QtGui.QApplication.UnicodeUTF8))
+        self.show_qr_btn.setText(QtGui.QApplication.translate("Form", "show QR code", None, QtGui.QApplication.UnicodeUTF8))
         self.currency_lbl_nfc.setText(QtGui.QApplication.translate("Form", "£", None, QtGui.QApplication.UnicodeUTF8))
         self.fiat_amount_nfc.setText(QtGui.QApplication.translate("Form", "10.00", None, QtGui.QApplication.UnicodeUTF8))
         self.btc_amount_nfc.setText(QtGui.QApplication.translate("Form", "12.05", None, QtGui.QApplication.UnicodeUTF8))
@@ -615,6 +623,7 @@ class Ui_Form(object):
         self.fiat_amount_qr.setText(QtGui.QApplication.translate("Form", "10.00", None, QtGui.QApplication.UnicodeUTF8))
         self.currency_lbl_qr.setText(QtGui.QApplication.translate("Form", "£", None, QtGui.QApplication.UnicodeUTF8))
         self.send_nfcButton.setText(QtGui.QApplication.translate("Form", "send NFC", None, QtGui.QApplication.UnicodeUTF8))
-        self.pay_success_lbl.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p align=\"center\">payment successful</p><p align=\"center\"><br/><span style=\" font-size:20pt;\">TOUCH NFC FOR RECEIPT</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.pay_cancel_lbl.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p align=\"center\">payment cancelled</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.pay_success_lbl.setText(QtGui.QApplication.translate("Form", "payment successful", None, QtGui.QApplication.UnicodeUTF8))
+        self.touch_for_receipt_lbl.setText(QtGui.QApplication.translate("Form", "TOUCH NFC AGAIN FOR RECEIPT", None, QtGui.QApplication.UnicodeUTF8))
+        self.exchange_rate_lbl_qr_2.setText(QtGui.QApplication.translate("Form", "payment cancelled", None, QtGui.QApplication.UnicodeUTF8))
 

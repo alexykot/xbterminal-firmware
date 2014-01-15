@@ -162,7 +162,7 @@
     <cursorShape>BlankCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="load_percent_scrn">
     <widget class="QProgressBar" name="progressBar_percent">
@@ -1079,7 +1079,7 @@ NOW</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="show_qrButton">
+    <widget class="QPushButton" name="show_qr_btn">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -1420,46 +1420,68 @@ NOW</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>50</y>
+       <y>40</y>
        <width>441</width>
-       <height>161</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;payment successful&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;TOUCH NFC FOR RECEIPT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="pay_cancel_scrn">
-    <widget class="QLabel" name="pay_cancel_lbl">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>70</y>
-       <width>421</width>
        <height>61</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>36</pointsize>
+       <pointsize>28</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;payment cancelled&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>payment successful</string>
      </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="touch_for_receipt_lbl">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>120</y>
+       <width>441</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>TOUCH NFC AGAIN FOR RECEIPT</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="pay_cancel_scrn">
+    <widget class="QLabel" name="exchange_rate_lbl_qr_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>441</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>28</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>payment cancelled</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

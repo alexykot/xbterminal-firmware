@@ -27,6 +27,8 @@ current_screen = 0
 
 def main():
 
+    xbterminal.local_state = {"keypad_schema": "alex"}
+
     wifi_list = {1: "wifi_1", 2: "wifi_2", 3: "wifi_3"}
     wifi_update = True
 

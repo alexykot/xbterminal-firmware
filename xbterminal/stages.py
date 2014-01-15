@@ -128,6 +128,11 @@ def formatDecimal(amount_decimal, decimal_places):
     return display_value_formatted
 
 
+def formatBitcoin(amount_bitcoin):
+    amount_bitcoin_scaled = amount_bitcoin * defaults.BITCOIN_SCALE_DIVIZER
+    return formatDecimal(amount_bitcoin_scaled, defaults.BITCOIN_OUTPUT_DEC_PLACES)
+
+
 # bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&label=test%20payment&message=this%20is%20a%20test
 def getBitcoinURI(payment_addr, amount_btc):
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))

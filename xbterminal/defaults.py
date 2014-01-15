@@ -11,8 +11,8 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
                       'pay_rates': 'pay_rates',
                       'pay_nfc': 'pay_nfc',
                       'pay_qr': 'pay_qr',
-                      'payment_successful': 'payment_successful',
-                      'payment_cancelled': 'payment_cancelled',
+                      'pay_success': 'pay_success',
+                      'pay_cancel': 'pay_cancel',
                         },
           'wifi': {'choose_ssid': 'choose_ssid',
                    'enter_passkey': 'enter_passkey',
@@ -77,10 +77,16 @@ EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
 OUTPUT_TOTAL_PLACES = 7 #total decimal places to show on screen
 
+EXCHANGE_RATE_DEC_PLACES = 2 #fractional decimal places for exchange rate to show on screen
+
+BITCOIN_SCALE_DIVIZER = 1000 #1 for BTC, 1000 for mBTC, 1000000 for uBTC
+BITCOIN_OUTPUT_DEC_PLACES = 2
+
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES  = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
+
 
 BITCOIND_HOST = '127.0.0.1'
 BITCOIND_PORT = 8332

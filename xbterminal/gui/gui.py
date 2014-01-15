@@ -36,9 +36,7 @@ def initGUI():
 
 # Class to initiate GUI, at the moment i can only seem to perform actions on the GUI if its done like this
 class GUI(QtGui.QWidget):
-
     def __init__(self):
-
         super(GUI, self).__init__()
         self.initUI()
 
@@ -49,6 +47,7 @@ class GUI(QtGui.QWidget):
         self.ui.setupUi(self.Form)
         self.Form.show()
         self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(defaults.PROJECT_ABS_PATH, defaults.UI_IMAGES_PATH, 'logo.png'))))
+        self.ui.show_qr_btn.clicked.connect(self.qrBntPressEvent)
 
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
@@ -68,8 +67,13 @@ class GUI(QtGui.QWidget):
 
     def closeEvent(self, QCloseEvent):
         global xbterminal
-
         xbterminal.runtime['CURRENT_STAGE'] = 'application_halt'
+
+    def qrBntPressEvent(self):
+        global xbterminal
+        xbterminal.runtime['screen_buttons']['qr_button'] = True
+
+
 
 def advanceLoadingProgressBar(level):
     global xbterminal
