@@ -36,7 +36,7 @@ class keypadDriverBBB():
                         '*':'escape',
                         }
         
-        if xbterminal.local_state['keypad_schema'] == 'alex':
+        if 'keypad_schema' in xbterminal.local_state and xbterminal.local_state['keypad_schema'] == 'alex':
             self.KEYPAD  = {17: 1,
                            18: 2,
                            20: 3,
