@@ -10,7 +10,7 @@ import sys
 
 from xbterminal import defaults
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
-from xbterminal.helpers.log import log
+from xbterminal.helpers.misc import log
 
 
 BA_TICKER_API_URL = "https://api.bitcoinaverage.com/ticker/all"

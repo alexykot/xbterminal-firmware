@@ -10,7 +10,7 @@ import time
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
-from xbterminal.helpers.log import log
+from xbterminal.helpers.misc import log
 
 connection = None
 
@@ -125,6 +125,7 @@ def _presync_blockchain():
 def getAddressBalance(address):
     global connection
 
+    time.sleep(0.3) #hack required for slow machines like RPi
     balance = connection.getreceivedbyaddress(address, minconf=0)
     balance = Decimal(balance).quantize(defaults.BTC_DEC_PLACES)
 
@@ -149,9 +150,22 @@ def sendTransaction(outputs):
     tx_hash = connection.sendmany(fromaccount='',
                                   todict=todict,
                                   minconf=0)
-
     return tx_hash
 
+
+def getLastUnspentTransaction(address):
+    global connection
+
+    unspent_list = connection.listunspent(minconf=0)
+    most_recent_tx_details = None
+    for transaction in unspent_list:
+        print transaction.address
+        if transaction.address == address:
+            tx_details = connection.gettransaction(transaction.txid)
+            if most_recent_tx_details is None or most_recent_tx_details['timereceived'] < tx_details['timereceived']:
+                most_recent_tx_details = tx_details
+
+    return most_recent_tx_details.txid
 
 # Sends transaction from given address using all currently unspent inputs for that address.
 # by default all change is sent to fees address
@@ -179,10 +193,12 @@ def sendRawTransaction(outputs, from_addr, change_addr=None):
                            'vout': transaction.vout,
                              })
 
-    if total_available_to_spend < total_to_pay+defaults.BTC_DEFAULT_FEE:
-        raise NotEnoughFunds()
+    total_to_pay_with_fee = Decimal(total_to_pay + defaults.BTC_DEFAULT_FEE).quantize(defaults.BTC_DEC_PLACES)
 
-    if total_available_to_spend > total_to_pay+defaults.BTC_DEFAULT_FEE:
+    if total_available_to_spend < total_to_pay_with_fee:
+        raise NotEnoughFunds(total_available_to_spend, total_to_pay_with_fee)
+
+    if total_available_to_spend > total_to_pay_with_fee:
         if change_addr not in outputs:
             outputs[change_addr] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
         change_amount = outputs[change_addr] + (total_available_to_spend - total_to_pay - defaults.BTC_DEFAULT_FEE)

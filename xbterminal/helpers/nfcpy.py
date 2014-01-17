@@ -2,6 +2,7 @@
 import nfc
 import nfc.snep
 import threading
+import time
 
 
 nfc_thread = None
@@ -35,6 +36,8 @@ def start(bitcoin_uri):
 
     if nfc_thread is not None and nfc_thread.is_alive():
         stop()
+
+    time.sleep(0.3) #required to free up device before reusing
 
     nfc_thread = BitcoinSender(bitcoin_uri)
     nfc_thread.start()

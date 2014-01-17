@@ -62,18 +62,23 @@ LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
                      }
 LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
-                     }
+                }
 
-REMOTE_SERVERS = ('xbterminal.com',)
-REMOTE_SERVER_CONFIG_URL_TEMPLATE = 'http://{server_address}/config.json?device_key={device_key}'
-
-TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
-TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 10 #if transaction cancelled - how long to show "cancelled" message in seconds
-
+REMOTE_SERVERS = ('http://151.248.122.78',
+                  'http://xbterminal.com',
+                    )
+REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
+                        'tx_log': '/api/transactions/create/',
+                        'receipt': '/api/receipts/{receipt_key}/',
+                        }
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
                                   'Origin': 'XBTerminal device',
                                   }
+
+TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
+TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 10 #if transaction cancelled - how long to show "cancelled" message in seconds
+
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
 OUTPUT_TOTAL_PLACES = 7 #total decimal places to show on screen
 

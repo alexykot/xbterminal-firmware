@@ -7,7 +7,7 @@ import requests
 import xbterminal
 import xbterminal.defaults
 from xbterminal.exceptions import ConfigLoadError
-from xbterminal.helpers.log import log
+from xbterminal.helpers.misc import log
 
 def load_remote_config():
     global xbterminal
@@ -22,24 +22,32 @@ def load_remote_config():
     with open(device_key_file_abs_path, 'r') as device_key_file:
         xbterminal.device_key = device_key_file.read().strip()
 
-    for server in xbterminal.defaults.REMOTE_SERVERS:
-        config_url = xbterminal.defaults.REMOTE_SERVER_CONFIG_URL_TEMPLATE.format(server_address=server,
-                                                                                  device_key=xbterminal.device_key)
+    for server_url in xbterminal.defaults.REMOTE_SERVERS:
+        config_url = server_url + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(device_key=xbterminal.device_key)
+
         try:
-            result = requests.get(url=config_url)
+            headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS
+            headers['Content-type'] = 'application/json'
+
+            result = requests.get(url=config_url, headers=headers)
             xbterminal.remote_config = result.json()
+            xbterminal.runtime['remote_server'] = server_url
             log('remote config loaded from {config_url}'.format(config_url=config_url),
                 xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
             log('remote config: {remote_config}'.format(remote_config=result.text),
                 xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
             save_remote_config_cache()
+            return
         except:
-            log('remote config {config_url} unreachable, trying to load cache'.format(config_url=config_url),
+            log('remote config {config_url} unreachable, trying next server'.format(config_url=config_url),
                       xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
-            try:
-                load_remote_config_cache()
-            except IOError:
-                raise ConfigLoadError()
+
+    log('no remote configs available, trying local cache'.format(config_url=config_url),
+              xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
+    try:
+        load_remote_config_cache()
+    except IOError:
+        raise ConfigLoadError()
 
 
 def load_local_state():

@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import json
 import urllib2
+import datetime
+import requests
+import time
+import sys
 
 import xbterminal
 from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
@@ -61,11 +66,14 @@ def createInvoice(total_fiat_amount):
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
     instantfiat_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE']).quantize(defaults.BTC_DEC_PLACES)
 
-    invoice_data = getattr(xbterminal.instantfiat, xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE']).createInvoice(instantfiat_fiat_amount)
+    invoice_data = (getattr(xbterminal.instantfiat, xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'])
+                    .createInvoice(instantfiat_fiat_amount,
+                                   xbterminal.remote_config['MERCHANT_CURRENCY'],
+                                   xbterminal.remote_config['MERCHANT_INSTANTFIAT_TRANSACTION_SPEED']))
 
     exchange_rate = invoice_data['amount_btc'] / total_fiat_amount
 
-    return invoice_data['amount_btc'], invoice_data['invoice_id'], invoice_data['address'], exchange_rate
+    return instantfiat_fiat_amount, invoice_data['amount_btc'], invoice_data['invoice_id'], invoice_data['address'], exchange_rate
 
 
 def inputToDecimal(display_value_unformatted):
@@ -133,7 +141,82 @@ def formatBitcoin(amount_bitcoin):
     return formatDecimal(amount_bitcoin_scaled, defaults.BITCOIN_OUTPUT_DEC_PLACES)
 
 
-# bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&label=test%20payment&message=this%20is%20a%20test
+def logTransaction(local_addr, instantfiat_addr, dest_addr,
+                   tx_id1, tx_id2, instantfiat_invoice_id,
+                   fiat_amount, btc_amount, instantfiat_fiat_amount, instantfiat_btc_amount, fee_btc_amount,
+                   fiat_currency, exchange_rate):
+    global xbterminal
+
+    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS
+    headers['Content-type'] = 'application/json'
+
+    fiat_amount = str(fiat_amount.quantize(defaults.FIAT_DEC_PLACES))
+    btc_amount = str(btc_amount.quantize(defaults.BTC_DEC_PLACES))
+    instantfiat_fiat_amount = str(instantfiat_fiat_amount.quantize(defaults.FIAT_DEC_PLACES))
+    instantfiat_btc_amount = str(instantfiat_btc_amount.quantize(defaults.BTC_DEC_PLACES))
+    fee_btc_amount = str(fee_btc_amount.quantize(defaults.BTC_DEC_PLACES))
+    exchange_rate = str(exchange_rate.quantize(defaults.FIAT_DEC_PLACES))
+
+    tx_log_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['tx_log']
+    data = {"device": xbterminal.device_key,
+            "source_address": '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz', #this iss a fake address, source addresses are not possible to get through bitcoind JSON-RPC
+            "hop_address": local_addr,
+            "dest_address": dest_addr,
+            "instantfiat_address" : instantfiat_addr,
+            "bitcoin_transaction_id_1": tx_id1,
+            "bitcoin_transaction_id_2": tx_id2,
+            "fiat_amount": fiat_amount,
+            "fiat_currency": fiat_currency,
+            "btc_amount": btc_amount,
+            "instantfiat_fiat_amount": instantfiat_fiat_amount,
+            "instantfiat_btc_amount": instantfiat_btc_amount,
+            "fee_btc_amount": fee_btc_amount,
+            "instantfiat_invoice_id": instantfiat_invoice_id,
+            "effective_exchange_rate": exchange_rate,
+            "time": datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M:%S%z'),
+            }
+    data = json.dumps(data)
+    response = requests.post(url=tx_log_url, headers=headers, data=data)
+    response_data = response.json()
+
+    receipt_url = None
+
+    try:
+        #@TODO this will be updated when API will return receipt_id instead of receipt_url
+        receipt_url = response_data['receipt_url'].replace('https://xbterminal.com', xbterminal.runtime['remote_server'])
+    except KeyError:
+        print response.request.body
+        print response_data
+
+    return receipt_url
+
+def clearPaymentRuntime(clear_amounts=True):
+    global xbterminal
+
+    if clear_amounts:
+        xbterminal.runtime['display_value_unformatted'] = ''
+        xbterminal.runtime['display_value_formatted'] = formatInput(xbterminal.runtime['display_value_unformatted'],
+                                                                        defaults.OUTPUT_DEC_PLACES)
+        xbterminal.gui.runtime['main_win'].ui.amount_input.setText(xbterminal.runtime['display_value_formatted'])
+
+    xbterminal.runtime['amounts']['amount_to_pay_btc'] = None
+    xbterminal.runtime['amounts']['amount_to_pay_fiat'] = None
+    xbterminal.runtime['effective_rate_btc'] = None
+    xbterminal.runtime['transactions_addresses'] = None
+
+    xbterminal.gui.runtime['main_win'].ui.fiat_amount.setText("0")
+    xbterminal.gui.runtime['main_win'].ui.btc_amount.setText("0")
+    xbterminal.gui.runtime['main_win'].ui.exchange_rate_amount.setText("0")
+
+    xbterminal.gui.runtime['main_win'].ui.fiat_amount_qr.setText("0")
+    xbterminal.gui.runtime['main_win'].ui.btc_amount_qr.setText("0")
+    xbterminal.gui.runtime['main_win'].ui.exchange_rate_qr.setText("0")
+
+    xbterminal.gui.runtime['main_win'].ui.fiat_amount_nfc.setText("0")
+    xbterminal.gui.runtime['main_win'].ui.btc_amount_nfc.setText("0")
+    xbterminal.gui.runtime['main_win'].ui.exchange_rate_nfc.setText("0")
+
+
 def getBitcoinURI(payment_addr, amount_btc):
     amount_btc = str(Decimal(amount_btc).quantize(defaults.BTC_DEC_PLACES))
     uri = 'bitcoin:{}?amount={}&label={}&message={}'.format(payment_addr,
@@ -144,5 +227,8 @@ def getBitcoinURI(payment_addr, amount_btc):
     return uri
 
 
-#longest fitting into 57 blocks sized QR code
-# bitcoin:1G2bcoCKj8s9GYheqQgU5CHSLCtGjyP9Vz?amount=0.001&message=this%20is%20a%20test1G%202bcoCKj%208s9%20GYheqQgU%205CHSLCtGj%20yP9Vz%2017srxna%20p4ikefG4hCn%201x6%207MUQjoQfqv%20qUwb1JV9nFhxot%20VYyUD26%20BbZB2ak1Yur8Z%20y7x%20w13dHs7s%20L7QdtLV%20i7hG8hWE3Fhasfeggryur5
+def gracefullExit():
+    xbterminal.helpers.configs.save_local_state()
+    xbterminal.helpers.nfcpy.stop()
+    xbterminal.helpers.misc.log('application halted')
+    sys.exit()

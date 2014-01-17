@@ -6,21 +6,21 @@ import re
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
-from xbterminal.helpers.log import log
+from xbterminal.helpers.misc import log
 
 
 BITPAY_CREATE_INVOICE_API_URL = "https://bitpay.com/api/invoice"
 BITPAY_INVOICE_PAGE_URL = "https://bitpay.com/invoice?id={}"
 BITPAY_CHECK_INVOICE_API_URL = "https://bitpay.com/api/invoice/{}"
 
-def createInvoice(amount):
+def createInvoice(amount, currency_code, speed):
     headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS
     headers['Content-type'] = 'application/json'
     response = requests.post(url=BITPAY_CREATE_INVOICE_API_URL,
                              headers=headers,
                              data={'price': float(amount),
-                                   'currency': xbterminal.remote_config['MERCHANT_CURRENCY'],
-                                   'transactionSpeed': xbterminal.remote_config['MERCHANT_INSTANTFIAT_TRANSACTION_SPEED'],
+                                   'currency': currency_code,
+                                   'transactionSpeed': speed,
                                     },
                              auth=(xbterminal.remote_config['MERCHANT_INSTANTFIAT_API_KEY'], ''))
     response = response.json()

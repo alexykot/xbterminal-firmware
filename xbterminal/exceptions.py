@@ -9,8 +9,14 @@ class NetworkError(Exception):
     strerror = u'network error while retrieving price'
 
 class NotEnoughFunds(Exception):
-    exchange_name = None
+    amount_available = None
+    amount_to_spend = None
     strerror = u'not enough funds for transaction'
+    def __init__(self, amount_available, amount_to_spend):
+        self.amount_available = amount_available
+        self.amount_to_spend = amount_to_spend
+        super(NotEnoughFunds, self).__init__()
+
 
 class PrivateKeysMissing(Exception):
     exchange_name = None

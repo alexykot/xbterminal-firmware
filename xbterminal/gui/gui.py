@@ -7,7 +7,6 @@ import time
 import xbterminal
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
-from xbterminal.helpers.log import log
 
 
 try:
