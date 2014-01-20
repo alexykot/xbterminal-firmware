@@ -44,7 +44,8 @@ def _start_bitcoind(connection_probe):
         _presync_blockchain()
 
     log('bitcoind starting')
-    subprocess.Popen("bitcoind")
+    bitcoind_config_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.BITCOIND_CONFIG_PATH)
+    subprocess.Popen(['bitcoind', '-conf={conf_file_path}'.format(conf_file_path=bitcoind_config_path)])
     while True:
         try:
             connection_probe.getinfo()

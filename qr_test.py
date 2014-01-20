@@ -14,11 +14,15 @@ import xbterminal.main
 xbterminal.defaults.PROJECT_ABS_PATH = include_path
 #xbterminal.main.main()
 
+from PyQt4 import QtGui, QtCore
+
 import xbterminal.keypad
 import xbterminal.keypad.keypad
 import xbterminal.gui
 import xbterminal.gui.ui
 from xbterminal.gui import gui
+import xbterminal.helpers
+import xbterminal.helpers.qr
 
 
 global current_screen
@@ -50,6 +54,12 @@ def main():
 
     screen_index = 0
     keypad = xbterminal.keypad.keypad.keypad()
+
+    image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+    xbterminal.helpers.qr.qr_gen('http://151.248.122.78/api/receipts/19b318efd0104e6997ce6bcda91855e3/',
+                                 image_path)
+    ui.receipt_qr_image.setPixmap(QtGui.QPixmap(image_path))
+    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_success'])
 
     wifi_init = False
     while True:

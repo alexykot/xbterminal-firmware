@@ -1395,32 +1395,13 @@ NOW</string>
       <string>£</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="send_nfcButton">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>150</y>
-       <width>151</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>send NFC</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="pay_success_scrn">
     <widget class="QLabel" name="pay_success_lbl">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>40</y>
+       <y>10</y>
        <width>441</width>
        <height>61</height>
       </rect>
@@ -1441,10 +1422,10 @@ NOW</string>
     <widget class="QLabel" name="touch_for_receipt_lbl">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>120</y>
-       <width>441</width>
-       <height>61</height>
+       <x>230</x>
+       <y>100</y>
+       <width>211</width>
+       <height>81</height>
       </rect>
      </property>
      <property name="font">
@@ -1454,10 +1435,28 @@ NOW</string>
       </font>
      </property>
      <property name="text">
-      <string>TOUCH NFC AGAIN FOR RECEIPT</string>
+      <string>TOUCH NFC AGAIN
+  OR SCAN QR CODE 
+ FOR RECEIPT</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="receipt_qr_image">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>80</y>
+       <width>131</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>

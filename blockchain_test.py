@@ -26,36 +26,36 @@ xbterminal.helpers.configs.load_local_state()
 xbterminal.helpers.configs.load_remote_config()
 xbterminal.blockchain.init()
 
-amount_btc = '0.0002'
-payment_local_addr = xbterminal.blockchain.getFreshAddress()
-payment_remote_addr = '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz'
-
-
-
-while True:
-    if not xbterminal.helpers.nfcpy.is_active():
-        bitcoin_uri = xbterminal.stages.getBitcoinURI(payment_local_addr, amount_btc)
-        xbterminal.helpers.nfcpy.start(bitcoin_uri)
-        print 'NFC activated'
-
-    current_balance = xbterminal.blockchain.getAddressBalance(payment_local_addr)
-    if current_balance > 0:
-        print 'balance received'
-        xbterminal.helpers.nfcpy.stop()
-        outputs = {payment_remote_addr: Decimal(0.0001)}
-        try:
-            result = xbterminal.blockchain.sendRawTransaction(outputs, from_addr=payment_local_addr)
-            print 'payment forwarded'
-            exit()
-        except xbterminal.exceptions.NotEnoughFunds as error:
-            print "NotEnoughFunds"
-            print error.amount_available
-            print error.amount_to_spend
-            exit()
-
-    time.sleep(0.2)
-
-
+# amount_btc = '0.0002'
+# payment_local_addr = xbterminal.blockchain.getFreshAddress()
+# payment_remote_addr = '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz'
+#
+#
+#
+# while True:
+#     if not xbterminal.helpers.nfcpy.is_active():
+#         bitcoin_uri = xbterminal.stages.getBitcoinURI(payment_local_addr, amount_btc)
+#         xbterminal.helpers.nfcpy.start(bitcoin_uri)
+#         print 'NFC activated'
+#
+#     current_balance = xbterminal.blockchain.getAddressBalance(payment_local_addr)
+#     if current_balance > 0:
+#         print 'balance received'
+#         xbterminal.helpers.nfcpy.stop()
+#         outputs = {payment_remote_addr: Decimal(0.0001)}
+#         try:
+#             result = xbterminal.blockchain.sendRawTransaction(outputs, from_addr=payment_local_addr)
+#             print 'payment forwarded'
+#             exit()
+#         except xbterminal.exceptions.NotEnoughFunds as error:
+#             print "NotEnoughFunds"
+#             print error.amount_available
+#             print error.amount_to_spend
+#             exit()
+#
+#     time.sleep(0.2)
+#
+#
 
 # xbterminal.runtime = {'remote_server' : 'http://151.248.122.78'}
 # print xbterminal.stages.logTransaction('1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz', '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz', '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz',

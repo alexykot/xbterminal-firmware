@@ -3,6 +3,7 @@ import nfc
 import nfc.snep
 import threading
 import time
+from xbterminal.helpers.misc import log
 
 
 nfc_thread = None
@@ -41,6 +42,7 @@ def start(bitcoin_uri):
 
     nfc_thread = BitcoinSender(bitcoin_uri)
     nfc_thread.start()
+    log('NFC activated')
 
 def is_active():
     global nfc_thread

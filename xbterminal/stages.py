@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import httplib
 import json
+import socket
 import urllib2
 import datetime
 import requests
 import time
 import sys
+import simplejson
 
 import xbterminal
 from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
@@ -152,14 +155,13 @@ def logTransaction(local_addr, instantfiat_addr, dest_addr,
 
     fiat_amount = str(fiat_amount.quantize(defaults.FIAT_DEC_PLACES))
     btc_amount = str(btc_amount.quantize(defaults.BTC_DEC_PLACES))
-    instantfiat_fiat_amount = str(instantfiat_fiat_amount.quantize(defaults.FIAT_DEC_PLACES))
+    instantfiat_fiat_amount = str(instantfiat_fiat_amount.quantize(Decimal('0.00'))) #two dec places forced for fiat
     instantfiat_btc_amount = str(instantfiat_btc_amount.quantize(defaults.BTC_DEC_PLACES))
     fee_btc_amount = str(fee_btc_amount.quantize(defaults.BTC_DEC_PLACES))
     exchange_rate = str(exchange_rate.quantize(defaults.FIAT_DEC_PLACES))
 
     tx_log_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['tx_log']
     data = {"device": xbterminal.device_key,
-            "source_address": '1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz', #this iss a fake address, source addresses are not possible to get through bitcoind JSON-RPC
             "hop_address": local_addr,
             "dest_address": dest_addr,
             "instantfiat_address" : instantfiat_addr,
@@ -176,17 +178,21 @@ def logTransaction(local_addr, instantfiat_addr, dest_addr,
             "time": datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M:%S%z'),
             }
     data = json.dumps(data)
-    response = requests.post(url=tx_log_url, headers=headers, data=data)
-    response_data = response.json()
 
     receipt_url = None
-
     try:
-        #@TODO this will be updated when API will return receipt_id instead of receipt_url
-        receipt_url = response_data['receipt_url'].replace('https://xbterminal.com', xbterminal.runtime['remote_server'])
-    except KeyError:
-        print response.request.body
-        print response_data
+        response = requests.post(url=tx_log_url, headers=headers, data=data)
+        response_data = response.json()
+        receipt_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['receipt'].format(receipt_key=response_data['key'])
+    except (KeyError,
+            TypeError,
+            ValueError,
+            simplejson.decoder.JSONDecodeError,
+            socket.error,
+            urllib2.URLError,
+            httplib.BadStatusLine,
+            httplib.IncompleteRead) as error:
+        pass
 
     return receipt_url
 

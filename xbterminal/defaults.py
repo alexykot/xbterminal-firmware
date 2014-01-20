@@ -47,13 +47,14 @@ LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         }
 
 PROJECT_ABS_PATH = '' #initialized in bootstrap.py
-PROJECT_LOCAL_PATH = 'xbterminal/'
-DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH,'device_key')
-RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH,'runtime')
-LOG_FILE_PATH = os.path.join(RUNTIME_PATH,'app.log')
-QR_IMAGE_PATH = os.path.join(RUNTIME_PATH,'qr.png')
-STATE_FILE_PATH = os.path.join(RUNTIME_PATH,'local_state')
-REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH,'remote_config_cache')
+PROJECT_LOCAL_PATH = 'xbterminal'
+BITCOIND_CONFIG_PATH = os.path.join('configs', 'bitcoin.conf')
+DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
+RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
+LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
+QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
+STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
+REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 
 LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
@@ -82,7 +83,7 @@ TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 10 #if transaction cancelled - how long 
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
 OUTPUT_TOTAL_PLACES = 7 #total decimal places to show on screen
 
-EXCHANGE_RATE_DEC_PLACES = 2 #fractional decimal places for exchange rate to show on screen
+EXCHANGE_RATE_DEC_PLACES = 3 #fractional decimal places for exchange rate to show on screen
 
 BITCOIN_SCALE_DIVIZER = 1000 #1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 2

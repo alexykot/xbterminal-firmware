@@ -48,6 +48,7 @@ class GUI(QtGui.QWidget):
         self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(defaults.PROJECT_ABS_PATH, defaults.UI_IMAGES_PATH, 'logo.png'))))
         self.ui.show_qr_btn.clicked.connect(self.qrBntPressEvent)
 
+
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
         #self.Form.showFullScreen()
@@ -71,7 +72,6 @@ class GUI(QtGui.QWidget):
     def qrBntPressEvent(self):
         global xbterminal
         xbterminal.runtime['screen_buttons']['qr_button'] = True
-
 
 
 def advanceLoadingProgressBar(level):

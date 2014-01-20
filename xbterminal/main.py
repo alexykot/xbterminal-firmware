@@ -31,7 +31,7 @@ def main():
     xbterminal.runtime = {}
     run = xbterminal.runtime
     run['init'] = {}
-    run['init']['internet'] = True
+    run['init']['internet'] = False
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
     run['CURRENT_STAGE'] = defaults.STAGES['idle']
@@ -126,6 +126,10 @@ def main():
         except NameError:
             pass
 
+
+        if run['key_pressed'] is not None:
+            time.sleep(0.1)
+
         run['key_pressed'] = None
         try:
             run['key_pressed'] = keypad.getKey()
@@ -136,6 +140,7 @@ def main():
         except NameError:
             pass
 
+###IDLE
         if run['CURRENT_STAGE'] == defaults.STAGES['idle']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['idle'])
@@ -147,6 +152,7 @@ def main():
                 run['stage_init'] = False
                 continue
 
+###ENTER AMOUNT
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
@@ -177,6 +183,7 @@ def main():
                     ui.error_text_lbl.setText("no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
                     pass
 
+###PAY LOADING
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_loading']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
@@ -229,6 +236,7 @@ def main():
                 run['stage_init'] = False
                 continue
 
+###PAY RATES
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_rates']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_rates'])
@@ -248,6 +256,7 @@ def main():
                 run['stage_init'] = False
                 continue
 
+###PAY NFC
         elif (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc'] or
                 run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
             if not run['stage_init']:
@@ -285,6 +294,7 @@ def main():
                 continue
 
             if run['key_pressed'] == 'qr_code' or run['screen_buttons']['qr_button'] == True:
+                log('QR code requested')
                 run['screen_buttons']['qr_button'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 run['stage_init'] = False
@@ -293,7 +303,6 @@ def main():
             if not run['received_payment']:
                 if not xbterminal.helpers.nfcpy.is_active():
                     xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
-                    log('NFC activated')
 
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
                 if current_balance >= run['amounts']['amount_to_pay_btc']:
@@ -309,7 +318,7 @@ def main():
                                 }
 
                     outgoing_tx_hash = stages.createOutgoingTransaction(amounts=amounts,
-                                                               addresses=run['transactions_addresses'])
+                                                                        addresses=run['transactions_addresses'])
                     log('payment forwarded to merchant, outgoing txid: {txid}'.format(txid=outgoing_tx_hash))
 
                     run['receipt_url'] = stages.logTransaction(
@@ -330,6 +339,7 @@ def main():
                         xbterminal.remote_config['MERCHANT_CURRENCY'],
                         run['effective_rate_btc']
                     )
+                    log('receipt: {}'.format(run['receipt_url']))
 
                     stages.clearPaymentRuntime()
 
@@ -346,23 +356,27 @@ def main():
                     run['stage_init'] = False
                     continue
 
+###PAY SUCCESS
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_success']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_success'])
+                if run['receipt_url'] is not None:
+                    image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+                    xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
+                    ui.receipt_qr_image.setPixmap(QtGui.QPixmap(image_path))
+                    if not xbterminal.helpers.nfcpy.is_active():
+                        xbterminal.helpers.nfcpy.start(run['receipt_url'])
+                        time.sleep(0.5)
                 run['stage_init'] = True
                 continue
 
-            if not xbterminal.helpers.nfcpy.is_active():
-                xbterminal.helpers.nfcpy.start(run['receipt_url'])
-                log('NFC activated')
-                time.sleep(0.5)
-
-            if run['key_pressed'] is not None:
+            if run['key_pressed'] == 'enter':
                 xbterminal.helpers.nfcpy.stop()
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
+                run['stage_init'] = False
                 continue
-            pass
 
+###PAY CANCEL
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_cancel']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
@@ -379,6 +393,7 @@ def main():
                 run['stage_init'] = False
                 continue
 
+###CHOOSE SSID
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['choose_ssid']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
@@ -413,6 +428,7 @@ def main():
 
             ui.wifi_listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
 
+###ENTER PASSKEY
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])
@@ -459,6 +475,7 @@ def main():
 
             ui.password_input.setText(xbterminal.local_state['wifi_pass'])
 
+###WIFI CONNECTED
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['wifi_connected']:
             if not run['stage_init']:
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['wifi_connected'])
