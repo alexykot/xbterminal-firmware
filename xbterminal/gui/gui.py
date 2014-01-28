@@ -47,6 +47,8 @@ class GUI(QtGui.QWidget):
         self.Form.show()
         self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(defaults.PROJECT_ABS_PATH, defaults.UI_IMAGES_PATH, 'logo.png'))))
         self.ui.show_qr_btn.clicked.connect(self.qrBntPressEvent)
+        self.ui.skip_wifi_btn.clicked.connect(self.skipWiFiBntPressEvent)
+
 
 
         ''' Runtime GUI changes '''
@@ -72,6 +74,10 @@ class GUI(QtGui.QWidget):
     def qrBntPressEvent(self):
         global xbterminal
         xbterminal.runtime['screen_buttons']['qr_button'] = True
+
+    def skipWiFiBntPressEvent(self):
+        global xbterminal
+        xbterminal.runtime['screen_buttons']['skip_wifi'] = True
 
 
 def advanceLoadingProgressBar(level):

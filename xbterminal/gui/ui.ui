@@ -307,13 +307,32 @@
        <x>30</x>
        <y>40</y>
        <width>421</width>
-       <height>151</height>
+       <height>141</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>12</pointsize>
       </font>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="skip_wifi_btn">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>190</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>skip WiFi setup</string>
      </property>
     </widget>
    </widget>

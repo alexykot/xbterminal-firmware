@@ -77,7 +77,7 @@ EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
                                   'Origin': 'XBTerminal device',
                                   }
 
-TRANSACTION_TIMEOUT = 300 #in person transaction timeout in seconds
+TRANSACTION_TIMEOUT = 60 #in person transaction timeout in seconds
 TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 10 #if transaction cancelled - how long to show "cancelled" message in seconds
 
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
@@ -94,16 +94,24 @@ BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
 
+BITCOIND_DATADIR = '/root/.bitcoin'
+BITCOIND_TESTNET = True
+BITCOIND_TESTNET_TESTDIR = 'testnet3'
 BITCOIND_HOST = '127.0.0.1'
-BITCOIND_PORT = 8332
+if BITCOIND_TESTNET:
+    BITCOIND_PORT = 18332
+else:
+    BITCOIND_PORT = 8332
 BITCOIND_USER = 'root'
 BITCOIND_PASS = 'password'
+
+
 BITCOIND_BLOCKCHAIN_SERVERS_KEYS_PATH = '/root/.ssh'
-BITCOIND_BLOCKCHAIN_SERVERS = ({'name': 'BBB',
-                                'addr': '192.168.51.122',
+BITCOIND_BLOCKCHAIN_SERVERS = ({'name': 'chainserver0',
+                                'addr': '80.243.176.66',
                                 'port': '22',
-                                'user': 'root',
-                                'pass': 'root',
-                                'path': '/root/.bitcoin',
+                                'user': 'bitnumus',
+                                'path': '~/chain',
                                 }, )
 BITCOIND_MAX_BLOCKCHAIN_AGE = 3600 #if is blockchain more than X seconds old - we do rsync to trusted blockchain servers to download blocks and index and catch up quickly
+

@@ -23,10 +23,10 @@ def init():
 
     if connection is None:
         connection_probe = BitcoinConnection(user=defaults.BITCOIND_USER,
-                                       password=defaults.BITCOIND_PASS,
-                                       host=defaults.BITCOIND_HOST,
-                                       port=defaults.BITCOIND_PORT,
-                                       use_https=False)
+                                             password=defaults.BITCOIND_PASS,
+                                             host=defaults.BITCOIND_HOST,
+                                             port=defaults.BITCOIND_PORT,
+                                             use_https=False)
         try:
             connection_probe.getinfo()
             connection = connection_probe
@@ -40,12 +40,17 @@ def init():
 def _start_bitcoind(connection_probe):
     global xbterminal
 
-    if 'last_started' not in xbterminal.local_state or xbterminal.local_state['last_started'] + defaults.BITCOIND_MAX_BLOCKCHAIN_AGE < time.time():
+    if ('last_started' not in xbterminal.local_state
+        or xbterminal.local_state['last_started'] + defaults.BITCOIND_MAX_BLOCKCHAIN_AGE < time.time()
+        or True):
         _presync_blockchain()
 
     log('bitcoind starting')
     bitcoind_config_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.BITCOIND_CONFIG_PATH)
-    subprocess.Popen(['bitcoind', '-conf={conf_file_path}'.format(conf_file_path=bitcoind_config_path)])
+    subprocess.Popen(['bitcoind',
+                      '-conf={conf_file_path}'.format(conf_file_path=bitcoind_config_path),
+                      '-datadir={data_dir}'.format(data_dir=defaults.BITCOIND_DATADIR),
+                        ])
     while True:
         try:
             connection_probe.getinfo()
@@ -71,22 +76,30 @@ def _presync_blockchain():
             continue
 
         if not blocks_sync_successful:
-            log('blocks rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']),
-                xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
             command_blocks = []
             command_blocks.append("rsync")
             command_blocks.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
                                                                                  key_file_path=key_file_path))
-            command_blocks.append("-aqz --delete")
+            command_blocks.append("-az --delete")
+            command_blocks.append("-q")
+            #command_blocks.append("--progress")
+
             command_blocks.append("{user}@{addr}:{path}/blocks/".format(user=blockchain_server['user'],
                                                                          addr=blockchain_server['addr'],
                                                                          path=blockchain_server['path']))
-            command_blocks.append("/root/.bitcoin/blocks")
+            if defaults.BITCOIND_TESTNET:
+                command_blocks.append("{data_dir}/{testnet_dir}/blocks".format(data_dir=defaults.BITCOIND_DATADIR,
+                                                                                   testnet_dir=defaults.BITCOIND_TESTNET_TESTDIR,
+                                                                                        ))
+            else:
+                command_blocks.append("{data_dir}/blocks".format(data_dir=defaults.BITCOIND_DATADIR))
             command_blocks = ' '.join(command_blocks)
+            log('blocks rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
+            log('command: {command_blocks}'.format(command_blocks=command_blocks))
             try:
                 output = subprocess.check_output(command_blocks, shell=True)
             except subprocess.CalledProcessError:
-                output = 'fail'
+                output = 'fail while retrieving fail'
 
             if output == '':
                 blocks_sync_successful = True
@@ -95,21 +108,29 @@ def _presync_blockchain():
                     xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
 
         if not chainstate_sync_successful:
-            log('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
             command_chainstate = []
             command_chainstate.append("rsync")
             command_chainstate.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
                                                                                   key_file_path=key_file_path))
-            command_chainstate.append("-aqz --delete")
+            command_chainstate.append("-az --delete")
+            command_chainstate.append("-q")
+            #command_chainstate.append("--progress")
             command_chainstate.append("{user}@{addr}:{path}/chainstate/".format(user=blockchain_server['user'],
                                                                                addr=blockchain_server['addr'],
                                                                                path=blockchain_server['path']))
-            command_chainstate.append("/root/.bitcoin/chainstate")
+            if defaults.BITCOIND_TESTNET:
+                command_chainstate.append("{data_dir}/{testnet_dir}/chainstate".format(data_dir=defaults.BITCOIND_DATADIR,
+                                                                                       testnet_dir=defaults.BITCOIND_TESTNET_TESTDIR,
+                                                                                        ))
+            else:
+                command_chainstate.append("{data_dir}/chainstate".format(data_dir=defaults.BITCOIND_DATADIR))
             command_chainstate = ' '.join(command_chainstate)
+            log('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
+            log('command: {command_chainstate}'.format(command_chainstate=command_chainstate))
             try:
                 output = subprocess.check_output(command_chainstate, shell=True)
             except subprocess.CalledProcessError:
-                output = 'fail'
+                output = 'fail while retrieving fail'
 
             if output == '':
                 blocks_sync_successful = True
@@ -172,7 +193,6 @@ def getLastUnspentTransaction(address):
 # by default all change is sent to fees address
 def sendRawTransaction(outputs, from_addr, change_addr=None):
     global connection
-
     transaction_hash = None
 
     if change_addr is None:

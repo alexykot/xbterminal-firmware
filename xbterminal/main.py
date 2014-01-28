@@ -42,13 +42,13 @@ def main():
     run['key_pressed'] = None
     run['screen_buttons'] = {}
     run['screen_buttons']['qr_button'] = False
+    run['screen_buttons']['skip_wifi'] = False
     run['last_activity_timestamp'] = None
     run['current_text_piece'] = 'decimal'
     run['display_value_unformatted'] = ''
     run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
-    flag = True
 
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
@@ -107,7 +107,7 @@ def main():
         if run['init']['internet'] and not run['init']['remote_config']:
             try:
                 xbterminal.helpers.configs.load_remote_config()
-                ui.merchant_name_lbl.setText('{} '.format(xbterminal.remote_config['MERCHANT_NAME'])) #trailing space required
+                ui.merchant_name_lbl.setText("{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'], xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
                 run['init']['remote_config'] = True
             except ConfigLoadError:
                 log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
@@ -399,6 +399,16 @@ def main():
                 ui.stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
                 run['stage_init'] = True
 
+
+
+            if run['screen_buttons']['skip_wifi']:
+                log('wifi setup cancelled, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
+                run['screen_buttons']['skip_wifi'] = False
+                run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
+                run['init']['internet'] = True
+                continue
+
             if run['wifi']['networks_last_listed_timestamp'] + 30 < time.time():
                 networks_list = xbterminal.helpers.wireless.discover_networks()
                 run['wifi']['networks_last_listed_timestamp'] = time.time()
@@ -486,13 +496,16 @@ def main():
             run['stage_init'] = False
             continue
 
+###APPLICATION HALT
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             stages.gracefullExit()
 
+###INACTIVITY STATE RESET
         if (run['CURRENT_STAGE'] in defaults.STAGES['payment']
             and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time()):
 
             stages.clearPaymentRuntime()
+            xbterminal.helpers.nfcpy.stop()
 
             if (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']
                 or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):

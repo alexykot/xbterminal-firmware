@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/root/XBTerminal/xbterminal/gui/ui.ui'
 #
-# Created: Mon Jan 20 21:03:35 2014
+# Created: Tue Jan 28 00:13:24 2014
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -119,11 +119,18 @@ class Ui_Form(object):
         self.wifi_lbl.setFont(font)
         self.wifi_lbl.setObjectName(_fromUtf8("wifi_lbl"))
         self.wifi_listWidget = QtGui.QListWidget(self.choose_ssid_scrn)
-        self.wifi_listWidget.setGeometry(QtCore.QRect(30, 40, 421, 151))
+        self.wifi_listWidget.setGeometry(QtCore.QRect(30, 40, 421, 141))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.wifi_listWidget.setFont(font)
         self.wifi_listWidget.setObjectName(_fromUtf8("wifi_listWidget"))
+        self.skip_wifi_btn = QtGui.QPushButton(self.choose_ssid_scrn)
+        self.skip_wifi_btn.setGeometry(QtCore.QRect(150, 190, 171, 31))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(14)
+        self.skip_wifi_btn.setFont(font)
+        self.skip_wifi_btn.setObjectName(_fromUtf8("skip_wifi_btn"))
         self.stackedWidget.addWidget(self.choose_ssid_scrn)
         self.enter_passkey_scrn = QtGui.QWidget()
         self.enter_passkey_scrn.setObjectName(_fromUtf8("enter_passkey_scrn"))
@@ -589,6 +596,7 @@ class Ui_Form(object):
         self.percent_load_lbl.setText(QtGui.QApplication.translate("Form", "loading, please wait", None, QtGui.QApplication.UnicodeUTF8))
         self.indefinite_load_lbl.setText(QtGui.QApplication.translate("Form", "loading, please wait", None, QtGui.QApplication.UnicodeUTF8))
         self.wifi_lbl.setText(QtGui.QApplication.translate("Form", "please select WiFi network", None, QtGui.QApplication.UnicodeUTF8))
+        self.skip_wifi_btn.setText(QtGui.QApplication.translate("Form", "skip WiFi setup", None, QtGui.QApplication.UnicodeUTF8))
         self.ssid_lbl.setText(QtGui.QApplication.translate("Form", "selected WiFi", None, QtGui.QApplication.UnicodeUTF8))
         self.password_lbl.setText(QtGui.QApplication.translate("Form", "password", None, QtGui.QApplication.UnicodeUTF8))
         self.input_help_lbl.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p align=\"center\">2 a b c A B C</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
