@@ -135,7 +135,7 @@ def main():
             run['key_pressed'] = keypad.getKey()
             if run['key_pressed'] is not None:
                 if run['key_pressed'] == 'escape':
-                    exit()
+                    run['CURRENT_STAGE'] = defaults.STAGES['application_halt']
                 run['last_activity_timestamp'] = time.time()
         except NameError:
             pass
