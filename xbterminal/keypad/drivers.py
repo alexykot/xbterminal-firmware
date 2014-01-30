@@ -36,24 +36,26 @@ class keypadDriverBBB():
                         '*':'escape',
                         }
         
-        if 'keypad_schema' in xbterminal.local_state and xbterminal.local_state['keypad_schema'] == 'alex':
-            self.KEYPAD  = {17: 1,
-                           18: 2,
-                           20: 3,
-                           49: 4,
-                           50: 5,
-                           52: 6,
-                           81: 7,
-                           82: 8,
-                           84: 9,
-                           146: 0,
-                           24: 'A',
-                           56: 'B',
-                           88: 'C',
-                           152: 'D',
-                           145: '*',
-                           148: '#',}
-        else:
+        #if 'keypad_schema' in xbterminal.local_state and xbterminal.local_state['keypad_schema'] == 'alex':
+
+        self.KEYPAD  = {17: 1,
+                       18: 2,
+                       20: 3,
+                       49: 4,
+                       50: 5,
+                       52: 6,
+                       81: 7,
+                       82: 8,
+                       84: 9,
+                       146: 0,
+                       24: 'A',
+                       56: 'B',
+                       88: 'C',
+                       152: 'D',
+                       145: '*',
+                       148: '#',}
+
+        '''
             self.KEYPAD  = {81: 1,
                            84: 2,
                            88: 3,
@@ -70,6 +72,7 @@ class keypadDriverBBB():
                            146: 'D',
                            145: '*',
                            152: '#',}
+        '''
 
         self.ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]
         self.COLUMN = [pins['pin4'], pins['pin3'], pins['pin2'], pins['pin1']]
