@@ -183,7 +183,7 @@ def logTransaction(local_addr, instantfiat_addr, dest_addr,
     try:
         response = requests.post(url=tx_log_url, headers=headers, data=data)
         response_data = response.json()
-        receipt_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['receipt'].format(receipt_key=response_data['key'])
+        receipt_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['receipt'].format(receipt_key=response_data['receipt_key'])
     except (KeyError,
             TypeError,
             ValueError,
@@ -238,3 +238,4 @@ def gracefullExit():
     xbterminal.helpers.nfcpy.stop()
     xbterminal.helpers.misc.log('application halted')
     sys.exit()
+

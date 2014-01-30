@@ -112,6 +112,7 @@ BITCOIND_BLOCKCHAIN_SERVERS = ({'name': 'chainserver0',
                                 'port': '22',
                                 'user': 'bitnumus',
                                 'path': '~/chain',
+                                'testnet': True,
                                 }, )
 BITCOIND_MAX_BLOCKCHAIN_AGE = 3600 #if is blockchain more than X seconds old - we do rsync to trusted blockchain servers to download blocks and index and catch up quickly
 

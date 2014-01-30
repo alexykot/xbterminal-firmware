@@ -5,88 +5,73 @@ import xbterminal
 GPIO = None
 
 class keypadDriverBBB():
+    pins_set_up = False
+    pins = {'pin1': "P8_14",
+            'pin2': "P8_16",
+            'pin3': "P8_11",
+            'pin4': "P8_10",
+            'pin5': "P8_7",
+            'pin6': "P8_9",
+            'pin7': "P8_26",
+            'pin8': "P8_8",
+            }
+
+    KEY_MAP = {0: 0,
+               1: 1,
+               2: 2,
+               3: 3,
+               4: 4,
+               5: 5,
+               6: 6,
+               7: 7,
+               8: 8,
+               9: 9,
+               'A': 'backspace',
+               'D': 'enter',
+               '#': 'qr_code',
+               '*': 'escape',
+                }
+
+    KEYPAD = {17: 1,
+              18: 2,
+              20: 3,
+              49: 4,
+              50: 5,
+              52: 6,
+              81: 7,
+              82: 8,
+              84: 9,
+              146: 0,
+              24: 'A',
+              56: 'B',
+              88: 'C',
+              152: 'D',
+              145: '*',
+              148: '#',
+               }
+
+    ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]
+    COLUMN = [pins['pin4'], pins['pin3'], pins['pin2'], pins['pin1']]
+
     def __init__(self):
         global GPIO
         import Adafruit_BBIO.GPIO as GPIO
 
-        pins = {
-                'pin1': "P8_14",
-                'pin2': "P8_16",
-                'pin3': "P8_11",
-                'pin4': "P8_10",
-                'pin5': "P8_7",
-                'pin6': "P8_9",
-                'pin7': "P8_26",
-                'pin8': "P8_8",
-        }
-
-        self.KEY_MAP = {0:0,
-                        1:1,
-                        2:2,
-                        3:3,
-                        4:4,
-                        5:5,
-                        6:6,
-                        7:7,
-                        8:8,
-                        9:9,
-                        'A':'backspace',
-                        'D':'enter',
-                        '#':'qr_code',
-                        '*':'escape',
-                        }
-        
-        #if 'keypad_schema' in xbterminal.local_state and xbterminal.local_state['keypad_schema'] == 'alex':
-
-        self.KEYPAD  = {17: 1,
-                       18: 2,
-                       20: 3,
-                       49: 4,
-                       50: 5,
-                       52: 6,
-                       81: 7,
-                       82: 8,
-                       84: 9,
-                       146: 0,
-                       24: 'A',
-                       56: 'B',
-                       88: 'C',
-                       152: 'D',
-                       145: '*',
-                       148: '#',}
-
-        '''
-            self.KEYPAD  = {81: 1,
-                           84: 2,
-                           88: 3,
-                           49: 4,
-                           52: 5,
-                           56: 6,
-                           17: 7,
-                           20: 8,
-                           56: 9,
-                           156: 0,
-                           82: 'A',
-                           50: 'B',
-                           26: 'C',
-                           146: 'D',
-                           145: '*',
-                           152: '#',}
-        '''
-
-        self.ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]
-        self.COLUMN = [pins['pin4'], pins['pin3'], pins['pin2'], pins['pin1']]
-
     def getKey(self):
-        bits_list = [0,0,0,0,0,0,0,0]
-        # Set all columns as output low
-        for j in range(len(self.COLUMN)):
-            GPIO.setup(self.COLUMN[j], GPIO.OUT)
-            GPIO.output(self.COLUMN[j], GPIO.LOW)
+        key = None
+        bits_list = [0, 0, 0, 0, 0, 0, 0, 0]
 
-        # Set all rows as input
-        for i in range(len(self.ROW)):
-            GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN)
+        if not self.pins_set_up:
+            for j in range(len(self.COLUMN)):
+                GPIO.setup(self.COLUMN[j], GPIO.OUT)
+
+            for i in range(len(self.ROW)):
+                GPIO.setup(self.ROW[i], GPIO.IN, GPIO.PUD_DOWN)
+
+            for j in range(len(self.COLUMN)):
+                GPIO.output(self.COLUMN[j], GPIO.LOW)
+
+            self.pins_set_up = True
 
         # Scan rows for pushed key/button
         # A valid key press should set "rowVal"  between 0 and 3.
@@ -97,55 +82,36 @@ class keypadDriverBBB():
                 rowVal = i
                 bits_list[7-i] = 1
 
-        # if rowVal is not 0 thru 3 then no button was pressed and we can exit
-        if rowVal <0 or rowVal >4:
-            self.exit()
-            return
+        if rowVal in range(len(self.ROW)):
+            for j in range(len(self.COLUMN)):
+                GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
 
-        # Convert columns to input
-        for j in range(len(self.COLUMN)):
-            GPIO.setup(self.COLUMN[j], GPIO.IN, GPIO.PUD_DOWN)
+            GPIO.setup(self.ROW[rowVal], GPIO.OUT)
+            GPIO.output(self.ROW[rowVal], GPIO.HIGH)
 
-        # Switch the i-th row found from scan to output
-        GPIO.setup(self.ROW[rowVal], GPIO.OUT)
-        GPIO.output(self.ROW[rowVal], GPIO.HIGH)
+            # Scan columns for still-pushed key/button
+            # A valid key press should set "colVal"  between 0 and 2.
+            colVal = -1
+            for j in range(len(self.COLUMN)):
+                tmpRead = GPIO.input(self.COLUMN[j])
+                if tmpRead == 1:
+                    colVal=j
+                    bits_list[3-j] = 1
 
-        # Scan columns for still-pushed key/button
-        # A valid key press should set "colVal"  between 0 and 2.
-        colVal = -1
-        for j in range(len(self.COLUMN)):
-            tmpRead = GPIO.input(self.COLUMN[j])
-            if tmpRead == 1:
-                colVal=j
-                bits_list[3-j] = 1
+            if colVal in range(len(self.COLUMN)):
+                for key, val in enumerate(bits_list):
+                    bits_list[key] = str(val)
+                binary_str = ''.join(bits_list)
+                binary_str = '0b'+binary_str
+                keynum = int(binary_str, 2)
 
-        # if colVal is not 0 thru 2 then no button was pressed and we can exit
-        if colVal <0 or colVal >3:
-            self.exit()
-            return
+                try:
+                    key = self.KEY_MAP[self.KEYPAD[keynum]]
+                except KeyError:
+                    pass
 
-        for key, val in enumerate(bits_list):
-            bits_list[key] = str(val)
-        binary_str = ''.join(bits_list)
-        binary_str = '0b'+binary_str
-        keynum = int(binary_str, 2)
+                GPIO.cleanup()
+                self.pins_set_up = False
 
-        try:
-            key = self.KEYPAD[keynum]
-        except KeyError:
-            key = None
-
-        # Return the value of the key pressed
-        self.exit()
-        try:
-            return self.KEY_MAP[key]
-        except KeyError:
-            return None
-
-    def exit(self):
-        # Reinitialize all rows and columns as input at exit
-        for i in range(len(self.ROW)):
-                GPIO.setup(self.ROW[i], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        for j in range(len(self.COLUMN)):
-                GPIO.setup(self.COLUMN[j], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        return key
 

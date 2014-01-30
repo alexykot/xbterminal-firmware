@@ -67,6 +67,9 @@ def _presync_blockchain():
     chainstate_sync_successful = False
     log('blockchain presync starting')
     for blockchain_server in defaults.BITCOIND_BLOCKCHAIN_SERVERS:
+        if defaults.BITCOIND_TESTNET != blockchain_server['testnet']:
+            continue
+
         key_file_path = os.path.join(defaults.BITCOIND_BLOCKCHAIN_SERVERS_KEYS_PATH,
                                      '{name}_{user}_rsa'.format(name=blockchain_server['name'],
                                                                 user=blockchain_server['user']))
@@ -80,10 +83,7 @@ def _presync_blockchain():
             command_blocks.append("rsync")
             command_blocks.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
                                                                                  key_file_path=key_file_path))
-            command_blocks.append("-az --delete")
-            command_blocks.append("-q")
-            #command_blocks.append("--progress")
-
+            command_blocks.append("-aqz --delete")
             command_blocks.append("{user}@{addr}:{path}/blocks/".format(user=blockchain_server['user'],
                                                                          addr=blockchain_server['addr'],
                                                                          path=blockchain_server['path']))
@@ -112,9 +112,7 @@ def _presync_blockchain():
             command_chainstate.append("rsync")
             command_chainstate.append('-e "ssh -p {port} -i {key_file_path}"'.format(port=blockchain_server['port'],
                                                                                   key_file_path=key_file_path))
-            command_chainstate.append("-az --delete")
-            command_chainstate.append("-q")
-            #command_chainstate.append("--progress")
+            command_chainstate.append("-aqz --delete")
             command_chainstate.append("{user}@{addr}:{path}/chainstate/".format(user=blockchain_server['user'],
                                                                                addr=blockchain_server['addr'],
                                                                                path=blockchain_server['path']))
@@ -137,9 +135,11 @@ def _presync_blockchain():
             else:
                 log('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output),
                     xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+
         if blocks_sync_successful and chainstate_sync_successful:
             log('blockchain presync successful')
             return
+
     log('blockchain presync failed')
 
 
