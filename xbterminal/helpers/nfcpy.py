@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import nfc
 import nfc.snep
+import nfc.llcp
 import threading
 import time
 from xbterminal.helpers.misc import log
@@ -29,7 +30,11 @@ class BitcoinSender(threading.Thread):
 
 def send_uri(llc, uri):
     snep = nfc.snep.SnepClient(llc)
-    snep.put(nfc.ndef.Message(nfc.ndef.UriRecord(uri)))
+    try:
+        snep.put(nfc.ndef.Message(nfc.ndef.UriRecord(uri)))
+    except (nfc.snep.SnepError,
+            nfc.llcp.Error) as error:
+        pass
 
 
 def start(bitcoin_uri):
