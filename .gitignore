@@ -1,5 +1,6 @@
 .idea/*
 *.pyc
+bitcoinj_server/runtime/*
 xbterminal/runtime/*
 xbterminal/devwifi/*
 xbterminal/device_key

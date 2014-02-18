@@ -48,7 +48,6 @@ LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
 
 PROJECT_ABS_PATH = '' #initialized in bootstrap.py
 PROJECT_LOCAL_PATH = 'xbterminal'
-BITCOIND_CONFIG_PATH = os.path.join('configs', 'bitcoin.conf')
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
 LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
@@ -93,26 +92,5 @@ BTC_DEC_PLACES  = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
-
-BITCOIND_DATADIR = '/root/.bitcoin'
-BITCOIND_TESTNET = True
-BITCOIND_TESTNET_TESTDIR = 'testnet3'
-BITCOIND_HOST = '127.0.0.1'
-if BITCOIND_TESTNET:
-    BITCOIND_PORT = 18332
-else:
-    BITCOIND_PORT = 8332
-BITCOIND_USER = 'root'
-BITCOIND_PASS = 'password'
-
-
-BITCOIND_BLOCKCHAIN_SERVERS_KEYS_PATH = '/root/.ssh'
-BITCOIND_BLOCKCHAIN_SERVERS = ({'name': 'chainserver0',
-                                'addr': '80.243.176.66',
-                                'port': '22',
-                                'user': 'bitnumus',
-                                'path': '~/chain',
-                                'testnet': True,
-                                }, )
-BITCOIND_MAX_BLOCKCHAIN_AGE = 3600 #if is blockchain more than X seconds old - we do rsync to trusted blockchain servers to download blocks and index and catch up quickly
+BLOCKCHAIN_DRIVER = 'bitcoind'
 

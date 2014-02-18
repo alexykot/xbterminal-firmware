@@ -19,7 +19,7 @@ import xbterminal.helpers.qr
 import xbterminal.helpers.configs
 import xbterminal.helpers.wireless
 from xbterminal import defaults
-from xbterminal import blockchain
+from xbterminal.blockchain import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
 from xbterminal.helpers.misc import log
@@ -31,7 +31,7 @@ def main():
     xbterminal.runtime = {}
     run = xbterminal.runtime
     run['init'] = {}
-    run['init']['internet'] = False
+    run['init']['internet'] = True
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
     run['CURRENT_STAGE'] = defaults.STAGES['idle']
@@ -373,6 +373,11 @@ def main():
             if run['key_pressed'] == 'enter':
                 xbterminal.helpers.nfcpy.stop()
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
+                run['stage_init'] = False
+                continue
+            if run['key_pressed'] == 'backspace':
+                xbterminal.helpers.nfcpy.stop()
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 run['stage_init'] = False
                 continue
 

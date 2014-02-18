@@ -13,10 +13,8 @@ import simplejson
 import xbterminal
 from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
 import xbterminal.instantfiat
-import xbterminal.helpers.misc as misc_helpers
-from xbterminal import bitcoinaverage
 from xbterminal import defaults
-from xbterminal import blockchain
+from xbterminal.blockchain import blockchain
 
 
 def createOutgoingTransaction(addresses, amounts):
@@ -28,8 +26,7 @@ def createOutgoingTransaction(addresses, amounts):
         outputs[addresses['instantfiat']] = amounts['instantfiat']
 
 
-    # result = blockchain.sendTransaction(outputs)
-    result = blockchain.sendRawTransaction(outputs, from_addr=addresses['local'])
+    result = blockchain.sendTransaction(outputs, from_addr=addresses['local'])
     if result:
         return result
     else:
