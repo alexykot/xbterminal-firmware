@@ -1,4 +1,3 @@
-#!/opt/jython/jython -Dorg.slf4j.simpleLogger.defaultLogLevel=error
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 import sys
@@ -34,11 +33,14 @@ if USE_TESTNET:
 else:
     bitcoin_network_params = MainNetParams.get()
 TRUSTED_PEERS_LIST = [
+                      PeerAddress(InetAddress.getByName('127.0.0.1'),
+                                  bitcoin_network_params.getPort(),
+                                  bitcoin_network_params.PROTOCOL_VERSION),
                       # PeerAddress(InetAddress.getByName('46.105.173.28'),
                       #             bitcoin_network_params.getPort(),
                       #             bitcoin_network_params.PROTOCOL_VERSION),
                         ]
-MAX_PEER_CONNECTIONS = 5
+MAX_PEER_CONNECTIONS = 0
 wallet = None
 
 class XBTerminalWalletKit(WalletAppKit):
@@ -62,7 +64,7 @@ class PeerConnectedListener(AbstractPeerEventListener):
 
 class CoinsReceivedListener(AbstractWalletEventListener):
     def onCoinsReceived(self, wallet, transaction, prevBalance, newBalance):
-        pass
+        print '>>>onPeerConnected', transaction, newBalance-prevBalance
 
 class WalletKitThread(threading.Thread):
     def __init__(self, wallet_kit):
