@@ -25,7 +25,6 @@ def createOutgoingTransaction(addresses, amounts):
     if amounts['instantfiat'] > 0:
         outputs[addresses['instantfiat']] = amounts['instantfiat']
 
-
     result = blockchain.sendTransaction(outputs, from_addr=addresses['local'])
     if result:
         return result

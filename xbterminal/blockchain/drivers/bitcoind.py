@@ -183,7 +183,7 @@ def getFreshAddress():
     return address
 
 
-def getLastUnspentTransaction(address):
+def getLastUnspentTransactionId(address):
     global connection
 
     unspent_list = connection.listunspent(minconf=0)
@@ -204,7 +204,6 @@ def getUnspentTransactions(address):
     unspent_tx_list = connection.listunspent(minconf=0)
     for transaction in unspent_tx_list:
         if transaction.address == address:
-
             address_tx_list.append({'txid': transaction.txid,
                                     'vout': transaction.vout,
                                     'amount': transaction.amount,

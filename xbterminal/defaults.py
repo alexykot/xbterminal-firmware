@@ -87,6 +87,7 @@ EXCHANGE_RATE_DEC_PLACES = 3 #fractional decimal places for exchange rate to sho
 BITCOIN_SCALE_DIVIZER = 1000 #1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 2
 
+SATOSHI_FACTOR = Decimal(100000000) #satoshis per BTC
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES  = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes

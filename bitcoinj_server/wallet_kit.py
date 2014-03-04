@@ -27,6 +27,9 @@ from java.math import BigInteger
 from java.net import InetAddress
 
 
+WALLET_FRESH_ADDRESS_WORKAROUND_ACTIVE = True #shall we apply
+WALLET_FRESH_ADDRESS_WORKAROUND_QTY = 100 #how many addresses to have for reuse
+
 USE_TESTNET = True
 if USE_TESTNET:
     bitcoin_network_params = TestNet3Params.get()
@@ -51,6 +54,11 @@ class XBTerminalWalletKit(WalletAppKit):
         wallet = self.wallet()
         wallet.allowSpendingUnconfirmedTransactions()
         wallet.addEventListener(CoinsReceivedListener())
+
+        keys_list = wallet.getKeys()
+        if WALLET_FRESH_ADDRESS_WORKAROUND_ACTIVE and len(keys_list) < WALLET_FRESH_ADDRESS_WORKAROUND_QTY:
+            for i in xrange(WALLET_FRESH_ADDRESS_WORKAROUND_QTY-len(keys_list)):
+                wallet.addKey(ECKey())
 
         peer_group = self.peerGroup()
         peer_group.addEventListener(PeerConnectedListener())

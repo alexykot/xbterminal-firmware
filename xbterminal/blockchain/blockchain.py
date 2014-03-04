@@ -41,10 +41,10 @@ def getFreshAddress():
     return driver.getFreshAddress()
 
 
-def getLastUnspentTransaction(address):
+def getLastUnspentTransactionId(address):
     global driver
 
-    return driver.getLastUnspentTransaction(address)
+    return driver.getLastUnspentTransactionId(address)
 
 
 # Sends transaction from given address using all currently unspent inputs for that address.
@@ -90,8 +90,3 @@ def sendTransaction(outputs, from_addr, change_addr=None):
             nonempty_float_outputs[address] = float_outputs[address]
 
     return driver.sendRawTransaction(inputs=inputs, outputs=nonempty_float_outputs)
-
-
-
-
-

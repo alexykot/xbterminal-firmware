@@ -307,7 +307,7 @@ def main():
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
                 if current_balance >= run['amounts']['amount_to_pay_btc']:
                     run['received_payment'] = True
-                    incoming_tx_hash = blockchain.getLastUnspentTransaction(run['transactions_addresses']['local'])
+                    incoming_tx_hash = blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
                     log('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
 
                     if current_balance > run['amounts']['amount_to_pay_btc']:

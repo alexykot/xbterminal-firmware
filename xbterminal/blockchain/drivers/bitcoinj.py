@@ -55,7 +55,9 @@ def getAddressBalance(address):
     global connection
 
     result = requests.get(bitcoinj_url + 'getAddressBalance?address={}'.format(address))
-    balance = Decimal(result.json()).quantize(defaults.BTC_DEC_PLACES)
+
+    balance_satoshis = Decimal(result.json())
+    balance = Decimal(balance_satoshis / defaults.SATOSHI_FACTOR).quantize(defaults.BTC_DEC_PLACES)
 
     return balance
 
@@ -69,22 +71,23 @@ def getFreshAddress():
     return new_address
 
 
-def getLastUnspentTransaction(address):
+def getLastUnspentTransactionId(from_address):
     global connection
 
-    transactions = getUnspentTransactions(address)
-    return transactions[len(transactions)-1]
+    transactions = getUnspentTransactions(from_address)
+    return transactions[len(transactions)-1]['txid']
 
 
-def getUnspentTransactions(address):
+def getUnspentTransactions(from_address):
     global connection
 
     address_tx_list = []
     result = requests.get(bitcoinj_url + 'getUnspentTransactions')
     unspent_tx_list = result.json()
     for transaction in unspent_tx_list:
-        if transaction['address'] == address:
+        if from_address in transaction['addresses']:
             transaction['vout'] = 0 #hack for compatibility with bitcoind
+            transaction['amount'] = Decimal(Decimal(transaction['amount']) / defaults.SATOSHI_FACTOR).quantize(defaults.BTC_DEC_PLACES)
             address_tx_list.append(transaction)
 
     return address_tx_list
@@ -95,8 +98,13 @@ def getUnspentTransactions(address):
 def sendRawTransaction(inputs, outputs):
     global connection
 
+    integer_outputs = {}
+    for output_address in outputs:
+        integer_outputs[output_address] = int(Decimal(outputs[output_address]) * defaults.SATOSHI_FACTOR)
+
     data = {'inputs': inputs,
-            'outputs': outputs}
+            'outputs': integer_outputs}
+
     result = requests.post(bitcoinj_url + 'sendRawTransaction', json.dumps(data))
     return result.json()
 

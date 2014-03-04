@@ -31,6 +31,7 @@ def load_remote_config():
 
             result = requests.get(url=config_url, headers=headers)
             xbterminal.remote_config = result.json()
+            xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS'] = 'mx3hsWPoqi8TQfo1rJHTSbZqQPUz2WLsff' #@TODO delete this line
             xbterminal.runtime['remote_server'] = server_url
             log('remote config loaded from {config_url}'.format(config_url=config_url),
                 xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])

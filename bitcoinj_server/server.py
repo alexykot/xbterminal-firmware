@@ -7,6 +7,8 @@ import os
 import BaseHTTPServer
 import hashlib
 
+print 'script started'
+
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.append(include_path)
 sys.path.append('/usr/lib/python2.7')
@@ -20,8 +22,6 @@ sys.path.append('/usr/local/lib/python2.7/dist-packages')
 sys.path.append('/usr/local/lib/python2.7/dist-packages/distribute-0.7.3-py2.7.egg')
 sys.path.append('/usr/lib/python2.7/dist-packages/gtk-2.0')
 
-import base58
-import daemon
 import wallet_kit as wallet_kit_module
 from java.io import File
 
@@ -52,7 +52,7 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(501, self.responses[501])
     def do_OPTIONS(self):
         self.send_response(501, self.responses[501])
-    def do_TRACE(self):
+    def do_bitcoinaverageTRACE(self):
         self.send_response(501, self.responses[501])
     def do_CONNECT(self):
         self.send_response(501, self.responses[501])
@@ -84,7 +84,8 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             local_call_name, params = self._parsePath()
-            post_data = json.loads(self._getPostData())
+            raw_post_contents = self._getPostData()
+            post_data = json.loads(raw_post_contents)
             params = dict(params.items() + post_data.items())
         except BitcoinjServerException as error:
             self._send_response(error.http_code, json.dumps(self.responses[error.http_code]))
@@ -148,18 +149,25 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                         and output.getScriptPubKey().isSentToAddress()
                         and output.getScriptPubKey().getToAddress(wallet_kit_module.bitcoin_network_params).toString() == address):
                         total_balance = total_balance + Decimal(str(output.getValue()))
+
         return str(total_balance)
 
     def _get_getFreshAddress(self):
         global wallet_kit_module
 
-        key = wallet_kit_module.ECKey()
-        wallet_kit_module.wallet.addKey(key)
+        address_str = None
+        if wallet_kit_module.WALLET_FRESH_ADDRESS_WORKAROUND_ACTIVE:
+            keys_list = wallet_kit_module.wallet.getKeys()
+            for key in keys_list:
+                address_str = str(key.toAddress(wallet_kit_module.bitcoin_network_params))
+                if int(self._get_getAddressBalance(address_str)) == 0:
+                    break
+        else:
+            key = wallet_kit_module.ECKey()
+            wallet_kit_module.wallet.addKey(key)
+            address_str = str(key.toAddress(wallet_kit_module.bitcoin_network_params))
 
-        wallet_path = os.path.join(include_path, 'runtime', '.wallet')
-        wallet_kit_module.wallet.saveToFile(wallet_kit_module.File(wallet_path))
-
-        return str(key.toAddress(wallet_kit_module.bitcoin_network_params))
+        return address_str
 
     def _get_getAddressList(self):
         global wallet_kit_module
@@ -176,17 +184,20 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         all_transactions_list = wallet_kit_module.wallet.getTransactions(False)
         address_tx_list = []
+
         for transaction in all_transactions_list:
+            addresses_list = []
             if not transaction.isEveryOwnedOutputSpent(wallet_kit_module.wallet):
                 outputs = transaction.getOutputs()
                 outputs_total = Decimal(0)
                 for output in outputs:
-                    if (output.isMine(wallet_kit_module.wallet)
-                        and output.isAvailableForSpending()):
+                    if output.isMine(wallet_kit_module.wallet) and output.isAvailableForSpending():
+                        addresses_list.append(output.getScriptPubKey().getToAddress(wallet_kit_module.bitcoin_network_params).toString())
                         outputs_total = outputs_total + Decimal(str(output.getValue()))
 
                 address_tx_list.append({'txid': str(transaction.getHash()),
                                         'amount': str(outputs_total),
+                                        'addresses': addresses_list,
                                         })
         return address_tx_list
 
@@ -234,19 +245,17 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         request = wallet_kit_module.wallet.SendRequest.forTx(outgoing_transaction)
         wallet_kit_module.wallet.sendCoins(request)
 
-        return outgoing_transaction.getHash()
+        return str(outgoing_transaction.getHash())
 
+wallet_kit = wallet_kit_module.XBTerminalWalletKit(wallet_kit_module.bitcoin_network_params, File(os.path.join(include_path, 'runtime')), '')
+#wallet_kit.connectToLocalHost()
+wallet_kit_thread = wallet_kit_module.WalletKitThread(wallet_kit)
+wallet_kit_thread.start()
 
-with daemon.DaemonContext():
-    wallet_kit = wallet_kit_module.XBTerminalWalletKit(wallet_kit_module.bitcoin_network_params, File(os.path.join(include_path, 'runtime')), '')
-    #wallet_kit.connectToLocalHost()
-    wallet_kit_thread = wallet_kit_module.WalletKitThread(wallet_kit)
-    wallet_kit_thread.start()
-
-    server_address = ('', SERVER_PORT)
-    bitcoinj_server = BaseHTTPServer.HTTPServer(server_address, BitcoinjRequestHandler)
-    print 'server started'
-    bitcoinj_server.serve_forever()
+server_address = ('', SERVER_PORT)
+bitcoinj_server = BaseHTTPServer.HTTPServer(server_address, BitcoinjRequestHandler)
+print 'server started'
+bitcoinj_server.serve_forever()
 
 
 

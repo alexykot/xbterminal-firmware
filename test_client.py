@@ -5,32 +5,33 @@ import hashlib
 import json
 import requests
 import time
-import daemon
-import resource
 
-print resource.__file__
-with daemon.DaemonContext():
-    result = requests.get('http://127.0.0.1:18333/getInfo')
-    print result.status_code
-    print result.text
+# dsktp_testnet_address = "mtPgLMLS18N9xtWWNhbrfREuZLFjLDGvQ9"
+# phone_testnet_address = "mx3hsWPoqi8TQfo1rJHTSbZqQPUz2WLsff"
+
+
+# result = requests.get('http://127.0.0.1:18333/getInfo')
+# print result.status_code
+# print result.text
 
 # result = requests.get('http://127.0.0.1:18333/getFreshAddress')
 # print result.status_code
 # print result.text
+# fresh_address = result.text
 
 # result = requests.get('http://127.0.0.1:18333/getAddressList')
 # print result.status_code
 # print result.text
 
-# result = requests.get('http://127.0.0.1:18333/getAddressBalance?address=n2ef38MTRCTu7hA7FBzLcCeonimMn8CC6B')
+# result = requests.get('http://127.0.0.1:18333/getAddressBalance?address='+fresh_address)
 # print result.status_code
 # print result.text
 
 # result = requests.get('http://127.0.0.1:18333/getUnspentTransactions')
 # print result.status_code
 # print result.text
-
-# phone_testnet_address = "mx3hsWPoqi8TQfo1rJHTSbZqQPUz2WLsff"
+#
+# testnet_address = "mx3hsWPoqi8TQfo1rJHTSbZqQPUz2WLsff"
 # transactions_list = result.json()
 # inputs_list = []
 # output_amount = Decimal(0)
@@ -39,7 +40,7 @@ with daemon.DaemonContext():
 #     inputs_list.append({'txid': transaction['txid']})
 #
 # data = {'inputs': inputs_list,
-#         'outputs': {phone_testnet_address: str(output_amount-Decimal(20000))}}
+#         'outputs': {testnet_address: str(output_amount-Decimal(20000))}}
 #
 # if output_amount > 0:
 #     result = requests.post('http://127.0.0.1:18333/sendRawTransaction', json.dumps(data))
