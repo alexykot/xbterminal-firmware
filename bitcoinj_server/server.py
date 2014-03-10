@@ -252,10 +252,11 @@ wallet_kit = wallet_kit_module.XBTerminalWalletKit(wallet_kit_module.bitcoin_net
 wallet_kit_thread = wallet_kit_module.WalletKitThread(wallet_kit)
 wallet_kit_thread.start()
 
-server_address = ('', SERVER_PORT)
+server_address = ('127.0.0.1', SERVER_PORT)
 bitcoinj_server = BaseHTTPServer.HTTPServer(server_address, BitcoinjRequestHandler)
 print 'server started'
 bitcoinj_server.serve_forever()
+
 
 
 

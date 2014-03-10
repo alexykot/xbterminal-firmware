@@ -36,14 +36,14 @@ if USE_TESTNET:
 else:
     bitcoin_network_params = MainNetParams.get()
 TRUSTED_PEERS_LIST = [
-                      PeerAddress(InetAddress.getByName('127.0.0.1'),
-                                  bitcoin_network_params.getPort(),
-                                  bitcoin_network_params.PROTOCOL_VERSION),
+                      # PeerAddress(InetAddress.getByName('127.0.0.1'),
+                      #             bitcoin_network_params.getPort(),
+                      #             bitcoin_network_params.PROTOCOL_VERSION),
                       # PeerAddress(InetAddress.getByName('46.105.173.28'),
                       #             bitcoin_network_params.getPort(),
                       #             bitcoin_network_params.PROTOCOL_VERSION),
                         ]
-MAX_PEER_CONNECTIONS = 0
+MAX_PEER_CONNECTIONS = 10
 wallet = None
 
 class XBTerminalWalletKit(WalletAppKit):

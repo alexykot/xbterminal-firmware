@@ -31,9 +31,10 @@ def main():
     xbterminal.runtime = {}
     run = xbterminal.runtime
     run['init'] = {}
-    run['init']['internet'] = True
+    run['init']['internet'] = False
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
+    run['init']['remote_config_last_update'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['idle']
     run['stage_init'] = False
     run['amounts'] = {}
@@ -104,20 +105,25 @@ def main():
                 run['init']['internet'] = True
             gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
 
-        if run['init']['internet'] and not run['init']['remote_config']:
-            try:
-                xbterminal.helpers.configs.load_remote_config()
-                ui.merchant_name_lbl.setText("{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'], xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
-                run['init']['remote_config'] = True
-            except ConfigLoadError:
-                log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
-                exit()
+        if run['init']['internet']:
+            if (not run['init']['remote_config']
+                or (run['init']['remote_config_last_update'] is not None
+                    and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
+                try:
+                    xbterminal.helpers.configs.load_remote_config()
+                    ui.merchant_name_lbl.setText("{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
+                                                                   xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
+                    run['init']['remote_config'] = True
+                    run['init']['remote_config_last_update'] = int(time.time())
+                except ConfigLoadError:
+                    log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                    exit()
 
-        if run['init']['internet'] and not run['init']['blockchain']:
-            blockchain.init()
-            run['init']['blockchain'] = True
-            gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
-            gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
+            if not run['init']['blockchain']:
+                blockchain.init()
+                run['init']['blockchain'] = True
+                gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
+                gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
         # At beginning of each loop push events
         try:
@@ -134,8 +140,10 @@ def main():
         try:
             run['key_pressed'] = keypad.getKey()
             if run['key_pressed'] is not None:
-                if run['key_pressed'] == 'escape':
+                if run['key_pressed'] == 'application_halt':
                     run['CURRENT_STAGE'] = defaults.STAGES['application_halt']
+                if run['key_pressed'] == 'system_halt':
+                    run['CURRENT_STAGE'] = defaults.STAGES['system_halt']
                 run['last_activity_timestamp'] = time.time()
         except NameError:
             pass
@@ -468,6 +476,7 @@ def main():
                         run['stage_init'] = False
                         continue
                     else:
+                        log('wifi wrong passkey')
                         ui.password_input.setStyleSheet('background: #B33A3A')
                 elif keypad.checkIsCancelled(xbterminal.local_state['wifi_pass'], run['key_pressed']):
                     del xbterminal.local_state['wifi_ssid']
@@ -505,6 +514,10 @@ def main():
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             stages.gracefullExit()
 
+###SYSTEM HALT
+        elif run['CURRENT_STAGE'] == defaults.STAGES['system_halt']:
+            stages.gracefullExit(True)
+
 ###INACTIVITY STATE RESET
         if (run['CURRENT_STAGE'] in defaults.STAGES['payment']
             and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time()):
@@ -517,7 +530,7 @@ def main():
                 run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
-                run['CURRENT_STAGE'] = defaults.STAGES['pay_cancel']
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_cancel']
                 run['stage_init'] = False
             else:
                 run['CURRENT_STAGE'] = defaults.STAGES['idle']

@@ -20,6 +20,7 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
                     },
           'idle': 'idle',
           'application_halt': 'application_halt',
+          'system_halt': 'system_halt',
           }
 
 SCREENS = {'load_percent': 0,
@@ -67,6 +68,7 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
 REMOTE_SERVERS = ('http://151.248.122.78',
                   'http://xbterminal.com',
                     )
+REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'tx_log': '/api/transactions/create/',
                         'receipt': '/api/receipts/{receipt_key}/',

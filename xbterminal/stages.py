@@ -3,6 +3,7 @@ from decimal import Decimal
 import httplib
 import json
 import socket
+import subprocess
 import urllib2
 import datetime
 import requests
@@ -229,9 +230,12 @@ def getBitcoinURI(payment_addr, amount_btc):
     return uri
 
 
-def gracefullExit():
+def gracefullExit(system_halt=False):
     xbterminal.helpers.configs.save_local_state()
     xbterminal.helpers.nfcpy.stop()
     xbterminal.helpers.misc.log('application halted')
+    if system_halt:
+        xbterminal.helpers.misc.log('system halt command sent')
+        subprocess.Popen(['halt', ])
     sys.exit()
 
