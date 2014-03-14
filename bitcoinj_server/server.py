@@ -7,25 +7,13 @@ import os
 import BaseHTTPServer
 import hashlib
 
-print 'script started'
-
-include_path = os.path.abspath(os.path.join(__file__, os.pardir))
-sys.path.append(include_path)
-sys.path.append('/usr/lib/python2.7')
-sys.path.append('/usr/lib/python2.7/lib-tk')
-sys.path.append('/usr/lib/python2.7/lib-old')
-sys.path.append('/usr/local/lib/python2.7/dist-packages/PIL')
-sys.path.append('/usr/lib/python2.7/plat-linux2')
-sys.path.append('/usr/lib/python2.7/lib-dynload')
-sys.path.append('/usr/lib/python2.7/dist-packages')
-sys.path.append('/usr/local/lib/python2.7/dist-packages')
-sys.path.append('/usr/local/lib/python2.7/dist-packages/distribute-0.7.3-py2.7.egg')
-sys.path.append('/usr/lib/python2.7/dist-packages/gtk-2.0')
-
 import wallet_kit as wallet_kit_module
 from java.io import File
 
 
+include_path = os.path.abspath(os.path.join(__file__, os.pardir))
+
+print 'script started'
 if wallet_kit_module.USE_TESTNET:
     SERVER_PORT = 18333
 else:

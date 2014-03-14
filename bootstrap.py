@@ -3,6 +3,7 @@
 import sys
 import os
 import logging
+from pbkdf2 import PBKDF2
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, include_path)

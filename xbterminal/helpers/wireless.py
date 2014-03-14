@@ -2,6 +2,7 @@ import wifi
 import wifi.scan
 import wifi.utils
 import wifi.exceptions
+import hashlib
 
 
 def is_wifi_available():
@@ -30,7 +31,11 @@ def connect(ssid, passkey=None):
     cell_list = wifi.scan.Cell.all('wlan0')
     for cell in cell_list:
         if cell.ssid == ssid:
-            scheme = wifi.Scheme.for_cell('wlan0', '', cell, passkey=passkey)
+            scheme_name = hashlib.sha256('{}_{}'.format(ssid, passkey)).hexdigest()
+            scheme = wifi.Scheme.find('wlan0', scheme_name)
+            if scheme is None:
+                scheme = wifi.Scheme.for_cell('wlan0', scheme_name, cell, passkey=passkey)
+                scheme.save()
             try:
                 scheme.activate()
                 return True
