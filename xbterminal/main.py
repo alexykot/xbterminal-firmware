@@ -1,12 +1,20 @@
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 import time
 import sys
 import os
 import unicodedata
+import logging
 from PyQt4 import QtGui, QtCore
 
+include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
+sys.path.insert(0, include_path)
 import xbterminal
+import xbterminal.defaults
+xbterminal.defaults.PROJECT_ABS_PATH = include_path
+logging.basicConfig(level=logging.DEBUG)
+
 from xbterminal.exceptions import ConfigLoadError
 import xbterminal.keypad
 import xbterminal.keypad.keypad
@@ -538,4 +546,11 @@ def main():
             continue
 
         time.sleep(0.1)
+
+
+try:
+    main()
+except Exception, error:
+    logging.exception(error)
+    xbterminal.stages.gracefullExit()
 
