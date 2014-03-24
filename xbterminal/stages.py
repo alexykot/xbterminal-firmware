@@ -230,12 +230,15 @@ def getBitcoinURI(payment_addr, amount_btc):
     return uri
 
 
-def gracefullExit(system_halt=False):
+def gracefullExit(system_halt=False, system_reboot=False):
     xbterminal.helpers.configs.save_local_state()
     xbterminal.helpers.nfcpy.stop()
     xbterminal.helpers.misc.log('application halted')
     if system_halt:
         xbterminal.helpers.misc.log('system halt command sent')
         subprocess.Popen(['halt', ])
+    if system_reboot:
+        xbterminal.helpers.misc.log('system reboot command sent')
+        subprocess.Popen(['reboot', ])
     sys.exit()
 

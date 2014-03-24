@@ -40,6 +40,7 @@ class GUI(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
+        global xbterminal
 
         self.Form = self
         self.ui = appui.Ui_Form()
@@ -48,8 +49,9 @@ class GUI(QtGui.QWidget):
         self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(defaults.PROJECT_ABS_PATH, defaults.UI_IMAGES_PATH, 'logo.png'))))
         self.ui.show_qr_btn.clicked.connect(self.qrBntPressEvent)
         self.ui.skip_wifi_btn.clicked.connect(self.skipWiFiBntPressEvent)
-
-
+        self.ui.testnet_notice.hide()
+        self.ui.wrong_passwd_lbl.hide()
+        self.ui.connecting_lbl.hide()
 
         ''' Runtime GUI changes '''
         #self.ui.listWidget.setVisible(False)
@@ -65,7 +67,7 @@ class GUI(QtGui.QWidget):
 
         if k.key() == QtCore.Qt.Key_Return:
             xbterminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-            self.ui.stackedWidget.setCurrentIndex(6)
+            self.ui.main_stackedWidget.setCurrentIndex(6)
 
     def closeEvent(self, QCloseEvent):
         global xbterminal
@@ -79,6 +81,29 @@ class GUI(QtGui.QWidget):
         global xbterminal
         xbterminal.runtime['screen_buttons']['skip_wifi'] = True
 
+    def toggleTestnetNotice(self, show):
+        if show:
+            self.ui.testnet_notice.show()
+        else:
+            self.ui.testnet_notice.hide()
+
+    def toggleWifiConnectingState(self, show):
+        if show:
+            self.ui.connecting_lbl.show()
+            self.ui.password_input.setEnabled(False)
+            self.ui.password_input.setStyleSheet('background: #BBBBBB')
+        else:
+            self.ui.connecting_lbl.hide()
+            self.ui.password_input.setEnabled(True)
+            self.ui.password_input.setStyleSheet('background: #FFFFFF')
+
+    def toggleWifiWrongPasswordState(self, show):
+        if show:
+            self.ui.wrong_passwd_lbl.show()
+            self.ui.password_input.setStyleSheet('background: #B33A3A')
+        else:
+            self.ui.wrong_passwd_lbl.hide()
+            self.ui.password_input.setStyleSheet('background: #FFFFFF')
 
 def advanceLoadingProgressBar(level):
     global xbterminal

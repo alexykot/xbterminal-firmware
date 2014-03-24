@@ -19,6 +19,7 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
                    'wifi_connected': 'wifi_connected',
                     },
           'idle': 'idle',
+          'bootup': 'bootup',
           'application_halt': 'application_halt',
           'system_halt': 'system_halt',
           }
@@ -65,13 +66,16 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                 }
 
-REMOTE_SERVERS = ('http://151.248.122.78',
-                  'http://xbterminal.com',
+REMOTE_SERVERS = ('http://xbterminal.com',
+                  'http://151.248.122.78',
                     )
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'tx_log': '/api/transactions/create/',
                         'receipt': '/api/receipts/{receipt_key}/',
+                        'firmware_check': '/api/device/{device_key}/firmware/',
+                        'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
+                        'firmware_updated': '/api/device/{device_key}/firmware-updated/',
                         }
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
@@ -96,4 +100,3 @@ BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
 BLOCKCHAIN_DRIVER = 'bitcoinj'
-BLOCKCHAIN_USE_TESTNET = True

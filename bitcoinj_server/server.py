@@ -14,7 +14,7 @@ from java.io import File
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 
 print 'script started'
-if wallet_kit_module.USE_TESTNET:
+if '--testnet' in sys.argv:
     SERVER_PORT = 18333
 else:
     SERVER_PORT = 8333
@@ -201,11 +201,13 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 "timeoffset" : 0,
                 "connections" : str(wallet_kit.peerGroup().numConnectedPeers()),
                 "difficulty" : 9.34018404,
-                "testnet" : wallet_kit_module.USE_TESTNET,
+                "testnet" : False,
                 "keypoololdest" : 1389460008,
                 "keypoolsize" : 101,
                 "errors" : ""
         }
+        if '--testnet' in sys.argv:
+            data['testnet'] = True
 
         return data
 
@@ -235,7 +237,12 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         return str(outgoing_transaction.getHash())
 
-wallet_kit = wallet_kit_module.XBTerminalWalletKit(wallet_kit_module.bitcoin_network_params, File(os.path.join(include_path, 'runtime')), '')
+if '--testnet' in sys.argv:
+    wallet_file_path =  os.path.join(include_path, 'runtime', 'testnet3')
+else:
+    wallet_file_path =  os.path.join(include_path, 'runtime')
+
+wallet_kit = wallet_kit_module.XBTerminalWalletKit(wallet_kit_module.bitcoin_network_params, File(wallet_file_path), '')
 #wallet_kit.connectToLocalHost()
 wallet_kit_thread = wallet_kit_module.WalletKitThread(wallet_kit)
 wallet_kit_thread.start()

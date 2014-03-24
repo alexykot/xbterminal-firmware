@@ -43,7 +43,8 @@ def main():
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
     run['init']['remote_config_last_update'] = None
-    run['CURRENT_STAGE'] = defaults.STAGES['idle']
+    run['init']['blockchain_network'] = None
+    run['CURRENT_STAGE'] = defaults.STAGES['bootup']
     run['stage_init'] = False
     run['amounts'] = {}
     run['amounts']['amount_to_pay_fiat'] = None
@@ -57,6 +58,7 @@ def main():
     run['display_value_unformatted'] = ''
     run['display_value_formatted'] = ''
     run['wifi'] = {}
+    run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
 
     xbterminal.gui.runtime = {}
@@ -75,71 +77,11 @@ def main():
 
     log('main loop starting')
     while True:
-        if (not run['init']['internet']
-            and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['choose_ssid']
-            and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['enter_passkey']):
-            if xbterminal.helpers.wireless.is_wifi_available():
-                try:
-                    if xbterminal.local_state['wifi_ssid'] != '' and xbterminal.local_state['wifi_pass'] != '':
-                        log('trying to connect to cached wifi,  '
-                            'ssid "{wifi_ssid}" '
-                            'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
-                                                             wifi_pass=xbterminal.local_state['wifi_pass']))
-                        if isinstance(xbterminal.local_state['wifi_pass'], unicode):
-                            xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii','ignore')
-                        run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
-                                                                                       xbterminal.local_state['wifi_pass'])
-                        if run['wifi']['connected']:
-                            run['init']['internet'] = True
-                            log('cached wifi connected')
-                        else:
-                            del xbterminal.local_state['wifi_ssid']
-                            del xbterminal.local_state['wifi_pass']
-                            xbterminal.helpers.configs.save_local_state()
-                            log('cached wifi connection failed, wifi setup needed')
-                except KeyError:
-                    pass
-
-                if not run['wifi']['connected']:
-                    if 'wifi_ssid' in xbterminal.local_state:
-                        run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
-                    else:
-                        run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
-                    run['wifi']['networks_last_listed_timestamp'] = 0
-                    run['wifi']['networks_list_selected_index'] = 0
-                    run['wifi']['networks_list_length'] = 0
-            else:
-                log('no wifi found, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
-                run['init']['internet'] = True
-            gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
-
-        if run['init']['internet']:
-            if (not run['init']['remote_config']
-                or (run['init']['remote_config_last_update'] is not None
-                    and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
-                try:
-                    xbterminal.helpers.configs.load_remote_config()
-                    ui.merchant_name_lbl.setText("{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
-                                                                   xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
-                    run['init']['remote_config'] = True
-                    run['init']['remote_config_last_update'] = int(time.time())
-                except ConfigLoadError:
-                    log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
-                    exit()
-
-            if not run['init']['blockchain']:
-                blockchain.init()
-                run['init']['blockchain'] = True
-                gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
-                gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
-
-        # At beginning of each loop push events
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()
             xbterminal.gui.runtime['app'].processEvents()
         except NameError:
             pass
-
 
         if run['key_pressed'] is not None:
             time.sleep(0.1)
@@ -156,10 +98,95 @@ def main():
         except NameError:
             pass
 
-###IDLE
-        if run['CURRENT_STAGE'] == defaults.STAGES['idle']:
+
+        if hasattr(xbterminal, 'remote_config'):
+            if run['init']['blockchain_network'] is None:
+                if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
+                    xbterminal.gui.runtime['main_win'].toggleTestnetNotice(True)
+                else:
+                    xbterminal.gui.runtime['main_win'].toggleTestnetNotice(False)
+            elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
+                stages.gracefullExit(system_reboot=True)
+
+###BOOTUP
+        if run['CURRENT_STAGE'] == defaults.STAGES['bootup']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['idle'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
+                run['stage_init'] = True
+                continue
+
+            if (not run['init']['internet']
+                and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['choose_ssid']
+                and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['enter_passkey']):
+                if xbterminal.helpers.wireless.is_wifi_available():
+                    try:
+                        if xbterminal.local_state['wifi_ssid'] != '' and xbterminal.local_state['wifi_pass'] != '':
+                            log('trying to connect to cached wifi,  '
+                                'ssid "{wifi_ssid}" '
+                                'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
+                                                                 wifi_pass=xbterminal.local_state['wifi_pass']))
+                            if isinstance(xbterminal.local_state['wifi_pass'], unicode):
+                                xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii','ignore')
+                            run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
+                                                                                           xbterminal.local_state['wifi_pass'])
+                            if run['wifi']['connected']:
+                                run['init']['internet'] = True
+                                log('cached wifi connected')
+                            else:
+                                del xbterminal.local_state['wifi_ssid']
+                                del xbterminal.local_state['wifi_pass']
+                                xbterminal.helpers.configs.save_local_state()
+                                log('cached wifi connection failed, wifi setup needed')
+                    except KeyError:
+                        pass
+
+                    if not run['wifi']['connected']:
+                        if 'wifi_ssid' in xbterminal.local_state:
+                            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
+                        else:
+                            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
+                        run['wifi']['networks_last_listed_timestamp'] = 0
+                        run['wifi']['networks_list_selected_index'] = 0
+                        run['wifi']['networks_list_length'] = 0
+                        run['stage_init'] = False
+                        continue
+                else:
+                    log('no wifi found, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
+                    run['init']['internet'] = True
+                gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
+                continue
+
+            if run['init']['internet']:
+                if (not run['init']['remote_config']
+                    or (run['init']['remote_config_last_update'] is not None
+                        and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
+                    try:
+                        xbterminal.helpers.configs.load_remote_config()
+                        ui.merchant_name_lbl.setText("{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
+                                                                       xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
+                        run['init']['remote_config'] = True
+                        run['init']['remote_config_last_update'] = int(time.time())
+                    except ConfigLoadError:
+                        log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                        exit()
+                    continue
+
+                if not run['init']['blockchain']:
+                    blockchain.init()
+                    run['init']['blockchain'] = True
+                    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
+                    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
+                    continue
+
+            if run['init']['internet'] and run['init']['remote_config'] and run['init']['blockchain']:
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
+                run['stage_init'] = False
+                continue
+
+###IDLE
+        elif run['CURRENT_STAGE'] == defaults.STAGES['idle']:
+            if not run['stage_init']:
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['idle'])
                 run['stage_init'] = True
                 continue
 
@@ -171,7 +198,7 @@ def main():
 ###ENTER AMOUNT
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
                 ui.amount_input.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
                 run['stage_init'] = True
                 continue
@@ -202,7 +229,7 @@ def main():
 ###PAY LOADING
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_loading']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
                 ui.indefinite_load_lbl.setText('preparing payment')
                 run['stage_init'] = True
                 continue
@@ -237,7 +264,7 @@ def main():
 
                 run['amounts']['our_fee_btc_amount'] = stages.getOurFeeBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
                 run['amounts']['merchants_btc_amount'] = stages.getMerchantBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
-                    
+
                 run['amounts']['amount_to_pay_btc'] = (run['amounts']['our_fee_btc_amount']
                                             + run['amounts']['instantfiat_btc_amount']
                                             + run['amounts']['merchants_btc_amount']
@@ -255,7 +282,7 @@ def main():
 ###PAY RATES
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_rates']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_rates'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_rates'])
                 ui.fiat_amount.setText(stages.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                 ui.btc_amount.setText(stages.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                 ui.exchange_rate_amount.setText(stages.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
@@ -272,18 +299,18 @@ def main():
                 run['stage_init'] = False
                 continue
 
-###PAY NFC
+###PAY NFC & QR
         elif (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc'] or
                 run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
             if not run['stage_init']:
                 if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']:
-                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_nfc'])
+                    ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_nfc'])
                     ui.fiat_amount_nfc.setText(stages.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                     ui.btc_amount_nfc.setText(stages.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                     ui.exchange_rate_nfc.setText(stages.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                         defaults.EXCHANGE_RATE_DEC_PLACES))
                 elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
-                    ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_qr'])
+                    ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_qr'])
                     ui.fiat_amount_qr.setText(stages.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                     ui.btc_amount_qr.setText(stages.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                     ui.exchange_rate_qr.setText(stages.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
@@ -375,7 +402,7 @@ def main():
 ###PAY SUCCESS
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_success']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_success'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_success'])
                 if run['receipt_url'] is not None:
                     image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
                     xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
@@ -400,7 +427,7 @@ def main():
 ###PAY CANCEL
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_cancel']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
                 run['stage_init'] = True
                 continue
 
@@ -409,7 +436,7 @@ def main():
                 run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
                 ui.amount_input.setText(run['display_value_formatted'])
 
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
                 continue
@@ -417,16 +444,14 @@ def main():
 ###CHOOSE SSID
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['choose_ssid']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
                 run['stage_init'] = True
-
-
 
             if run['screen_buttons']['skip_wifi']:
                 log('wifi setup cancelled, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
                 run['screen_buttons']['skip_wifi'] = False
                 run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['idle']
+                run['CURRENT_STAGE'] = defaults.STAGES['bootup']
                 run['init']['internet'] = True
                 continue
 
@@ -462,30 +487,18 @@ def main():
 ###ENTER PASSKEY
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])
                 ui.ssid_entered_lbl.setText(xbterminal.local_state['wifi_ssid'])
                 xbterminal.local_state['wifi_pass'] = ''
                 run['stage_init'] = True
 
             if run['key_pressed'] is not None:
-                ui.password_input.setStyleSheet('background: #FFFFFF')
+                xbterminal.gui.runtime['main_win'].toggleWifiWrongPasswordState(False)
 
                 if keypad.checkIsDone(run['key_pressed']):
-                    log('trying to connect to wifi, '
-                        'ssid: "{ssid}", pass: "{passkey}" '.format(ssid=xbterminal.local_state['wifi_ssid'],
-                                                                    passkey=xbterminal.local_state['wifi_pass']))
-                    run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
-                                                                                   xbterminal.local_state['wifi_pass'])
-                    if run['wifi']['connected']:
-                        run['init']['internet'] = True
-                        log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
-                        xbterminal.helpers.configs.save_local_state()
-                        run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
-                        run['stage_init'] = False
-                        continue
-                    else:
-                        log('wifi wrong passkey')
-                        ui.password_input.setStyleSheet('background: #B33A3A')
+                    run['wifi']['try_to_connect'] = True
+                    xbterminal.gui.runtime['main_win'].toggleWifiConnectingState(True)
+                    continue
                 elif keypad.checkIsCancelled(xbterminal.local_state['wifi_pass'], run['key_pressed']):
                     del xbterminal.local_state['wifi_ssid']
                     del xbterminal.local_state['wifi_pass']
@@ -496,7 +509,6 @@ def main():
                 else:
                     xbterminal.local_state['wifi_pass'] = keypad.createAlphaNumString(xbterminal.local_state['wifi_pass'],
                                                                                         run['key_pressed'])
-
                 char_selector_tupl = keypad.getCharSelectorTupl(run['key_pressed'])
                 if char_selector_tupl is not None:
                     char_select_str = gui.formatCharSelectHelperHMTL(char_selector_tupl,
@@ -505,16 +517,37 @@ def main():
                     char_select_str = ''
                 ui.input_help_lbl.setText(char_select_str)
 
-            ui.password_input.setText(xbterminal.local_state['wifi_pass'])
+                ui.password_input.setText(xbterminal.local_state['wifi_pass'])
+
+            if run['wifi']['try_to_connect']:
+                run['wifi']['try_to_connect'] = False
+                log('trying to connect to wifi, '
+                    'ssid: "{ssid}", pass: "{passkey}" '.format(ssid=xbterminal.local_state['wifi_ssid'],
+                                                                passkey=xbterminal.local_state['wifi_pass']))
+                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
+                                                                               xbterminal.local_state['wifi_pass'])
+                if run['wifi']['connected']:
+                    run['init']['internet'] = True
+                    log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
+                    xbterminal.helpers.configs.save_local_state()
+                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
+                    run['stage_init'] = False
+                    continue
+                else:
+                    log('wifi wrong passkey')
+                    xbterminal.gui.runtime['main_win'].toggleWifiConnectingState(False)
+                    xbterminal.gui.runtime['main_win'].toggleWifiWrongPasswordState(True)
+
 
 ###WIFI CONNECTED
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['wifi_connected']:
             if not run['stage_init']:
-                ui.stackedWidget.setCurrentIndex(defaults.SCREENS['wifi_connected'])
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['wifi_connected'])
                 run['stage_init'] = True
                 continue
+
             time.sleep(3)
-            run['CURRENT_STAGE'] = defaults.STAGES['idle']
+            run['CURRENT_STAGE'] = defaults.STAGES['bootup']
             run['stage_init'] = False
             continue
 

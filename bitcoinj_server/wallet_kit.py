@@ -30,8 +30,7 @@ from java.net import InetAddress
 WALLET_FRESH_ADDRESS_WORKAROUND_ACTIVE = True #shall we apply
 WALLET_FRESH_ADDRESS_WORKAROUND_QTY = 100 #how many addresses to have for reuse
 
-USE_TESTNET = True
-if USE_TESTNET:
+if '--testnet' in sys.argv:
     bitcoin_network_params = TestNet3Params.get()
 else:
     bitcoin_network_params = MainNetParams.get()

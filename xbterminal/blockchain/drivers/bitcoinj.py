@@ -16,7 +16,7 @@ from xbterminal.helpers.misc import log
 
 BITCOINJ_SERVER_ABSPATH = os.path.join(defaults.PROJECT_ABS_PATH, 'bitcoinj_server', 'server.py')
 BITCOINJ_HOST = '127.0.0.1'
-if defaults.BLOCKCHAIN_USE_TESTNET:
+if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
     BITCOINJ_PORT = 18333
 else:
     BITCOINJ_PORT = 8333
@@ -37,10 +37,13 @@ def init():
 
 
 def _start_bitcoinj():
-    global bitcoinj_url
+    global bitcoinj_url, xbterminal
 
     log('bitcoinj starting')
-    subprocess.Popen([BITCOINJ_SERVER_ABSPATH, ])
+    command = [BITCOINJ_SERVER_ABSPATH, ]
+    if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
+        command.append('--testnet')
+    subprocess.Popen(command)
     while True:
         try:
             bitcoinj_info_url = bitcoinj_url + 'getInfo'
