@@ -25,9 +25,9 @@ else:
 
     subprocess.check_call(['nuitka',
                           '--recurse-all',
-                          '--recurse-directory=xbterminal',
+                          '--recurse-directory=/opt/xbterminal',
                           '--remove-output',
-                          '--output-dir=../compiled/',
+                          '--output-dir=/opt/compiled/',
                           '--warn-implicit-exceptions',
                           '--unstripped',
                           '--show-progress',
@@ -45,7 +45,7 @@ else:
                           '--recurse-not-to=eventlet.green',
                           '--recurse-not-to=eventlet.timeout',
                           '--recurse-not-to=simplejson',
-                          'xbterminal/bootstrap.py'])
+                          '/opt/xbterminal/xbterminal/main.py'])
 
 
     print "Compiling complete"
