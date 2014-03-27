@@ -66,8 +66,8 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                 }
 
-REMOTE_SERVERS = ('http://xbterminal.com',
-                  'http://151.248.122.78',
+REMOTE_SERVERS = ('http://151.248.122.78',
+                  'http://xbterminal.com',
                     )
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',

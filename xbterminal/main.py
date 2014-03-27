@@ -98,6 +98,20 @@ def main():
         except NameError:
             pass
 
+        if run['init']['internet']:
+            if (not run['init']['remote_config']
+                or (run['init']['remote_config_last_update'] is not None
+                    and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
+                try:
+                    xbterminal.helpers.configs.load_remote_config()
+                    ui.merchant_name_lbl.setText("{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
+                                                                   xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
+                    run['init']['remote_config'] = True
+                    run['init']['remote_config_last_update'] = int(time.time())
+                except ConfigLoadError:
+                    log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                    exit()
+                continue
 
         if hasattr(xbterminal, 'remote_config'):
             if run['init']['blockchain_network'] is None:
@@ -105,8 +119,10 @@ def main():
                     xbterminal.gui.runtime['main_win'].toggleTestnetNotice(True)
                 else:
                     xbterminal.gui.runtime['main_win'].toggleTestnetNotice(False)
+                run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 stages.gracefullExit(system_reboot=True)
+
 
 ###BOOTUP
         if run['CURRENT_STAGE'] == defaults.STAGES['bootup']:

@@ -193,21 +193,26 @@ class BitcoinjRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def _get_getInfo(self):
         global wallet_kit_module
 
-        data = {"version" : 011,
-                "protocolversion" : 0,
-                "walletversion" : str(wallet_kit_module.wallet.getVersion()),
-                "balance" : str(wallet_kit_module.wallet.getBalance()),
-                "blocks" : 187320,
-                "timeoffset" : 0,
+        data = {"version" : None,
+                "protocolversion" : None,
+                "walletversion" : None,
+                "balance" : None,
+                "blocks" : None,
+                "timeoffset" : None,
                 "connections" : str(wallet_kit.peerGroup().numConnectedPeers()),
-                "difficulty" : 9.34018404,
+                "difficulty" : None,
                 "testnet" : False,
-                "keypoololdest" : 1389460008,
-                "keypoolsize" : 101,
+                "keypoololdest" : None,
+                "keypoolsize" : None,
                 "errors" : ""
         }
         if '--testnet' in sys.argv:
             data['testnet'] = True
+        try:
+            data['walletversion'] = str(wallet_kit_module.wallet.getVersion())
+            data['balance'] = str(wallet_kit_module.wallet.getBalance())
+        except AttributeError:
+            pass
 
         return data
 
