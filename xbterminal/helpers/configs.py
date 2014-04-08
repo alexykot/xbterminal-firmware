@@ -30,6 +30,8 @@ def load_remote_config():
             headers['Content-type'] = 'application/json'
 
             result = requests.get(url=config_url, headers=headers)
+            if result.status_code != 200:
+                raise
             xbterminal.remote_config = result.json()
             xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS'] = 'mx3hsWPoqi8TQfo1rJHTSbZqQPUz2WLsff' #@TODO delete this line
 
@@ -40,7 +42,7 @@ def load_remote_config():
                 xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
             save_remote_config_cache()
             return
-        except requests.HTTPError:
+        except (requests.HTTPError, ) as error:
             log('remote config {config_url} unreachable, trying next server'.format(config_url=config_url),
                       xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
 
@@ -53,6 +55,8 @@ def load_remote_config():
 
 
 def load_local_state():
+    global xbterminal
+
     local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
                                                               xbterminal.defaults.STATE_FILE_PATH))
 
@@ -64,10 +68,13 @@ def load_local_state():
             local_state_contents = state_file.read()
 
             xbterminal.local_state = json.loads(local_state_contents)
-            log('local state loaded from "{state_path}"'.format(state_path=local_state_file_abs_path),
-                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
-            log('local state: {local_state}'.format(local_state=local_state_contents),
-                          xbterminal.defaults.LOG_MESSAGE_TYPES['DEBUG'])
+            log('local state loaded from "{}"'.format(local_state_file_abs_path))
+            log('local state: {}'.format(local_state_contents))
+
+            if 'use_dev_remote_server' in xbterminal.local_state and xbterminal.local_state['use_dev_remote_server']:
+                xbterminal.defaults.REMOTE_SERVERS = ('http://dev.xbterminal.com',)
+                log('switched to remote dev server {}'.format(xbterminal.defaults.REMOTE_SERVERS[0]))
+
         except ValueError:
             xbterminal.local_state = {}
             save_local_state()
@@ -80,7 +87,7 @@ def save_local_state():
     local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
                                                               xbterminal.defaults.STATE_FILE_PATH))
     with open(local_state_file_abs_path, 'wb') as state_file:
-        state_file.write(json.dumps(xbterminal.local_state))
+        state_file.write(json.dumps(xbterminal.local_state, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
 def save_remote_config_cache():
