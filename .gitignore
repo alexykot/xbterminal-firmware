@@ -1,6 +1,6 @@
 .idea/*
 *.pyc
-bitcoinj_server/runtime/*
+bitcoinj_server/*
 xbterminal/runtime/*
 xbterminal/device_key
 tests/*
