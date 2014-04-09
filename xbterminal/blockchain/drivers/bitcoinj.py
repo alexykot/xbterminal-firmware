@@ -2,6 +2,7 @@
 from decimal import Decimal
 import json
 import os
+import simplejson
 import socket
 import subprocess
 import bitcoinrpc
@@ -28,7 +29,6 @@ def init():
 
     try:
         bitcoinj_info_url = bitcoinj_url + 'getInfo'
-        print bitcoinj_info_url
         requests.get(bitcoinj_info_url)
     except requests.exceptions.ConnectionError:
         _start_bitcoinj()
@@ -43,6 +43,8 @@ def _start_bitcoinj():
     command = [BITCOINJ_SERVER_ABSPATH, ]
     if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
         command.append('--testnet')
+    command.append('>> {}/bitcoinj_console.system.log'.format(defaults.RUNTIME_PATH))
+    command.append('2>> {}/bitcoinj_console.error.log'.format(defaults.RUNTIME_PATH))
     subprocess.Popen(command)
     while True:
         try:
@@ -86,7 +88,12 @@ def getUnspentTransactions(from_address):
 
     address_tx_list = []
     result = requests.get(bitcoinj_url + 'getUnspentTransactions')
-    unspent_tx_list = result.json()
+    try:
+        unspent_tx_list = result.json()
+    except simplejson.JSONDecodeError:
+        log('getUnspentTransactions json error, json body: {}'.format(result.body))
+        return []
+
     for transaction in unspent_tx_list:
         if from_address in transaction['addresses']:
             transaction['vout'] = 0 #hack for compatibility with bitcoind

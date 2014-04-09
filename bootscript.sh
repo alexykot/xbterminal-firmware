@@ -1,6 +1,6 @@
 #!/bin/sh
 sleep 5
-xinit /opt/xbterminal/bootstrap.py >> /opt/xbterminal/xbterminal/runtime/console.log 2>> /opt/xbterminal/xbterminal/runtime/console.error.log
+xinit /opt/xbterminal/bootstrap.py >> /opt/xbterminal/xbterminal/runtime/firmware_console.system.log 2>> /opt/xbterminal/xbterminal/runtime/firmware_console.error.log
 sleep 5
 xset -display :0 dpms 0 0 0 #(disable all modes, standy, suspend, off)
 xset -display :0 -dpms
