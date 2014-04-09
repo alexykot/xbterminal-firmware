@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 import importlib
-import os
-import socket
-import subprocess
-import bitcoinrpc
-import bitcoinrpc.connection
-import time
 
 import xbterminal
 import xbterminal.blockchain.drivers
