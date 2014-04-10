@@ -28,8 +28,7 @@ class keypadDriverBBB():
                9: 9,
                'A': 'backspace',
                'D': 'enter',
-               '#': 'application_halt',
-               '*': 'system_halt',
+               '*#BC': 'system_halt',
                 }
 
     KEYPAD = {17: 1,
@@ -48,6 +47,7 @@ class keypadDriverBBB():
               152: 'D',
               148: '*',
               145: '#',
+              253: '*#BC',
                }
 
     ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]

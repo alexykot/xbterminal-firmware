@@ -43,9 +43,17 @@ def _start_bitcoinj():
     command = [BITCOINJ_SERVER_ABSPATH, ]
     if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
         command.append('--testnet')
-    command.append('>> {}/bitcoinj_console.system.log'.format(defaults.RUNTIME_PATH))
-    command.append('2>> {}/bitcoinj_console.error.log'.format(defaults.RUNTIME_PATH))
-    subprocess.Popen(command)
+
+    logfile_system = os.path.join(defaults.PROJECT_ABS_PATH,
+                                  defaults.RUNTIME_PATH,
+                                  'bitcoinj_console.system.log')
+    logfile_error = os.path.join(defaults.PROJECT_ABS_PATH,
+                                 defaults.RUNTIME_PATH,
+                                 'bitcoinj_console.error.log')
+
+    logfile_system = open(logfile_system, 'ab')
+    logfile_error = open(logfile_error, 'ab')
+    subprocess.Popen(command, stdout=logfile_system, stderr=logfile_error)
     while True:
         try:
             bitcoinj_info_url = bitcoinj_url + 'getInfo'

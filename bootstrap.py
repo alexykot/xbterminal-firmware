@@ -14,7 +14,7 @@ sys.path.insert(0, include_path)
 # import xbterminal.defaults
 
 
-XBTERMINAL_MAIN_PATH = os.path.join(include_path, 'main.so')
+XBTERMINAL_MAIN_PATH = os.path.join(include_path, 'xbterminal', 'main.so')
 if os.path.exists(XBTERMINAL_MAIN_PATH):
     firmware_executable_path = XBTERMINAL_MAIN_PATH
 else:
