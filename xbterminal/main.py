@@ -108,9 +108,9 @@ def main():
                                                                    xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
                     run['init']['remote_config'] = True
                     run['init']['remote_config_last_update'] = int(time.time())
-                except ConfigLoadError:
+                except ConfigLoadError as error:
                     log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
-                    exit()
+                    raise error
                 continue
 
         if hasattr(xbterminal, 'remote_config'):
@@ -182,9 +182,9 @@ def main():
                                                                        xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
                         run['init']['remote_config'] = True
                         run['init']['remote_config_last_update'] = int(time.time())
-                    except ConfigLoadError:
+                    except ConfigLoadError as error:
                         log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
-                        exit()
+                        raise error
                     continue
 
                 if not run['init']['blockchain']:
@@ -599,7 +599,7 @@ def main():
 
 try:
     main()
-except Exception, error:
+except Exception as error:
     logging.exception(error)
-    xbterminal.stages.gracefullExit()
 
+xbterminal.stages.gracefullExit()

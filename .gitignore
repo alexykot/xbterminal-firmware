@@ -1,5 +1,6 @@
 .idea/*
 *.pyc
+compiled/*
 bitcoinj_server/*
 xbterminal/runtime/*
 xbterminal/device_key

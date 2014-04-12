@@ -105,7 +105,7 @@ while True:
         try:
             main_proc = subprocess.Popen([firmware_executable_path, ])
             main_proc_pid = main_proc.pid
-        except Exception, error:
+        except Exception as error:
             logging.exception(error)
     main_proc.poll()
 

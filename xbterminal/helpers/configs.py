@@ -6,7 +6,7 @@ import requests
 
 import xbterminal
 import xbterminal.defaults
-from xbterminal.exceptions import ConfigLoadError
+from xbterminal.exceptions import ConfigLoadError, DeviceKeyMissingError
 from xbterminal.helpers.misc import log
 
 def load_remote_config():
@@ -17,7 +17,7 @@ def load_remote_config():
     if not os.path.exists(device_key_file_abs_path):
         log('device key missing at path "{device_key_path}", exiting'.format(device_key_path=device_key_file_abs_path),
                       xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
-        exit()
+        raise DeviceKeyMissingError()
 
     with open(device_key_file_abs_path, 'r') as device_key_file:
         xbterminal.device_key = device_key_file.read().strip()

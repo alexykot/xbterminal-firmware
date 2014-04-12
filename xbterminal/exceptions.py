@@ -25,3 +25,7 @@ class PrivateKeysMissing(Exception):
 class ConfigLoadError(Exception):
     exchange_name = None
     strerror = u'configuration load failure'
+
+class DeviceKeyMissingError(Exception):
+    exchange_name = None
+    strerror = u'device key missing'

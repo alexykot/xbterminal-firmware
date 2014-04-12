@@ -81,8 +81,8 @@ EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
                                   'Origin': 'XBTerminal device',
                                   }
 
-TRANSACTION_TIMEOUT = 1800 #in person transaction timeout in seconds
-TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 10 #if transaction cancelled - how long to show "cancelled" message in seconds
+TRANSACTION_TIMEOUT = 900 #in person transaction timeout in seconds
+TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60 #if transaction cancelled - how long to show "cancelled" message in seconds
 
 OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
 OUTPUT_TOTAL_PLACES = 7 #total decimal places to show on screen
