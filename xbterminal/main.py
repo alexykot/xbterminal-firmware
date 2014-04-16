@@ -290,9 +290,6 @@ def main():
                                             + run['amounts']['merchants_btc_amount']
                                             + defaults.BTC_DEFAULT_FEE) #tx fee to be paid for forwarding transaction from device to merchant and/or instantfiat
                 run['effective_rate_btc'] = run['amounts']['amount_to_pay_fiat'] / run['amounts']['amount_to_pay_btc']
-                print '>>>'
-                print run['amounts']
-                print ''
 
                 run['payment_requested_timestamp'] = time.time()
                 run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],

@@ -28,7 +28,6 @@ def createInvoice(amount, currency, speed):
                                                 }),
                              )
     response = response.json()
-    print response
     result = {}
     result['invoice_id'] = response['uuid']
     result['amount_btc'] = Decimal(response['btc_price']).quantize(xbterminal.defaults.BTC_DEC_PLACES)
@@ -58,11 +57,3 @@ def isInvoicePaid(invoice_id):
         return True
     else:
         return False
-
-
-{'amount_to_pay_fiat': Decimal('1000.00000000'),
- 'instantfiat_fiat_amount': Decimal('800.0000000000000000'),
- 'merchants_btc_amount': Decimal('0.62772500'),
- 'our_fee_btc_amount': Decimal('0.01569312'),
- 'amount_to_pay_btc': Decimal('3.15432812'),
- 'instantfiat_btc_amount': Decimal('2.51090000')}
