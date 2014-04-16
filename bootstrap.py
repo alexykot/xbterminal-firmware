@@ -90,7 +90,8 @@ else:
 #     data = {'firmware_version_hash': firmware_hash}
 #     try:
 #         requests.post(firmware_report_url, headers=headers, data=data)
-#     except requests.HTTPError:
+#     except requests.HTTPError as error:
+#         logging.exception(error)
 #         pass
 
 main_proc = None

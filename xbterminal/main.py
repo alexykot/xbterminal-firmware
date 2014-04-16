@@ -13,7 +13,7 @@ sys.path.insert(0, include_path)
 import xbterminal
 import xbterminal.defaults
 xbterminal.defaults.PROJECT_ABS_PATH = include_path
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 from xbterminal.exceptions import ConfigLoadError
 import xbterminal.keypad
@@ -80,8 +80,9 @@ def main():
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()
             xbterminal.gui.runtime['app'].processEvents()
-        except NameError:
-            pass
+        except NameError as error:
+            logging.exception(error)
+
 
         if run['key_pressed'] is not None:
             time.sleep(0.1)
@@ -95,8 +96,9 @@ def main():
                 if run['key_pressed'] == 'system_halt':
                     run['CURRENT_STAGE'] = defaults.STAGES['system_halt']
                 run['last_activity_timestamp'] = time.time()
-        except NameError:
-            pass
+        except NameError as error:
+            logging.exception(error)
+
 
         if run['init']['internet']:
             if (not run['init']['remote_config']
@@ -136,7 +138,10 @@ def main():
                 and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['enter_passkey']):
                 if xbterminal.helpers.wireless.is_wifi_available():
                     try:
-                        if xbterminal.local_state['wifi_ssid'] != '' and xbterminal.local_state['wifi_pass'] != '':
+                        if ('wifi_ssid' in xbterminal.local_state
+                            and xbterminal.local_state['wifi_ssid'] != ''
+                            and 'wifi_pass' in xbterminal.local_state
+                            and xbterminal.local_state['wifi_pass'] != ''):
                             log('trying to connect to cached wifi,  '
                                 'ssid "{wifi_ssid}" '
                                 'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
@@ -153,8 +158,8 @@ def main():
                                 del xbterminal.local_state['wifi_pass']
                                 xbterminal.helpers.configs.save_local_state()
                                 log('cached wifi connection failed, wifi setup needed')
-                    except KeyError:
-                        pass
+                    except KeyError as error:
+                        logging.exception(error)
 
                     if not run['wifi']['connected']:
                         if 'wifi_ssid' in xbterminal.local_state:
@@ -240,7 +245,6 @@ def main():
                 else:
                     ui.amount_input.setStyleSheet('background: #B33A3A')
                     ui.error_text_lbl.setText("no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
-                    pass
 
 ###PAY LOADING
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_loading']:
@@ -286,6 +290,9 @@ def main():
                                             + run['amounts']['merchants_btc_amount']
                                             + defaults.BTC_DEFAULT_FEE) #tx fee to be paid for forwarding transaction from device to merchant and/or instantfiat
                 run['effective_rate_btc'] = run['amounts']['amount_to_pay_fiat'] / run['amounts']['amount_to_pay_btc']
+                print '>>>'
+                print run['amounts']
+                print ''
 
                 run['payment_requested_timestamp'] = time.time()
                 run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
@@ -341,12 +348,22 @@ def main():
                                                      image_path) #address only qr
                     ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                     ui.qr_image.setPixmap(QtGui.QPixmap(image_path))
+                    log('payment qr code requested')
+
+                log('local payment requested, address: {local_address}, '
+                    'amount fiat: {amount_fiat}, '
+                    'amount btc: {amount_btc}, '
+                    'rate: {effective_rate}'.
+                        format(local_address=run['transactions_addresses']['local'],
+                               amount_fiat=run['amounts']['amount_to_pay_fiat'],
+                               amount_btc=run['amounts']['amount_to_pay_btc'],
+                               effective_rate=run['effective_rate_btc'],
+                               ))
                 run['stage_init'] = True
                 continue
 
             if run['key_pressed'] == 'backspace':
                 stages.clearPaymentRuntime(False)
-
                 xbterminal.helpers.nfcpy.stop()
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
@@ -362,6 +379,7 @@ def main():
             if not run['received_payment']:
                 if not xbterminal.helpers.nfcpy.is_active():
                     xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
+                    log('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
 
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
                 if current_balance >= run['amounts']['amount_to_pay_btc']:
@@ -376,9 +394,13 @@ def main():
                                'fee': run['amounts']['our_fee_btc_amount'],
                                 }
 
-                    outgoing_tx_hash = stages.createOutgoingTransaction(amounts=amounts,
-                                                                        addresses=run['transactions_addresses'])
-                    log('payment forwarded to merchant, outgoing txid: {txid}'.format(txid=outgoing_tx_hash))
+                    outgoing_tx_hash = stages.createOutgoingTransaction(addresses=run['transactions_addresses'],
+                                                                        amounts=amounts)
+                    log('payment forwarded, outgoing txid: {txid},'
+                        'addresses: {addresses},'
+                        'amounts: {amounts},'.format(txid=outgoing_tx_hash,
+                                                     amounts=amounts,
+                                                     addresses=run['transactions_addresses']))
 
                     run['receipt_url'] = stages.logTransaction(
                         run['transactions_addresses']['local'],
@@ -425,6 +447,7 @@ def main():
                     ui.receipt_qr_image.setPixmap(QtGui.QPixmap(image_path))
                     if not xbterminal.helpers.nfcpy.is_active():
                         xbterminal.helpers.nfcpy.start(run['receipt_url'])
+                        log('nfc receipt URI activated: {}'.format(run['receipt_url']))
                         time.sleep(0.5)
                 run['stage_init'] = True
                 continue
@@ -603,3 +626,6 @@ except Exception as error:
     logging.exception(error)
 
 xbterminal.stages.gracefullExit()
+
+
+

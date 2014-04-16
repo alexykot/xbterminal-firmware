@@ -2,6 +2,7 @@
 from decimal import Decimal
 import httplib
 import json
+import logging
 import socket
 import subprocess
 import urllib2
@@ -12,8 +13,9 @@ import sys
 import simplejson
 
 import xbterminal
-from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
 import xbterminal.instantfiat
+from xbterminal.helpers.log import log
+from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
 from xbterminal import defaults
 from xbterminal.blockchain import blockchain
 
@@ -50,11 +52,12 @@ def getMerchantBtcAmount(total_fiat_amount, btc_exchange_rate):
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
     our_fee_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['OUR_FEE_SHARE']).quantize(defaults.BTC_DEC_PLACES)
     instantfiat_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE']).quantize(defaults.BTC_DEC_PLACES)
-    merchants_fiat_amount = total_fiat_amount - instantfiat_fiat_amount - our_fee_fiat_amount
+    merchants_fiat_amount = total_fiat_amount - instantfiat_fiat_amount
+
     merchants_btc_amount = merchants_fiat_amount / btc_exchange_rate
     merchants_btc_amount = Decimal(merchants_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
-    if merchants_btc_amount < defaults.BTC_MIN_OUTPUT:
+    if merchants_btc_amount < defaults.BTC_MIN_OUTPUT and merchants_btc_amount > 0:
         merchants_btc_amount = defaults.BTC_MIN_OUTPUT.quantize(defaults.BTC_DEC_PLACES)
 
     return merchants_btc_amount
@@ -66,12 +69,15 @@ def createInvoice(total_fiat_amount):
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
     instantfiat_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE']).quantize(defaults.BTC_DEC_PLACES)
 
-    invoice_data = (getattr(xbterminal.instantfiat, xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'])
+
+    instantfiat_service_name = xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'].lower()
+    __import__('xbterminal.instantfiat.{}'.format(instantfiat_service_name))
+    invoice_data = (getattr(xbterminal.instantfiat, instantfiat_service_name)
                     .createInvoice(instantfiat_fiat_amount,
                                    xbterminal.remote_config['MERCHANT_CURRENCY'],
                                    xbterminal.remote_config['MERCHANT_INSTANTFIAT_TRANSACTION_SPEED']))
 
-    exchange_rate = invoice_data['amount_btc'] / total_fiat_amount
+    exchange_rate = instantfiat_fiat_amount / invoice_data['amount_btc']
 
     return instantfiat_fiat_amount, invoice_data['amount_btc'], invoice_data['invoice_id'], invoice_data['address'], exchange_rate
 
@@ -189,7 +195,8 @@ def logTransaction(local_addr, instantfiat_addr, dest_addr,
             urllib2.URLError,
             httplib.BadStatusLine,
             httplib.IncompleteRead) as error:
-        pass
+        logging.exception(error)
+        log('reconciliation API failed, error: {error}'.format(error))
 
     return receipt_url
 

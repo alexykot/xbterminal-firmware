@@ -66,7 +66,7 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                 }
 
-REMOTE_SERVERS = ('http://xbterminal.com',
+REMOTE_SERVERS = ('https://xbterminal.com',
                     )
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
@@ -77,8 +77,8 @@ REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'firmware_updated': '/api/device/{device_key}/firmware-updated/',
                         }
 EXTERNAL_CALLS_TIMEOUT = 15
-EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal query bot',
-                                  'Origin': 'XBTerminal device',
+EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1',
+                                  'Origin': 'terminal #{serial_number}', #initiated in configs helper
                                   }
 
 TRANSACTION_TIMEOUT = 900 #in person transaction timeout in seconds
@@ -95,7 +95,7 @@ BITCOIN_OUTPUT_DEC_PLACES = 2
 SATOSHI_FACTOR = Decimal(100000000) #satoshis per BTC
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES  = Decimal('0.00000000')
-BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
+BTC_DEFAULT_FEE = Decimal('0.00001000') #typical transaction expected to be less than 1024 bytes
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
 BLOCKCHAIN_DRIVER = 'bitcoinj'

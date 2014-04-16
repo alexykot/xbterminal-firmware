@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import time
 import xbterminal
 
@@ -107,8 +108,8 @@ class keypadDriverBBB():
 
                 try:
                     key = self.KEY_MAP[self.KEYPAD[keynum]]
-                except KeyError:
-                    pass
+                except KeyError as error:
+                    logging.exception(error)
 
                 GPIO.cleanup()
                 self.pins_set_up = False

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import logging
 from eventlet.green import urllib2
 from eventlet.timeout import Timeout
 import json
@@ -13,26 +14,20 @@ from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
 from xbterminal.helpers.misc import log
 
 
-BA_TICKER_API_URL = "https://api.bitcoinaverage.com/ticker/all"
+BA_TICKER_API_URL = "https://api.bitcoinaverage.com/ticker/{currency_code}/last"
 
 def getExchangeRate(currency_code):
     try:
         with Timeout(defaults.EXTERNAL_CALLS_TIMEOUT):
-            response = urllib2.urlopen(urllib2.Request(url=BA_TICKER_API_URL, headers=defaults.EXTERNAL_CALLS_REQUEST_HEADERS)).read()
-            ticker_result = json.loads(response)
+            ticker_result = urllib2.urlopen(urllib2.Request(url=BA_TICKER_API_URL.format(currency_code=currency_code),
+                                                       headers=defaults.EXTERNAL_CALLS_REQUEST_HEADERS)).read()
     except (KeyError,
             ValueError,
             socket.error,
             simplejson.decoder.JSONDecodeError,
             urllib2.URLError,
             httplib.BadStatusLine) as error:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        log('exception %s occured while retrieving price from bitcoinaverage.com' % exc_type, 'ERROR')
+        logging.exception(error)
         raise NetworkError()
 
-    try:
-        return Decimal(ticker_result[currency_code]['last'])
-    except KeyError:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        log('exception %s occured while retrieving price from bitcoinaverage.com' % exc_type, 'ERROR')
-        raise CurrencyNotRecognized()
+    return Decimal(ticker_result)

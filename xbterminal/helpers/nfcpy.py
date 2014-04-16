@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import nfc
 import nfc.snep
 import nfc.llcp
@@ -34,7 +35,7 @@ def send_uri(llc, uri):
         snep.put(nfc.ndef.Message(nfc.ndef.UriRecord(uri)))
     except (nfc.snep.SnepError,
             nfc.llcp.Error) as error:
-        pass
+        logging.exception(error)
 
 
 def start(bitcoin_uri):

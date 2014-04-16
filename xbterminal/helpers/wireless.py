@@ -1,3 +1,4 @@
+import logging
 import wifi
 import wifi.scan
 import wifi.utils
@@ -10,15 +11,16 @@ def is_wifi_available():
         cell_list = wifi.scan.Cell.all('wlan0')
         if len(cell_list) > 0:
             return True
-    except wifi.exceptions.InterfaceError:
-        pass
+    except wifi.exceptions.InterfaceError as error:
+        logging.exception(error)
     return False
 
 def discover_networks():
     networks = []
     try:
         cell_list = wifi.scan.Cell.all('wlan0')
-    except wifi.exceptions.InterfaceError:
+    except wifi.exceptions.InterfaceError as error:
+        logging.exception(error)
         return networks
     for cell in cell_list:
         networks.append({'ssid': cell.ssid,
@@ -39,6 +41,7 @@ def connect(ssid, passkey=None):
             try:
                 scheme.activate()
                 return True
-            except wifi.exceptions.ConnectionError:
+            except wifi.exceptions.ConnectionError as error:
+                logging.exception(error)
                 return False
 

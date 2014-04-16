@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
+from xbterminal.helpers.misc import log
 
 
 _button_last_pressed = None
@@ -23,7 +24,11 @@ class keypad():
         self.driver = keypadDriverBBB()
 
     def getKey(self):
-        return self.driver.getKey()
+        key = self.driver.getKey()
+        if key is not None:
+            log('keypress {},'.format(key))
+
+        return key
 
     #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
     def toAlphaNum(self, button_pressed):
