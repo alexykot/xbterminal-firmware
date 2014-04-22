@@ -43,6 +43,7 @@ def getOurFeeBtcAmount(total_fiat_amount, btc_exchange_rate):
     our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
     if our_fee_btc_amount < defaults.BTC_MIN_OUTPUT:
+        log('fee {fee} below dust threshold {dust}, ignoring'.format(fee=our_fee_btc_amount, dust=defaults.BTC_MIN_OUTPUT))
         our_fee_btc_amount = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
 
     return our_fee_btc_amount
@@ -58,6 +59,8 @@ def getMerchantBtcAmount(total_fiat_amount, btc_exchange_rate):
     merchants_btc_amount = Decimal(merchants_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
     if merchants_btc_amount < defaults.BTC_MIN_OUTPUT and merchants_btc_amount > 0:
+        log('merchant_share {merchant_share} below dust threshold {dust}, ignoring'.format(merchant_share=merchants_btc_amount,
+                                                                                           dust=defaults.BTC_MIN_OUTPUT))
         merchants_btc_amount = defaults.BTC_MIN_OUTPUT.quantize(defaults.BTC_DEC_PLACES)
 
     return merchants_btc_amount
@@ -68,7 +71,6 @@ def createInvoice(total_fiat_amount):
 
     total_fiat_amount = Decimal(total_fiat_amount).quantize(defaults.BTC_DEC_PLACES)
     instantfiat_fiat_amount = total_fiat_amount * Decimal(xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE']).quantize(defaults.BTC_DEC_PLACES)
-
 
     instantfiat_service_name = xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'].lower()
     __import__('xbterminal.instantfiat.{}'.format(instantfiat_service_name))

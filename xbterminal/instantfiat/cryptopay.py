@@ -31,6 +31,7 @@ def createInvoice(amount, currency, speed):
     result = {}
     result['invoice_id'] = response['uuid']
     result['amount_btc'] = Decimal(response['btc_price']).quantize(xbterminal.defaults.BTC_DEC_PLACES)
+    result['amount_btc'] = result['amount_btc'] + Decimal('0.00000001') #adding one satoshi to avoid rounding issues @TODO investigate rounding and remove this
     result['address'] = response['btc_address']
     log('cryptopay invoice created, uuid: {uuid}, amount_btc: {amount_btc}, address: {address}'.format(uuid=result['invoice_id'],
                                                                                                        amount_btc=result['amount_btc'],

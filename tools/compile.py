@@ -4,18 +4,27 @@ import subprocess
 
 
 subprocess.check_call(['nuitka',
-                      # '--recurse-all',
+                      '--python-version=2.7',
                       '--recurse-directory=/opt/xbterminal',
-                      '--remove-output',
                       '--output-dir=/opt/xbterminal/compiled/',
+                      '--remove-output',
                       '--warn-implicit-exceptions',
                       '--unstripped',
                       # '--show-scons',
                       # '--show-progress',
                       # '--show-modules',
-                      '--python-version=2.7',
+
+                      # '--recurse-all',
                       '--recurse-to=xbterminal',
-                      '--recurse-to=xbterminal.exceptions',
+                      '--recurse-to=exceptions',
+                      '--recurse-to=helpers',
+                      '--recurse-to=instantfiat',
+                      '--recurse-to=defaults',
+                      '--recurse-to=blockchain',
+                      '--recurse-to=bitcoinaverage',
+                      '--recurse-to=keypad',
+                      '--recurse-to=gui',
+
                       '--recurse-not-to=PyQt4',
                       '--recurse-not-to=bitcoinrpc',
                       '--recurse-not-to=bitcoinrpc.connection',
@@ -27,7 +36,7 @@ subprocess.check_call(['nuitka',
                       '--recurse-not-to=eventlet.green',
                       '--recurse-not-to=eventlet.timeout',
                       '--recurse-not-to=simplejson',
+                      '--recurse-not-to=Adafruit_BBIO',
+
                       '/opt/xbterminal/xbterminal/main.py'],
                       cwd='/opt/xbterminal/')
-
-
