@@ -379,6 +379,7 @@ def main():
                     log('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
 
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
+                time.sleep(0.5)
                 if current_balance >= run['amounts']['amount_to_pay_btc']:
                     run['received_payment'] = True
                     incoming_tx_hash = blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
