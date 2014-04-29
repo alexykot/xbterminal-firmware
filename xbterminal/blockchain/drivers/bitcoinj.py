@@ -5,8 +5,6 @@ import os
 import simplejson
 import socket
 import subprocess
-import bitcoinrpc
-import bitcoinrpc.connection
 import time
 import requests
 
@@ -14,6 +12,7 @@ import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
 from xbterminal.helpers.misc import log
+
 
 BITCOINJ_SERVER_ABSPATH = os.path.join(defaults.PROJECT_ABS_PATH, 'bitcoinj_server', 'server.py')
 BITCOINJ_HOST = '127.0.0.1'
@@ -65,8 +64,6 @@ def _start_bitcoinj():
 
 
 def getAddressBalance(address):
-    global connection
-
     result = requests.get(bitcoinj_url + 'getAddressBalance?address={}'.format(address))
 
     balance_satoshis = Decimal(result.json())
@@ -76,8 +73,6 @@ def getAddressBalance(address):
 
 
 def getFreshAddress():
-    global connection
-
     result = requests.get(bitcoinj_url + 'getFreshAddress')
     new_address = result.json()
 
@@ -85,15 +80,11 @@ def getFreshAddress():
 
 
 def getLastUnspentTransactionId(from_address):
-    global connection
-
     transactions = getUnspentTransactions(from_address)
     return transactions[len(transactions)-1]['txid']
 
 
 def getUnspentTransactions(from_address):
-    global connection
-
     address_tx_list = []
     result = requests.get(bitcoinj_url + 'getUnspentTransactions')
     try:
@@ -114,8 +105,6 @@ def getUnspentTransactions(from_address):
 # Sends transaction from given address using all currently unspent inputs for that address.
 # by default all change is sent to fees address
 def sendRawTransaction(inputs, outputs):
-    global connection
-
     integer_outputs = {}
     for output_address in outputs:
         integer_outputs[output_address] = int(Decimal(outputs[output_address]) * defaults.SATOSHI_FACTOR)
