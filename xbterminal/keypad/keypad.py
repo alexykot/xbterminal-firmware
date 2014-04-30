@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
 import time
+
 from xbterminal.helpers.misc import log
+from xbterminal.keypad import drivers
 
 
 _button_last_pressed = None
@@ -18,10 +21,10 @@ _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', 
                     0: ('0', '#', '!', '@', '.', ',', '\\', '~', '<', '>', '_', '+', ':', ';', ),
                     }
 
-class keypad():
+class Keypad():
     def __init__(self):
-        from xbterminal.keypad.drivers import keypadDriverBBB
-        self.driver = keypadDriverBBB()
+        
+        self.driver = drivers.KeypadDriverBBB()
 
     def getKey(self):
         key = self.driver.getKey()

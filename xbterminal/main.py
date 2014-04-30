@@ -16,8 +16,7 @@ xbterminal.defaults.PROJECT_ABS_PATH = include_path
 logging.basicConfig(level=logging.WARNING)
 
 from xbterminal.exceptions import ConfigLoadError
-import xbterminal.keypad
-import xbterminal.keypad.keypad
+from xbterminal.keypad.keypad import Keypad
 import xbterminal.bitcoinaverage
 import xbterminal.instantfiat
 import xbterminal.gui
@@ -69,7 +68,7 @@ def main():
     xbterminal.helpers.configs.load_local_state()
     gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
 
-    keypad = xbterminal.keypad.keypad.keypad()
+    keypad = Keypad()
     gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
 
     xbterminal.local_state['last_started'] = time.time()

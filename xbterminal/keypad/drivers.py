@@ -5,7 +5,7 @@ import xbterminal
 
 GPIO = None
 
-class keypadDriverBBB():
+class KeypadDriverBBB():
     pins_set_up = False
     pins = {'pin1': "P8_14",
             'pin2': "P8_16",
