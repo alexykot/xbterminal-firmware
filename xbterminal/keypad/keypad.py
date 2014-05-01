@@ -2,6 +2,7 @@
 import logging
 import time
 
+import xbterminal
 from xbterminal.helpers.misc import log
 from xbterminal.keypad import drivers
 
@@ -22,10 +23,12 @@ _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', 
                     }
 
 class Keypad():
+
     def __init__(self):
-        
-        #self.driver = drivers.KeypadDriverBBB()
-        self.driver = drivers.KeyboardDriver()
+        if xbterminal.local_state.get("use_default_keypad_override"):
+            self.driver = drivers.KeyboardDriver()
+        else:
+            self.driver = drivers.KeypadDriverBBB()
 
     def getKey(self):
         key = self.driver.getKey()
