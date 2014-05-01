@@ -24,7 +24,8 @@ _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', 
 class Keypad():
     def __init__(self):
         
-        self.driver = drivers.KeypadDriverBBB()
+        #self.driver = drivers.KeypadDriverBBB()
+        self.driver = drivers.KeyboardDriver()
 
     def getKey(self):
         key = self.driver.getKey()

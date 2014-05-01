@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import time
+
+from PyQt4 import QtCore
+
 import xbterminal
 
 GPIO = None
@@ -116,3 +119,32 @@ class KeypadDriverBBB():
 
         return key
 
+
+class KeyboardDriver(object):
+
+    key_map = {
+        QtCore.Qt.Key_0: 0,
+        QtCore.Qt.Key_1: 1,
+        QtCore.Qt.Key_2: 2,
+        QtCore.Qt.Key_3: 3,
+        QtCore.Qt.Key_4: 4,
+        QtCore.Qt.Key_5: 5,
+        QtCore.Qt.Key_6: 6,
+        QtCore.Qt.Key_7: 7,
+        QtCore.Qt.Key_8: 8,
+        QtCore.Qt.Key_9: 9,
+        QtCore.Qt.Key_Backspace: 'backspace',
+        QtCore.Qt.Key_Enter: 'enter',
+        QtCore.Qt.Key_Escape: 'system_halt',
+    }
+
+    def __init__(self):
+        self.main_window = xbterminal.gui.runtime['main_win']
+
+    def getKey(self):
+        try:
+            key = self.main_window.keys.pop()
+            self.main_window.keys.clear()
+        except IndexError:
+            return None
+        return self.key_map.get(key) 

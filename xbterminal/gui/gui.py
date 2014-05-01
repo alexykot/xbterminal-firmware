@@ -3,6 +3,7 @@ import os
 import sys
 from PyQt4 import QtGui, QtCore
 import time
+from collections import deque
 
 import xbterminal
 from xbterminal.gui import ui as appui
@@ -38,6 +39,7 @@ class GUI(QtGui.QWidget):
     def __init__(self):
         super(GUI, self).__init__()
         self.initUI()
+        self.keys = deque(maxlen=5)
 
     def initUI(self):
         global xbterminal
@@ -59,15 +61,17 @@ class GUI(QtGui.QWidget):
 
 
     #QT Keypress Events
-    def keyPressEvent(self, k):
+    def keyPressEvent(self, event):
         global xbterminal
 
-        if k.key() == QtCore.Qt.Key_Escape:
+        if event.key() == QtCore.Qt.Key_Escape:
             self.close()
 
-        if k.key() == QtCore.Qt.Key_Return:
+        if event.key() == QtCore.Qt.Key_Return:
             xbterminal.runtime['CURRENT_STAGE'] = 'enter_amount'
             self.ui.main_stackedWidget.setCurrentIndex(6)
+
+        self.keys.append(event.key())
 
     def closeEvent(self, QCloseEvent):
         global xbterminal
