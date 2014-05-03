@@ -5,7 +5,7 @@ import time
 import sys
 import os
 import unicodedata
-import logging
+import logging.config
 from PyQt4 import QtGui, QtCore
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
@@ -13,7 +13,14 @@ sys.path.insert(0, include_path)
 import xbterminal
 import xbterminal.defaults
 xbterminal.defaults.PROJECT_ABS_PATH = include_path
-logging.basicConfig(level=logging.WARNING)
+
+log_config = xbterminal.defaults.LOG_CONFIG
+log_file_path = os.path.abspath(os.path.join(
+    xbterminal.defaults.PROJECT_ABS_PATH,
+    xbterminal.defaults.LOG_FILE_PATH))
+log_config['handlers']['file']['filename'] = log_file_path
+logging.config.dictConfig(log_config)
+logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
