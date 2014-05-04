@@ -1,9 +1,14 @@
+"""
+https://wifi.readthedocs.org/en/latest/
+"""
+
 import logging
 import wifi
 import wifi.scan
 import wifi.utils
 import wifi.exceptions
 import hashlib
+import errno
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +20,12 @@ def is_wifi_available():
             return True
     except wifi.exceptions.InterfaceError as error:
         logger.exception(error)
+    except OSError as error:
+        if error.errno == errno.ENOENT:
+            # [Errno 2] No such file or directory
+            logger.error("iwlist not installed")
+        else:
+            raise
     return False
 
 def discover_networks():

@@ -27,6 +27,7 @@ class Keypad():
     def __init__(self):
         if xbterminal.local_state.get("use_default_keypad_override"):
             self.driver = drivers.KeyboardDriver()
+            logger.info("using standard keyboard driver")
         else:
             self.driver = drivers.KeypadDriverBBB()
 
