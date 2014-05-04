@@ -14,10 +14,11 @@ import simplejson
 
 import xbterminal
 import xbterminal.instantfiat
-from xbterminal.helpers.log import log
 from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
 from xbterminal import defaults
 from xbterminal.blockchain import blockchain
+
+logger = logging.getLogger(__name__)
 
 
 def createOutgoingTransaction(addresses, amounts):
@@ -43,7 +44,7 @@ def getOurFeeBtcAmount(total_fiat_amount, btc_exchange_rate):
     our_fee_btc_amount = Decimal(our_fee_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
     if our_fee_btc_amount < defaults.BTC_MIN_OUTPUT:
-        log('fee {fee} below dust threshold {dust}, ignoring'.format(fee=our_fee_btc_amount, dust=defaults.BTC_MIN_OUTPUT))
+        logger.debug('fee {fee} below dust threshold {dust}, ignoring'.format(fee=our_fee_btc_amount, dust=defaults.BTC_MIN_OUTPUT))
         our_fee_btc_amount = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
 
     return our_fee_btc_amount
@@ -59,7 +60,7 @@ def getMerchantBtcAmount(total_fiat_amount, btc_exchange_rate):
     merchants_btc_amount = Decimal(merchants_btc_amount).quantize(defaults.BTC_DEC_PLACES)
 
     if merchants_btc_amount < defaults.BTC_MIN_OUTPUT and merchants_btc_amount > 0:
-        log('merchant_share {merchant_share} below dust threshold {dust}, ignoring'.format(merchant_share=merchants_btc_amount,
+        logger.debug('merchant_share {merchant_share} below dust threshold {dust}, ignoring'.format(merchant_share=merchants_btc_amount,
                                                                                            dust=defaults.BTC_MIN_OUTPUT))
         merchants_btc_amount = defaults.BTC_MIN_OUTPUT.quantize(defaults.BTC_DEC_PLACES)
 
@@ -197,8 +198,8 @@ def logTransaction(local_addr, instantfiat_addr, dest_addr,
             urllib2.URLError,
             httplib.BadStatusLine,
             httplib.IncompleteRead) as error:
-        logging.exception(error)
-        log('reconciliation API failed, error: {error}'.format(error))
+        logger.exception(error)
+        logger.error('reconciliation API failed, error: {error}'.format(error))
 
     return receipt_url
 
@@ -242,12 +243,12 @@ def getBitcoinURI(payment_addr, amount_btc):
 def gracefullExit(system_halt=False, system_reboot=False):
     xbterminal.helpers.configs.save_local_state()
     xbterminal.helpers.nfcpy.stop()
-    xbterminal.helpers.misc.log('application halted')
+    logger.debug('application halted')
     if system_halt:
-        xbterminal.helpers.misc.log('system halt command sent')
+        logger.debug('system halt command sent')
         subprocess.Popen(['halt', ])
     if system_reboot:
-        xbterminal.helpers.misc.log('system reboot command sent')
+        logger.debug('system reboot command sent')
         subprocess.Popen(['reboot', ])
     sys.exit()
 

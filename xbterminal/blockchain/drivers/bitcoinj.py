@@ -7,12 +7,13 @@ import socket
 import subprocess
 import time
 import requests
+import logging
 
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
-from xbterminal.helpers.misc import log
 
+logger = logging.getLogger(__name__)
 
 BITCOINJ_SERVER_ABSPATH = os.path.join(defaults.PROJECT_ABS_PATH, 'bitcoinj_server', 'server.py')
 BITCOINJ_HOST = '127.0.0.1'
@@ -32,13 +33,13 @@ def init():
     except requests.exceptions.ConnectionError:
         _start_bitcoinj()
 
-    log('bitcoinj init done')
+    logger.debug('bitcoinj init done')
 
 
 def _start_bitcoinj():
     global bitcoinj_url, xbterminal
 
-    log('bitcoinj starting')
+    logger.debug('bitcoinj starting')
     command = [BITCOINJ_SERVER_ABSPATH, ]
     if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
         command.append('--testnet')
@@ -60,7 +61,7 @@ def _start_bitcoinj():
             break
         except requests.exceptions.ConnectionError:
             time.sleep(1)
-    log('bitcoinj started')
+    logger.debug('bitcoinj started')
 
 
 def getAddressBalance(address):
@@ -90,7 +91,7 @@ def getUnspentTransactions(from_address):
     try:
         unspent_tx_list = result.json()
     except simplejson.JSONDecodeError:
-        log('getUnspentTransactions json error, json body: {}'.format(result.body))
+        logger.debug('getUnspentTransactions json error, json body: {}'.format(result.body))
         return []
 
     for transaction in unspent_tx_list:

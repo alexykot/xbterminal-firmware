@@ -6,12 +6,13 @@ import subprocess
 import bitcoinrpc
 import bitcoinrpc.connection
 import time
+import logging
 
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
-from xbterminal.helpers.misc import log
 
+logger = logging.getLogger(__name__)
 
 BITCOIND_DATADIR = '/root/.bitcoin'
 BITCOIND_CONFIG_PATH = os.path.join('configs', 'bitcoin.conf')
@@ -57,7 +58,7 @@ def init():
         except socket.error:
             connection = _start_bitcoind(connection_probe)
 
-    log('bitcoind init done')
+    logger.debug('bitcoind init done')
 
 
 def _start_bitcoind(connection_probe):
@@ -67,7 +68,7 @@ def _start_bitcoind(connection_probe):
        or xbterminal.local_state['last_started'] + BITCOIND_MAX_BLOCKCHAIN_AGE < time.time()):
         _presync_blockchain()
 
-    log('bitcoind starting')
+    logger.debug('bitcoind starting')
     bitcoind_config_path = os.path.join(defaults.PROJECT_ABS_PATH, BITCOIND_CONFIG_PATH)
     subprocess.Popen(['bitcoind',
                       '-conf={conf_file_path}'.format(conf_file_path=bitcoind_config_path),
@@ -79,7 +80,7 @@ def _start_bitcoind(connection_probe):
             break
         except socket.error:
             time.sleep(1)
-    log('bitcoind started')
+    logger.debug('bitcoind started')
 
     return connection_probe
 
@@ -87,7 +88,7 @@ def _start_bitcoind(connection_probe):
 def _presync_blockchain():
     blocks_sync_successful = False
     chainstate_sync_successful = False
-    log('bitcoind blockchain presync starting')
+    logger.debug('bitcoind blockchain presync starting')
     for blockchain_server in BITCOIND_BLOCKCHAIN_SERVERS:
         if BITCOIND_TESTNET != blockchain_server['testnet']:
             continue
@@ -97,7 +98,7 @@ def _presync_blockchain():
                                                                 user=blockchain_server['user']))
 
         if not os.path.exists(key_file_path):
-            log('{key_file} - key missing'.format(key_file=key_file_path), xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+            logger.error('{key_file} - key missing'.format(key_file=key_file_path))
             continue
 
         if not blocks_sync_successful:
@@ -116,8 +117,8 @@ def _presync_blockchain():
             else:
                 command_blocks.append("{data_dir}/blocks".format(data_dir=BITCOIND_DATADIR))
             command_blocks = ' '.join(command_blocks)
-            log('blocks rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
-            log('command: {command_blocks}'.format(command_blocks=command_blocks))
+            logger.debug('blocks rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
+            logger.debug('command: {command_blocks}'.format(command_blocks=command_blocks))
             try:
                 output = subprocess.check_output(command_blocks, shell=True)
             except subprocess.CalledProcessError:
@@ -126,8 +127,7 @@ def _presync_blockchain():
             if output == '':
                 blocks_sync_successful = True
             else:
-                log('blocks rsync failed, output: {rsync_output}'.format(rsync_output=output),
-                    xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                logger.error('blocks rsync failed, output: {rsync_output}'.format(rsync_output=output))
 
         if not chainstate_sync_successful:
             command_chainstate = []
@@ -145,8 +145,8 @@ def _presync_blockchain():
             else:
                 command_chainstate.append("{data_dir}/chainstate".format(data_dir=BITCOIND_DATADIR))
             command_chainstate = ' '.join(command_chainstate)
-            log('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
-            log('command: {command_chainstate}'.format(command_chainstate=command_chainstate))
+            logger.debug('chainstate rsync started from {blockchain_server_name}'.format(blockchain_server_name=blockchain_server['name']))
+            logger.debug('command: {command_chainstate}'.format(command_chainstate=command_chainstate))
             try:
                 output = subprocess.check_output(command_chainstate, shell=True)
             except subprocess.CalledProcessError:
@@ -155,14 +155,13 @@ def _presync_blockchain():
             if output == '':
                 blocks_sync_successful = True
             else:
-                log('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output),
-                    xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                logger.error('chainstate rsync failed, output: {rsync_output}'.format(rsync_output=output))
 
         if blocks_sync_successful and chainstate_sync_successful:
-            log('bitcoind blockchain presync successful')
+            logger.debug('bitcoind blockchain presync successful')
             return
 
-    log('bitcoind blockchain presync failed')
+    logger.debug('bitcoind blockchain presync failed')
 
 
 def getAddressBalance(address):

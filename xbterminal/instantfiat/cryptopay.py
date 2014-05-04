@@ -7,7 +7,8 @@ import re
 
 import xbterminal
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
-from xbterminal.helpers.log import log
+
+logger = logging.getLogger(__name__)
 
 
 CRYPTOPAY_CREATE_INVOICE_API_URL = "https://cryptopay.me/api/v1/invoices/?api_key={api_key}"
@@ -33,7 +34,7 @@ def createInvoice(amount, currency, speed):
     result['amount_btc'] = Decimal(response['btc_price']).quantize(xbterminal.defaults.BTC_DEC_PLACES)
     result['amount_btc'] = result['amount_btc'] + Decimal('0.00000001') #adding one satoshi to avoid rounding issues @TODO investigate rounding and remove this
     result['address'] = response['btc_address']
-    log('cryptopay invoice created, uuid: {uuid}, amount_btc: {amount_btc}, address: {address}'.format(uuid=result['invoice_id'],
+    logger.debug('cryptopay invoice created, uuid: {uuid}, amount_btc: {amount_btc}, address: {address}'.format(uuid=result['invoice_id'],
                                                                                                        amount_btc=result['amount_btc'],
                                                                                                        address=result['address']
                                                                                                        ))
@@ -51,7 +52,7 @@ def isInvoicePaid(invoice_id):
                                 headers=xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS,
                                 ).json()
     except requests.HTTPError as error:
-        logging.exception(error)
+        logger.exception(error)
         return False
 
     if response['status'] == 'paid':

@@ -6,7 +6,6 @@ import re
 import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
-from xbterminal.helpers.misc import log
 
 
 BITPAY_CREATE_INVOICE_API_URL = "https://bitpay.com/api/invoice"

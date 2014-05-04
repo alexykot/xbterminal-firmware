@@ -5,10 +5,12 @@ import nfc.snep
 import nfc.llcp
 import threading
 import time
-from xbterminal.helpers.misc import log
 
+logger = logging.getLogger(__name__)
 
 nfc_thread = None
+
+
 class BitcoinSender(threading.Thread):
     def __init__(self, bitcoin_uri):
         self.terminate = False
@@ -35,7 +37,7 @@ def send_uri(llc, uri):
         snep.put(nfc.ndef.Message(nfc.ndef.UriRecord(uri)))
     except (nfc.snep.SnepError,
             nfc.llcp.Error) as error:
-        logging.exception(error)
+        logger.exception(error)
 
 
 def start(bitcoin_uri):
@@ -48,7 +50,7 @@ def start(bitcoin_uri):
 
     nfc_thread = BitcoinSender(bitcoin_uri)
     nfc_thread.start()
-    log('NFC activated')
+    logger.debug('NFC activated')
 
 def is_active():
     global nfc_thread
