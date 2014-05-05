@@ -60,5 +60,3 @@ def log(message_text, message_type=None):
             or xbterminal.remote_config['LOG_LEVEL'] == xbterminal.defaults.LOG_LEVELS['DEBUG']):
             print log_string
         log_file.write(log_string+'\n')
-
-

@@ -37,13 +37,13 @@ from xbterminal import defaults
 from xbterminal.blockchain import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
+import xbterminal.watcher
 
 
 def main():
     logger.debug('starting')
     #init runtime
-    xbterminal.runtime = {}
-    run = xbterminal.runtime
+    run = xbterminal.runtime = {}
     run['init'] = {}
     run['init']['internet'] = False
     run['init']['blockchain'] = False
@@ -66,6 +66,7 @@ def main():
     run['wifi'] = {}
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
+    run['current_state'] = {}
 
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
@@ -77,6 +78,9 @@ def main():
 
     keypad = Keypad()
     gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
+
+    watcher = xbterminal.watcher.Watcher()
+    watcher.start()
 
     xbterminal.local_state['last_started'] = time.time()
     xbterminal.helpers.configs.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
@@ -105,6 +109,8 @@ def main():
         except NameError as error:
             logger.exception(error)
 
+        run['current_state'] = watcher.state
+        logger.debug("Current state: {0}".format(run['current_state']))
 
         if run['init']['internet']:
             if (not run['init']['remote_config']
