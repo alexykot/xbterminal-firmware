@@ -1,8 +1,10 @@
 .idea/*
 *.pyc
 compiled/*
+venv
 bitcoinj_server/*
 xbterminal/runtime/*
 xbterminal/device_key
 tests/*
-
+bitcoinj-server.tar
+fabfile
