@@ -11,8 +11,8 @@ import sys
 
 from xbterminal import defaults
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
-from xbterminal.helpers.misc import log
 
+logger = logging.getLogger(__name__)
 
 BA_TICKER_API_URL = "https://api.bitcoinaverage.com/ticker/{currency_code}/last"
 
@@ -27,7 +27,7 @@ def getExchangeRate(currency_code):
             simplejson.decoder.JSONDecodeError,
             urllib2.URLError,
             httplib.BadStatusLine) as error:
-        logging.exception(error)
+        logger.exception(error)
         raise NetworkError()
 
     return Decimal(ticker_result)

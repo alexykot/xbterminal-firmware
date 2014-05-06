@@ -6,7 +6,9 @@ from PyQt4 import QtCore
 
 import xbterminal
 
+logger = logging.getLogger(__name__)
 GPIO = None
+
 
 class KeypadDriverBBB():
     pins_set_up = False
@@ -112,7 +114,7 @@ class KeypadDriverBBB():
                 try:
                     key = self.KEY_MAP[self.KEYPAD[keynum]]
                 except KeyError as error:
-                    logging.exception(error)
+                    logger.exception(error)
 
                 GPIO.cleanup()
                 self.pins_set_up = False

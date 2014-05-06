@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 import importlib
+import logging
 
 import xbterminal
 import xbterminal.blockchain.drivers
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
-from xbterminal.helpers.misc import log
 
+logger = logging.getLogger(__name__)
 
 driver = None
 
@@ -20,7 +21,7 @@ def init():
 
     driver.init()
 
-    log('blockchain driver {} init done'.format(defaults.BLOCKCHAIN_DRIVER))
+    logger.debug('blockchain driver {} init done'.format(defaults.BLOCKCHAIN_DRIVER))
 
 
 def getAddressBalance(address):

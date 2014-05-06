@@ -5,7 +5,7 @@ import time
 import sys
 import os
 import unicodedata
-import logging
+import logging.config
 from PyQt4 import QtGui, QtCore
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
@@ -13,7 +13,15 @@ sys.path.insert(0, include_path)
 import xbterminal
 import xbterminal.defaults
 xbterminal.defaults.PROJECT_ABS_PATH = include_path
-logging.basicConfig(level=logging.WARNING)
+
+# Set up logging
+log_config = xbterminal.defaults.LOG_CONFIG
+log_file_path = os.path.abspath(os.path.join(
+    xbterminal.defaults.PROJECT_ABS_PATH,
+    xbterminal.defaults.LOG_FILE_PATH))
+log_config['handlers']['file']['filename'] = log_file_path
+logging.config.dictConfig(log_config)
+logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
@@ -29,11 +37,10 @@ from xbterminal import defaults
 from xbterminal.blockchain import blockchain
 from xbterminal.gui import gui
 from xbterminal import stages
-from xbterminal.helpers.misc import log
 
 
 def main():
-    log('starting')
+    logger.debug('starting')
     #init runtime
     xbterminal.runtime = {}
     run = xbterminal.runtime
@@ -74,13 +81,13 @@ def main():
     xbterminal.local_state['last_started'] = time.time()
     xbterminal.helpers.configs.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
 
-    log('main loop starting')
+    logger.debug('main loop starting')
     while True:
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()
             xbterminal.gui.runtime['app'].processEvents()
         except NameError as error:
-            logging.exception(error)
+            logger.exception(error)
 
 
         if run['key_pressed'] is not None:
@@ -96,7 +103,7 @@ def main():
                     run['CURRENT_STAGE'] = defaults.STAGES['system_halt']
                 run['last_activity_timestamp'] = time.time()
         except NameError as error:
-            logging.exception(error)
+            logger.exception(error)
 
 
         if run['init']['internet']:
@@ -110,7 +117,7 @@ def main():
                     run['init']['remote_config'] = True
                     run['init']['remote_config_last_update'] = int(time.time())
                 except ConfigLoadError as error:
-                    log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                    logger.error('remote config load failed, exiting')
                     raise error
                 continue
 
@@ -141,7 +148,7 @@ def main():
                             and xbterminal.local_state['wifi_ssid'] != ''
                             and 'wifi_pass' in xbterminal.local_state
                             and xbterminal.local_state['wifi_pass'] != ''):
-                            log('trying to connect to cached wifi,  '
+                            logger.debug('trying to connect to cached wifi,  '
                                 'ssid "{wifi_ssid}" '
                                 'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
                                                                  wifi_pass=xbterminal.local_state['wifi_pass']))
@@ -151,14 +158,14 @@ def main():
                                                                                            xbterminal.local_state['wifi_pass'])
                             if run['wifi']['connected']:
                                 run['init']['internet'] = True
-                                log('cached wifi connected')
+                                logger.debug('cached wifi connected')
                             else:
                                 del xbterminal.local_state['wifi_ssid']
                                 del xbterminal.local_state['wifi_pass']
                                 xbterminal.helpers.configs.save_local_state()
-                                log('cached wifi connection failed, wifi setup needed')
+                                logger.debug('cached wifi connection failed, wifi setup needed')
                     except KeyError as error:
-                        logging.exception(error)
+                        logger.exception(error)
 
                     if not run['wifi']['connected']:
                         if 'wifi_ssid' in xbterminal.local_state:
@@ -171,7 +178,7 @@ def main():
                         run['stage_init'] = False
                         continue
                 else:
-                    log('no wifi found, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
+                    logger.warning('no wifi found, hoping for preconfigured wired connection')
                     run['init']['internet'] = True
                 gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
                 continue
@@ -187,7 +194,7 @@ def main():
                         run['init']['remote_config'] = True
                         run['init']['remote_config_last_update'] = int(time.time())
                     except ConfigLoadError as error:
-                        log('remote config load failed, exiting', xbterminal.defaults.LOG_MESSAGE_TYPES['ERROR'])
+                        logger.error('remote config load failed, exiting')
                         raise error
                     continue
 
@@ -344,9 +351,9 @@ def main():
                                                      image_path) #address only qr
                     ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
                     ui.qr_image.setPixmap(QtGui.QPixmap(image_path))
-                    log('payment qr code requested')
+                    logger.debug('payment qr code requested')
 
-                log('local payment requested, address: {local_address}, '
+                logger.debug('local payment requested, address: {local_address}, '
                     'amount fiat: {amount_fiat}, '
                     'amount btc: {amount_btc}, '
                     'rate: {effective_rate}'.
@@ -366,7 +373,7 @@ def main():
                 continue
 
             if run['key_pressed'] == 'qr_code' or run['screen_buttons']['qr_button'] == True:
-                log('QR code requested')
+                logger.debug('QR code requested')
                 run['screen_buttons']['qr_button'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 run['stage_init'] = False
@@ -375,14 +382,14 @@ def main():
             if not run['received_payment']:
                 if not xbterminal.helpers.nfcpy.is_active():
                     xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
-                    log('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
+                    logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
 
                 current_balance = blockchain.getAddressBalance(run['transactions_addresses']['local'])
                 time.sleep(0.5)
                 if current_balance >= run['amounts']['amount_to_pay_btc']:
                     run['received_payment'] = True
                     incoming_tx_hash = blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
-                    log('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
+                    logger.debug('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
 
                     if current_balance > run['amounts']['amount_to_pay_btc']:
                         run['amounts']['our_fee_btc_amount'] = run['amounts']['our_fee_btc_amount'] + current_balance - run['amounts']['amount_to_pay_btc'] #overpayment goes to our fee
@@ -393,7 +400,7 @@ def main():
 
                     outgoing_tx_hash = stages.createOutgoingTransaction(addresses=run['transactions_addresses'],
                                                                         amounts=amounts)
-                    log('payment forwarded, outgoing txid: {txid},'
+                    logger.debug('payment forwarded, outgoing txid: {txid},'
                         'addresses: {addresses},'
                         'amounts: {amounts},'.format(txid=outgoing_tx_hash,
                                                      amounts=amounts,
@@ -417,7 +424,7 @@ def main():
                         xbterminal.remote_config['MERCHANT_CURRENCY'],
                         run['effective_rate_btc']
                     )
-                    log('receipt: {}'.format(run['receipt_url']))
+                    logger.debug('receipt: {}'.format(run['receipt_url']))
 
                     stages.clearPaymentRuntime()
 
@@ -444,7 +451,7 @@ def main():
                     ui.receipt_qr_image.setPixmap(QtGui.QPixmap(image_path))
                     if not xbterminal.helpers.nfcpy.is_active():
                         xbterminal.helpers.nfcpy.start(run['receipt_url'])
-                        log('nfc receipt URI activated: {}'.format(run['receipt_url']))
+                        logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
                         time.sleep(0.5)
                 run['stage_init'] = True
                 continue
@@ -484,7 +491,7 @@ def main():
                 run['stage_init'] = True
 
             if run['screen_buttons']['skip_wifi']:
-                log('wifi setup cancelled, hoping for preconfigured wired connection', xbterminal.defaults.LOG_MESSAGE_TYPES['WARNING'])
+                logger.warning('wifi setup cancelled, hoping for preconfigured wired connection')
                 run['screen_buttons']['skip_wifi'] = False
                 run['stage_init'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['bootup']
@@ -557,20 +564,20 @@ def main():
 
             if run['wifi']['try_to_connect']:
                 run['wifi']['try_to_connect'] = False
-                log('trying to connect to wifi, '
+                logger.debug('trying to connect to wifi, '
                     'ssid: "{ssid}", pass: "{passkey}" '.format(ssid=xbterminal.local_state['wifi_ssid'],
                                                                 passkey=xbterminal.local_state['wifi_pass']))
                 run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
                                                                                xbterminal.local_state['wifi_pass'])
                 if run['wifi']['connected']:
                     run['init']['internet'] = True
-                    log('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
+                    logger.debug('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
                     xbterminal.helpers.configs.save_local_state()
                     run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
                     run['stage_init'] = False
                     continue
                 else:
-                    log('wifi wrong passkey')
+                    logger.debug('wifi wrong passkey')
                     xbterminal.gui.runtime['main_win'].toggleWifiConnectingState(False)
                     xbterminal.gui.runtime['main_win'].toggleWifiWrongPasswordState(True)
 
@@ -620,7 +627,7 @@ def main():
 try:
     main()
 except Exception as error:
-    logging.exception(error)
+    logger.exception(error)
 
 xbterminal.stages.gracefullExit()
 

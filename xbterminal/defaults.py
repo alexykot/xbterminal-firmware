@@ -66,6 +66,32 @@ LOG_LEVELS = {'DEBUG':'DEBUG',
               'PRODUCTION':'PRODUCTION',
                 }
 
+LOG_CONFIG = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s %(name)s [%(levelname)s] :: %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'simple',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'level': 'WARNING',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'DEBUG',
+    },
+}
+
 REMOTE_SERVERS = ('https://xbterminal.com',
                     )
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates

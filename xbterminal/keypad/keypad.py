@@ -3,9 +3,9 @@ import logging
 import time
 
 import xbterminal
-from xbterminal.helpers.misc import log
 from xbterminal.keypad import drivers
 
+logger = logging.getLogger(__name__)
 
 _button_last_pressed = None
 _cycle_index = -1
@@ -27,13 +27,14 @@ class Keypad():
     def __init__(self):
         if xbterminal.local_state.get("use_default_keypad_override"):
             self.driver = drivers.KeyboardDriver()
+            logger.info("using standard keyboard driver")
         else:
             self.driver = drivers.KeypadDriverBBB()
 
     def getKey(self):
         key = self.driver.getKey()
         if key is not None:
-            log('keypress {},'.format(key))
+            logger.debug('keypress {},'.format(key))
 
         return key
 
