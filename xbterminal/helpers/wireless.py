@@ -3,12 +3,13 @@ https://wifi.readthedocs.org/en/latest/
 """
 
 import logging
+import hashlib
+import errno
+
 import wifi
 import wifi.scan
 import wifi.utils
 import wifi.exceptions
-import hashlib
-import errno
 
 logger = logging.getLogger(__name__)
 
@@ -57,4 +58,3 @@ def connect(ssid, passkey=None):
             except wifi.exceptions.ConnectionError as error:
                 logger.exception(error)
                 return False
-
