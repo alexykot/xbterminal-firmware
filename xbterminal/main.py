@@ -109,7 +109,9 @@ def main():
         except NameError as error:
             logger.exception(error)
 
-        run['current_state'] = watcher.state
+        run['current_state'], watcher_events = xbterminal.watcher.get_state(watcher)
+        for level, message in watcher_events:
+            logger.log(level, message)
 
         if run['init']['internet']:
             if (not run['init']['remote_config']
