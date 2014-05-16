@@ -162,7 +162,7 @@
     <cursorShape>BlankCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>12</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="load_percent_scrn">
     <widget class="QProgressBar" name="progressBar_percent">
@@ -1571,6 +1571,13 @@ NOW</string>
        <width>291</width>
        <height>131</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
       <string/>

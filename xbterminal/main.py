@@ -67,6 +67,7 @@ def main():
     run['wifi'] = {}
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
+    run['current_screen'] = None
 
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
@@ -87,20 +88,27 @@ def main():
 
     logger.debug('main loop starting')
     while True:
-        # Communicate with watcher
-        watcher_messages, watcher_errors = watcher.get_data()
-        for level, message in watcher_messages:
-            logger.log(level, message)
-        if watcher_errors:
-            ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['errors'])
-            ui.errors_lbl.setText("\n".join(watcher_errors))
-
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()
             xbterminal.gui.runtime['app'].processEvents()
         except NameError as error:
             logger.exception(error)
 
+        # Communicate with watcher
+        watcher_messages, watcher_errors = watcher.get_data()
+        for level, message in watcher_messages:
+            logger.log(level, message)
+        if watcher_errors:
+            if ui.main_stackedWidget.currentIndex() != defaults.SCREENS['errors']:
+                # Show error screen
+                run['current_screen'] = ui.main_stackedWidget.currentIndex()
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['errors'])
+                ui.errors_lbl.setText("\n".join(watcher_errors))
+            continue
+        else:
+            if ui.main_stackedWidget.currentIndex() == defaults.SCREENS['errors'] and run['current_screen'] is not None:
+                # Restore previous screen
+                ui.main_stackedWidget.setCurrentIndex(run['current_screen'])
 
         if run['key_pressed'] is not None:
             time.sleep(0.1)

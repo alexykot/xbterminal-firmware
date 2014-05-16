@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri May 16 18:23:42 2014
+# Created: Sat May 17 16:22:25 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -600,6 +600,11 @@ class Ui_Form(object):
         self.error_scrn.setObjectName(_fromUtf8("error_scrn"))
         self.errors_lbl = QtGui.QLabel(self.error_scrn)
         self.errors_lbl.setGeometry(QtCore.QRect(93, 50, 291, 131))
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.errors_lbl.setFont(font)
         self.errors_lbl.setText(_fromUtf8(""))
         self.errors_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.errors_lbl.setObjectName(_fromUtf8("errors_lbl"))
@@ -638,7 +643,7 @@ class Ui_Form(object):
         self.testnet_notice.setObjectName(_fromUtf8("testnet_notice"))
 
         self.retranslateUi(Form)
-        self.main_stackedWidget.setCurrentIndex(12)
+        self.main_stackedWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
