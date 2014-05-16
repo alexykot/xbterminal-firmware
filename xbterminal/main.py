@@ -21,6 +21,7 @@ log_file_path = os.path.abspath(os.path.join(
     xbterminal.defaults.LOG_FILE_PATH))
 log_config['handlers']['file']['filename'] = log_file_path
 logging.config.dictConfig(log_config)
+logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError
