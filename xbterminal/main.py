@@ -67,7 +67,6 @@ def main():
     run['wifi'] = {}
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
-    run['current_state'] = {}
 
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
@@ -88,6 +87,13 @@ def main():
 
     logger.debug('main loop starting')
     while True:
+        # Communicate with watcher
+        watcher_messages, watcher_errors = watcher.get_data()
+        for level, message in watcher_messages:
+            logger.log(level, message)
+        if watcher_errors:
+            pass
+
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()
             xbterminal.gui.runtime['app'].processEvents()
@@ -109,10 +115,6 @@ def main():
                 run['last_activity_timestamp'] = time.time()
         except NameError as error:
             logger.exception(error)
-
-        run['current_state'], watcher_events = xbterminal.watcher.get_state(watcher)
-        for level, message in watcher_events:
-            logger.log(level, message)
 
         if run['init']['internet']:
             if (not run['init']['remote_config']
