@@ -5,6 +5,8 @@ import time
 
 import requests
 
+import xbterminal
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,8 +24,8 @@ class Watcher(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.state = {
-            'wifi': False,
-            'internet': False,
+            'wifi': None,
+            'internet': None,
         }
         self.period = 2
         self.events = []
@@ -33,24 +35,34 @@ class Watcher(threading.Thread):
         return self.state['wifi']
 
     @wifi.setter
-    def wifi(self, value):
-        if self.state['wifi'] and value is not True:
+    def wifi(self, wifi_connected):
+        connection_override = xbterminal.local_state.get(
+            'use_predefined_connection', False)
+        if (
+            self.state['wifi'] is None
+            and not connection_override
+            and not wifi_connected
+        ):
+            self.events.append((logging.ERROR, "no wifi"))
+        elif self.state['wifi'] and not wifi_connected:
             self.events.append((logging.ERROR, "wifi disconnected"))
-        if not self.state['wifi'] and value is True:
+        elif not self.state['wifi'] and wifi_connected:
             self.events.append((logging.INFO, "wifi connected"))
-        self.state['wifi'] = value
+        self.state['wifi'] = wifi_connected
 
     @property
     def internet(self):
         return self.state['internet']
 
     @internet.setter
-    def internet(self, value):
-        if self.state['internet'] and value is not True:
+    def internet(self, internet_connected):
+        if self.state['internet'] is None and not internet_connected:
+            self.events.append((logging.ERROR, "no internet"))
+        elif self.state['internet'] and not internet_connected:
             self.events.append((logging.ERROR, "internet disconnected"))
-        if not self.state['internet'] and value is True:
+        elif not self.state['internet'] and internet_connected:
             self.events.append((logging.INFO, "internet connected"))
-        self.state['internet'] = value
+        self.state['internet'] = internet_connected
 
     def check_system_state(self):
         # Check wifi interface
