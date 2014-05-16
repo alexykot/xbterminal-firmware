@@ -92,7 +92,8 @@ def main():
         for level, message in watcher_messages:
             logger.log(level, message)
         if watcher_errors:
-            pass
+            ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['errors'])
+            ui.errors_lbl.setText("\n".join(watcher_errors))
 
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()

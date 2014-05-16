@@ -162,7 +162,7 @@
     <cursorShape>BlankCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>12</number>
    </property>
    <widget class="QWidget" name="load_percent_scrn">
     <widget class="QProgressBar" name="progressBar_percent">
@@ -1556,6 +1556,24 @@ NOW</string>
      </property>
      <property name="text">
       <string>payment cancelled</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="error_scrn">
+    <widget class="QLabel" name="errors_lbl">
+     <property name="geometry">
+      <rect>
+       <x>93</x>
+       <y>50</y>
+       <width>291</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

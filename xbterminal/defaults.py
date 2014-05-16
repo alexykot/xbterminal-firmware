@@ -36,6 +36,7 @@ SCREENS = {'load_percent': 0,
            'pay_qr': 9,
            'pay_success': 10,
            'pay_cancel': 11,
+           'errors': 12,
     }
 
 LOAD_PROGRESS_LEVELS = {'runtime_init': 2,

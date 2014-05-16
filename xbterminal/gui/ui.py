@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/opt/xbterminal/xbterminal/gui/ui.ui'
+# Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Mar 20 22:01:01 2014
-#      by: PyQt4 UI code generator 4.9.3
+# Created: Fri May 16 18:23:42 2014
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -587,6 +596,14 @@ class Ui_Form(object):
         self.exchange_rate_lbl_qr_2.setAlignment(QtCore.Qt.AlignCenter)
         self.exchange_rate_lbl_qr_2.setObjectName(_fromUtf8("exchange_rate_lbl_qr_2"))
         self.main_stackedWidget.addWidget(self.pay_cancel_scrn)
+        self.error_scrn = QtGui.QWidget()
+        self.error_scrn.setObjectName(_fromUtf8("error_scrn"))
+        self.errors_lbl = QtGui.QLabel(self.error_scrn)
+        self.errors_lbl.setGeometry(QtCore.QRect(93, 50, 291, 131))
+        self.errors_lbl.setText(_fromUtf8(""))
+        self.errors_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.errors_lbl.setObjectName(_fromUtf8("errors_lbl"))
+        self.main_stackedWidget.addWidget(self.error_scrn)
         self.logo = QtGui.QLabel(Form)
         self.logo.setGeometry(QtCore.QRect(0, 0, 241, 41))
         self.logo.setText(_fromUtf8(""))
@@ -621,52 +638,52 @@ class Ui_Form(object):
         self.testnet_notice.setObjectName(_fromUtf8("testnet_notice"))
 
         self.retranslateUi(Form)
-        self.main_stackedWidget.setCurrentIndex(3)
+        self.main_stackedWidget.setCurrentIndex(12)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.percent_load_lbl.setText(QtGui.QApplication.translate("Form", "loading, please wait", None, QtGui.QApplication.UnicodeUTF8))
-        self.indefinite_load_lbl.setText(QtGui.QApplication.translate("Form", "loading, please wait", None, QtGui.QApplication.UnicodeUTF8))
-        self.wifi_lbl.setText(QtGui.QApplication.translate("Form", "please select WiFi network", None, QtGui.QApplication.UnicodeUTF8))
-        self.skip_wifi_btn.setText(QtGui.QApplication.translate("Form", "skip WiFi setup", None, QtGui.QApplication.UnicodeUTF8))
-        self.ssid_lbl.setText(QtGui.QApplication.translate("Form", "selected WiFi", None, QtGui.QApplication.UnicodeUTF8))
-        self.password_lbl.setText(QtGui.QApplication.translate("Form", "password", None, QtGui.QApplication.UnicodeUTF8))
-        self.input_help_lbl.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p align=\"center\">2 a b c A B C</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.connecting_lbl.setText(QtGui.QApplication.translate("Form", "connecting, please wait", None, QtGui.QApplication.UnicodeUTF8))
-        self.wrong_passwd_lbl.setText(QtGui.QApplication.translate("Form", "wrong password", None, QtGui.QApplication.UnicodeUTF8))
-        self.wifi_connected_lbl.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p align=\"center\">WiFi connected</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.idle_lbl.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p align=\"center\">press</p><p align=\"center\"><span style=\" font-weight:600;\">any key</span></p><p align=\"center\">to begin</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.amount_lbl.setText(QtGui.QApplication.translate("Form", "amount", None, QtGui.QApplication.UnicodeUTF8))
-        self.currency_lbl.setText(QtGui.QApplication.translate("Form", "£", None, QtGui.QApplication.UnicodeUTF8))
-        self.currency_lbl_rates.setText(QtGui.QApplication.translate("Form", "£", None, QtGui.QApplication.UnicodeUTF8))
-        self.fiat_amount.setText(QtGui.QApplication.translate("Form", "10.00", None, QtGui.QApplication.UnicodeUTF8))
-        self.btc_lbl.setText(QtGui.QApplication.translate("Form", "m฿", None, QtGui.QApplication.UnicodeUTF8))
-        self.btc_amount.setText(QtGui.QApplication.translate("Form", "12.05", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_lbl.setText(QtGui.QApplication.translate("Form", "exchange rate", None, QtGui.QApplication.UnicodeUTF8))
-        self.advice_lbl.setText(QtGui.QApplication.translate("Form", "press enter to accept payment", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_amount.setText(QtGui.QApplication.translate("Form", "0.845", None, QtGui.QApplication.UnicodeUTF8))
-        self.nfc_advice_lbl.setText(QtGui.QApplication.translate("Form", "TO PAY\n"
+        Form.setWindowTitle(_translate("Form", "Form", None))
+        self.percent_load_lbl.setText(_translate("Form", "loading, please wait", None))
+        self.indefinite_load_lbl.setText(_translate("Form", "loading, please wait", None))
+        self.wifi_lbl.setText(_translate("Form", "please select WiFi network", None))
+        self.skip_wifi_btn.setText(_translate("Form", "skip WiFi setup", None))
+        self.ssid_lbl.setText(_translate("Form", "selected WiFi", None))
+        self.password_lbl.setText(_translate("Form", "password", None))
+        self.input_help_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">2 a b c A B C</p></body></html>", None))
+        self.connecting_lbl.setText(_translate("Form", "connecting, please wait", None))
+        self.wrong_passwd_lbl.setText(_translate("Form", "wrong password", None))
+        self.wifi_connected_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">WiFi connected</p></body></html>", None))
+        self.idle_lbl.setText(_translate("Form", "<html><head/><body><p align=\"center\">press</p><p align=\"center\"><span style=\" font-weight:600;\">any key</span></p><p align=\"center\">to begin</p></body></html>", None))
+        self.amount_lbl.setText(_translate("Form", "amount", None))
+        self.currency_lbl.setText(_translate("Form", "£", None))
+        self.currency_lbl_rates.setText(_translate("Form", "£", None))
+        self.fiat_amount.setText(_translate("Form", "10.00", None))
+        self.btc_lbl.setText(_translate("Form", "m฿", None))
+        self.btc_amount.setText(_translate("Form", "12.05", None))
+        self.exchange_rate_lbl.setText(_translate("Form", "exchange rate", None))
+        self.advice_lbl.setText(_translate("Form", "press enter to accept payment", None))
+        self.exchange_rate_amount.setText(_translate("Form", "0.845", None))
+        self.nfc_advice_lbl.setText(_translate("Form", "TO PAY\n"
 "TOUCH NFC\n"
-"NOW", None, QtGui.QApplication.UnicodeUTF8))
-        self.show_qr_btn.setText(QtGui.QApplication.translate("Form", "show QR code", None, QtGui.QApplication.UnicodeUTF8))
-        self.currency_lbl_nfc.setText(QtGui.QApplication.translate("Form", "£", None, QtGui.QApplication.UnicodeUTF8))
-        self.fiat_amount_nfc.setText(QtGui.QApplication.translate("Form", "10.00", None, QtGui.QApplication.UnicodeUTF8))
-        self.btc_amount_nfc.setText(QtGui.QApplication.translate("Form", "12.05", None, QtGui.QApplication.UnicodeUTF8))
-        self.btc_lbl_nfc.setText(QtGui.QApplication.translate("Form", "m฿", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_nfc.setText(QtGui.QApplication.translate("Form", "0.845", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_lbl_nfc.setText(QtGui.QApplication.translate("Form", "rate", None, QtGui.QApplication.UnicodeUTF8))
-        self.qr_address_lbl.setText(QtGui.QApplication.translate("Form", "1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_qr.setText(QtGui.QApplication.translate("Form", "0.845", None, QtGui.QApplication.UnicodeUTF8))
-        self.btc_amount_qr.setText(QtGui.QApplication.translate("Form", "12.05", None, QtGui.QApplication.UnicodeUTF8))
-        self.btc_lbl_qr.setText(QtGui.QApplication.translate("Form", "m฿", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_lbl_qr.setText(QtGui.QApplication.translate("Form", "rate", None, QtGui.QApplication.UnicodeUTF8))
-        self.fiat_amount_qr.setText(QtGui.QApplication.translate("Form", "10.00", None, QtGui.QApplication.UnicodeUTF8))
-        self.currency_lbl_qr.setText(QtGui.QApplication.translate("Form", "£", None, QtGui.QApplication.UnicodeUTF8))
-        self.pay_success_lbl.setText(QtGui.QApplication.translate("Form", "payment successful", None, QtGui.QApplication.UnicodeUTF8))
-        self.touch_for_receipt_lbl.setText(QtGui.QApplication.translate("Form", "TOUCH NFC AGAIN\n"
+"NOW", None))
+        self.show_qr_btn.setText(_translate("Form", "show QR code", None))
+        self.currency_lbl_nfc.setText(_translate("Form", "£", None))
+        self.fiat_amount_nfc.setText(_translate("Form", "10.00", None))
+        self.btc_amount_nfc.setText(_translate("Form", "12.05", None))
+        self.btc_lbl_nfc.setText(_translate("Form", "m฿", None))
+        self.exchange_rate_nfc.setText(_translate("Form", "0.845", None))
+        self.exchange_rate_lbl_nfc.setText(_translate("Form", "rate", None))
+        self.qr_address_lbl.setText(_translate("Form", "1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz", None))
+        self.exchange_rate_qr.setText(_translate("Form", "0.845", None))
+        self.btc_amount_qr.setText(_translate("Form", "12.05", None))
+        self.btc_lbl_qr.setText(_translate("Form", "m฿", None))
+        self.exchange_rate_lbl_qr.setText(_translate("Form", "rate", None))
+        self.fiat_amount_qr.setText(_translate("Form", "10.00", None))
+        self.currency_lbl_qr.setText(_translate("Form", "£", None))
+        self.pay_success_lbl.setText(_translate("Form", "payment successful", None))
+        self.touch_for_receipt_lbl.setText(_translate("Form", "TOUCH NFC AGAIN\n"
 "  OR SCAN QR CODE \n"
-" FOR RECEIPT", None, QtGui.QApplication.UnicodeUTF8))
-        self.exchange_rate_lbl_qr_2.setText(QtGui.QApplication.translate("Form", "payment cancelled", None, QtGui.QApplication.UnicodeUTF8))
-        self.testnet_notice.setText(QtGui.QApplication.translate("Form", "<html><head/><body><p><span style=\" color:#a61212;\">testnet <br/>active</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+" FOR RECEIPT", None))
+        self.exchange_rate_lbl_qr_2.setText(_translate("Form", "payment cancelled", None))
+        self.testnet_notice.setText(_translate("Form", "<html><head/><body><p><span style=\" color:#a61212;\">testnet <br/>active</span></p></body></html>", None))
 
