@@ -5,6 +5,8 @@ import time
 import sys
 import os
 import logging
+import argparse
+
 import requests
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
@@ -41,6 +43,7 @@ else:
 #         if result.status_code == 200:
 #             server_url = server_url
 #             break
+
 #     except requests.HTTPError:
 #         print 'remote config {config_url} unreachable, trying next server'.format(config_url=config_url)
 #
@@ -94,33 +97,36 @@ else:
 #         logging.exception(error)
 #         pass
 
-main_proc = None
-main_proc_pid = None
-while True:
-    try:
-        os.kill(main_proc_pid, 0)
-    except (TypeError, OSError):
-        main_proc_pid = None
+def run_firmware(idle=False):
+    main_process = None
+    while True:
+        if not idle:
+            try:
+                main_process_running = main_process.poll() is None
+            except AttributeError:
+                main_process_running = False
+            if not main_process_running:
+                # (Re)start process
+                try:
+                    main_process = subprocess.Popen([firmware_executable_path])
+                except Exception as error:
+                    logging.exception(error)
+        time.sleep(1)
 
-    if main_proc_pid is None:
-        try:
-            main_proc = subprocess.Popen([firmware_executable_path, ])
-            main_proc_pid = main_proc.pid
-        except Exception as error:
-            logging.exception(error)
-    main_proc.poll()
+        # if int(time.time()) % xbterminal.defaults.REMOTE_CONFIG_UPDATE_CYCLE == 0:
+        #     new_version_hash = check_firmware(server_url, device_key)
+        #     if new_version_hash is not None:
+        #         update_firmware(server_url, device_key, new_version_hash)
+        #         main_proc.kill()
+        #         try:
+        #             main_proc = subprocess.Popen([firmware_executable_path, ])
+        #             main_proc_pid = main_proc.pid
+        #             report_firmware_updated(device_key, new_version_hash)
+        #         except Exception, error:
+        #             logging.exception(error)
 
-    time.sleep(1)
-
-    # if int(time.time()) % xbterminal.defaults.REMOTE_CONFIG_UPDATE_CYCLE == 0:
-    #     new_version_hash = check_firmware(server_url, device_key)
-    #     if new_version_hash is not None:
-    #         update_firmware(server_url, device_key, new_version_hash)
-    #         main_proc.kill()
-    #         try:
-    #             main_proc = subprocess.Popen([firmware_executable_path, ])
-    #             main_proc_pid = main_proc.pid
-    #             report_firmware_updated(device_key, new_version_hash)
-    #         except Exception, error:
-    #             logging.exception(error)
-
+if __name__ == "__main__":
+    argp = argparse.ArgumentParser()
+    argp.add_argument("--idle", action="store_true")
+    args = argp.parse_args()
+    run_firmware(idle=args.idle)
