@@ -49,7 +49,7 @@ LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         'finish': 100,
                         }
 
-PROJECT_ABS_PATH = '' #initialized in bootstrap.py
+PROJECT_ABS_PATH = ''  # initialized in main.py
 PROJECT_LOCAL_PATH = 'xbterminal'
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
