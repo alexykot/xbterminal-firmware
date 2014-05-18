@@ -103,6 +103,12 @@ def getUnspentTransactions(from_address):
     return address_tx_list
 
 
+def getInfo():
+    result = requests.get(bitcoinj_url + "getInfo")
+    info = result.json()
+    return info
+
+
 # Sends transaction from given address using all currently unspent inputs for that address.
 # by default all change is sent to fees address
 def sendRawTransaction(inputs, outputs):

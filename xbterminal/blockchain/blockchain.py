@@ -42,6 +42,10 @@ def getLastUnspentTransactionId(address):
     return driver.getLastUnspentTransactionId(address)
 
 
+def getInfo():
+    return driver.getInfo()
+
+
 # Sends transaction from given address using all currently unspent inputs for that address.
 # by default all change is sent to fees address
 def sendTransaction(outputs, from_addr, change_addr=None):
