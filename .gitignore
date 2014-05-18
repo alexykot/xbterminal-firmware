@@ -6,5 +6,5 @@ bitcoinj_server/*
 xbterminal/runtime/*
 xbterminal/device_key
 tests/*
-bitcoinj-server.tar
+bitcoinj-server.tar.gz
 fabfile
