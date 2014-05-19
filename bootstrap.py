@@ -14,6 +14,9 @@ include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, include_path)
 
 import xbterminal
+import xbterminal.helpers.configs
+xbterminal.helpers.configs.load_local_state()
+
 from xbterminal.defaults import (
     PROJECT_LOCAL_PATH,
     DEVICE_KEY_FILE_PATH,
@@ -73,9 +76,9 @@ def check_firmware(server_url, device_key):
         logger.exception(error)
         return None
     if response.status_code == 200:
-        response = response.json()
+        data = response.json()
         # Return firmware hash
-        return response.get('next_firmware_version')
+        return data.get('next_firmware_version_hash')
 
 
 def update_firmware(server_url, device_key, firmware_hash):
@@ -92,7 +95,7 @@ def update_firmware(server_url, device_key, firmware_hash):
                 if chunk:
                     tmp_file.write(chunk)
                     tmp_file.flush()
-        shutil.copy(tmp_filename, XBTERMINAL_MAIN_PATH)
+        shutil.move(tmp_filename, os.path.join(XBTERMINAL_MAIN_PATH, "main.so"))
     except Exception as error:
         logger.exception(error)
         return False
@@ -120,11 +123,13 @@ def run_firmware(idle=False, updates_enabled=True):
     server_url = find_server(device_key)
     main_process = None
     new_version_hash = None
+    last_check = 0
     while True:
-        if updates_enabled and int(time.time()) % xbterminal.defaults.REMOTE_CONFIG_UPDATE_CYCLE == 0:
+        if updates_enabled and time.time() - last_check > xbterminal.defaults.REMOTE_CONFIG_UPDATE_CYCLE:
             # Check for updates
             logger.info("checking for updates...")
             new_version_hash = check_firmware(server_url, device_key)
+            last_check = time.time()
             if new_version_hash is not None:
                 logger.info("installing updates...")
                 try:
@@ -157,6 +162,7 @@ def run_firmware(idle=False, updates_enabled=True):
                             logger.warning("report failed")
                         else:
                             new_version_hash = None
+                            logger.info("report sent")
         time.sleep(2)
 
 

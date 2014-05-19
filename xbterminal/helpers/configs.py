@@ -70,12 +70,8 @@ def load_local_state():
             logger.debug('local state loaded from {path}, {contents}'.format(path=local_state_file_abs_path,
                                                                     contents=local_state_contents))
 
-            if 'use_predefined_connection' in xbterminal.local_state and xbterminal.local_state['use_predefined_connection']:
-                xbterminal.runtime['init']['internet'] = True
-                logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-
             if 'use_dev_remote_server' in xbterminal.local_state and xbterminal.local_state['use_dev_remote_server']:
-                xbterminal.defaults.REMOTE_SERVERS = ('http://dev.xbterminal.com',)
+                xbterminal.defaults.REMOTE_SERVERS = ('http://stage.xbterminal.com',)
                 logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.format(xbterminal.defaults.REMOTE_SERVERS[0]))
 
         except ValueError:
