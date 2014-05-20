@@ -73,7 +73,7 @@ class Watcher(threading.Thread):
                 self.errors['blockchain'] = "bitcoin server - no peers"
             else:
                 if self._peers is None:
-                    self.messages.append((logging.INFO, "bitcoin server is running"))
+                    self.messages.append((logging.INFO, "bitcoin server is running ({0} peers)".format(peers)))
                 self.errors.pop("blockchain", None)
         self._peers = peers
 
@@ -89,7 +89,7 @@ class Watcher(threading.Thread):
             self.internet = False
         # Check bitcoinj
         try:
-            self.peers = blockchain.getInfo().get('connections')
+            self.peers = int(blockchain.getInfo().get('connections'))
         except (requests.exceptions.HTTPError, AttributeError):
             self.peers = None
 
