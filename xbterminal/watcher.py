@@ -6,6 +6,7 @@ import time
 import requests
 
 import xbterminal
+from xbterminal.blockchain import blockchain
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ class Watcher(threading.Thread):
         threading.Thread.__init__(self)
         self._wifi = None
         self._internet = None
+        self._peers = None
         self.period = 2
         self.messages = []
         self.errors = {}
@@ -56,6 +58,25 @@ class Watcher(threading.Thread):
                 self.errors.pop("internet", None)
         self._internet = internet_connected
 
+    @property
+    def peers(self):
+        return self._peers
+
+    @peers.setter
+    def peers(self, peers):
+        if xbterminal.runtime['init']['blockchain']:
+            if peers is None:
+                self.messages.append((logging.ERROR, "bitcoin server is not running"))
+                self.errors['blockchain'] = "bitcoin server is not running"
+            elif peers == 0:
+                self.messages.append((logging.ERROR, "bitcoin server - no peers"))
+                self.errors['blockchain'] = "bitcoin server - no peers"
+            else:
+                if self._peers is None:
+                    self.messages.append((logging.INFO, "bitcoin server is running"))
+                self.errors.pop("blockchain", None)
+        self._peers = peers
+
     def check_system_state(self):
         # Check wifi interface
         if not xbterminal.local_state.get('use_predefined_connection', False):
@@ -66,6 +87,11 @@ class Watcher(threading.Thread):
             self.internet = True
         except requests.exceptions.RequestException:
             self.internet = False
+        # Check bitcoinj
+        try:
+            self.peers = blockchain.getInfo().get('connections')
+        except (requests.exceptions.HTTPError, AttributeError):
+            self.peers = None
 
     def get_data(self):
         with threading.RLock():
@@ -78,4 +104,3 @@ class Watcher(threading.Thread):
         while True:
             self.check_system_state()
             time.sleep(self.period)
-
