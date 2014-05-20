@@ -21,6 +21,7 @@ log_file_path = os.path.abspath(os.path.join(
     xbterminal.defaults.LOG_FILE_PATH))
 log_config['handlers']['file']['filename'] = log_file_path
 logging.config.dictConfig(log_config)
+logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError
@@ -66,7 +67,7 @@ def main():
     run['wifi'] = {}
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
-    run['current_state'] = {}
+    run['current_screen'] = None
 
     xbterminal.gui.runtime = {}
     xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
@@ -93,6 +94,21 @@ def main():
         except NameError as error:
             logger.exception(error)
 
+        # Communicate with watcher
+        watcher_messages, watcher_errors = watcher.get_data()
+        for level, message in watcher_messages:
+            logger.log(level, message)
+        if watcher_errors:
+            if ui.main_stackedWidget.currentIndex() != defaults.SCREENS['errors']:
+                # Show error screen
+                run['current_screen'] = ui.main_stackedWidget.currentIndex()
+                ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['errors'])
+                ui.errors_lbl.setText("\n".join(watcher_errors))
+            continue
+        else:
+            if ui.main_stackedWidget.currentIndex() == defaults.SCREENS['errors'] and run['current_screen'] is not None:
+                # Restore previous screen
+                ui.main_stackedWidget.setCurrentIndex(run['current_screen'])
 
         if run['key_pressed'] is not None:
             time.sleep(0.1)
@@ -108,8 +124,6 @@ def main():
                 run['last_activity_timestamp'] = time.time()
         except NameError as error:
             logger.exception(error)
-
-        run['current_state'] = watcher.state
 
         if run['init']['internet']:
             if (not run['init']['remote_config']

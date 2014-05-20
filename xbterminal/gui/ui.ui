@@ -1562,6 +1562,31 @@ NOW</string>
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="error_scrn">
+    <widget class="QLabel" name="errors_lbl">
+     <property name="geometry">
+      <rect>
+       <x>93</x>
+       <y>50</y>
+       <width>291</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QLabel" name="logo">
    <property name="geometry">
