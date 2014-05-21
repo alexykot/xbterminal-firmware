@@ -66,14 +66,19 @@ class Watcher(threading.Thread):
     def peers(self, peers):
         if xbterminal.runtime['init']['blockchain']:
             if peers is None:
-                self.messages.append((logging.ERROR, "bitcoin server is not running"))
-                self.errors['blockchain'] = "bitcoin server is not running"
+                message = "bitcoin server is not running"
+                if self.errors.get('blockchain') != message:
+                    self.messages.append((logging.ERROR, message))
+                    self.errors['blockchain'] = message
             elif peers == 0:
-                self.messages.append((logging.ERROR, "bitcoin server - no peers"))
-                self.errors['blockchain'] = "bitcoin server - no peers"
+                message = "bitcoin server - no peers"
+                if self.errors.get('blockchain') != message:
+                    self.messages.append((logging.ERROR, message))
+                    self.errors['blockchain'] = message
             else:
-                if self._peers is None:
-                    self.messages.append((logging.INFO, "bitcoin server is running ({0} peers)".format(peers)))
+                if not self._peers:
+                    message = "bitcoin server is running ({0} peers)".format(peers)
+                    self.messages.append((logging.INFO, message))
                 self.errors.pop("blockchain", None)
         self._peers = peers
 
