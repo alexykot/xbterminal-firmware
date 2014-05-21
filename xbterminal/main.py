@@ -28,9 +28,7 @@ from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
 import xbterminal.bitcoinaverage
 import xbterminal.instantfiat
-import xbterminal.gui
 import xbterminal.gui.gui
-import xbterminal.gui.ui
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.configs
@@ -68,20 +66,21 @@ def main():
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
     run['current_screen'] = None
+    run['main_window'] = None
 
-    xbterminal.gui.runtime = {}
-    xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = xbterminal.gui.gui.initGUI()
-    ui = xbterminal.gui.runtime['main_win'].ui
-    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
+    qt_application, main_window = xbterminal.gui.gui.initGUI()
+    ui = main_window.ui
+    run['main_window'] = main_window
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):
         run['init']['internet'] = True
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
 
     keypad = Keypad()
-    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
 
     watcher = xbterminal.watcher.Watcher()
     watcher.start()
@@ -93,8 +92,8 @@ def main():
     while True:
         # Processes all pending events
         try:
-            xbterminal.gui.runtime['app'].sendPostedEvents()
-            xbterminal.gui.runtime['app'].processEvents()
+            qt_application.sendPostedEvents()
+            qt_application.processEvents()
         except NameError as error:
             logger.exception(error)
 
@@ -150,9 +149,9 @@ def main():
         if hasattr(xbterminal, 'remote_config'):
             if run['init']['blockchain_network'] is None:
                 if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
-                    xbterminal.gui.runtime['main_win'].toggleTestnetNotice(True)
+                    main_window.toggleTestnetNotice(True)
                 else:
-                    xbterminal.gui.runtime['main_win'].toggleTestnetNotice(False)
+                    main_window.toggleTestnetNotice(False)
                 run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 stages.gracefullExit(system_reboot=True)
@@ -206,7 +205,7 @@ def main():
                 else:
                     logger.warning('no wifi found, hoping for preconfigured wired connection')
                     run['init']['internet'] = True
-                xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
+                main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
                 continue
 
             if run['init']['internet']:
@@ -227,8 +226,8 @@ def main():
                 if not run['init']['blockchain']:
                     blockchain.init()
                     run['init']['blockchain'] = True
-                    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
-                    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
+                    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
+                    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
                     continue
 
             if run['init']['internet'] and run['init']['remote_config'] and run['init']['blockchain']:
@@ -562,11 +561,11 @@ def main():
                 run['stage_init'] = True
 
             if run['key_pressed'] is not None:
-                xbterminal.gui.runtime['main_win'].toggleWifiWrongPasswordState(False)
+                main_window.toggleWifiWrongPasswordState(False)
 
                 if keypad.checkIsDone(run['key_pressed']):
                     run['wifi']['try_to_connect'] = True
-                    xbterminal.gui.runtime['main_win'].toggleWifiConnectingState(True)
+                    main_window.toggleWifiConnectingState(True)
                     continue
                 elif keypad.checkIsCancelled(xbterminal.local_state['wifi_pass'], run['key_pressed']):
                     del xbterminal.local_state['wifi_ssid']
@@ -604,8 +603,8 @@ def main():
                     continue
                 else:
                     logger.debug('wifi wrong passkey')
-                    xbterminal.gui.runtime['main_win'].toggleWifiConnectingState(False)
-                    xbterminal.gui.runtime['main_win'].toggleWifiWrongPasswordState(True)
+                    main_window.toggleWifiConnectingState(False)
+                    main_window.toggleWifiWrongPasswordState(True)
 
 
 ###WIFI CONNECTED

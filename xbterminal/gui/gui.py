@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from PyQt4 import QtGui, QtCore
 import time
 from collections import deque
+
+from PyQt4 import QtGui, QtCore
 
 import xbterminal
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
-
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -24,15 +24,6 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-def initGUI():
-    global xbterminal
-
-    app = QtGui.QApplication(sys.argv)
-    app.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
-
-    main_win = GUI()
-
-    return app, main_win
 
 # Class to initiate GUI, at the moment i can only seem to perform actions on the GUI if its done like this
 class GUI(QtGui.QWidget):
@@ -109,11 +100,19 @@ class GUI(QtGui.QWidget):
             self.ui.wrong_passwd_lbl.hide()
             self.ui.password_input.setStyleSheet('background: #FFFFFF')
 
-def advanceLoadingProgressBar(level):
-    global xbterminal
+    def advanceLoadingProgressBar(self, level):
+        self.ui.progressBar_percent.setValue(level)
+        time.sleep(0.3)
 
-    xbterminal.gui.runtime['main_win'].ui.progressBar_percent.setValue(level)
-    time.sleep(0.3)
+
+def initGUI():
+    application = QtGui.QApplication(sys.argv)
+    application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+
+    main_window = GUI()
+
+    return application, main_window
+
 
 def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
     char_list = []
