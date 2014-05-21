@@ -8,7 +8,7 @@ import logging
 import threading
 import time
 
-from xbterminal import stages_
+from xbterminal import stages_example
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +18,17 @@ class XBTerminalManager(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.period = 0.1
-        self.stage = None
+        self.stage = "init"
 
     def run(self):
         logger.info("manager started")
         while True:
-            if self.stage is not None:
-                self.stage = getattr(stages, self.stage)()
-            time.sleep(self.period)
+            next_stage = getattr(stages_example, self.stage)()
+            if next_stage is not None:
+                self.stage = next_stage
+            else:
+                # Stage remains the same
+                time.sleep(self.period)
 
 
 
