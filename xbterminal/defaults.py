@@ -59,14 +59,6 @@ STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 
-LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
-                     'ERROR':'ERROR',
-                     'WARNING':'WARNING',
-                     }
-LOG_LEVELS = {'DEBUG':'DEBUG',
-              'PRODUCTION':'PRODUCTION',
-                }
-
 LOG_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
