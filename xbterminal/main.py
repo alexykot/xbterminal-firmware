@@ -164,9 +164,7 @@ def main():
                 run['stage_init'] = True
                 continue
 
-            if (not run['init']['internet']
-                and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['choose_ssid']
-                and run['CURRENT_STAGE'] != defaults.STAGES['wifi']['enter_passkey']):
+            if not run['init']['internet']:
                 if xbterminal.helpers.wireless.is_wifi_available():
                     try:
                         if ('wifi_ssid' in xbterminal.local_state
@@ -193,14 +191,14 @@ def main():
                         logger.exception(error)
 
                     if not run['wifi']['connected']:
-                        if 'wifi_ssid' in xbterminal.local_state:
-                            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
-                        else:
-                            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
                         run['wifi']['networks_last_listed_timestamp'] = 0
                         run['wifi']['networks_list_selected_index'] = 0
                         run['wifi']['networks_list_length'] = 0
                         run['stage_init'] = False
+                        if 'wifi_ssid' in xbterminal.local_state:
+                            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
+                        else:
+                            run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
                         continue
                 else:
                     logger.warning('no wifi found, hoping for preconfigured wired connection')
@@ -208,7 +206,7 @@ def main():
                 main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
                 continue
 
-            if run['init']['internet']:
+            else:
                 if (not run['init']['remote_config']
                     or (run['init']['remote_config_last_update'] is not None
                         and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
@@ -231,8 +229,8 @@ def main():
                     continue
 
             if run['init']['internet'] and run['init']['remote_config'] and run['init']['blockchain']:
-                run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 continue
 
 ###IDLE
@@ -243,8 +241,8 @@ def main():
                 continue
 
             if run['key_pressed'] is not None:
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
 ###ENTER AMOUNT
@@ -286,8 +284,8 @@ def main():
                 continue
 
             if run['amounts']['amount_to_pay_fiat'] is None:
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
             if run['amounts']['amount_to_pay_btc'] is None:
@@ -326,8 +324,8 @@ def main():
                 run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amounts']['amount_to_pay_btc'])
 
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_rates']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_rates']
                 continue
 
 ###PAY RATES
@@ -341,13 +339,13 @@ def main():
                 run['stage_init'] = True
 
             if run['key_pressed'] == 'enter':
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_nfc']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_nfc']
                 continue
             if run['key_pressed'] == 'backspace':
                 stages.clearPaymentRuntime(False)
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
 ###PAY NFC & QR
@@ -393,15 +391,15 @@ def main():
             if run['key_pressed'] == 'backspace':
                 stages.clearPaymentRuntime(False)
                 xbterminal.helpers.nfcpy.stop()
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
             if run['key_pressed'] == 'qr_code' or run['screen_buttons']['qr_button'] == True:
                 logger.debug('QR code requested')
                 run['screen_buttons']['qr_button'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 continue
 
             if not run['received_payment']:
@@ -454,16 +452,16 @@ def main():
                     stages.clearPaymentRuntime()
 
                     xbterminal.helpers.nfcpy.stop()
-                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_success']
                     run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_success']
                     continue
 
             elif run['invoice_id'] is not None and not run['invoice_paid']:
                 if getattr(xbterminal.instantfiat,
                            xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE']).isInvoicePaid(run['invoice_id']):
                     xbterminal.helpers.nfcpy.stop()
-                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_success']
                     run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_success']
                     continue
 
 ###PAY SUCCESS
@@ -483,13 +481,13 @@ def main():
 
             if run['key_pressed'] == 'enter':
                 xbterminal.helpers.nfcpy.stop()
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
             if run['key_pressed'] == 'backspace':
                 xbterminal.helpers.nfcpy.stop()
-                run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 continue
 
 ###PAY CANCEL
@@ -505,8 +503,8 @@ def main():
                 ui.amount_input.setText(run['display_value_formatted'])
 
                 ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 run['stage_init'] = False
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
 
 ###CHOOSE SSID
@@ -519,8 +517,8 @@ def main():
                 logger.warning('wifi setup cancelled, hoping for preconfigured wired connection')
                 run['screen_buttons']['skip_wifi'] = False
                 run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['bootup']
                 run['init']['internet'] = True
+                run['CURRENT_STAGE'] = defaults.STAGES['bootup']
                 continue
 
             if run['wifi']['networks_last_listed_timestamp'] + 30 < time.time():
@@ -546,8 +544,8 @@ def main():
                 elif run['key_pressed'] == 'enter':
                     xbterminal.local_state['wifi_ssid'] = str(ui.wifi_listWidget.currentItem().text())
                     xbterminal.helpers.configs.save_local_state()
-                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
                     run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
                     continue
 
             ui.wifi_listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
@@ -571,8 +569,8 @@ def main():
                     del xbterminal.local_state['wifi_ssid']
                     del xbterminal.local_state['wifi_pass']
                     xbterminal.helpers.configs.save_local_state()
-                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
                     run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
                     continue
                 else:
                     xbterminal.local_state['wifi_pass'] = keypad.createAlphaNumString(xbterminal.local_state['wifi_pass'],
@@ -598,8 +596,8 @@ def main():
                     run['init']['internet'] = True
                     logger.debug('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
                     xbterminal.helpers.configs.save_local_state()
-                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
                     run['stage_init'] = False
+                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
                     continue
                 else:
                     logger.debug('wifi wrong passkey')
@@ -615,8 +613,8 @@ def main():
                 continue
 
             time.sleep(3)
-            run['CURRENT_STAGE'] = defaults.STAGES['bootup']
             run['stage_init'] = False
+            run['CURRENT_STAGE'] = defaults.STAGES['bootup']
             continue
 
 ###APPLICATION HALT
@@ -639,12 +637,13 @@ def main():
                 run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
+                run['stage_init'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_cancel']
-                run['stage_init'] = False
+                continue
             else:
-                run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 run['stage_init'] = False
-            continue
+                run['CURRENT_STAGE'] = defaults.STAGES['idle']
+                continue
 
         time.sleep(0.1)
 
