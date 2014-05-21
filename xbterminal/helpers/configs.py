@@ -12,23 +12,27 @@ from xbterminal.exceptions import ConfigLoadError, DeviceKeyMissingError
 logger = logging.getLogger(__name__)
 
 
-def load_remote_config():
-    global xbterminal
-
-    device_key_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                            xbterminal.defaults.DEVICE_KEY_FILE_PATH))
+def get_device_key():
+    device_key_file_abs_path = os.path.abspath(os.path.join(
+        xbterminal.defaults.PROJECT_ABS_PATH,
+        xbterminal.defaults.DEVICE_KEY_FILE_PATH))
     if not os.path.exists(device_key_file_abs_path):
-        logger.error('device key missing at path "{device_key_path}", exiting'.format(device_key_path=device_key_file_abs_path))
+        logger.critical("device key missing at path \"{device_key_path}\", exiting".format(
+            device_key_path=device_key_file_abs_path))
         raise DeviceKeyMissingError()
-
     with open(device_key_file_abs_path, 'r') as device_key_file:
-        xbterminal.device_key = device_key_file.read().strip()
+        device_key = device_key_file.read().strip()
+    return device_key
+
+
+def load_remote_config():
+    xbterminal.device_key = get_device_key()
 
     for server_url in xbterminal.defaults.REMOTE_SERVERS:
         config_url = server_url + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(device_key=xbterminal.device_key)
 
         try:
-            headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS
+            headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
             headers['Content-type'] = 'application/json'
 
             result = requests.get(url=config_url, headers=headers)

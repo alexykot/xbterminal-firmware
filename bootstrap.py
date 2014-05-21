@@ -13,18 +13,6 @@ import requests
 include_path = os.path.abspath(os.path.join(__file__, os.pardir))
 sys.path.insert(0, include_path)
 
-import xbterminal
-import xbterminal.helpers.configs
-xbterminal.helpers.configs.load_local_state()
-
-from xbterminal.defaults import (
-    PROJECT_LOCAL_PATH,
-    DEVICE_KEY_FILE_PATH,
-    REMOTE_SERVERS,
-    REMOTE_API_ENDPOINTS,
-    EXTERNAL_CALLS_REQUEST_HEADERS
-)
-
 logging.basicConfig(
     format="%(asctime)s %(name)s [%(levelname)s] :: %(message)s",
     level=logging.INFO,
@@ -32,19 +20,19 @@ logging.basicConfig(
 logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger("bootstrap.py")
 
+import xbterminal
+import xbterminal.defaults
+import xbterminal.helpers.configs
+xbterminal.defaults.PROJECT_ABS_PATH = include_path
+xbterminal.helpers.configs.load_local_state()
+
+from xbterminal.defaults import (
+    PROJECT_LOCAL_PATH,
+    REMOTE_SERVERS,
+    REMOTE_API_ENDPOINTS,
+    EXTERNAL_CALLS_REQUEST_HEADERS
+)
 XBTERMINAL_MAIN_PATH = os.path.join(include_path, PROJECT_LOCAL_PATH)
-
-
-def get_device_key():
-    try:
-        device_key_file_abs_path = os.path.abspath(os.path.join(
-            include_path, DEVICE_KEY_FILE_PATH))
-        with open(device_key_file_abs_path, 'r') as device_key_file:
-            return device_key_file.read().strip()
-    except IOError:
-        logger.critical("device key missing at path \"{device_key_path}\", exiting".format(
-            device_key_path=device_key_file_abs_path))
-        exit()
 
 
 def find_server(device_key):
@@ -119,7 +107,7 @@ def report_firmware_updated(device_key, firmware_hash):
 
 
 def run_firmware(idle=False, updates_enabled=True):
-    device_key = get_device_key()
+    device_key = xbterminal.helpers.configs.get_device_key()
     server_url = find_server(device_key)
     main_process = None
     new_version_hash = None
