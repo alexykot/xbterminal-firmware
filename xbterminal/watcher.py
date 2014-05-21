@@ -90,7 +90,7 @@ class Watcher(threading.Thread):
         # Check bitcoinj
         try:
             self.peers = int(blockchain.getInfo().get('connections'))
-        except (requests.exceptions.HTTPError, AttributeError):
+        except (requests.exceptions.RequestException, AttributeError):
             self.peers = None
 
     def get_data(self):
