@@ -25,36 +25,42 @@ def get_device_key():
     return device_key
 
 
+def choose_remote_server(device_key):
+    for server in xbterminal.defaults.REMOTE_SERVERS:
+        config_url = server + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
+            device_key=device_key)
+        headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+        headers['Content-type'] = 'application/json'
+        try:
+            response = requests.get(url=config_url, headers=headers)
+            response.raise_for_status()
+        except requests.HTTPError:
+            logger.warning("remote config {config_url} unreachable, trying next server".format(
+                config_url=config_url))
+            continue
+        config = response.json()
+        return server, config
+    raise ConfigLoadError()
+
+
 def load_remote_config():
     xbterminal.device_key = get_device_key()
-
-    for server_url in xbterminal.defaults.REMOTE_SERVERS:
-        config_url = server_url + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(device_key=xbterminal.device_key)
-
-        try:
-            headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-            headers['Content-type'] = 'application/json'
-
-            result = requests.get(url=config_url, headers=headers)
-            if result.status_code != 200:
-                raise ConfigLoadError()
-            xbterminal.remote_config = result.json()
-
-            xbterminal.runtime['remote_server'] = server_url
-            logger.debug('remote config loaded from {config_url}, contents: {config_contents}'.format(config_url=config_url,
-                                                                                             config_contents=result.text))
-            save_remote_config_cache()
-            return
-        except (requests.HTTPError, ConfigLoadError) as error:
-            logger.warning('remote config {config_url} unreachable, trying next server'.format(config_url=config_url))
-
-    logger.warning('no remote configs available, trying local cache'.format(config_url=config_url))
     try:
-        load_remote_config_cache()
-    except IOError:
-        raise ConfigLoadError()
-
-    init_defaults_config()
+        xbterminal.runtime['remote_server'], xbterminal.remote_config = choose_remote_server(
+            xbterminal.device_key)
+    except ConfigLoadError as config_error:
+        logger.warning("no remote configs available, trying local cache".format(
+            config_url=config_url))
+        try:
+            load_remote_config_cache()
+        except IOError:
+            raise config_error
+        init_defaults_config()
+    else:
+        logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
+            server_url=xbterminal.runtime['remote_server'],
+            config_contents=xbterminal.remote_config))
+        save_remote_config_cache()
 
 
 def load_local_state():

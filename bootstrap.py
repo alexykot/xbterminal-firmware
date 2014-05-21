@@ -30,27 +30,10 @@ from xbterminal.defaults import (
     PROJECT_LOCAL_PATH,
     REMOTE_SERVERS,
     REMOTE_API_ENDPOINTS,
-    EXTERNAL_CALLS_REQUEST_HEADERS
+    EXTERNAL_CALLS_REQUEST_HEADERS,
+    REMOTE_CONFIG_UPDATE_CYCLE
 )
 XBTERMINAL_MAIN_PATH = os.path.join(include_path, PROJECT_LOCAL_PATH)
-
-
-def find_server(device_key):
-    for server in REMOTE_SERVERS:
-        config_url = server + REMOTE_API_ENDPOINTS['config'].format(
-            device_key=device_key)
-        headers = EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-        headers['Content-type'] = 'application/json'
-        try:
-            result = requests.get(url=config_url, headers=headers)
-        except requests.HTTPError:
-            logger.info("remote config {config_url} unreachable, trying next server".format(
-                config_url=config_url))
-            continue
-        if result.status_code == 200:
-            return server
-    logger.critical("device key \"{device_key}\" is invalid, exiting".format(device_key=device_key))
-    exit()
 
 
 def check_firmware(server_url, device_key):
@@ -108,12 +91,12 @@ def report_firmware_updated(device_key, firmware_hash):
 
 def run_firmware(idle=False, updates_enabled=True):
     device_key = xbterminal.helpers.configs.get_device_key()
-    server_url = find_server(device_key)
+    server_url, config = xbterminal.helpers.configs.choose_remote_server(device_key)
     main_process = None
     new_version_hash = None
     last_check = 0
     while True:
-        if updates_enabled and time.time() - last_check > xbterminal.defaults.REMOTE_CONFIG_UPDATE_CYCLE:
+        if updates_enabled and time.time() - last_check > REMOTE_CONFIG_UPDATE_CYCLE:
             # Check for updates
             logger.info("checking for updates...")
             new_version_hash = check_firmware(server_url, device_key)
