@@ -12,45 +12,55 @@ from xbterminal.exceptions import ConfigLoadError, DeviceKeyMissingError
 logger = logging.getLogger(__name__)
 
 
-def load_remote_config():
-    global xbterminal
-
-    device_key_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                            xbterminal.defaults.DEVICE_KEY_FILE_PATH))
+def get_device_key():
+    device_key_file_abs_path = os.path.abspath(os.path.join(
+        xbterminal.defaults.PROJECT_ABS_PATH,
+        xbterminal.defaults.DEVICE_KEY_FILE_PATH))
     if not os.path.exists(device_key_file_abs_path):
-        logger.error('device key missing at path "{device_key_path}", exiting'.format(device_key_path=device_key_file_abs_path))
+        logger.critical("device key missing at path \"{device_key_path}\", exiting".format(
+            device_key_path=device_key_file_abs_path))
         raise DeviceKeyMissingError()
-
     with open(device_key_file_abs_path, 'r') as device_key_file:
-        xbterminal.device_key = device_key_file.read().strip()
+        device_key = device_key_file.read().strip()
+    return device_key
 
-    for server_url in xbterminal.defaults.REMOTE_SERVERS:
-        config_url = server_url + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(device_key=xbterminal.device_key)
 
+def choose_remote_server(device_key):
+    for server in xbterminal.defaults.REMOTE_SERVERS:
+        config_url = server + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
+            device_key=device_key)
+        headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+        headers['Content-type'] = 'application/json'
         try:
-            headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS
-            headers['Content-type'] = 'application/json'
+            response = requests.get(url=config_url, headers=headers)
+            response.raise_for_status()
+        except requests.HTTPError:
+            logger.warning("remote config {config_url} unreachable, trying next server".format(
+                config_url=config_url))
+            continue
+        config = response.json()
+        return server, config
+    raise ConfigLoadError()
 
-            result = requests.get(url=config_url, headers=headers)
-            if result.status_code != 200:
-                raise ConfigLoadError()
-            xbterminal.remote_config = result.json()
 
-            xbterminal.runtime['remote_server'] = server_url
-            logger.debug('remote config loaded from {config_url}, contents: {config_contents}'.format(config_url=config_url,
-                                                                                             config_contents=result.text))
-            save_remote_config_cache()
-            return
-        except (requests.HTTPError, ConfigLoadError) as error:
-            logger.warning('remote config {config_url} unreachable, trying next server'.format(config_url=config_url))
-
-    logger.warning('no remote configs available, trying local cache'.format(config_url=config_url))
+def load_remote_config():
+    xbterminal.device_key = get_device_key()
     try:
-        load_remote_config_cache()
-    except IOError:
-        raise ConfigLoadError()
-
-    init_defaults_config()
+        xbterminal.runtime['remote_server'], xbterminal.remote_config = choose_remote_server(
+            xbterminal.device_key)
+    except ConfigLoadError as config_error:
+        logger.warning("no remote configs available, trying local cache".format(
+            config_url=config_url))
+        try:
+            load_remote_config_cache()
+        except IOError:
+            raise config_error
+        init_defaults_config()
+    else:
+        logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
+            server_url=xbterminal.runtime['remote_server'],
+            config_contents=xbterminal.remote_config))
+        save_remote_config_cache()
 
 
 def load_local_state():
@@ -70,12 +80,8 @@ def load_local_state():
             logger.debug('local state loaded from {path}, {contents}'.format(path=local_state_file_abs_path,
                                                                     contents=local_state_contents))
 
-            if 'use_predefined_connection' in xbterminal.local_state and xbterminal.local_state['use_predefined_connection']:
-                xbterminal.runtime['init']['internet'] = True
-                logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-
             if 'use_dev_remote_server' in xbterminal.local_state and xbterminal.local_state['use_dev_remote_server']:
-                xbterminal.defaults.REMOTE_SERVERS = ('http://dev.xbterminal.com',)
+                xbterminal.defaults.REMOTE_SERVERS = ('http://stage.xbterminal.com',)
                 logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.format(xbterminal.defaults.REMOTE_SERVERS[0]))
 
         except ValueError:
