@@ -29,6 +29,7 @@ from xbterminal.keypad.keypad import Keypad
 import xbterminal.bitcoinaverage
 import xbterminal.instantfiat
 import xbterminal.gui
+import xbterminal.gui.gui
 import xbterminal.gui.ui
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
@@ -36,7 +37,6 @@ import xbterminal.helpers.configs
 import xbterminal.helpers.wireless
 from xbterminal import defaults
 from xbterminal.blockchain import blockchain
-from xbterminal.gui import gui
 from xbterminal import stages
 import xbterminal.watcher
 
@@ -70,18 +70,18 @@ def main():
     run['current_screen'] = None
 
     xbterminal.gui.runtime = {}
-    xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = gui.initGUI()
+    xbterminal.gui.runtime['app'], xbterminal.gui.runtime['main_win'] = xbterminal.gui.gui.initGUI()
     ui = xbterminal.gui.runtime['main_win'].ui
-    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
+    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):
         run['init']['internet'] = True
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
+    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
 
     keypad = Keypad()
-    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
+    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
 
     watcher = xbterminal.watcher.Watcher()
     watcher.start()
@@ -91,6 +91,7 @@ def main():
 
     logger.debug('main loop starting')
     while True:
+        # Processes all pending events
         try:
             xbterminal.gui.runtime['app'].sendPostedEvents()
             xbterminal.gui.runtime['app'].processEvents()
@@ -113,6 +114,7 @@ def main():
                 # Restore previous screen
                 ui.main_stackedWidget.setCurrentIndex(run['current_screen'])
 
+        # Read keypad input
         if run['key_pressed'] is not None:
             time.sleep(0.1)
 
@@ -128,6 +130,7 @@ def main():
         except NameError as error:
             logger.exception(error)
 
+        # Load remote config
         if run['init']['internet']:
             if (not run['init']['remote_config']
                 or (run['init']['remote_config_last_update'] is not None
@@ -143,6 +146,7 @@ def main():
                     raise error
                 continue
 
+        # Show blockchain network notice
         if hasattr(xbterminal, 'remote_config'):
             if run['init']['blockchain_network'] is None:
                 if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
@@ -202,7 +206,7 @@ def main():
                 else:
                     logger.warning('no wifi found, hoping for preconfigured wired connection')
                     run['init']['internet'] = True
-                gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
+                xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
                 continue
 
             if run['init']['internet']:
@@ -223,8 +227,8 @@ def main():
                 if not run['init']['blockchain']:
                     blockchain.init()
                     run['init']['blockchain'] = True
-                    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
-                    gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
+                    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
+                    xbterminal.gui.gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
                     continue
 
             if run['init']['internet'] and run['init']['remote_config'] and run['init']['blockchain']:
@@ -576,7 +580,7 @@ def main():
                                                                                         run['key_pressed'])
                 char_selector_tupl = keypad.getCharSelectorTupl(run['key_pressed'])
                 if char_selector_tupl is not None:
-                    char_select_str = gui.formatCharSelectHelperHMTL(char_selector_tupl,
+                    char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(char_selector_tupl,
                                                                      xbterminal.local_state['wifi_pass'][-1])
                 else:
                     char_select_str = ''
