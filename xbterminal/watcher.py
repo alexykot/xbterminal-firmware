@@ -6,6 +6,7 @@ import time
 import requests
 
 import xbterminal
+from xbterminal.blockchain import blockchain
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ class Watcher(threading.Thread):
         threading.Thread.__init__(self)
         self._wifi = None
         self._internet = None
+        self._peers = None
         self.period = 2
         self.messages = []
         self.errors = {}
@@ -56,6 +58,30 @@ class Watcher(threading.Thread):
                 self.errors.pop("internet", None)
         self._internet = internet_connected
 
+    @property
+    def peers(self):
+        return self._peers
+
+    @peers.setter
+    def peers(self, peers):
+        if xbterminal.runtime['init']['blockchain']:
+            if peers is None:
+                message = "bitcoin server is not running"
+                if self.errors.get('blockchain') != message:
+                    self.messages.append((logging.ERROR, message))
+                    self.errors['blockchain'] = message
+            elif peers == 0:
+                message = "bitcoin server - no peers"
+                if self.errors.get('blockchain') != message:
+                    self.messages.append((logging.ERROR, message))
+                    self.errors['blockchain'] = message
+            else:
+                if not self._peers:
+                    message = "bitcoin server is running ({0} peers)".format(peers)
+                    self.messages.append((logging.INFO, message))
+                self.errors.pop("blockchain", None)
+        self._peers = peers
+
     def check_system_state(self):
         # Check wifi interface
         if not xbterminal.local_state.get('use_predefined_connection', False):
@@ -66,6 +92,11 @@ class Watcher(threading.Thread):
             self.internet = True
         except requests.exceptions.RequestException:
             self.internet = False
+        # Check bitcoinj
+        try:
+            self.peers = int(blockchain.getInfo().get('connections'))
+        except (requests.exceptions.RequestException, AttributeError):
+            self.peers = None
 
     def get_data(self):
         with threading.RLock():
@@ -78,4 +109,3 @@ class Watcher(threading.Thread):
         while True:
             self.check_system_state()
             time.sleep(self.period)
-
