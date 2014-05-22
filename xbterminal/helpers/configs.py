@@ -32,7 +32,7 @@ def choose_remote_server(device_key):
         headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
         headers['Content-type'] = 'application/json'
         try:
-            response = requests.get(url=config_url, headers=headers)
+            response = requests.get(url=config_url, headers=headers, timeout=5)
             response.raise_for_status()
         except requests.exceptions.RequestException:
             logger.warning("remote config {config_url} unreachable, trying next server".format(
@@ -49,8 +49,7 @@ def load_remote_config():
         xbterminal.runtime['remote_server'], xbterminal.remote_config = choose_remote_server(
             xbterminal.device_key)
     except ConfigLoadError as config_error:
-        logger.warning("no remote configs available, trying local cache".format(
-            config_url=config_url))
+        logger.warning("no remote configs available, trying local cache")
         try:
             load_remote_config_cache()
         except IOError:
