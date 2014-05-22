@@ -49,7 +49,7 @@ LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         'finish': 100,
                         }
 
-PROJECT_ABS_PATH = '' #initialized in bootstrap.py
+PROJECT_ABS_PATH = ''  # initialized in main.py
 PROJECT_LOCAL_PATH = 'xbterminal'
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
@@ -58,14 +58,6 @@ QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
-
-LOG_MESSAGE_TYPES = {'DEBUG':'DEBUG',
-                     'ERROR':'ERROR',
-                     'WARNING':'WARNING',
-                     }
-LOG_LEVELS = {'DEBUG':'DEBUG',
-              'PRODUCTION':'PRODUCTION',
-                }
 
 LOG_CONFIG = {
     'version': 1,
@@ -101,7 +93,7 @@ REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'receipt': '/api/receipts/{receipt_key}/',
                         'firmware_check': '/api/device/{device_key}/firmware/',
                         'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
-                        'firmware_updated': '/api/device/{device_key}/firmware-updated/',
+                        'firmware_updated': '/api/device/{device_key}/firmware_updated/',
                         }
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1',

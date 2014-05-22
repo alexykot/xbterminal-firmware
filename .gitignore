@@ -5,6 +5,7 @@ venv
 bitcoinj_server/*
 xbterminal/runtime/*
 xbterminal/device_key
+xbterminal/main.so
 tests/*
 bitcoinj-server.tar.gz
 fabfile

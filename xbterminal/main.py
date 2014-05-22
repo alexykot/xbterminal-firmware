@@ -75,6 +75,9 @@ def main():
     gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     xbterminal.helpers.configs.load_local_state()
+    if xbterminal.local_state.get('use_predefined_connection'):
+        run['init']['internet'] = True
+        logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
     gui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
 
     keypad = Keypad()
