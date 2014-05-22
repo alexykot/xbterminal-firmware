@@ -93,3 +93,14 @@ def sendTransaction(outputs, from_addr, change_addr=None):
             nonempty_float_outputs[address] = float_outputs[address]
 
     return driver.sendRawTransaction(inputs=inputs, outputs=nonempty_float_outputs)
+
+
+def isValidAddress(address):
+    """
+    https://en.bitcoin.it/wiki/List_of_address_prefixes
+    """
+    network = xbterminal.remote_config['BITCOIN_NETWORK']
+    if network == "testnet":
+        return address.startswith("m") or address.startswith("n")
+    else:
+        return address.startswith("1")
