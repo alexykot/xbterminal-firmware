@@ -93,7 +93,7 @@ REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'receipt': '/api/receipts/{receipt_key}/',
                         'firmware_check': '/api/device/{device_key}/firmware/',
                         'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
-                        'firmware_updated': '/api/device/{device_key}/firmware-updated/',
+                        'firmware_updated': '/api/device/{device_key}/firmware_updated/',
                         }
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1',

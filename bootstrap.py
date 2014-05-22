@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
+import json
 import subprocess
 import time
 import sys
@@ -47,16 +48,13 @@ def check_firmware(server_url, device_key):
         logger.exception(error)
         return None
     if response.status_code == 200:
-        data = response.json()
-        # Return firmware hash
-        return data.get('next_firmware_version_hash')
+        return response.json()
 
 
 def update_firmware(server_url, device_key, firmware_hash):
-    firmware_download_url = server_url + REMOTE_API_ENDPOINTS['firmware_download'].format(
-        device_key=device_key, firmware_hash=firmware_hash)
-    tmp_filename = os.path.join('/tmp', 'xbterminal_firmware_{firmware_hash}'.format(
-        firmware_hash=firmware_hash))
+    firmware_download_url = server_url + REMOTE_API_ENDPOINTS['firmware_download'].format(device_key=device_key,
+                                                                                          firmware_hash=firmware_hash)
+    tmp_filename = os.path.join('/tmp', 'xbterminal_firmware_{firmware_hash}'.format(firmware_hash=firmware_hash))
     headers = EXTERNAL_CALLS_REQUEST_HEADERS.copy()
     headers['Content-type'] = 'application/json'
     try:
@@ -67,6 +65,7 @@ def update_firmware(server_url, device_key, firmware_hash):
                     tmp_file.write(chunk)
                     tmp_file.flush()
         shutil.move(tmp_filename, os.path.join(XBTERMINAL_MAIN_PATH, "main.so"))
+        os.chmod(os.path.join(XBTERMINAL_MAIN_PATH, "main.so"), 0755)
     except Exception as error:
         logger.exception(error)
         return False
@@ -74,14 +73,14 @@ def update_firmware(server_url, device_key, firmware_hash):
         return True
 
 
-def report_firmware_updated(device_key, firmware_hash):
+def report_firmware_updated(server_url, device_key, firmware_hash):
     firmware_report_url = server_url + REMOTE_API_ENDPOINTS['firmware_updated'].format(
         device_key=device_key)
     headers = EXTERNAL_CALLS_REQUEST_HEADERS.copy()
     headers['Content-type'] = 'application/json'
     try:
         requests.post(firmware_report_url, headers=headers,
-                      data={'firmware_version_hash': firmware_hash})
+                      data=json.dumps({'firmware_version_hash': firmware_hash}))
     except requests.HTTPError as error:
         logger.exception(error)
         return False
@@ -99,16 +98,21 @@ def run_firmware(idle=False, updates_enabled=True):
         if updates_enabled and time.time() - last_check > REMOTE_CONFIG_UPDATE_CYCLE:
             # Check for updates
             logger.info("checking for updates...")
-            new_version_hash = check_firmware(server_url, device_key)
+            updates_data = check_firmware(server_url, device_key)
+            new_version_hash = updates_data.get('next_firmware_version_hash')
             last_check = time.time()
             if new_version_hash is not None:
-                logger.info("installing updates...")
+                logger.info("current version: {cur_ver}, next version: {next_ver}, installing ...".format(
+                    cur_ver=updates_data['current_firmware_version'],
+                    next_ver=updates_data['next_firmware_version'],))
                 try:
                     main_process.kill()
                 except AttributeError:
                     pass
                 result = update_firmware(server_url, device_key, new_version_hash)
-                if not result:
+                if result:
+                    logger.info("firmware updated to {version}".format(version=updates_data['next_firmware_version']))
+                else:
                     logger.error("update failed")
         if not idle:
             # Check if process is running
@@ -128,7 +132,7 @@ def run_firmware(idle=False, updates_enabled=True):
                     logger.exception(error)
                 else:
                     if new_version_hash is not None:
-                        result = report_firmware_updated(device_key, new_version_hash)
+                        result = report_firmware_updated(server_url, device_key, new_version_hash)
                         if not result:
                             logger.warning("report failed")
                         else:
