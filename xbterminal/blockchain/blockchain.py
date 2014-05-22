@@ -46,6 +46,10 @@ def getInfo():
     return driver.getInfo()
 
 
+def getTransactionConfidence(transaction_hash):
+    return driver.getTransactionConfidence(transaction_hash)
+
+
 # Sends transaction from given address using all currently unspent inputs for that address.
 # by default all change is sent to fees address
 def sendTransaction(outputs, from_addr, change_addr=None):

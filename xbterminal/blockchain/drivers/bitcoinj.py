@@ -28,8 +28,7 @@ def init():
     global bitcoinj_url
 
     try:
-        bitcoinj_info_url = bitcoinj_url + 'getInfo'
-        requests.get(bitcoinj_info_url)
+        getInfo()
     except requests.exceptions.ConnectionError:
         _start_bitcoinj()
 
@@ -104,9 +103,17 @@ def getUnspentTransactions(from_address):
 
 
 def getInfo():
-    result = requests.get(bitcoinj_url + "getInfo")
-    info = result.json()
-    return info
+    response = requests.get(bitcoinj_url + "getInfo")
+    return response.json()
+
+
+def getTransactionConfidence(transaction_hash):
+    response = requests.get(
+        bitcoinj_url + "getTransactionConfidence?transaction_hash={}".format(transaction_hash))
+    data = response.json()
+    confidence_type = data['confidence_type']
+    broadcast_peers = int(data['broadcast_peers'])
+    return confidence_type, broadcast_peers
 
 
 # Sends transaction from given address using all currently unspent inputs for that address.
