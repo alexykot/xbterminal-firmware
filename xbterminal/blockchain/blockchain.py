@@ -6,7 +6,10 @@ import logging
 import xbterminal
 import xbterminal.blockchain.drivers
 from xbterminal import defaults
-from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
+from xbterminal.exceptions import (
+    NotEnoughFunds,
+    PrivateKeysMissing,
+    InvalidAddressError)
 
 logger = logging.getLogger(__name__)
 
@@ -104,3 +107,21 @@ def isValidAddress(address):
         return address.startswith("m") or address.startswith("n")
     else:
         return address.startswith("1")
+
+
+class AddressList(object):
+
+    def __init__(self):
+        self._addresses = {}
+
+    def __str__(self):
+        return str(self._addresses)
+
+    def __getitem__(self, key):
+        return self._addresses[key]
+
+    def __setitem__(self, key, val):
+        if val is None or isValidAddress(val):
+            self._addresses[key] = val
+        else:
+            raise InvalidAddressError(key, val)
