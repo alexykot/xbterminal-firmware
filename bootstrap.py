@@ -24,6 +24,8 @@ logger = logging.getLogger("bootstrap.py")
 import xbterminal
 import xbterminal.defaults
 import xbterminal.helpers.configs
+from xbterminal.exceptions import ConfigLoadError
+
 xbterminal.defaults.PROJECT_ABS_PATH = include_path
 xbterminal.helpers.configs.load_local_state()
 
@@ -90,7 +92,7 @@ def report_firmware_updated(server_url, device_key, firmware_hash):
 
 def run_firmware(idle=False, updates_enabled=True):
     device_key = xbterminal.helpers.configs.get_device_key()
-    server_url, config = xbterminal.helpers.configs.choose_remote_server(device_key)
+    server_url = None
     main_process = None
     new_version_hash = None
     last_check = 0
@@ -98,9 +100,14 @@ def run_firmware(idle=False, updates_enabled=True):
         if updates_enabled and time.time() - last_check > REMOTE_CONFIG_UPDATE_CYCLE:
             # Check for updates
             logger.info("checking for updates...")
+            last_check = time.time()
+            if server_url is None:
+                try:
+                    server_url, _ = xbterminal.helpers.configs.choose_remote_server(device_key)
+                except ConfigLoadError:
+                    continue
             updates_data = check_firmware(server_url, device_key)
             new_version_hash = updates_data.get('next_firmware_version_hash')
-            last_check = time.time()
             if new_version_hash is not None:
                 logger.info("current version: {cur_ver}, next version: {next_ver}, installing ...".format(
                     cur_ver=updates_data['current_firmware_version'],
