@@ -106,7 +106,7 @@ def isValidAddress(address):
     if network == "testnet":
         return address.startswith("m") or address.startswith("n")
     else:
-        return address.startswith("1")
+        return address.startswith("1") or address.startswith("3")
 
 
 class AddressList(object):
