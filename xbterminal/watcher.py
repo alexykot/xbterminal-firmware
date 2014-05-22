@@ -5,6 +5,7 @@ import time
 
 import requests
 import psutil
+import usb.core
 
 import xbterminal
 from xbterminal.blockchain import blockchain
@@ -102,9 +103,14 @@ class Watcher(threading.Thread):
 
     def log_system_stats(self):
         logger = logging.getLogger("system_monitor")
+        # http://www.usb.org/developers/defined_class
+        wl_device = usb.core.find(bDeviceClass=0xE0)
+        wl_product_id = wl_device.idProduct if wl_device else None
         stats = {
             'cpu': psutil.cpu_percent(interval=1),
             'memory': psutil.virtual_memory().percent,
+            'disk': psutil.disk_usage("/").percent,
+            'wireless': wl_product_id,
         }
         logger.info(str(stats))
         self.system_stats_timestamp = time.time()
