@@ -4,6 +4,8 @@ import threading
 import time
 
 import requests
+import psutil
+import usb.core
 
 import xbterminal
 from xbterminal.blockchain import blockchain
@@ -21,6 +23,7 @@ class Watcher(threading.Thread):
         self.period = 2
         self.messages = []
         self.errors = {}
+        self.system_stats_timestamp = 0
 
     @property
     def wifi(self):
@@ -101,6 +104,20 @@ class Watcher(threading.Thread):
             TypeError):
             self.peers = None
 
+    def log_system_stats(self):
+        logger = logging.getLogger("system_monitor")
+        # http://www.usb.org/developers/defined_class
+        wl_device = usb.core.find(bDeviceClass=0xE0)
+        wl_product_id = wl_device.idProduct if wl_device else None
+        stats = {
+            'cpu': psutil.cpu_percent(interval=1),
+            'memory': psutil.virtual_memory().percent,
+            'disk': psutil.disk_usage("/").percent,
+            'wireless': wl_product_id,
+        }
+        logger.info(str(stats))
+        self.system_stats_timestamp = time.time()
+
     def get_data(self):
         with threading.RLock():
             messages, self.messages = self.messages, []
@@ -111,4 +128,6 @@ class Watcher(threading.Thread):
         logger.info("watcher started")
         while True:
             self.check_system_state()
+            if time.time() - self.system_stats_timestamp > 60:
+                self.log_system_stats()
             time.sleep(self.period)
