@@ -291,7 +291,7 @@ def main():
                 run['received_payment'] = False
                 run['invoice_paid'] = False
 
-                run['transactions_addresses'] = blockchain.AddressList()
+                run['transactions_addresses'] = {}
                 run['transactions_addresses']['local'] = blockchain.getFreshAddress()
                 run['transactions_addresses']['merchant'] = xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS']
                 run['transactions_addresses']['fee'] = xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']
