@@ -271,6 +271,7 @@ def main():
                 if run['amounts']['amount_to_pay_fiat'] > 0:
                     run['stage_init'] = False
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_loading']
+                    continue
                 else:
                     ui.amount_input.setStyleSheet('background: #B33A3A')
                     ui.error_text_lbl.setText("no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
