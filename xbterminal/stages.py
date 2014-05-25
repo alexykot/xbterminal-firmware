@@ -210,24 +210,24 @@ def clearPaymentRuntime(clear_amounts=True):
         xbterminal.runtime['display_value_unformatted'] = ''
         xbterminal.runtime['display_value_formatted'] = formatInput(xbterminal.runtime['display_value_unformatted'],
                                                                         defaults.OUTPUT_DEC_PLACES)
-        xbterminal.gui.runtime['main_win'].ui.amount_input.setText(xbterminal.runtime['display_value_formatted'])
+        xbterminal.runtime['main_window'].ui.amount_input.setText(xbterminal.runtime['display_value_formatted'])
 
     xbterminal.runtime['amounts']['amount_to_pay_btc'] = None
     xbterminal.runtime['amounts']['amount_to_pay_fiat'] = None
     xbterminal.runtime['effective_rate_btc'] = None
     xbterminal.runtime['transactions_addresses'] = None
 
-    xbterminal.gui.runtime['main_win'].ui.fiat_amount.setText("0")
-    xbterminal.gui.runtime['main_win'].ui.btc_amount.setText("0")
-    xbterminal.gui.runtime['main_win'].ui.exchange_rate_amount.setText("0")
+    xbterminal.runtime['main_window'].ui.fiat_amount.setText("0")
+    xbterminal.runtime['main_window'].ui.btc_amount.setText("0")
+    xbterminal.runtime['main_window'].ui.exchange_rate_amount.setText("0")
 
-    xbterminal.gui.runtime['main_win'].ui.fiat_amount_qr.setText("0")
-    xbterminal.gui.runtime['main_win'].ui.btc_amount_qr.setText("0")
-    xbterminal.gui.runtime['main_win'].ui.exchange_rate_qr.setText("0")
+    xbterminal.runtime['main_window'].ui.fiat_amount_qr.setText("0")
+    xbterminal.runtime['main_window'].ui.btc_amount_qr.setText("0")
+    xbterminal.runtime['main_window'].ui.exchange_rate_qr.setText("0")
 
-    xbterminal.gui.runtime['main_win'].ui.fiat_amount_nfc.setText("0")
-    xbterminal.gui.runtime['main_win'].ui.btc_amount_nfc.setText("0")
-    xbterminal.gui.runtime['main_win'].ui.exchange_rate_nfc.setText("0")
+    xbterminal.runtime['main_window'].ui.fiat_amount_nfc.setText("0")
+    xbterminal.runtime['main_window'].ui.btc_amount_nfc.setText("0")
+    xbterminal.runtime['main_window'].ui.exchange_rate_nfc.setText("0")
 
 
 def getBitcoinURI(payment_addr, amount_btc):
