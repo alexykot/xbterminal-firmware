@@ -211,6 +211,14 @@ def getUnspentTransactions(address):
     return address_tx_list
 
 
+def getInfo():
+    server_info = connection.getinfo()
+    data = {
+        'connections': server_info.connections,
+    }
+    return data
+
+
 def sendRawTransaction(inputs, outputs):
     global connection
 
