@@ -29,3 +29,20 @@ class ConfigLoadError(Exception):
 class DeviceKeyMissingError(Exception):
     exchange_name = None
     strerror = u'device key missing'
+
+
+
+
+class XBTerminalError(Exception):
+    pass
+
+
+class InvalidAddressError(XBTerminalError):
+
+    def __init__(self, name, address):
+        super(InvalidAddressError, self).__init__()
+        self.name = name
+        self.address = address
+
+    def __str__(self):
+        return "invalid '{0}' address: {1}".format(self.name, self.address)
