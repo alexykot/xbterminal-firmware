@@ -2,12 +2,14 @@
 from decimal import Decimal
 import json
 import os
-import simplejson
 import socket
 import subprocess
 import time
-import requests
 import logging
+
+import psutil
+import requests
+import simplejson
 
 import xbterminal
 from xbterminal import defaults
@@ -30,9 +32,12 @@ def init():
     try:
         getInfo()
     except requests.exceptions.ConnectionError:
-        _start_bitcoinj()
-
-    logger.debug('bitcoinj init done')
+        if xbterminal.local_state.get("manage_bitcoinj_process", True):
+            _start_bitcoinj()
+        else:
+            logger.warning("bitcoinj not started, ignoring")
+    else:
+        logger.debug('bitcoinj init done')
 
 
 def _start_bitcoinj():
@@ -61,6 +66,15 @@ def _start_bitcoinj():
         except requests.exceptions.ConnectionError:
             time.sleep(1)
     logger.debug('bitcoinj started')
+
+
+def kill_bitcoinj():
+    logger.warning("killing bitcoinj...")
+    for p in psutil.process_iter():
+        if p.exe().startswith(BITCOINJ_SERVER_ABSPATH):
+            p.kill()
+            logger.warning("bitcoinj killed (pid: {0})".format(p.pid()))
+            break
 
 
 def getAddressBalance(address):

@@ -112,14 +112,24 @@ def isValidAddress(address):
 def updateDriverState(is_running):
     global driver
     if is_running:
-        if hasattr(driver, "unavailable_since"):
-            del driver.unavailable_since
+        try:
+            del driver.restart_attempts
+            del driver.last_restart_attempt
+        except AttributeError:
+            pass
     else:
-        unavailable_since = getattr(driver, "unavailable_since", None)
-        if unavailable_since is None:
-            driver.unavailable_since = time.time()
-        elif time.time() - unavailable_since >= 120:
-            if driver.__name__.endswith("bitcoinj"):
+        if driver.__name__.endswith("bitcoinj"):
+            restart_attempts = getattr(driver, "restart_attempts", None)
+            if restart_attempts is None:
+                driver.restart_attempts = 0
+                driver.next_restart_attempt = time.time() + 20
+            elif restart_attempts >= 5:
                 logger.warning("switching to bitcoind driver")
                 driver = importlib.import_module(".bitcoind", "xbterminal.blockchain.drivers")
                 driver.init()
+            else:
+                if driver.next_restart_attempt < time.time():
+                    driver.kill_bitcoinj()
+                    driver.init()
+                    driver.restart_attempts += 1
+                    driver.next_restart_attempt += 20
