@@ -6,7 +6,6 @@ import socket
 import subprocess
 import time
 import logging
-
 import psutil
 import requests
 import simplejson
@@ -71,9 +70,11 @@ def _start_bitcoinj():
 def kill_bitcoinj():
     logger.warning("killing bitcoinj...")
     for p in psutil.process_iter():
-        if p.exe().startswith(BITCOINJ_SERVER_ABSPATH):
-            p.kill()
-            logger.warning("bitcoinj killed (pid: {0})".format(p.pid()))
+        if p.name() == 'java':
+            command = 'kill -9 {}'.format(p.pid)
+            print command
+            os.system(command)
+            logger.warning("bitcoinj killed (pid: {})".format(p.pid))
             break
 
 
