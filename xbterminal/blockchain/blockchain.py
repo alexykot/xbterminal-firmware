@@ -113,23 +113,19 @@ def updateDriverState(is_running):
     global driver
     if is_running:
         try:
-            del driver.restart_attempts
-            del driver.last_restart_attempt
+            del driver.unavailable_since
         except AttributeError:
             pass
     else:
         if driver.__name__.endswith("bitcoinj"):
-            restart_attempts = getattr(driver, "restart_attempts", None)
-            if restart_attempts is None:
-                driver.restart_attempts = 0
-                driver.next_restart_attempt = time.time() + 20
-            elif restart_attempts >= 5:
+            unavailable_since = getattr(driver, "unavailable_since", None)
+            if unavailable_since is None:
+                # Restart bitcoinj
+                driver.unavailable_since = time.time()
+                driver.kill_bitcoinj()
+                driver.init()
+            elif time.time() - unavailable_since >= 120:
+                # Switch to bitcoind
                 logger.warning("switching to bitcoind driver")
                 driver = importlib.import_module(".bitcoind", "xbterminal.blockchain.drivers")
                 driver.init()
-            else:
-                if driver.next_restart_attempt < time.time():
-                    driver.kill_bitcoinj()
-                    driver.init()
-                    driver.restart_attempts += 1
-                    driver.next_restart_attempt += 20
