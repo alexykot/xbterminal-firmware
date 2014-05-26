@@ -103,7 +103,7 @@ def getUnspentTransactions(from_address):
 
 
 def getInfo():
-    response = requests.get(bitcoinj_url + "getInfo")
+    response = requests.get(bitcoinj_url + "getInfo", timeout=5)
     return response.json()
 
 

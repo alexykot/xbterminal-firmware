@@ -76,6 +76,7 @@ class Watcher(threading.Thread):
                 if self.errors.get('blockchain') != message:
                     self.messages.append((logging.ERROR, message))
                     self.errors['blockchain'] = message
+                blockchain.updateDriverState(is_running=False)
             elif peers == 0:
                 message = "bitcoin server - no peers"
                 if self.errors.get('blockchain') != message:
@@ -86,6 +87,7 @@ class Watcher(threading.Thread):
                     message = "bitcoin server is running ({0} peers)".format(peers)
                     self.messages.append((logging.INFO, message))
                 self.errors.pop("blockchain", None)
+                blockchain.updateDriverState(is_running=True)
         self._peers = peers
 
     def check_system_state(self):

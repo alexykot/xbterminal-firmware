@@ -2,6 +2,7 @@
 from decimal import Decimal
 import importlib
 import logging
+import time
 
 import xbterminal
 import xbterminal.blockchain.drivers
@@ -106,3 +107,19 @@ def isValidAddress(address):
         return address.startswith("m") or address.startswith("n")
     else:
         return address.startswith("1") or address.startswith("3")
+
+
+def updateDriverState(is_running):
+    global driver
+    if is_running:
+        if hasattr(driver, "unavailable_since"):
+            del driver.unavailable_since
+    else:
+        unavailable_since = getattr(driver, "unavailable_since", None)
+        if unavailable_since is None:
+            driver.unavailable_since = time.time()
+        elif time.time() - unavailable_since >= 120:
+            if driver.__name__.endswith("bitcoinj"):
+                logger.warning("switching to bitcoind driver")
+                driver = importlib.import_module(".bitcoind", "xbterminal.blockchain.drivers")
+                driver.init()

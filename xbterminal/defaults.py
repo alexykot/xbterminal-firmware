@@ -117,4 +117,4 @@ BTC_DEC_PLACES  = Decimal('0.00000000')
 BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
 BTC_MIN_OUTPUT  = Decimal('0.00005460') #minimal tx output
 
-BLOCKCHAIN_DRIVER = 'bitcoind'
+BLOCKCHAIN_DRIVER = 'bitcoinj'
