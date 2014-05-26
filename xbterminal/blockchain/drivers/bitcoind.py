@@ -70,10 +70,14 @@ def _start_bitcoind(connection_probe):
 
     logger.debug('bitcoind starting')
     bitcoind_config_path = os.path.join(defaults.PROJECT_ABS_PATH, BITCOIND_CONFIG_PATH)
-    subprocess.Popen(['bitcoind',
-                      '-conf={conf_file_path}'.format(conf_file_path=bitcoind_config_path),
-                      '-datadir={data_dir}'.format(data_dir=BITCOIND_DATADIR),
-                        ])
+    command = [
+        'bitcoind',
+        '-conf={conf_file_path}'.format(conf_file_path=bitcoind_config_path),
+        '-datadir={data_dir}'.format(data_dir=BITCOIND_DATADIR),
+    ]
+    if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
+        command.append('-testnet')
+    subprocess.Popen(command)
     while True:
         try:
             connection_probe.getinfo()
