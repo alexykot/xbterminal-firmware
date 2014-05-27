@@ -31,18 +31,20 @@ class Watcher(threading.Thread):
         return self._wifi
 
     @wifi.setter
-    def wifi(self, wifi_connected):
+    def wifi(self, interface_available):
+        # TODO: add runtime['init']['wifi']
         if xbterminal.runtime['init']['internet']:
-            if self._wifi is None and not wifi_connected:
-                self.messages.append((logging.ERROR, "no wifi"))
-                self.errors["wifi"] = "no wifi"
-            elif self._wifi and not wifi_connected:
-                self.messages.append((logging.ERROR, "wifi disconnected"))
-                self.errors["wifi"] = "wifi disconnected"
-            elif not self._wifi and wifi_connected:
-                self.messages.append((logging.INFO, "wifi connected"))
+            if not interface_available:
+                message = "wireless interface not found"
+                if self.errors.get('wifi') != message:
+                    self.messages.append((logging.ERROR, message))
+                    self.errors['wifi'] = message
+            else:
+                if not self._wifi:
+                    message = "wireless interface found"
+                    self.messages.append((logging.INFO, message))
                 self.errors.pop("wifi", None)
-        self._wifi = wifi_connected
+        self._wifi = interface_available
 
     @property
     def internet(self):
