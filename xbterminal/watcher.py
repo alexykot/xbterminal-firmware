@@ -12,6 +12,20 @@ from xbterminal.blockchain import blockchain
 
 logger = logging.getLogger(__name__)
 
+# http://www.linux-usb.org/usb.ids
+# (vendor id, product id, device name)
+USB_DEVICES = {
+    'bluetooth': [
+        (0x0a5c, 0x21e8, 'BCM20702A0 Bluetooth 4.0'),
+    ],
+    'nfc': [
+        (0x04e6, 0x5591, 'SCL3711-NFC&RW'),
+    ],
+    'wifi': [
+        (0x148f, 0x5370, 'RT5370 Wireless Adapter'),
+    ],
+}
+
 
 class Watcher(threading.Thread):
 
@@ -106,15 +120,19 @@ class Watcher(threading.Thread):
 
     def log_system_stats(self):
         logger = logging.getLogger("system_monitor")
-        # http://www.usb.org/developers/defined_class
-        wl_device = usb.core.find(bDeviceClass=0xE0)
-        wl_product_id = wl_device.idProduct if wl_device else None
         stats = {
             'cpu': psutil.cpu_percent(interval=1),
             'memory': psutil.virtual_memory().percent,
             'disk': psutil.disk_usage("/").percent,
-            'wireless': wl_product_id,
         }
+        for device_type, device_list in USB_DEVICES.items():
+            stats[device_type] = None
+            for vendor_id, product_id, device_name in device_list:
+                device = usb.core.find(idVendor=vendor_id,
+                                       idProduct=product_id)
+                if device:
+                    stats[device_type] = device_name
+                    break
         logger.info(str(stats))
         self.system_stats_timestamp = time.time()
 
