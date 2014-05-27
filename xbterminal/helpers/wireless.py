@@ -1,7 +1,7 @@
 """
 https://wifi.readthedocs.org/en/latest/
 """
-
+import os
 import logging
 import hashlib
 import errno
@@ -14,9 +14,21 @@ import wifi.exceptions
 logger = logging.getLogger(__name__)
 
 
+def find_wireless_interface():
+    interfaces = os.listdir("/sys/class/net/")
+    for interface in sorted(interfaces):
+        if interface.startswith('wlan'):
+            return interface
+    return None
+
+interface = find_wireless_interface()
+
+
 def is_wifi_available():
+    if interface is None:
+        return False
     try:
-        cell_list = wifi.scan.Cell.all('wlan0')
+        cell_list = wifi.scan.Cell.all(interface)
         if len(cell_list) > 0:
             return True
     except wifi.exceptions.InterfaceError as error:
@@ -32,7 +44,7 @@ def is_wifi_available():
 def discover_networks():
     networks = []
     try:
-        cell_list = wifi.scan.Cell.all('wlan0')
+        cell_list = wifi.scan.Cell.all(interface)
     except wifi.exceptions.InterfaceError as error:
         logger.exception(error)
         return networks
@@ -44,13 +56,13 @@ def discover_networks():
     return networks
 
 def connect(ssid, passkey=None):
-    cell_list = wifi.scan.Cell.all('wlan0')
+    cell_list = wifi.scan.Cell.all(interface)
     for cell in cell_list:
         if cell.ssid == ssid:
             scheme_name = hashlib.sha256('{}_{}'.format(ssid, passkey)).hexdigest()
-            scheme = wifi.Scheme.find('wlan0', scheme_name)
+            scheme = wifi.Scheme.find(interface, scheme_name)
             if scheme is None:
-                scheme = wifi.Scheme.for_cell('wlan0', scheme_name, cell, passkey=passkey)
+                scheme = wifi.Scheme.for_cell(interface, scheme_name, cell, passkey=passkey)
                 scheme.save()
             try:
                 scheme.activate()

@@ -9,6 +9,7 @@ import usb.core
 
 import xbterminal
 from xbterminal.blockchain import blockchain
+from xbterminal.helpers import wireless
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,8 @@ class Watcher(threading.Thread):
     def check_system_state(self):
         # Check wifi interface
         if not xbterminal.local_state.get('use_predefined_connection', False):
-            self.wifi = os.path.exists("/sys/class/net/wlan0")
+            self.wifi = (wireless.interface is not None
+                and os.path.exists(os.path.join("/sys/class/net", wireless.interface)))
         # Check internet connection
         try:
             requests.get("http://google.com", timeout=3)
