@@ -1,5 +1,6 @@
 import os
 import logging
+import socket
 import threading
 import time
 
@@ -106,6 +107,7 @@ class Watcher(threading.Thread):
             self.peers = int(blockchain.getInfo().get('connections'))
         except (
             requests.exceptions.RequestException,
+            socket.error,
             AttributeError,
             TypeError):
             self.peers = None
