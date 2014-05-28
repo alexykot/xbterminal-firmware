@@ -141,7 +141,7 @@ class KeyboardDriver(object):
     }
 
     def __init__(self):
-        self.main_window = xbterminal.gui.runtime['main_win']
+        self.main_window = xbterminal.runtime['main_window']
 
     def getKey(self):
         try:
