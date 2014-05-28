@@ -106,8 +106,8 @@ class Watcher(threading.Thread):
         try:
             self.peers = int(blockchain.getInfo().get('connections'))
         except (
-            requests.exceptions.RequestException,
-            socket.error,
+            requests.exceptions.RequestException,  # Bitcoinj network error
+            socket.error,  # Bitcoind network error
             AttributeError,
             TypeError):
             self.peers = None
