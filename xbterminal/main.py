@@ -35,7 +35,7 @@ import xbterminal.helpers.configs
 import xbterminal.helpers.wireless
 from xbterminal import defaults
 from xbterminal.blockchain import blockchain
-from xbterminal import stages
+from xbterminal.stages import payment
 import xbterminal.watcher
 
 
@@ -154,7 +154,7 @@ def main():
                     main_window.toggleTestnetNotice(False)
                 run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
-                stages.gracefullExit(system_reboot=True)
+                payment.gracefullExit(system_reboot=True)
 
 
 ###BOOTUP
@@ -249,7 +249,7 @@ def main():
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
             if not run['stage_init']:
                 ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
-                ui.amount_input.setText(stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+                ui.amount_input.setText(payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
                 run['stage_init'] = True
                 continue
 
@@ -261,13 +261,13 @@ def main():
 
                 ui.amount_input.setStyleSheet('background: #FFF')
                 ui.error_text_lbl.setText("")
-                run['display_value_unformatted'] = stages.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
+                run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
 
-                run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+                run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
                 ui.amount_input.setText(run['display_value_formatted'])
             elif run['key_pressed'] is 'enter':
-                run['amounts']['amount_to_pay_fiat'] = stages.inputToDecimal(run['display_value_unformatted'])
+                run['amounts']['amount_to_pay_fiat'] = payment.inputToDecimal(run['display_value_unformatted'])
                 if run['amounts']['amount_to_pay_fiat'] > 0:
                     run['stage_init'] = False
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_loading']
@@ -304,7 +304,7 @@ def main():
                      run['amounts']['instantfiat_btc_amount'],
                      run['instantfiat_invoice_id'],
                      run['transactions_addresses']['instantfiat'],
-                     run['exchange_rate']) = stages.createInvoice(run['amounts']['amount_to_pay_fiat'])
+                     run['exchange_rate']) = payment.createInvoice(run['amounts']['amount_to_pay_fiat'])
                 else:
                     run['amounts']['instantfiat_fiat_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
                     run['amounts']['instantfiat_btc_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
@@ -312,8 +312,8 @@ def main():
                     run['transactions_addresses']['instantfiat'] = None
                     run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(xbterminal.remote_config['MERCHANT_CURRENCY'])
 
-                run['amounts']['our_fee_btc_amount'] = stages.getOurFeeBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
-                run['amounts']['merchants_btc_amount'] = stages.getMerchantBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
+                run['amounts']['our_fee_btc_amount'] = payment.getOurFeeBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
+                run['amounts']['merchants_btc_amount'] = payment.getMerchantBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
 
                 run['amounts']['amount_to_pay_btc'] = (run['amounts']['our_fee_btc_amount']
                                             + run['amounts']['instantfiat_btc_amount']
@@ -322,7 +322,7 @@ def main():
                 run['effective_rate_btc'] = run['amounts']['amount_to_pay_fiat'] / run['amounts']['amount_to_pay_btc']
 
                 run['payment_requested_timestamp'] = time.time()
-                run['transaction_bitcoin_uri'] = stages.getBitcoinURI(run['transactions_addresses']['local'],
+                run['transaction_bitcoin_uri'] = payment.getBitcoinURI(run['transactions_addresses']['local'],
                                                                       run['amounts']['amount_to_pay_btc'])
 
                 run['stage_init'] = False
@@ -333,9 +333,9 @@ def main():
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_rates']:
             if not run['stage_init']:
                 ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_rates'])
-                ui.fiat_amount.setText(stages.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-                ui.btc_amount.setText(stages.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-                ui.exchange_rate_amount.setText(stages.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+                ui.fiat_amount.setText(payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+                ui.btc_amount.setText(payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+                ui.exchange_rate_amount.setText(payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                      defaults.EXCHANGE_RATE_DEC_PLACES))
                 run['stage_init'] = True
 
@@ -344,7 +344,7 @@ def main():
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_nfc']
                 continue
             if run['key_pressed'] == 'backspace':
-                stages.clearPaymentRuntime(False)
+                payment.clearPaymentRuntime(False)
                 run['stage_init'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
@@ -355,19 +355,19 @@ def main():
             if not run['stage_init']:
                 if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']:
                     ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_nfc'])
-                    ui.fiat_amount_nfc.setText(stages.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-                    ui.btc_amount_nfc.setText(stages.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-                    ui.exchange_rate_nfc.setText(stages.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+                    ui.fiat_amount_nfc.setText(payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+                    ui.btc_amount_nfc.setText(payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+                    ui.exchange_rate_nfc.setText(payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                         defaults.EXCHANGE_RATE_DEC_PLACES))
                 elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
                     ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_qr'])
-                    ui.fiat_amount_qr.setText(stages.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-                    ui.btc_amount_qr.setText(stages.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-                    ui.exchange_rate_qr.setText(stages.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+                    ui.fiat_amount_qr.setText(payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+                    ui.btc_amount_qr.setText(payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+                    ui.exchange_rate_qr.setText(payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                          defaults.EXCHANGE_RATE_DEC_PLACES))
                     image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
                     if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
-                        xbterminal.helpers.qr.qr_gen(stages.getBitcoinURI(run['transactions_addresses']['local'],
+                        xbterminal.helpers.qr.qr_gen(payment.getBitcoinURI(run['transactions_addresses']['local'],
                                                                           run['amounts']['amount_to_pay_btc']),
                                                      image_path)
                     else:
@@ -390,7 +390,7 @@ def main():
                 continue
 
             if run['key_pressed'] == 'backspace':
-                stages.clearPaymentRuntime(False)
+                payment.clearPaymentRuntime(False)
                 xbterminal.helpers.nfcpy.stop()
                 run['stage_init'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
@@ -422,7 +422,7 @@ def main():
                                'fee': run['amounts']['our_fee_btc_amount'],
                                 }
 
-                    outgoing_tx_hash = stages.createOutgoingTransaction(addresses=run['transactions_addresses'],
+                    outgoing_tx_hash = payment.createOutgoingTransaction(addresses=run['transactions_addresses'],
                                                                         amounts=amounts)
                     logger.debug('payment forwarded, outgoing txid: {txid},'
                         'addresses: {addresses},'
@@ -430,7 +430,7 @@ def main():
                                                      amounts=amounts,
                                                      addresses=run['transactions_addresses']))
 
-                    run['receipt_url'] = stages.logTransaction(
+                    run['receipt_url'] = payment.logTransaction(
                         run['transactions_addresses']['local'],
                         run['transactions_addresses']['instantfiat'],
                         run['transactions_addresses']['merchant'],
@@ -450,7 +450,7 @@ def main():
                     )
                     logger.debug('receipt: {}'.format(run['receipt_url']))
 
-                    stages.clearPaymentRuntime()
+                    payment.clearPaymentRuntime()
 
                     xbterminal.helpers.nfcpy.stop()
                     run['stage_init'] = False
@@ -500,7 +500,7 @@ def main():
 
             if run['key_pressed'] is not None:
                 run['display_value_unformatted'] = ''
-                run['display_value_formatted'] = stages.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+                run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
                 ui.amount_input.setText(run['display_value_formatted'])
 
                 ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
@@ -620,17 +620,17 @@ def main():
 
 ###APPLICATION HALT
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
-            stages.gracefullExit()
+            payment.gracefullExit()
 
 ###SYSTEM HALT
         elif run['CURRENT_STAGE'] == defaults.STAGES['system_halt']:
-            stages.gracefullExit(True)
+            payment.gracefullExit(True)
 
 ###INACTIVITY STATE RESET
         if (run['CURRENT_STAGE'] in defaults.STAGES['payment']
             and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time()):
 
-            stages.clearPaymentRuntime()
+            payment.clearPaymentRuntime()
             xbterminal.helpers.nfcpy.stop()
 
             if (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']
@@ -654,7 +654,4 @@ try:
 except Exception as error:
     logger.exception(error)
 
-xbterminal.stages.gracefullExit()
-
-
-
+payment.gracefullExit()
