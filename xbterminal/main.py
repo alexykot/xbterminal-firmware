@@ -35,7 +35,7 @@ import xbterminal.helpers.configs
 import xbterminal.helpers.wireless
 from xbterminal import defaults
 from xbterminal.blockchain import blockchain
-from xbterminal.stages import payment
+from xbterminal.stages import stages, payment
 import xbterminal.watcher
 
 
@@ -156,6 +156,13 @@ def main():
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 payment.gracefullExit(system_reboot=True)
 
+### NEW STAGES
+        if hasattr(stages, run['CURRENT_STAGE']):
+            logger.debug("moving to stage {0}".format(run['CURRENT_STAGE']))
+            next_stage = getattr(stages, run['CURRENT_STAGE'])(run)
+            if next_stage is not None:
+                run['CURRENT_STAGE'] = next_stage
+                continue
 
 ###BOOTUP
         if run['CURRENT_STAGE'] == defaults.STAGES['bootup']:
