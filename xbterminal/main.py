@@ -530,10 +530,10 @@ def main():
                 run['wifi']['networks_last_listed_timestamp'] = time.time()
                 if run['wifi']['networks_list_length'] != len(networks_list):
                     run['wifi']['networks_list_length'] = len(networks_list)
-                    run['main_window'].ui.wifi_listWidget.clear()
+                    run['main_window'].wifiListClear()
                     network_index = 0
                     for network in networks_list:
-                        run['main_window'].ui.wifi_listWidget.addItem(network['ssid'])
+                        run['main_window'].wifiListAddItem(network['ssid'])
                         if ('wifi_ssid' in xbterminal.local_state
                             and xbterminal.local_state['wifi_ssid'] == network['ssid']):
                             run['wifi']['networks_list_selected_index'] = network_index
@@ -546,13 +546,13 @@ def main():
                 elif keypad.last_key_pressed == 2:
                     run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index']-1, 0)
                 elif keypad.last_key_pressed == 'enter':
-                    xbterminal.local_state['wifi_ssid'] = str(run['main_window'].ui.wifi_listWidget.currentItem().text())
+                    xbterminal.local_state['wifi_ssid'] = run['main_window'].wifiListGetSelectedItem()
                     xbterminal.helpers.configs.save_local_state()
                     run['stage_init'] = False
                     run['CURRENT_STAGE'] = defaults.STAGES['wifi']['enter_passkey']
                     continue
 
-            run['main_window'].ui.wifi_listWidget.setCurrentRow(run['wifi']['networks_list_selected_index'])
+            run['main_window'].wifiListSelectItem(run['wifi']['networks_list_selected_index'])
 
 ###ENTER PASSKEY
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:

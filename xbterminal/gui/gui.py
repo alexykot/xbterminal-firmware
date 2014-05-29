@@ -100,6 +100,19 @@ class GUI(QtGui.QWidget):
             self.ui.wrong_passwd_lbl.hide()
             self.ui.password_input.setStyleSheet('background: #FFFFFF')
 
+    def wifiListAddItem(self, ssid):
+        self.ui.wifi_listWidget.addItem(ssid)
+
+    def wifiListSelectItem(self, index):
+        self.ui.wifi_listWidget.setCurrentRow(index)
+
+    def wifiListGetSelectedItem(self):
+        ssid = self.ui.wifi_listWidget.currentItem().text()
+        return str(ssid)
+
+    def wifiListClear(self):
+        self.ui.wifi_listWidget.clear()
+
     def advanceLoadingProgressBar(self, level):
         self.ui.progressBar_percent.setValue(level)
         time.sleep(0.3)
