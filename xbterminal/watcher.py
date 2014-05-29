@@ -105,7 +105,7 @@ class Watcher(threading.Thread):
             self.wifi = os.path.exists("/sys/class/net/wlan0")
         # Check internet connection
         try:
-            requests.get("http://google.com", timeout=3)
+            requests.get("https://xbterminal.com", timeout=5)
             self.internet = True
         except requests.exceptions.RequestException:
             self.internet = False
