@@ -45,11 +45,11 @@ def check_firmware(server_url, device_key):
     headers['Content-type'] = 'application/json'
     try:
         response = requests.get(url=firmware_check_url, headers=headers)
-    except requests.HTTPError as error:
+        if response.status_code == 200:
+            return response.json()
+    except Exception as error:
         logger.exception(error)
-        return None
-    if response.status_code == 200:
-        return response.json()
+    return None
 
 
 def update_firmware(server_url, device_key, firmware_hash):
@@ -83,7 +83,7 @@ def report_firmware_updated(server_url, device_key, firmware_hash):
     try:
         requests.post(firmware_report_url, headers=headers,
                       data=json.dumps({'firmware_version_hash': firmware_hash}))
-    except requests.HTTPError as error:
+    except requests.exceptions.RequestException as error:
         logger.exception(error)
         return False
     else:
