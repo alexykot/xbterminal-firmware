@@ -28,16 +28,19 @@ class Keypad():
             logger.info("using standard keyboard driver")
         else:
             self.driver = drivers.KeypadDriverBBB()
-        self._button_last_pressed = None
+        self._button_last_pressed = None  # for alphanum conversion
         self._cycle_index = -1
         self._alphanum_char_index = 0
+        self.last_key_pressed = None  # run['key_pressed'] replacement
 
     def getKey(self):
         key = self.driver.getKey()
         if key is not None:
             logger.debug('keypress {},'.format(key))
+        self.last_key_pressed = key
 
-        return key
+    def resetKey(self):
+        self.last_key_pressed = None
 
     #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
     def toAlphaNum(self, button_pressed):
