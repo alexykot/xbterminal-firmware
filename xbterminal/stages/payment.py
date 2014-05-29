@@ -216,6 +216,7 @@ def clearPaymentRuntime(clear_amounts=True):
     xbterminal.runtime['amounts']['amount_to_pay_fiat'] = None
     xbterminal.runtime['effective_rate_btc'] = None
     xbterminal.runtime['transactions_addresses'] = None
+    xbterminal.runtime['pay_with'] = 'nfc'
 
     xbterminal.runtime['main_window'].setText('fiat_amount', "0")
     xbterminal.runtime['main_window'].setText('btc_amount', "0")

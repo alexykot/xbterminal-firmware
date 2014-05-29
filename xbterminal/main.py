@@ -53,6 +53,7 @@ def main():
     run['amounts'] = {}
     run['amounts']['amount_to_pay_fiat'] = None
     run['amounts']['amount_to_pay_btc'] = None
+    run['pay_with'] = 'nfc'
     run['screen_buttons'] = {}
     run['screen_buttons']['qr_button'] = False
     run['screen_buttons']['skip_wifi'] = False
@@ -264,7 +265,7 @@ def main():
 
                 run['main_window'].setStyle('amount_input', 'background: #FFF')
                 run['main_window'].setText('error_text_lbl', '')
-                run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
+                run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], keypad.last_key_pressed)
 
                 run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
 
@@ -344,7 +345,7 @@ def main():
 
             if keypad.last_key_pressed == 'enter':
                 run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_nfc']
+                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay']
                 continue
             if keypad.last_key_pressed == 'backspace':
                 payment.clearPaymentRuntime(False)
@@ -353,29 +354,24 @@ def main():
                 continue
 
 ###PAY NFC & QR
-        elif (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc'] or
-                run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
+        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay']:
             if not run['stage_init']:
-                if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']:
+                if run['pay_with'] == 'nfc':
                     run['main_window'].showScreen('pay_nfc')
                     run['main_window'].setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                     run['main_window'].setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                     run['main_window'].setText('exchange_rate_nfc', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                         defaults.EXCHANGE_RATE_DEC_PLACES))
-                elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
+                elif run['pay_with'] == 'qr':
                     run['main_window'].showScreen('pay_qr')
                     run['main_window'].setText('fiat_amount_qr', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                     run['main_window'].setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                     run['main_window'].setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                          defaults.EXCHANGE_RATE_DEC_PLACES))
                     image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-                    if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
-                        xbterminal.helpers.qr.qr_gen(payment.getBitcoinURI(run['transactions_addresses']['local'],
-                                                                          run['amounts']['amount_to_pay_btc']),
-                                                     image_path)
-                    else:
-                        xbterminal.helpers.qr.qr_gen(run['transactions_addresses']['local'],
-                                                     image_path) #address only qr
+                    xbterminal.helpers.qr.qr_gen(payment.getBitcoinURI(run['transactions_addresses']['local'],
+                                                                      run['amounts']['amount_to_pay_btc']),
+                                                 image_path)
                     run['main_window'].setText('qr_address_lbl', run['transactions_addresses']['local'])
                     run['main_window'].setImage("qr_image", image_path)
                     logger.debug('payment qr code requested')
@@ -402,8 +398,8 @@ def main():
             if keypad.last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button'] == True:
                 logger.debug('QR code requested')
                 run['screen_buttons']['qr_button'] = False
+                run['pay_with'] = 'qr'
                 run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_qr']
                 continue
 
             if not run['received_payment']:
@@ -636,8 +632,7 @@ def main():
             payment.clearPaymentRuntime()
             xbterminal.helpers.nfcpy.stop()
 
-            if (run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']
-                or run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
+            if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay']:
                 run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
