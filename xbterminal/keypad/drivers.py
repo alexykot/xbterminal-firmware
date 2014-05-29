@@ -3,14 +3,15 @@ import logging
 import time
 
 from PyQt4 import QtCore
+import Adafruit_BBIO.GPIO as GPIO
 
 import xbterminal
 
 logger = logging.getLogger(__name__)
-GPIO = None
 
 
 class KeypadDriverBBB():
+
     pins_set_up = False
     pins = {'pin1': "P8_14",
             'pin2': "P8_16",
@@ -35,7 +36,7 @@ class KeypadDriverBBB():
                'A': 'backspace',
                'D': 'enter',
                '*#BC': 'system_halt',
-                }
+               }
 
     KEYPAD = {17: 1,
               18: 2,
@@ -54,14 +55,10 @@ class KeypadDriverBBB():
               148: '*',
               145: '#',
               253: '*#BC',
-               }
+              }
 
     ROW = [pins['pin8'], pins['pin7'], pins['pin6'], pins['pin5']]
     COLUMN = [pins['pin4'], pins['pin3'], pins['pin2'], pins['pin1']]
-
-    def __init__(self):
-        global GPIO
-        import Adafruit_BBIO.GPIO as GPIO
 
     def getKey(self):
         key = None
@@ -101,14 +98,14 @@ class KeypadDriverBBB():
             for j in range(len(self.COLUMN)):
                 tmpRead = GPIO.input(self.COLUMN[j])
                 if tmpRead == 1:
-                    colVal=j
+                    colVal = j
                     bits_list[3-j] = 1
 
             if colVal in range(len(self.COLUMN)):
                 for key, val in enumerate(bits_list):
                     bits_list[key] = str(val)
                 binary_str = ''.join(bits_list)
-                binary_str = '0b'+binary_str
+                binary_str = '0b' + binary_str
                 keynum = int(binary_str, 2)
 
                 try:
@@ -149,4 +146,4 @@ class KeyboardDriver(object):
             self.main_window.keys.clear()
         except IndexError:
             return None
-        return self.key_map.get(key) 
+        return self.key_map.get(key)
