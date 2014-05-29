@@ -104,6 +104,16 @@ class GUI(QtGui.QWidget):
         self.ui.progressBar_percent.setValue(level)
         time.sleep(0.3)
 
+    def currentScreen(self):
+        screen_index = self.ui.main_stackedWidget.currentIndex()
+        for screen_name, i in defaults.SCREENS.items():
+            if i == screen_index:
+                return screen_name
+
+    def showScreen(self, screen_name):
+        screen_index = defaults.SCREENS[screen_name]
+        self.ui.main_stackedWidget.setCurrentIndex(screen_index)
+
 
 def initGUI():
     application = QtGui.QApplication(sys.argv)

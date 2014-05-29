@@ -99,16 +99,16 @@ def main():
         for level, message in watcher_messages:
             logger.log(level, message)
         if watcher_errors:
-            if run['main_window'].ui.main_stackedWidget.currentIndex() != defaults.SCREENS['errors']:
+            if run['main_window'].currentScreen() != 'errors':
                 # Show error screen
-                run['current_screen'] = run['main_window'].ui.main_stackedWidget.currentIndex()
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['errors'])
+                run['current_screen'] = run['main_window'].currentScreen()
+                run['main_window'].showScreen('errors')
                 run['main_window'].ui.errors_lbl.setText("\n".join(watcher_errors))
             continue
         else:
-            if run['main_window'].ui.main_stackedWidget.currentIndex() == defaults.SCREENS['errors'] and run['current_screen'] is not None:
+            if run['main_window'].currentScreen() == 'errors' and run['current_screen'] is not None:
                 # Restore previous screen
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(run['current_screen'])
+                run['main_window'].showScreen(run['current_screen'])
 
         # Read keypad input
         if keypad.last_key_pressed is not None:
@@ -164,7 +164,7 @@ def main():
 ###BOOTUP
         if run['CURRENT_STAGE'] == defaults.STAGES['bootup']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
+                run['main_window'].showScreen('load_indefinite')
                 run['stage_init'] = True
                 continue
 
@@ -240,7 +240,7 @@ def main():
 ###IDLE
         elif run['CURRENT_STAGE'] == defaults.STAGES['idle']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['idle'])
+                run['main_window'].showScreen('idle')
                 run['stage_init'] = True
                 continue
 
@@ -252,7 +252,7 @@ def main():
 ###ENTER AMOUNT
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['enter_amount'])
+                run['main_window'].showScreen('enter_amount')
                 run['main_window'].ui.amount_input.setText(payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
                 run['stage_init'] = True
                 continue
@@ -283,7 +283,7 @@ def main():
 ###PAY LOADING
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_loading']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['load_indefinite'])
+                run['main_window'].showScreen('load_indefinite')
                 run['main_window'].ui.indefinite_load_lbl.setText('preparing payment')
                 run['stage_init'] = True
                 continue
@@ -336,7 +336,7 @@ def main():
 ###PAY RATES
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_rates']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_rates'])
+                run['main_window'].showScreen('pay_rates')
                 run['main_window'].ui.fiat_amount.setText(payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                 run['main_window'].ui.btc_amount.setText(payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                 run['main_window'].ui.exchange_rate_amount.setText(payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
@@ -358,13 +358,13 @@ def main():
                 run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']):
             if not run['stage_init']:
                 if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_nfc']:
-                    run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_nfc'])
+                    run['main_window'].showScreen('pay_nfc')
                     run['main_window'].ui.fiat_amount_nfc.setText(payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                     run['main_window'].ui.btc_amount_nfc.setText(payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                     run['main_window'].ui.exchange_rate_nfc.setText(payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                         defaults.EXCHANGE_RATE_DEC_PLACES))
                 elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_qr']:
-                    run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_qr'])
+                    run['main_window'].showScreen('pay_qr')
                     run['main_window'].ui.fiat_amount_qr.setText(payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
                     run['main_window'].ui.btc_amount_qr.setText(payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
                     run['main_window'].ui.exchange_rate_qr.setText(payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
@@ -472,7 +472,7 @@ def main():
 ###PAY SUCCESS
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_success']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_success'])
+                run['main_window'].showScreen('pay_success')
                 if run['receipt_url'] is not None:
                     image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
                     xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
@@ -498,7 +498,7 @@ def main():
 ###PAY CANCEL
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_cancel']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
+                run['main_window'].showScreen('pay_cancel')
                 run['stage_init'] = True
                 continue
 
@@ -507,7 +507,7 @@ def main():
                 run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
                 run['main_window'].ui.amount_input.setText(run['display_value_formatted'])
 
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['pay_cancel'])
+                run['main_window'].showScreen('pay_cancel')
                 run['stage_init'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
                 continue
@@ -515,7 +515,7 @@ def main():
 ###CHOOSE SSID
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['choose_ssid']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['choose_ssid'])
+                run['main_window'].showScreen('choose_ssid')
                 run['stage_init'] = True
 
             if run['screen_buttons']['skip_wifi']:
@@ -558,7 +558,7 @@ def main():
 ###ENTER PASSKEY
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['enter_passkey'])
+                run['main_window'].showScreen('enter_passkey')
                 run['main_window'].ui.ssid_entered_lbl.setText(xbterminal.local_state['wifi_ssid'])
                 xbterminal.local_state['wifi_pass'] = ''
                 run['stage_init'] = True
@@ -613,7 +613,7 @@ def main():
 ###WIFI CONNECTED
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['wifi_connected']:
             if not run['stage_init']:
-                run['main_window'].ui.main_stackedWidget.setCurrentIndex(defaults.SCREENS['wifi_connected'])
+                run['main_window'].showScreen('wifi_connected')
                 run['stage_init'] = True
                 continue
 
