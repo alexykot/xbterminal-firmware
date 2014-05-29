@@ -7,9 +7,6 @@ from xbterminal.keypad import drivers
 
 logger = logging.getLogger(__name__)
 
-_button_last_pressed = None
-_cycle_index = -1
-_alphanum_char_index = 0
 _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', '{', '}', '[', ']', ),
                     2: ('2', 'a', 'b', 'c', 'A', 'B', 'C', ),
                     3: ('3', 'd', 'e', 'f', 'D', 'E', 'F', ),
@@ -22,6 +19,7 @@ _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', 
                     0: ('0', '#', '!', '@', '.', ',', '\\', '~', '<', '>', '_', '+', ':', ';', ),
                     }
 
+
 class Keypad():
 
     def __init__(self):
@@ -30,6 +28,9 @@ class Keypad():
             logger.info("using standard keyboard driver")
         else:
             self.driver = drivers.KeypadDriverBBB()
+        self._button_last_pressed = None
+        self._cycle_index = -1
+        self._alphanum_char_index = 0
 
     def getKey(self):
         key = self.driver.getKey()
@@ -40,58 +41,52 @@ class Keypad():
 
     #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
     def toAlphaNum(self, button_pressed):
-        global _button_last_pressed, _cycle_index, _buttons_to_chars
-
         if button_pressed not in _buttons_to_chars:
-            _button_last_pressed = button_pressed
+            self._button_last_pressed = button_pressed
             return button_pressed
 
-        if button_pressed != _button_last_pressed or _cycle_index+1 == len(_buttons_to_chars[button_pressed]):
-            _cycle_index = -1
+        if (
+            button_pressed != self._button_last_pressed
+            or self._cycle_index + 1 == len(_buttons_to_chars[button_pressed])
+        ):
+            self._cycle_index = -1
 
-        _cycle_index = _cycle_index + 1
-        _button_last_pressed = button_pressed
+        self._cycle_index += 1
+        self._button_last_pressed = button_pressed
 
-        return _buttons_to_chars[button_pressed][_cycle_index]
+        return _buttons_to_chars[button_pressed][self._cycle_index]
 
     def createAlphaNumString(self, current_string, button_pressed):
-        global _alphanum_char_index, _cycle_index, _button_last_pressed
-
         if button_pressed == 'enter':
-            _alphanum_char_index = _alphanum_char_index + 1
-            _button_last_pressed = button_pressed
-            _cycle_index = -1
+            self._alphanum_char_index += 1
+            self._button_last_pressed = button_pressed
+            self._cycle_index = -1
             return current_string
 
         if button_pressed == 'backspace':
             current_string = current_string[:-1]
-            if _cycle_index == -1:
-                _alphanum_char_index = max(_alphanum_char_index - 1, 0)
-            _button_last_pressed = button_pressed
-            _cycle_index = -1
+            if self._cycle_index == -1:
+                self._alphanum_char_index = max(self._alphanum_char_index - 1, 0)
+            self._button_last_pressed = button_pressed
+            self._cycle_index = -1
             return current_string
 
         if button_pressed in ('escape', 'qr_code'):
             return current_string
 
         new_char = self.toAlphaNum(button_pressed)
-        new_string = current_string[0:_alphanum_char_index] + new_char
+        new_string = current_string[0:self._alphanum_char_index] + new_char
 
         return new_string
 
-
     def getCharSelectorTupl(self, button_pressed):
-        global _buttons_to_chars
-
         try:
             return _buttons_to_chars[button_pressed]
         except KeyError:
             return None
 
     def checkIsDone(self, button_pressed):
-        global _button_last_pressed
-
-        if button_pressed == 'enter' and _button_last_pressed == 'enter':
+        if button_pressed == 'enter' and self._button_last_pressed == 'enter':
             return True
 
         return False
