@@ -6,7 +6,6 @@ import sys
 import os
 import unicodedata
 import logging.config
-from PyQt4 import QtGui, QtCore
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
 sys.path.insert(0, include_path)
@@ -378,7 +377,7 @@ def main():
                         xbterminal.helpers.qr.qr_gen(run['transactions_addresses']['local'],
                                                      image_path) #address only qr
                     run['main_window'].ui.qr_address_lbl.setText(run['transactions_addresses']['local'])
-                    run['main_window'].ui.qr_image.setPixmap(QtGui.QPixmap(image_path))
+                    run['main_window'].setImage("qr_image", image_path)
                     logger.debug('payment qr code requested')
 
                 logger.debug('local payment requested, address: {local_address}, '
@@ -476,7 +475,7 @@ def main():
                 if run['receipt_url'] is not None:
                     image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
                     xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
-                    run['main_window'].ui.receipt_qr_image.setPixmap(QtGui.QPixmap(image_path))
+                    run['main_window'].setImage("receipt_qr_image", image_path)
                     if not xbterminal.helpers.nfcpy.is_active():
                         xbterminal.helpers.nfcpy.start(run['receipt_url'])
                         logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))

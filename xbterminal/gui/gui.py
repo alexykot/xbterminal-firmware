@@ -114,6 +114,10 @@ class GUI(QtGui.QWidget):
         screen_index = defaults.SCREENS[screen_name]
         self.ui.main_stackedWidget.setCurrentIndex(screen_index)
 
+    def setImage(self, widget_name, image_path):
+        widget = getattr(self.ui, widget_name)
+        widget.setPixmap(QtGui.QPixmap(image_path))
+
 
 def initGUI():
     application = QtGui.QApplication(sys.argv)
