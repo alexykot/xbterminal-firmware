@@ -131,6 +131,10 @@ class GUI(QtGui.QWidget):
         widget = getattr(self.ui, widget_name)
         widget.setPixmap(QtGui.QPixmap(image_path))
 
+    def setStyle(self, widget_name, css):
+        widget = getattr(self.ui, widget_name)
+        widget.setStyleSheet(css)
+
 
 def initGUI():
     application = QtGui.QApplication(sys.argv)

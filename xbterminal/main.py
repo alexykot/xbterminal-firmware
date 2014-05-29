@@ -262,7 +262,7 @@ def main():
                     run['CURRENT_STAGE'] = defaults.STAGES['idle']
                     continue
 
-                run['main_window'].ui.amount_input.setStyleSheet('background: #FFF')
+                run['main_window'].setStyle('amount_input', 'background: #FFF')
                 run['main_window'].ui.error_text_lbl.setText("")
                 run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['key_pressed'])
 
@@ -276,7 +276,7 @@ def main():
                     run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_loading']
                     continue
                 else:
-                    run['main_window'].ui.amount_input.setStyleSheet('background: #B33A3A')
+                    run['main_window'].setStyle('amount_input', 'background: #B33A3A')
                     run['main_window'].ui.error_text_lbl.setText("no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
 
 ###PAY LOADING
