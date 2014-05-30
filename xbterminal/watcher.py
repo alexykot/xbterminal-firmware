@@ -102,14 +102,10 @@ class Watcher(threading.Thread):
             self.internet = True
         except requests.exceptions.RequestException:
             self.internet = False
-        # Check bitcoinj
+        # Check blockchain driver
         try:
             self.peers = int(blockchain.getInfo().get('connections'))
-        except (
-            requests.exceptions.RequestException,  # Bitcoinj network error
-            socket.error,  # Bitcoind network error
-            AttributeError,
-            TypeError):
+        except Exception:
             self.peers = None
 
     def log_system_stats(self):
