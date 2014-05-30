@@ -14,9 +14,8 @@ from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
 
 logger = logging.getLogger(__name__)
 
-BITCOIND_TESTNET = True
 BITCOIND_HOST = 'node.xbterminal.com'
-if BITCOIND_TESTNET:
+if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
     BITCOIND_PORT = 18332
 else:
     BITCOIND_PORT = 8332
@@ -24,12 +23,14 @@ BITCOIND_USER = 'root'
 BITCOIND_PASS = 'password'
 BITCOIND_HTTPS = True
 
-
 connection = None
 
+
 class BitcoinConnection(bitcoinrpc.connection.BitcoinConnection):
+
     def sendrawtransaction(self, hex_raw_tx):
         self.proxy.sendrawtransaction(hex_raw_tx)
+
 
 def init():
     global connection
