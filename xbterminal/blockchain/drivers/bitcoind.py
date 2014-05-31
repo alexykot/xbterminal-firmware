@@ -23,6 +23,11 @@ BITCOIND_USER = 'root'
 BITCOIND_PASS = 'password'
 BITCOIND_HTTPS = True
 
+try:
+    from xbterminal.bitcoind_auth import BITCOIND_USER, BITCOIND_PASS
+except:
+    pass
+
 connection = None
 
 
