@@ -41,7 +41,12 @@ def init():
                                        host=BITCOIND_HOST,
                                        port=BITCOIND_PORT,
                                        use_https=BITCOIND_HTTPS)
-    logger.debug('bitcoind init done')
+    try:
+        getInfo()
+    except Exception as error:
+        logger.exception(error)
+    else:
+        logger.debug('bitcoind init done')
 
 
 def getAddressBalance(address):
