@@ -441,3 +441,14 @@ def enter_passkey(run):
             logger.debug('wifi wrong passkey')
             run['main_window'].toggleWifiConnectingState(False)
             run['main_window'].toggleWifiWrongPasswordState(True)
+
+
+def wifi_connected(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('wifi_connected')
+        run['stage_init'] = True
+        return defaults.STAGES['wifi']['wifi_connected']
+
+    time.sleep(3)
+    run['stage_init'] = False
+    return defaults.STAGES['bootup']

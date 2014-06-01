@@ -162,18 +162,6 @@ def main():
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
-###WIFI CONNECTED
-        elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['wifi_connected']:
-            if not run['stage_init']:
-                run['main_window'].showScreen('wifi_connected')
-                run['stage_init'] = True
-                continue
-
-            time.sleep(3)
-            run['stage_init'] = False
-            run['CURRENT_STAGE'] = defaults.STAGES['bootup']
-            continue
-
 ###APPLICATION HALT
         elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
             payment.gracefullExit()
