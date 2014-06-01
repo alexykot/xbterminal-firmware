@@ -154,7 +154,7 @@ def main():
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 payment.gracefullExit(system_reboot=True)
 
-### NEW STAGES
+        # Manage stages
         if hasattr(stages, run['CURRENT_STAGE']):
             logger.debug("moving to stage {0}".format(run['CURRENT_STAGE']))
             next_stage = getattr(stages, run['CURRENT_STAGE'])(run)
@@ -162,15 +162,7 @@ def main():
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
-###APPLICATION HALT
-        elif run['CURRENT_STAGE'] == defaults.STAGES['application_halt']:
-            payment.gracefullExit()
-
-###SYSTEM HALT
-        elif run['CURRENT_STAGE'] == defaults.STAGES['system_halt']:
-            payment.gracefullExit(True)
-
-###INACTIVITY STATE RESET
+        # Inactivity state reset
         if (run['CURRENT_STAGE'] in defaults.STAGES['payment']
             and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time()):
 

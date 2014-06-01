@@ -452,3 +452,11 @@ def wifi_connected(run):
     time.sleep(3)
     run['stage_init'] = False
     return defaults.STAGES['bootup']
+
+
+def application_halt(run):
+    payment.gracefullExit()
+
+
+def system_halt(run):
+    payment.gracefullExit(True)
