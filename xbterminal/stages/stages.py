@@ -182,3 +182,21 @@ def pay_loading(run):
 
         run['stage_init'] = False
         return defaults.STAGES['payment']['pay_rates']
+
+
+def pay_rates(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('pay_rates')
+        run['main_window'].setText('fiat_amount', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+        run['main_window'].setText('btc_amount', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+        run['main_window'].setText('exchange_rate_amount', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+                                                             defaults.EXCHANGE_RATE_DEC_PLACES))
+        run['stage_init'] = True
+
+    if run['keypad'].last_key_pressed == 'enter':
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['pay']
+    if run['keypad'].last_key_pressed == 'backspace':
+        payment.clearPaymentRuntime(False)
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['enter_amount']
