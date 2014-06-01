@@ -90,3 +90,14 @@ def bootup(run):
     if run['init']['internet'] and run['init']['remote_config'] and run['init']['blockchain']:
         run['stage_init'] = False
         return defaults.STAGES['idle']
+
+
+def idle(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('idle')
+        run['stage_init'] = True
+        return defaults.STAGES['idle']
+
+    if run['keypad'].last_key_pressed is not None:
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['enter_amount']

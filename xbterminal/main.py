@@ -162,17 +162,6 @@ def main():
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
-###IDLE
-        elif run['CURRENT_STAGE'] == defaults.STAGES['idle']:
-            if not run['stage_init']:
-                run['main_window'].showScreen('idle')
-                run['stage_init'] = True
-                continue
-
-            if run['keypad'].last_key_pressed is not None:
-                run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
-                continue
 
 ###ENTER AMOUNT
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['enter_amount']:
