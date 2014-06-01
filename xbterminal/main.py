@@ -162,23 +162,6 @@ def main():
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
-###PAY CANCEL
-        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_cancel']:
-            if not run['stage_init']:
-                run['main_window'].showScreen('pay_cancel')
-                run['stage_init'] = True
-                continue
-
-            if run['keypad'].last_key_pressed is not None:
-                run['display_value_unformatted'] = ''
-                run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-                run['main_window'].setText('amount_input', run['display_value_formatted'])
-
-                run['main_window'].showScreen('pay_cancel')
-                run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
-                continue
-
 ###CHOOSE SSID
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['choose_ssid']:
             if not run['stage_init']:

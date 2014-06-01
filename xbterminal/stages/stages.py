@@ -332,3 +332,19 @@ def pay_success(run):
         xbterminal.helpers.nfcpy.stop()
         run['stage_init'] = False
         return defaults.STAGES['idle']
+
+
+def pay_cancel(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('pay_cancel')
+        run['stage_init'] = True
+        return defaults.STAGES['payment']['pay_cancel']
+
+    if run['keypad'].last_key_pressed is not None:
+        run['display_value_unformatted'] = ''
+        run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+        run['main_window'].setText('amount_input', run['display_value_formatted'])
+
+        run['main_window'].showScreen('pay_cancel')
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['enter_amount']
