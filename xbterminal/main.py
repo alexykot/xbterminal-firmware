@@ -162,62 +162,6 @@ def main():
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
-
-###ENTER PASSKEY
-        elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['enter_passkey']:
-            if not run['stage_init']:
-                run['main_window'].showScreen('enter_passkey')
-                run['main_window'].setText('ssid_entered_lbl', xbterminal.local_state['wifi_ssid'])
-                xbterminal.local_state['wifi_pass'] = ''
-                run['stage_init'] = True
-
-            if run['keypad'].last_key_pressed is not None:
-                run['main_window'].toggleWifiWrongPasswordState(False)
-
-                if run['keypad'].checkIsDone(run['keypad'].last_key_pressed):
-                    run['wifi']['try_to_connect'] = True
-                    run['main_window'].toggleWifiConnectingState(True)
-                    continue
-                elif run['keypad'].checkIsCancelled(xbterminal.local_state['wifi_pass'], run['keypad'].last_key_pressed):
-                    del xbterminal.local_state['wifi_ssid']
-                    del xbterminal.local_state['wifi_pass']
-                    xbterminal.helpers.configs.save_local_state()
-                    run['stage_init'] = False
-                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['choose_ssid']
-                    continue
-                else:
-                    xbterminal.local_state['wifi_pass'] = run['keypad'].createAlphaNumString(xbterminal.local_state['wifi_pass'],
-                                                                                        run['keypad'].last_key_pressed)
-                char_selector_tupl = run['keypad'].getCharSelectorTupl(run['keypad'].last_key_pressed)
-                if char_selector_tupl is not None:
-                    char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(char_selector_tupl,
-                                                                     xbterminal.local_state['wifi_pass'][-1])
-                else:
-                    char_select_str = ''
-                run['main_window'].setText('input_help_lbl', char_select_str)
-
-                run['main_window'].setText('password_input', xbterminal.local_state['wifi_pass'])
-
-            if run['wifi']['try_to_connect']:
-                run['wifi']['try_to_connect'] = False
-                logger.debug('trying to connect to wifi, '
-                    'ssid: "{ssid}", pass: "{passkey}" '.format(ssid=xbterminal.local_state['wifi_ssid'],
-                                                                passkey=xbterminal.local_state['wifi_pass']))
-                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
-                                                                               xbterminal.local_state['wifi_pass'])
-                if run['wifi']['connected']:
-                    run['init']['internet'] = True
-                    logger.debug('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
-                    xbterminal.helpers.configs.save_local_state()
-                    run['stage_init'] = False
-                    run['CURRENT_STAGE'] = defaults.STAGES['wifi']['wifi_connected']
-                    continue
-                else:
-                    logger.debug('wifi wrong passkey')
-                    run['main_window'].toggleWifiConnectingState(False)
-                    run['main_window'].toggleWifiWrongPasswordState(True)
-
-
 ###WIFI CONNECTED
         elif run['CURRENT_STAGE'] == defaults.STAGES['wifi']['wifi_connected']:
             if not run['stage_init']:
