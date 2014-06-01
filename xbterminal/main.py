@@ -162,32 +162,6 @@ def main():
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
-###PAY SUCCESS
-        elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_success']:
-            if not run['stage_init']:
-                run['main_window'].showScreen('pay_success')
-                if run['receipt_url'] is not None:
-                    image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-                    xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
-                    run['main_window'].setImage("receipt_qr_image", image_path)
-                    if not xbterminal.helpers.nfcpy.is_active():
-                        xbterminal.helpers.nfcpy.start(run['receipt_url'])
-                        logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
-                        time.sleep(0.5)
-                run['stage_init'] = True
-                continue
-
-            if run['keypad'].last_key_pressed == 'enter':
-                xbterminal.helpers.nfcpy.stop()
-                run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['enter_amount']
-                continue
-            if run['keypad'].last_key_pressed == 'backspace':
-                xbterminal.helpers.nfcpy.stop()
-                run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['idle']
-                continue
-
 ###PAY CANCEL
         elif run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay_cancel']:
             if not run['stage_init']:

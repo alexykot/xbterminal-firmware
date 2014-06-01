@@ -308,3 +308,27 @@ def pay(run):
             xbterminal.helpers.nfcpy.stop()
             run['stage_init'] = False
             return defaults.STAGES['payment']['pay_success']
+
+
+def pay_success(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('pay_success')
+        if run['receipt_url'] is not None:
+            image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
+            run['main_window'].setImage("receipt_qr_image", image_path)
+            if not xbterminal.helpers.nfcpy.is_active():
+                xbterminal.helpers.nfcpy.start(run['receipt_url'])
+                logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
+                time.sleep(0.5)
+        run['stage_init'] = True
+        return defaults.STAGES['payment']['pay_success']
+
+    if run['keypad'].last_key_pressed == 'enter':
+        xbterminal.helpers.nfcpy.stop()
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['enter_amount']
+    if run['keypad'].last_key_pressed == 'backspace':
+        xbterminal.helpers.nfcpy.stop()
+        run['stage_init'] = False
+        return defaults.STAGES['idle']
