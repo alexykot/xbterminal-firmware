@@ -131,3 +131,54 @@ def enter_amount(run):
         else:
             run['main_window'].setStyle('amount_input', 'background: #B33A3A')
             run['main_window'].setText('error_text_lbl', "no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
+
+
+def pay_loading(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('load_indefinite')
+        run['main_window'].setText('indefinite_load_lbl', 'preparing payment')
+        run['stage_init'] = True
+        return defaults.STAGES['payment']['pay_loading']
+
+    if run['amounts']['amount_to_pay_fiat'] is None:
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['enter_amount']
+
+    if run['amounts']['amount_to_pay_btc'] is None:
+        run['received_payment'] = False
+        run['invoice_paid'] = False
+
+        run['transactions_addresses'] = {}
+        run['transactions_addresses']['local'] = xbterminal.blockchain.blockchain.getFreshAddress()
+        run['transactions_addresses']['merchant'] = xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS']
+        run['transactions_addresses']['fee'] = xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']
+
+        if (xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'] is not None
+            and xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE'] > 0):
+            (run['amounts']['instantfiat_fiat_amount'],
+             run['amounts']['instantfiat_btc_amount'],
+             run['instantfiat_invoice_id'],
+             run['transactions_addresses']['instantfiat'],
+             run['exchange_rate']) = payment.createInvoice(run['amounts']['amount_to_pay_fiat'])
+        else:
+            run['amounts']['instantfiat_fiat_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
+            run['amounts']['instantfiat_btc_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
+            run['instantfiat_invoice_id'] = None
+            run['transactions_addresses']['instantfiat'] = None
+            run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(xbterminal.remote_config['MERCHANT_CURRENCY'])
+
+        run['amounts']['our_fee_btc_amount'] = payment.getOurFeeBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
+        run['amounts']['merchants_btc_amount'] = payment.getMerchantBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
+
+        run['amounts']['amount_to_pay_btc'] = (run['amounts']['our_fee_btc_amount']
+                                    + run['amounts']['instantfiat_btc_amount']
+                                    + run['amounts']['merchants_btc_amount']
+                                    + defaults.BTC_DEFAULT_FEE) #tx fee to be paid for forwarding transaction from device to merchant and/or instantfiat
+        run['effective_rate_btc'] = run['amounts']['amount_to_pay_fiat'] / run['amounts']['amount_to_pay_btc']
+
+        run['payment_requested_timestamp'] = time.time()
+        run['transaction_bitcoin_uri'] = payment.getBitcoinURI(run['transactions_addresses']['local'],
+                                                              run['amounts']['amount_to_pay_btc'])
+
+        run['stage_init'] = False
+        return defaults.STAGES['payment']['pay_rates']
