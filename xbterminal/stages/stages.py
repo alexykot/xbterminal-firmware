@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 import xbterminal
 from xbterminal import defaults
+from xbterminal.stages import payment
 
 import xbterminal.bitcoinaverage
 import xbterminal.blockchain.blockchain
@@ -101,3 +102,32 @@ def idle(run):
     if run['keypad'].last_key_pressed is not None:
         run['stage_init'] = False
         return defaults.STAGES['payment']['enter_amount']
+
+
+def enter_amount(run):
+    if not run['stage_init']:
+        run['main_window'].showScreen('enter_amount')
+        run['main_window'].setText('amount_input', payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+        run['stage_init'] = True
+        return defaults.STAGES['payment']['enter_amount']
+
+    if (isinstance(run['keypad'].last_key_pressed, (int, long)) or run['keypad'].last_key_pressed == 'backspace'):
+        if run['keypad'].last_key_pressed == 'backspace' and run['display_value_unformatted'] == '':
+            run['stage_init'] = False
+            return defaults.STAGES['idle']
+
+        run['main_window'].setStyle('amount_input', 'background: #FFF')
+        run['main_window'].setText('error_text_lbl', '')
+        run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
+
+        run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+
+        run['main_window'].setText('amount_input', run['display_value_formatted'])
+    elif run['keypad'].last_key_pressed == 'enter':
+        run['amounts']['amount_to_pay_fiat'] = payment.inputToDecimal(run['display_value_unformatted'])
+        if run['amounts']['amount_to_pay_fiat'] > 0:
+            run['stage_init'] = False
+            return defaults.STAGES['payment']['pay_loading']
+        else:
+            run['main_window'].setStyle('amount_input', 'background: #B33A3A')
+            run['main_window'].setText('error_text_lbl', "no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
