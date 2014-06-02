@@ -27,7 +27,7 @@ import xbterminal.gui.gui
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.configs
 from xbterminal import defaults
-from xbterminal.stages import stages, payment
+from xbterminal.stages import payment
 from xbterminal.stages.worker import StageWorker
 import xbterminal.watcher
 
@@ -149,22 +149,14 @@ def main():
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 payment.gracefullExit(system_reboot=True)
 
-        if run['CURRENT_STAGE'] == 'idle':
+        # Manage stages
+        if hasattr(stages, run['CURRENT_STAGE']):
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(run['main_window'].stageWorkerSlot)
             worker.start()
             worker.wait()
             if worker.next_stage is not None:
                 run['CURRENT_STAGE'] = worker.next_stage
-            continue
-
-        # Manage stages
-        if hasattr(stages, run['CURRENT_STAGE']):
-            next_stage = getattr(stages, run['CURRENT_STAGE'])(run)
-            if next_stage is not None:
-                if next_stage != run['CURRENT_STAGE']:
-                    logger.debug("moving to stage {0}".format(next_stage))
-                run['CURRENT_STAGE'] = next_stage
                 continue
 
         # Inactivity state reset
