@@ -28,6 +28,7 @@ import xbterminal.helpers.nfcpy
 import xbterminal.helpers.configs
 from xbterminal import defaults
 from xbterminal.stages import stages, payment
+from xbterminal.stages.worker import StageWorker
 import xbterminal.watcher
 
 
@@ -57,6 +58,7 @@ def main():
     run['wifi'] = {}
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
+    run['wifi']['selected_ssid'] = None
     run['current_screen'] = None
     run['main_window'] = None
     run['keypad'] = None
@@ -146,6 +148,15 @@ def main():
                 run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 payment.gracefullExit(system_reboot=True)
+
+        if run['CURRENT_STAGE'] == 'idle':
+            worker = StageWorker(run['CURRENT_STAGE'], run)
+            worker.ui.signal.connect(run['main_window'].stageWorkerSlot)
+            worker.start()
+            worker.wait()
+            if worker.next_stage is not None:
+                run['CURRENT_STAGE'] = worker.next_stage
+            continue
 
         # Manage stages
         if hasattr(stages, run['CURRENT_STAGE']):

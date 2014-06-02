@@ -93,9 +93,9 @@ def bootup(run):
         return defaults.STAGES['idle']
 
 
-def idle(run):
+def idle(run, ui):
     if not run['stage_init']:
-        run['main_window'].showScreen('idle')
+        ui.showScreen('idle')
         run['stage_init'] = True
         return defaults.STAGES['idle']
 
@@ -383,7 +383,8 @@ def choose_ssid(run):
         elif run['keypad'].last_key_pressed == 2:
             run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index']-1, 0)
         elif run['keypad'].last_key_pressed == 'enter':
-            xbterminal.local_state['wifi_ssid'] = run['main_window'].wifiListGetSelectedItem()
+            run['main_window'].wifiListGetSelectedItem()
+            xbterminal.local_state['wifi_ssid'] = run['wifi']['selected_ssid']
             xbterminal.helpers.configs.save_local_state()
             run['stage_init'] = False
             return defaults.STAGES['wifi']['enter_passkey']

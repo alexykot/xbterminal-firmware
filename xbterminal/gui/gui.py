@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import sys
 import time
 from collections import deque
 
 from PyQt4 import QtGui, QtCore
+
+logger = logging.getLogger(__name__)
 
 import xbterminal
 from xbterminal.gui import ui as appui
@@ -93,7 +96,7 @@ class GUI(QtGui.QWidget):
 
     def wifiListGetSelectedItem(self):
         ssid = self.ui.wifi_listWidget.currentItem().text()
-        return str(ssid)
+        xbterminal.runtime['wifi']['selected_ssid'] = str(ssid)
 
     def wifiListClear(self):
         self.ui.wifi_listWidget.clear()
@@ -123,6 +126,10 @@ class GUI(QtGui.QWidget):
     def setStyle(self, widget_name, css):
         widget = getattr(self.ui, widget_name)
         widget.setStyleSheet(css)
+
+    @QtCore.pyqtSlot(str, tuple)
+    def stageWorkerSlot(self, method_name, args):
+        getattr(self, str(method_name))(*args)
 
 
 def initGUI():
