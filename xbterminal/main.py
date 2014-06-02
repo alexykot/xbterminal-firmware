@@ -58,7 +58,6 @@ def main():
     run['wifi'] = {}
     run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
-    run['wifi']['selected_ssid'] = None
     run['current_screen'] = None
     run['main_window'] = None
     run['keypad'] = None
@@ -77,6 +76,8 @@ def main():
 
     watcher = xbterminal.watcher.Watcher()
     watcher.start()
+
+    worker = None
 
     xbterminal.local_state['last_started'] = time.time()
     xbterminal.helpers.configs.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
@@ -150,14 +151,18 @@ def main():
                 payment.gracefullExit(system_reboot=True)
 
         # Manage stages
-        if hasattr(stages, run['CURRENT_STAGE']):
+        if worker is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(run['main_window'].stageWorkerSlot)
             worker.start()
-            worker.wait()
+        elif worker.isFinished():
             if worker.next_stage is not None:
                 run['CURRENT_STAGE'] = worker.next_stage
-                continue
+            else:
+                time.sleep(0.1)
+            worker = None
+        else:
+            continue
 
         # Inactivity state reset
         if (run['CURRENT_STAGE'] in defaults.STAGES['payment']
@@ -177,8 +182,6 @@ def main():
                 run['stage_init'] = False
                 run['CURRENT_STAGE'] = defaults.STAGES['idle']
                 continue
-
-        time.sleep(0.1)
 
 
 try:

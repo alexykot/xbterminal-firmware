@@ -384,7 +384,9 @@ def choose_ssid(run, ui):
             run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index']-1, 0)
         elif run['keypad'].last_key_pressed == 'enter':
             ui.wifiListGetSelectedItem()
-            xbterminal.local_state['wifi_ssid'] = run['wifi']['selected_ssid']
+            while 'selected_ssid' not in run['wifi']:
+                time.sleep(0.1)
+            xbterminal.local_state['wifi_ssid'] = run['wifi'].pop('selected_ssid')
             xbterminal.helpers.configs.save_local_state()
             run['stage_init'] = False
             return defaults.STAGES['wifi']['enter_passkey']
