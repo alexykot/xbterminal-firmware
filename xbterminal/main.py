@@ -1,10 +1,8 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
-from decimal import Decimal
 import time
 import sys
 import os
-import unicodedata
 import logging.config
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
@@ -25,15 +23,10 @@ logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
-import xbterminal.bitcoinaverage
-import xbterminal.instantfiat
 import xbterminal.gui.gui
 import xbterminal.helpers.nfcpy
-import xbterminal.helpers.qr
 import xbterminal.helpers.configs
-import xbterminal.helpers.wireless
 from xbterminal import defaults
-from xbterminal.blockchain import blockchain
 from xbterminal.stages import stages, payment
 import xbterminal.watcher
 
