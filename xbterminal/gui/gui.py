@@ -25,55 +25,40 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 
-# Class to initiate GUI, at the moment i can only seem to perform actions on the GUI if its done like this
 class GUI(QtGui.QWidget):
+
     def __init__(self):
         super(GUI, self).__init__()
-        self.initUI()
         self.keys = deque(maxlen=5)
-
-    def initUI(self):
-        global xbterminal
-
-        self.Form = self
+        # Initialize UI
         self.ui = appui.Ui_Form()
-        self.ui.setupUi(self.Form)
-        self.Form.show()
-        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(defaults.PROJECT_ABS_PATH, defaults.UI_IMAGES_PATH, 'logo.png'))))
-        self.ui.show_qr_btn.clicked.connect(self.qrBntPressEvent)
-        self.ui.skip_wifi_btn.clicked.connect(self.skipWiFiBntPressEvent)
+        self.ui.setupUi(self)
+        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(
+            defaults.PROJECT_ABS_PATH,
+            defaults.UI_IMAGES_PATH,
+            'logo.png'))))
+        self.ui.show_qr_btn.clicked.connect(self.qrBtnPressEvent)
+        self.ui.skip_wifi_btn.clicked.connect(self.skipWiFiBtnPressEvent)
         self.ui.testnet_notice.hide()
         self.ui.wrong_passwd_lbl.hide()
         self.ui.connecting_lbl.hide()
+        self.show()
 
-        ''' Runtime GUI changes '''
-        #self.ui.listWidget.setVisible(False)
-        #self.Form.showFullScreen()
-
-
-    #QT Keypress Events
     def keyPressEvent(self, event):
-        global xbterminal
-
         if event.key() == QtCore.Qt.Key_Escape:
             self.close()
-
         if event.key() == QtCore.Qt.Key_Return:
             xbterminal.runtime['CURRENT_STAGE'] = 'enter_amount'
             self.ui.main_stackedWidget.setCurrentIndex(6)
-
         self.keys.append(event.key())
 
-    def closeEvent(self, QCloseEvent):
-        global xbterminal
+    def closeEvent(self, event):
         xbterminal.runtime['CURRENT_STAGE'] = 'application_halt'
 
-    def qrBntPressEvent(self):
-        global xbterminal
+    def qrBtnPressEvent(self):
         xbterminal.runtime['screen_buttons']['qr_button'] = True
 
-    def skipWiFiBntPressEvent(self):
-        global xbterminal
+    def skipWiFiBtnPressEvent(self):
         xbterminal.runtime['screen_buttons']['skip_wifi'] = True
 
     def toggleTestnetNotice(self, show):
@@ -100,9 +85,44 @@ class GUI(QtGui.QWidget):
             self.ui.wrong_passwd_lbl.hide()
             self.ui.password_input.setStyleSheet('background: #FFFFFF')
 
+    def wifiListAddItem(self, ssid):
+        self.ui.wifi_listWidget.addItem(ssid)
+
+    def wifiListSelectItem(self, index):
+        self.ui.wifi_listWidget.setCurrentRow(index)
+
+    def wifiListGetSelectedItem(self):
+        ssid = self.ui.wifi_listWidget.currentItem().text()
+        return str(ssid)
+
+    def wifiListClear(self):
+        self.ui.wifi_listWidget.clear()
+
     def advanceLoadingProgressBar(self, level):
         self.ui.progressBar_percent.setValue(level)
         time.sleep(0.3)
+
+    def currentScreen(self):
+        screen_index = self.ui.main_stackedWidget.currentIndex()
+        for screen_name, i in defaults.SCREENS.items():
+            if i == screen_index:
+                return screen_name
+
+    def showScreen(self, screen_name):
+        screen_index = defaults.SCREENS[screen_name]
+        self.ui.main_stackedWidget.setCurrentIndex(screen_index)
+
+    def setText(self, widget_name, text):
+        widget = getattr(self.ui, widget_name)
+        widget.setText(text)
+
+    def setImage(self, widget_name, image_path):
+        widget = getattr(self.ui, widget_name)
+        widget.setPixmap(QtGui.QPixmap(image_path))
+
+    def setStyle(self, widget_name, css):
+        widget = getattr(self.ui, widget_name)
+        widget.setStyleSheet(css)
 
 
 def initGUI():

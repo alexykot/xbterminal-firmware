@@ -210,24 +210,25 @@ def clearPaymentRuntime(clear_amounts=True):
         xbterminal.runtime['display_value_unformatted'] = ''
         xbterminal.runtime['display_value_formatted'] = formatInput(xbterminal.runtime['display_value_unformatted'],
                                                                         defaults.OUTPUT_DEC_PLACES)
-        xbterminal.runtime['main_window'].ui.amount_input.setText(xbterminal.runtime['display_value_formatted'])
+        xbterminal.runtime['main_window'].setText('amount_input', xbterminal.runtime['display_value_formatted'])
 
     xbterminal.runtime['amounts']['amount_to_pay_btc'] = None
     xbterminal.runtime['amounts']['amount_to_pay_fiat'] = None
     xbterminal.runtime['effective_rate_btc'] = None
     xbterminal.runtime['transactions_addresses'] = None
+    xbterminal.runtime['pay_with'] = 'nfc'
 
-    xbterminal.runtime['main_window'].ui.fiat_amount.setText("0")
-    xbterminal.runtime['main_window'].ui.btc_amount.setText("0")
-    xbterminal.runtime['main_window'].ui.exchange_rate_amount.setText("0")
+    xbterminal.runtime['main_window'].setText('fiat_amount', "0")
+    xbterminal.runtime['main_window'].setText('btc_amount', "0")
+    xbterminal.runtime['main_window'].setText('exchange_rate_amount', "0")
 
-    xbterminal.runtime['main_window'].ui.fiat_amount_qr.setText("0")
-    xbterminal.runtime['main_window'].ui.btc_amount_qr.setText("0")
-    xbterminal.runtime['main_window'].ui.exchange_rate_qr.setText("0")
+    xbterminal.runtime['main_window'].setText('fiat_amount_qr', "0")
+    xbterminal.runtime['main_window'].setText('btc_amount_qr', "0")
+    xbterminal.runtime['main_window'].setText('exchange_rate_qr', "0")
 
-    xbterminal.runtime['main_window'].ui.fiat_amount_nfc.setText("0")
-    xbterminal.runtime['main_window'].ui.btc_amount_nfc.setText("0")
-    xbterminal.runtime['main_window'].ui.exchange_rate_nfc.setText("0")
+    xbterminal.runtime['main_window'].setText('fiat_amount_nfc', "0")
+    xbterminal.runtime['main_window'].setText('btc_amount_nfc', "0")
+    xbterminal.runtime['main_window'].setText('exchange_rate_nfc', "0")
 
 
 def getBitcoinURI(payment_addr, amount_btc):
