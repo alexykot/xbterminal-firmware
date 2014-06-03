@@ -185,21 +185,22 @@ def pay_loading(run, ui):
 
 
 def pay_rates(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('pay_rates')
-        ui.setText('fiat_amount', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-        ui.setText('btc_amount', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-        ui.setText('exchange_rate_amount', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
-                                                             defaults.EXCHANGE_RATE_DEC_PLACES))
-        run['stage_init'] = True
-
-    if run['keypad'].last_key_pressed == 'enter':
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['pay']
-    if run['keypad'].last_key_pressed == 'backspace':
-        payment.clearPaymentRuntime(False)
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['enter_amount']
+    ui.showScreen('pay_rates')
+    ui.setText('fiat_amount', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+    ui.setText('btc_amount', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+    ui.setText('exchange_rate_amount', payment.formatDecimal(
+        run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+        defaults.EXCHANGE_RATE_DEC_PLACES))
+    while True:
+        if run['keypad'].last_key_pressed == 'enter':
+            return defaults.STAGES['payment']['pay']
+        elif run['keypad'].last_key_pressed == 'backspace':
+            payment.clearPaymentRuntime(False)
+            return defaults.STAGES['payment']['enter_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            payment.clearPaymentRuntime()
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def pay(run, ui):
