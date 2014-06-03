@@ -28,7 +28,7 @@ import xbterminal.helpers.nfcpy
 import xbterminal.helpers.configs
 from xbterminal import defaults
 from xbterminal.stages import payment
-from xbterminal.stages.worker import StageWorker
+from xbterminal.stages.worker import StageWorker, move_to_thread
 import xbterminal.watcher
 
 
@@ -78,6 +78,7 @@ def main():
     watcher.start()
 
     worker = None
+    worker_thread = None
 
     xbterminal.local_state['last_started'] = time.time()
     xbterminal.helpers.configs.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
@@ -145,16 +146,16 @@ def main():
                 payment.gracefullExit(system_reboot=True)
 
         # Manage stages
-        if worker is None:
+        if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(run['main_window'].stageWorkerSlot)
-            worker.start()
-        elif worker.isFinished():
+            worker_thread = move_to_thread(worker)
+        elif worker_thread.isFinished():
             if worker.next_stage is not None:
                 run['CURRENT_STAGE'] = worker.next_stage
             else:
                 time.sleep(0.1)
-            worker = None
+            worker_thread = None
             run['keypad'].resetKey()
         else:
             continue

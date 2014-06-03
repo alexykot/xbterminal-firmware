@@ -20,7 +20,9 @@ class SignalProxy(QtCore.QObject):
         return self._emit
 
 
-class StageWorker(QtCore.QThread):
+class StageWorker(QtCore.QObject):
+
+    finished = QtCore.pyqtSignal()
 
     def __init__(self, current_stage, runtime):
         super(StageWorker, self).__init__()
@@ -33,3 +35,13 @@ class StageWorker(QtCore.QThread):
         logger.debug("moving to stage {0}".format(self.current_stage))
         func = getattr(stages, self.current_stage)
         self.next_stage = func(self.runtime, self.ui)
+        self.finished.emit()
+
+
+def move_to_thread(worker):
+    thread = QtCore.QThread()
+    worker.moveToThread(thread)
+    worker.finished.connect(thread.quit)
+    thread.started.connect(worker.run)
+    thread.start()
+    return thread
