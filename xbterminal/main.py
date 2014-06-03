@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
-import xbterminal.helpers.nfcpy
 import xbterminal.helpers.configs
 from xbterminal import defaults
 from xbterminal.stages import payment
@@ -43,11 +42,9 @@ def main():
     run['init']['remote_config_last_update'] = None
     run['init']['blockchain_network'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['bootup']
-    run['stage_init'] = False
     run['amounts'] = {}
     run['amounts']['amount_to_pay_fiat'] = None
     run['amounts']['amount_to_pay_btc'] = None
-    run['pay_with'] = 'nfc'
     run['screen_buttons'] = {}
     run['screen_buttons']['qr_button'] = False
     run['screen_buttons']['skip_wifi'] = False
@@ -152,32 +149,8 @@ def main():
         elif worker_thread.isFinished():
             if worker.next_stage is not None:
                 run['CURRENT_STAGE'] = worker.next_stage
-            else:
-                time.sleep(0.1)
             worker_thread = None
             run['keypad'].resetKey()
-        else:
-            continue
-
-        # Inactivity state reset
-        if (run['CURRENT_STAGE'] in defaults.STAGES['payment']
-            and run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time()):
-
-            payment.clearPaymentRuntime()
-            xbterminal.helpers.nfcpy.stop()
-
-            if run['CURRENT_STAGE'] == defaults.STAGES['payment']['pay']:
-                run['last_activity_timestamp'] = (time.time()
-                                                  - defaults.TRANSACTION_TIMEOUT
-                                                  + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
-                run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['payment']['pay_cancel']
-                continue
-            else:
-                run['stage_init'] = False
-                run['CURRENT_STAGE'] = defaults.STAGES['idle']
-                continue
-
 
 try:
     main()

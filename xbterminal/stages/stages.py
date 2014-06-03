@@ -127,7 +127,6 @@ def pay_loading(run, ui):
     if run['amounts']['amount_to_pay_fiat'] is None:
         return defaults.STAGES['payment']['enter_amount']
 
-    run['received_payment'] = False
     run['invoice_paid'] = False
 
     run['transactions_addresses'] = {}
@@ -184,14 +183,24 @@ def pay_rates(run, ui):
 
 
 def pay(run, ui):
-    if not run['stage_init']:
-        if run['pay_with'] == 'nfc':
-            ui.showScreen('pay_nfc')
-            ui.setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-            ui.setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-            ui.setText('exchange_rate_nfc', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+    ui.showScreen('pay_nfc')
+    ui.setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+    ui.setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+    ui.setText('exchange_rate_nfc', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                 defaults.EXCHANGE_RATE_DEC_PLACES))
-        elif run['pay_with'] == 'qr':
+    logger.debug('local payment requested, address: {local_address}, '
+            'amount fiat: {amount_fiat}, '
+            'amount btc: {amount_btc}, '
+            'rate: {effective_rate}'.
+                format(local_address=run['transactions_addresses']['local'],
+                       amount_fiat=run['amounts']['amount_to_pay_fiat'],
+                       amount_btc=run['amounts']['amount_to_pay_btc'],
+                       effective_rate=run['effective_rate_btc'],
+                       ))
+    while True:
+        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
+            logger.debug('QR code requested')
+            run['screen_buttons']['qr_button'] = False
             ui.showScreen('pay_qr')
             ui.setText('fiat_amount_qr', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
             ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
@@ -203,42 +212,21 @@ def pay(run, ui):
                                          image_path)
             ui.setText('qr_address_lbl', run['transactions_addresses']['local'])
             ui.setImage("qr_image", image_path)
-            logger.debug('payment qr code requested')
+            run['keypad'].resetKey()
 
-        logger.debug('local payment requested, address: {local_address}, '
-            'amount fiat: {amount_fiat}, '
-            'amount btc: {amount_btc}, '
-            'rate: {effective_rate}'.
-                format(local_address=run['transactions_addresses']['local'],
-                       amount_fiat=run['amounts']['amount_to_pay_fiat'],
-                       amount_btc=run['amounts']['amount_to_pay_btc'],
-                       effective_rate=run['effective_rate_btc'],
-                       ))
-        run['stage_init'] = True
-        return defaults.STAGES['payment']['pay']
-
-    if run['keypad'].last_key_pressed == 'backspace':
-        payment.clearPaymentRuntime(False)
-        xbterminal.helpers.nfcpy.stop()
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['enter_amount']
-
-    if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button'] == True:
-        logger.debug('QR code requested')
-        run['screen_buttons']['qr_button'] = False
-        run['pay_with'] = 'qr'
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['pay']
-
-    if not run['received_payment']:
+        elif run['keypad'].last_key_pressed == 'backspace':
+            payment.clearPaymentRuntime(False)
+            xbterminal.helpers.nfcpy.stop()
+            return defaults.STAGES['payment']['enter_amount']
+    
         if not xbterminal.helpers.nfcpy.is_active():
             xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
             logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
 
         current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
         time.sleep(0.5)
+        
         if current_balance >= run['amounts']['amount_to_pay_btc']:
-            run['received_payment'] = True
             incoming_tx_hash = xbterminal.blockchain.blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
             logger.debug('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
 
@@ -280,15 +268,17 @@ def pay(run, ui):
             payment.clearPaymentRuntime()
 
             xbterminal.helpers.nfcpy.stop()
-            run['stage_init'] = False
             return defaults.STAGES['payment']['pay_success']
 
-    elif run['invoice_id'] is not None and not run['invoice_paid']:
-        if getattr(xbterminal.instantfiat,
-                   xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE']).isInvoicePaid(run['invoice_id']):
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            payment.clearPaymentRuntime()
             xbterminal.helpers.nfcpy.stop()
-            run['stage_init'] = False
-            return defaults.STAGES['payment']['pay_success']
+            run['last_activity_timestamp'] = (time.time()
+                                                  - defaults.TRANSACTION_TIMEOUT
+                                                  + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
+            return defaults.STAGES['payment']['pay_cancel']
+
+        time.sleep(0.1)
 
 
 def pay_success(run, ui):
@@ -309,6 +299,7 @@ def pay_success(run, ui):
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
