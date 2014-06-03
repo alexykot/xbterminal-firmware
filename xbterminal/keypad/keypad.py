@@ -22,25 +22,41 @@ _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', 
 
 class Keypad():
 
+    _getkey_delay = 0.1
+
     def __init__(self):
         if xbterminal.local_state.get("use_default_keypad_override"):
             self.driver = drivers.KeyboardDriver()
             logger.info("using standard keyboard driver")
         else:
             self.driver = drivers.KeypadDriverBBB()
+
+        self._getkey_value = None
+        self._getkey_timestamp = 0
+
         self._button_last_pressed = None  # for alphanum conversion
         self._cycle_index = -1
         self._alphanum_char_index = 0
-        self.last_key_pressed = None  # run['key_pressed'] replacement
 
     def getKey(self):
-        key = self.driver.getKey()
-        if key is not None:
-            logger.debug('keypress {},'.format(key))
-        self.last_key_pressed = key
+        current_timestamp = time.time()
+        if current_timestamp - self._getkey_timestamp > self._getkey_delay:
+            key = self.driver.getKey()
+            if key is not None:
+                logger.debug('keypress {0}'.format(key))
+                self._getkey_value = key
+                self._getkey_timestamp = current_timestamp
 
     def resetKey(self):
-        self.last_key_pressed = None
+        self._getkey_value = None
+
+    @property
+    def last_key_pressed(self):
+        return self._getkey_value
+
+    @property
+    def last_activity_timestamp(self):
+        return self._getkey_timestamp
 
     #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
     def toAlphaNum(self, button_pressed):

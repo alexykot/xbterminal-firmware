@@ -108,20 +108,14 @@ def main():
                 run['main_window'].showScreen(run['current_screen'])
 
         # Read keypad input
-        if run['keypad'].last_key_pressed is not None:
-            time.sleep(0.1)
+        run['keypad'].getKey()
 
-        run['keypad'].resetKey()
-        try:
-            run['keypad'].getKey()
-            if run['keypad'].last_key_pressed is not None:
-                if run['keypad'].last_key_pressed == 'application_halt':
-                    run['CURRENT_STAGE'] = defaults.STAGES['application_halt']
-                if run['keypad'].last_key_pressed == 'system_halt':
-                    run['CURRENT_STAGE'] = defaults.STAGES['system_halt']
-                run['last_activity_timestamp'] = time.time()
-        except NameError as error:
-            logger.exception(error)
+        if run['keypad'].last_key_pressed is not None:
+            if run['keypad'].last_key_pressed == 'application_halt':
+                run['CURRENT_STAGE'] = defaults.STAGES['application_halt']
+            elif run['keypad'].last_key_pressed == 'system_halt':
+                run['CURRENT_STAGE'] = defaults.STAGES['system_halt']
+        run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
 
         # Load remote config
         if run['init']['internet']:
@@ -161,6 +155,7 @@ def main():
             else:
                 time.sleep(0.1)
             worker = None
+            run['keypad'].resetKey()
         else:
             continue
 
