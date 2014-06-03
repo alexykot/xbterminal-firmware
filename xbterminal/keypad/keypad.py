@@ -34,9 +34,9 @@ class Keypad():
         self._getkey_value = None
         self._getkey_timestamp = 0
 
-        self._button_last_pressed = None  # for alphanum conversion
-        self._cycle_index = -1
+        self._cycle_index = 0
         self._alphanum_char_index = 0
+        self._alphanum_char_prev = None
 
     def getKey(self):
         current_timestamp = time.time()
@@ -58,60 +58,45 @@ class Keypad():
     def last_activity_timestamp(self):
         return self._getkey_timestamp
 
-    #this allows to use numeric keypad to enter digits, upper and lower letters and special chars
-    def toAlphaNum(self, button_pressed):
-        if button_pressed not in _buttons_to_chars:
-            self._button_last_pressed = button_pressed
-            return button_pressed
-
-        if (
-            button_pressed != self._button_last_pressed
-            or self._cycle_index + 1 == len(_buttons_to_chars[button_pressed])
-        ):
-            self._cycle_index = -1
-
-        self._cycle_index += 1
-        self._button_last_pressed = button_pressed
-
-        return _buttons_to_chars[button_pressed][self._cycle_index]
-
-    def createAlphaNumString(self, current_string, button_pressed):
-        if button_pressed == 'enter':
+    def createAlphaNumString(self, current_string):
+        if self._getkey_value in _buttons_to_chars:
+            # Select character
+            char_tuple = _buttons_to_chars[self._getkey_value]
+            if (
+                self._getkey_value != self._alphanum_char_prev
+                or self._cycle_index == len(char_tuple) - 1
+            ):
+                # Start new cycle
+                self._cycle_index = 0
+            new_string = current_string[0:self._alphanum_char_index] + char_tuple[self._cycle_index]
+            self._cycle_index += 1
+            self._alphanum_char_prev = self._getkey_value
+            return new_string
+        elif self._getkey_value == 'enter':
+            # Accept current character
             self._alphanum_char_index += 1
-            self._button_last_pressed = button_pressed
-            self._cycle_index = -1
+            self._cycle_index = 0
+            self._alphanum_char_prev = self._getkey_value
             return current_string
-
-        if button_pressed == 'backspace':
-            current_string = current_string[:-1]
-            if self._cycle_index == -1:
+        elif self._getkey_value == 'backspace':
+            # Remove last character
+            if self._cycle_index == 0:
                 self._alphanum_char_index = max(self._alphanum_char_index - 1, 0)
-            self._button_last_pressed = button_pressed
-            self._cycle_index = -1
+            self._cycle_index = 0
+            self._alphanum_char_prev = self._getkey_value
+            return current_string[:-1]
+        else:
+            self._alphanum_char_prev = self._getkey_value
             return current_string
 
-        if button_pressed in ('escape', 'qr_code'):
-            return current_string
-
-        new_char = self.toAlphaNum(button_pressed)
-        new_string = current_string[0:self._alphanum_char_index] + new_char
-
-        return new_string
-
-    def getCharSelectorTupl(self, button_pressed):
+    def getCharSelectorTupl(self):
         try:
-            return _buttons_to_chars[button_pressed]
+            return _buttons_to_chars[self._getkey_value]
         except KeyError:
             return None
 
-    def checkIsDone(self, button_pressed):
-        if button_pressed == 'enter' and self._button_last_pressed == 'enter':
-            return True
+    def checkIsDone(self):
+        return self._getkey_value == 'enter' and self._alphanum_char_prev == 'enter'
 
-        return False
-
-    def checkIsCancelled(self, current_string, button_pressed):
-        if button_pressed == 'backspace' and current_string == '':
-            return True
-
-        return False
+    def checkIsCancelled(self, current_string):
+        return self._getkey_value == 'backspace' and current_string == ''

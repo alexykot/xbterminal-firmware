@@ -387,27 +387,25 @@ def enter_passkey(run, ui):
     if run['keypad'].last_key_pressed is not None:
         ui.toggleWifiWrongPasswordState(False)
 
-        if run['keypad'].checkIsDone(run['keypad'].last_key_pressed):
+        if run['keypad'].checkIsDone():
             run['wifi']['try_to_connect'] = True
             ui.toggleWifiConnectingState(True)
             return defaults.STAGES['wifi']['enter_passkey']
-        elif run['keypad'].checkIsCancelled(xbterminal.local_state['wifi_pass'], run['keypad'].last_key_pressed):
+        elif run['keypad'].checkIsCancelled(xbterminal.local_state['wifi_pass']):
             del xbterminal.local_state['wifi_ssid']
             del xbterminal.local_state['wifi_pass']
             xbterminal.helpers.configs.save_local_state()
             run['stage_init'] = False
             return defaults.STAGES['wifi']['choose_ssid']
         else:
-            xbterminal.local_state['wifi_pass'] = run['keypad'].createAlphaNumString(xbterminal.local_state['wifi_pass'],
-                                                                                run['keypad'].last_key_pressed)
-        char_selector_tupl = run['keypad'].getCharSelectorTupl(run['keypad'].last_key_pressed)
+            xbterminal.local_state['wifi_pass'] = run['keypad'].createAlphaNumString(xbterminal.local_state['wifi_pass'])
+        char_selector_tupl = run['keypad'].getCharSelectorTupl()
         if char_selector_tupl is not None:
             char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(char_selector_tupl,
                                                              xbterminal.local_state['wifi_pass'][-1])
         else:
             char_select_str = ''
         ui.setText('input_help_lbl', char_select_str)
-
         ui.setText('password_input', xbterminal.local_state['wifi_pass'])
 
     if run['wifi']['try_to_connect']:
