@@ -337,47 +337,44 @@ def pay_cancel(run, ui):
 
 
 def choose_ssid(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('choose_ssid')
-        run['stage_init'] = True
+    ui.showScreen('choose_ssid')
+    while True:
+        if run['screen_buttons']['skip_wifi']:
+            logger.warning('wifi setup cancelled, hoping for preconfigured wired connection')
+            run['screen_buttons']['skip_wifi'] = False
+            run['init']['internet'] = True
+            return defaults.STAGES['bootup']
 
-    if run['screen_buttons']['skip_wifi']:
-        logger.warning('wifi setup cancelled, hoping for preconfigured wired connection')
-        run['screen_buttons']['skip_wifi'] = False
-        run['stage_init'] = False
-        run['init']['internet'] = True
-        return defaults.STAGES['bootup']
-
-    if run['wifi']['networks_last_listed_timestamp'] + 30 < time.time():
-        networks_list = xbterminal.helpers.wireless.discover_networks()
-        run['wifi']['networks_last_listed_timestamp'] = time.time()
-        if run['wifi']['networks_list_length'] != len(networks_list):
+        if run['wifi']['networks_last_listed_timestamp'] + 30 < time.time():
+            networks_list = xbterminal.helpers.wireless.discover_networks()
+            run['wifi']['networks_last_listed_timestamp'] = time.time()
             run['wifi']['networks_list_length'] = len(networks_list)
+            run['wifi']['networks_list_selected_index'] = 0
             ui.wifiListClear()
-            network_index = 0
-            for network in networks_list:
+            for i, network in enumerate(networks_list):
                 ui.wifiListAddItem(network['ssid'])
-                if ('wifi_ssid' in xbterminal.local_state
-                    and xbterminal.local_state['wifi_ssid'] == network['ssid']):
-                    run['wifi']['networks_list_selected_index'] = network_index
-                network_index = network_index + 1
+                if xbterminal.local_state.get('wifi_ssid') == network['ssid']:
+                    run['wifi']['networks_list_selected_index'] = i
+            ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
 
-    if run['keypad'].last_key_pressed is not None:
         if run['keypad'].last_key_pressed == 8:
-            run['wifi']['networks_list_selected_index'] = min(run['wifi']['networks_list_selected_index']+1,
-                                                              (run['wifi']['networks_list_length']-1))
+            run['wifi']['networks_list_selected_index'] = min(run['wifi']['networks_list_selected_index'] + 1,
+                                                              run['wifi']['networks_list_length'] - 1)
+            ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
+            run['keypad'].resetKey()
         elif run['keypad'].last_key_pressed == 2:
-            run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index']-1, 0)
+            run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index'] - 1, 0)
+            ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
+            run['keypad'].resetKey()
         elif run['keypad'].last_key_pressed == 'enter':
             ui.wifiListGetSelectedItem()
             while 'selected_ssid' not in run['wifi']:
                 time.sleep(0.1)
             xbterminal.local_state['wifi_ssid'] = run['wifi'].pop('selected_ssid')
             xbterminal.helpers.configs.save_local_state()
-            run['stage_init'] = False
             return defaults.STAGES['wifi']['enter_passkey']
 
-    ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
+        time.sleep(0.1)
 
 
 def enter_passkey(run, ui):
