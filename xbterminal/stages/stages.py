@@ -309,27 +309,25 @@ def pay(run, ui):
 
 
 def pay_success(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('pay_success')
-        if run['receipt_url'] is not None:
-            image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-            xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
-            ui.setImage("receipt_qr_image", image_path)
-            if not xbterminal.helpers.nfcpy.is_active():
-                xbterminal.helpers.nfcpy.start(run['receipt_url'])
-                logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
-                time.sleep(0.5)
-        run['stage_init'] = True
-        return defaults.STAGES['payment']['pay_success']
-
-    if run['keypad'].last_key_pressed == 'enter':
-        xbterminal.helpers.nfcpy.stop()
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['enter_amount']
-    if run['keypad'].last_key_pressed == 'backspace':
-        xbterminal.helpers.nfcpy.stop()
-        run['stage_init'] = False
-        return defaults.STAGES['idle']
+    ui.showScreen('pay_success')
+    if run['receipt_url'] is not None:
+        image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+        xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
+        ui.setImage("receipt_qr_image", image_path)
+        if not xbterminal.helpers.nfcpy.is_active():
+            xbterminal.helpers.nfcpy.start(run['receipt_url'])
+            logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
+            time.sleep(0.5)
+    while True:
+        if run['keypad'].last_key_pressed == 'enter':
+            xbterminal.helpers.nfcpy.stop()
+            return defaults.STAGES['payment']['enter_amount']
+        elif run['keypad'].last_key_pressed == 'backspace':
+            xbterminal.helpers.nfcpy.stop()
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def pay_cancel(run, ui):
