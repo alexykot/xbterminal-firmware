@@ -335,19 +335,16 @@ def pay_success(run, ui):
 
 
 def pay_cancel(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('pay_cancel')
-        run['stage_init'] = True
-        return defaults.STAGES['payment']['pay_cancel']
-
-    if run['keypad'].last_key_pressed is not None:
-        run['display_value_unformatted'] = ''
-        run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-        ui.setText('amount_input', run['display_value_formatted'])
-
-        ui.showScreen('pay_cancel')
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['enter_amount']
+    ui.showScreen('pay_cancel')
+    while True:
+        if run['keypad'].last_key_pressed is not None:
+            run['display_value_unformatted'] = ''
+            run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+            ui.setText('amount_input', run['display_value_formatted'])
+            return defaults.STAGES['payment']['enter_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def choose_ssid(run, ui):
