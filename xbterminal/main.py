@@ -152,6 +152,8 @@ def main():
             worker_thread = None
             run['keypad'].resetKey()
 
+        time.sleep(0.05)
+
 try:
     main()
 except Exception as error:
