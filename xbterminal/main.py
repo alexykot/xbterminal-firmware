@@ -156,9 +156,10 @@ def main():
 
         # Manage stages
         if hasattr(stages, run['CURRENT_STAGE']):
-            logger.debug("moving to stage {0}".format(run['CURRENT_STAGE']))
             next_stage = getattr(stages, run['CURRENT_STAGE'])(run)
             if next_stage is not None:
+                if next_stage != run['CURRENT_STAGE']:
+                    logger.debug("moving to stage {0}".format(next_stage))
                 run['CURRENT_STAGE'] = next_stage
                 continue
 
