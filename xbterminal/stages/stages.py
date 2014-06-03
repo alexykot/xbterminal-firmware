@@ -94,14 +94,11 @@ def bootup(run, ui):
 
 
 def idle(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('idle')
-        run['stage_init'] = True
-        return defaults.STAGES['idle']
-
-    if run['keypad'].last_key_pressed is not None:
-        run['stage_init'] = False
-        return defaults.STAGES['payment']['enter_amount']
+    ui.showScreen('idle')
+    while True:
+        if run['keypad'].last_key_pressed is not None:
+            return defaults.STAGES['payment']['enter_amount']
+        time.sleep(0.1)
 
 
 def enter_amount(run, ui):
