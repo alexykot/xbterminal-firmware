@@ -447,13 +447,8 @@ def enter_passkey(run, ui):
 
 
 def wifi_connected(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('wifi_connected')
-        run['stage_init'] = True
-        return defaults.STAGES['wifi']['wifi_connected']
-
+    ui.showScreen('wifi_connected')
     time.sleep(3)
-    run['stage_init'] = False
     return defaults.STAGES['bootup']
 
 
