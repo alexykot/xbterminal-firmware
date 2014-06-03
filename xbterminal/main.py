@@ -56,7 +56,6 @@ def main():
     run['display_value_unformatted'] = ''
     run['display_value_formatted'] = ''
     run['wifi'] = {}
-    run['wifi']['try_to_connect'] = False
     run['wifi']['connected'] = False
     run['current_screen'] = None
     run['main_window'] = None
