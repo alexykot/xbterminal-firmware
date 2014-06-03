@@ -102,32 +102,32 @@ def idle(run, ui):
 
 
 def enter_amount(run, ui):
-    if not run['stage_init']:
-        ui.showScreen('enter_amount')
-        ui.setText('amount_input', payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
-        run['stage_init'] = True
-        return defaults.STAGES['payment']['enter_amount']
-
-    if (isinstance(run['keypad'].last_key_pressed, (int, long)) or run['keypad'].last_key_pressed == 'backspace'):
-        if run['keypad'].last_key_pressed == 'backspace' and run['display_value_unformatted'] == '':
-            run['stage_init'] = False
+    ui.showScreen('enter_amount')
+    ui.setText('amount_input', payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+    while True:
+        if (
+            isinstance(run['keypad'].last_key_pressed, int)
+            or run['keypad'].last_key_pressed == 'backspace'
+        ):
+            if run['keypad'].last_key_pressed == 'backspace' and run['display_value_unformatted'] == '':
+                return defaults.STAGES['idle']
+            ui.setStyle('amount_input', 'background: #FFF')
+            ui.setText('error_text_lbl', '')
+            run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
+            run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
+            ui.setText('amount_input', run['display_value_formatted'])
+        elif run['keypad'].last_key_pressed == 'enter':
+            run['amounts']['amount_to_pay_fiat'] = payment.inputToDecimal(run['display_value_unformatted'])
+            if run['amounts']['amount_to_pay_fiat'] > 0:
+                return defaults.STAGES['payment']['pay_loading']
+            else:
+                ui.setStyle('amount_input', 'background: #B33A3A')
+                ui.setText('error_text_lbl', "no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            payment.clearPaymentRuntime()
             return defaults.STAGES['idle']
-
-        ui.setStyle('amount_input', 'background: #FFF')
-        ui.setText('error_text_lbl', '')
-        run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
-
-        run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-
-        ui.setText('amount_input', run['display_value_formatted'])
-    elif run['keypad'].last_key_pressed == 'enter':
-        run['amounts']['amount_to_pay_fiat'] = payment.inputToDecimal(run['display_value_unformatted'])
-        if run['amounts']['amount_to_pay_fiat'] > 0:
-            run['stage_init'] = False
-            return defaults.STAGES['payment']['pay_loading']
-        else:
-            ui.setStyle('amount_input', 'background: #B33A3A')
-            ui.setText('error_text_lbl', "no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
+        run['keypad'].resetKey()
+        time.sleep(0.1)
 
 
 def pay_loading(run, ui):

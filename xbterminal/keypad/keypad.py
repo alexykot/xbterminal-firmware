@@ -22,7 +22,7 @@ _buttons_to_chars = {1: ('1', '/', '%', '$', '&', '^', '*', '(', ')', '=', '-', 
 
 class Keypad():
 
-    _getkey_delay = 0.1
+    _getkey_delay = 0.2
 
     def __init__(self):
         if xbterminal.local_state.get("use_default_keypad_override"):
