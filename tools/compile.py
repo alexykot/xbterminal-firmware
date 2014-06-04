@@ -20,6 +20,9 @@ subprocess.check_call(['nuitka',
                       '--recurse-to=helpers',
                       '--recurse-to=defaults',
 
+                      '--recurse-not-to=stages',
+                      '--recurse-not-to=watcher',
+                      
                       '--recurse-not-to=PyQt4',
                       '--recurse-not-to=requests',
                       '--recurse-not-to=wifi',
@@ -60,6 +63,8 @@ subprocess.check_call(['nuitka',
                       '--recurse-to=bitcoinaverage',
                       '--recurse-to=keypad',
                       '--recurse-to=gui',
+                      '--recurse-to=stages',
+                      '--recurse-to=watcher',
 
                       '--recurse-not-to=PyQt4',
                       '--recurse-not-to=bitcoinrpc',
