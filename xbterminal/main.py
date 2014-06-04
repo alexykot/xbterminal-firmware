@@ -87,6 +87,12 @@ def main():
         except NameError as error:
             logger.exception(error)
 
+        # Temporary solution for the freezing of terminal
+        # Reboot once per hour
+        if time.time() - xbterminal.local_state['last_started'] > 3600:
+            gracefulExit(system_reboot=True)
+            break
+
         # Communicate with watcher
         watcher_messages, watcher_errors = watcher.get_data()
         for level, message in watcher_messages:
