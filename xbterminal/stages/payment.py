@@ -223,6 +223,7 @@ def clearPaymentRuntime(run, ui, clear_amounts=True):
     ui.setText('btc_amount_qr', "0")
     ui.setText('exchange_rate_qr', "0")
     ui.setImage('qr_image', None)
+    ui.setImage("receipt_qr_image", None)
 
     ui.setText('fiat_amount_nfc', "0")
     ui.setText('btc_amount_nfc', "0")

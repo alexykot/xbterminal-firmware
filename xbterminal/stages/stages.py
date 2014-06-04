@@ -221,6 +221,7 @@ def pay(run, ui):
         if not xbterminal.helpers.nfcpy.is_active():
             xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
             logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
+            time.sleep(0.5)
 
         current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
         time.sleep(0.5)
@@ -264,6 +265,9 @@ def pay(run, ui):
             )
             logger.debug('receipt: {}'.format(run['receipt_url']))
 
+            run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['receipt_url'], run['qr_image_path'])
+
             payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['payment']['pay_success']
@@ -281,15 +285,12 @@ def pay(run, ui):
 
 def pay_success(run, ui):
     ui.showScreen('pay_success')
-    if run['receipt_url'] is not None:
-        image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-        xbterminal.helpers.qr.qr_gen(run['receipt_url'], image_path)
-        ui.setImage("receipt_qr_image", image_path)
+    ui.setImage("receipt_qr_image", run['qr_image_path'])
+    while True:
         if not xbterminal.helpers.nfcpy.is_active():
             xbterminal.helpers.nfcpy.start(run['receipt_url'])
             logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
             time.sleep(0.5)
-    while True:
         if run['keypad'].last_key_pressed == 'enter':
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['payment']['enter_amount']
