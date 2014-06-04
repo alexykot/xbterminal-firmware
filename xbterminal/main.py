@@ -55,20 +55,19 @@ def main():
     run['wifi'] = {}
     run['wifi']['connected'] = False
     run['current_screen'] = None
-    run['main_window'] = None
     run['keypad'] = None
 
-    qt_application, run['main_window'] = xbterminal.gui.gui.initGUI()
-    run['main_window'].advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
+    qt_application, main_window = xbterminal.gui.gui.initGUI()
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):
         run['init']['internet'] = True
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-    run['main_window'].advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
 
     run['keypad'] = Keypad()
-    run['main_window'].advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
 
     watcher = xbterminal.watcher.Watcher()
     watcher.start()
@@ -93,16 +92,16 @@ def main():
         for level, message in watcher_messages:
             logger.log(level, message)
         if watcher_errors:
-            if run['main_window'].currentScreen() != 'errors':
+            if main_window.currentScreen() != 'errors':
                 # Show error screen
-                run['current_screen'] = run['main_window'].currentScreen()
-                run['main_window'].showScreen('errors')
-                run['main_window'].setText('errors_lbl', "\n".join(watcher_errors))
+                run['current_screen'] = main_window.currentScreen()
+                main_window.showScreen('errors')
+                main_window.setText('errors_lbl', "\n".join(watcher_errors))
             continue
         else:
-            if run['main_window'].currentScreen() == 'errors' and run['current_screen'] is not None:
+            if main_window.currentScreen() == 'errors' and run['current_screen'] is not None:
                 # Restore previous screen
-                run['main_window'].showScreen(run['current_screen'])
+                main_window.showScreen(run['current_screen'])
 
         # Read keypad input
         run['keypad'].getKey()
@@ -122,7 +121,7 @@ def main():
                     and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
                 try:
                     xbterminal.helpers.configs.load_remote_config()
-                    run['main_window'].setText('merchant_name_lbl', "{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
+                    main_window.setText('merchant_name_lbl', "{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
                                                                    xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
                     run['init']['remote_config'] = True
                     run['init']['remote_config_last_update'] = int(time.time())
@@ -135,9 +134,9 @@ def main():
         if hasattr(xbterminal, 'remote_config'):
             if run['init']['blockchain_network'] is None:
                 if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
-                    run['main_window'].toggleTestnetNotice(True)
+                    main_window.toggleTestnetNotice(True)
                 else:
-                    run['main_window'].toggleTestnetNotice(False)
+                    main_window.toggleTestnetNotice(False)
                 run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 gracefulExit(system_reboot=True)
@@ -146,7 +145,7 @@ def main():
         # Manage stages
         if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
-            worker.ui.signal.connect(run['main_window'].stageWorkerSlot)
+            worker.ui.signal.connect(main_window.stageWorkerSlot)
             worker_thread = move_to_thread(worker)
         elif worker_thread.isFinished():
             if worker.next_stage is not None:

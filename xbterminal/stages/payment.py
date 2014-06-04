@@ -200,32 +200,33 @@ def logTransaction(local_addr, instantfiat_addr, dest_addr,
 
     return receipt_url
 
-def clearPaymentRuntime(clear_amounts=True):
-    global xbterminal
 
+def clearPaymentRuntime(run, ui, clear_amounts=True):
+    ui.showScreen('load_indefinite')
+    logger.debug('clearing payment runtime')
     if clear_amounts:
-        xbterminal.runtime['display_value_unformatted'] = ''
-        xbterminal.runtime['display_value_formatted'] = formatInput(xbterminal.runtime['display_value_unformatted'],
-                                                                        defaults.OUTPUT_DEC_PLACES)
-        xbterminal.runtime['main_window'].setText('amount_input', xbterminal.runtime['display_value_formatted'])
+        run['display_value_unformatted'] = ''
+        run['display_value_formatted'] = formatInput(run['display_value_unformatted'],
+                                                     defaults.OUTPUT_DEC_PLACES)
+        ui.setText('amount_input', run['display_value_formatted'])
 
-    xbterminal.runtime['amounts']['amount_to_pay_btc'] = None
-    xbterminal.runtime['amounts']['amount_to_pay_fiat'] = None
-    xbterminal.runtime['effective_rate_btc'] = None
-    xbterminal.runtime['transactions_addresses'] = None
-    xbterminal.runtime['pay_with'] = 'nfc'
+    run['amounts']['amount_to_pay_btc'] = None
+    run['amounts']['amount_to_pay_fiat'] = None
+    run['effective_rate_btc'] = None
+    run['transactions_addresses'] = None
 
-    xbterminal.runtime['main_window'].setText('fiat_amount', "0")
-    xbterminal.runtime['main_window'].setText('btc_amount', "0")
-    xbterminal.runtime['main_window'].setText('exchange_rate_amount', "0")
+    ui.setText('fiat_amount', "0")
+    ui.setText('btc_amount', "0")
+    ui.setText('exchange_rate_amount', "0")
 
-    xbterminal.runtime['main_window'].setText('fiat_amount_qr', "0")
-    xbterminal.runtime['main_window'].setText('btc_amount_qr', "0")
-    xbterminal.runtime['main_window'].setText('exchange_rate_qr', "0")
+    ui.setText('fiat_amount_qr', "0")
+    ui.setText('btc_amount_qr', "0")
+    ui.setText('exchange_rate_qr', "0")
+    ui.setImage('qr_image', None)
 
-    xbterminal.runtime['main_window'].setText('fiat_amount_nfc', "0")
-    xbterminal.runtime['main_window'].setText('btc_amount_nfc', "0")
-    xbterminal.runtime['main_window'].setText('exchange_rate_nfc', "0")
+    ui.setText('fiat_amount_nfc', "0")
+    ui.setText('btc_amount_nfc', "0")
+    ui.setText('exchange_rate_nfc', "0")
 
 
 def getBitcoinURI(payment_addr, amount_btc):

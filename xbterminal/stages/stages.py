@@ -114,7 +114,7 @@ def enter_amount(run, ui):
                 ui.setStyle('amount_input', 'background: #B33A3A')
                 ui.setText('error_text_lbl', "no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime()
+            payment.clearPaymentRuntime(run, ui)
             return defaults.STAGES['idle']
         run['keypad'].resetKey()
         time.sleep(0.1)
@@ -177,10 +177,10 @@ def pay_rates(run, ui):
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['payment']['pay']
         elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(False)
+            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
             return defaults.STAGES['payment']['enter_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime()
+            payment.clearPaymentRuntime(run, ui)
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
@@ -214,7 +214,7 @@ def pay(run, ui):
             run['keypad'].resetKey()
 
         elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(False)
+            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['payment']['enter_amount']
     
@@ -264,13 +264,12 @@ def pay(run, ui):
             )
             logger.debug('receipt: {}'.format(run['receipt_url']))
 
-            payment.clearPaymentRuntime()
-
+            payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['payment']['pay_success']
 
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime()
+            payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
