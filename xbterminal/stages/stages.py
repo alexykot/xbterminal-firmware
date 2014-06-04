@@ -346,7 +346,7 @@ def choose_ssid(run, ui):
             ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
             run['keypad'].resetKey()
         elif run['keypad'].last_key_pressed == 'enter':
-            ui.wifiListGetSelectedItem()
+            ui.wifiListSaveSelectedItem()
             while 'selected_ssid' not in run['wifi']:
                 time.sleep(0.1)
             xbterminal.local_state['wifi_ssid'] = run['wifi'].pop('selected_ssid')

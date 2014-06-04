@@ -94,7 +94,7 @@ class GUI(QtGui.QWidget):
     def wifiListSelectItem(self, index):
         self.ui.wifi_listWidget.setCurrentRow(index)
 
-    def wifiListGetSelectedItem(self):
+    def wifiListSaveSelectedItem(self):
         ssid = self.ui.wifi_listWidget.currentItem().text()
         xbterminal.runtime['wifi']['selected_ssid'] = str(ssid)
 
