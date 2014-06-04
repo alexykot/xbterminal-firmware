@@ -4,12 +4,9 @@ import httplib
 import json
 import logging
 import socket
-import subprocess
 import urllib2
 import datetime
 import requests
-import time
-import sys
 import simplejson
 
 import xbterminal
@@ -239,17 +236,3 @@ def getBitcoinURI(payment_addr, amount_btc):
                                                             urllib2.quote(str(xbterminal.remote_config['MERCHANT_TRANSACTION_DESCRIPTION'])).encode('utf8'),
                                                                 )
     return uri
-
-
-def gracefullExit(system_halt=False, system_reboot=False):
-    xbterminal.helpers.configs.save_local_state()
-    xbterminal.helpers.nfcpy.stop()
-    logger.debug('application halted')
-    if system_halt:
-        logger.debug('system halt command sent')
-        subprocess.Popen(['halt', ])
-    if system_reboot:
-        logger.debug('system reboot command sent')
-        subprocess.Popen(['reboot', ])
-    sys.exit()
-

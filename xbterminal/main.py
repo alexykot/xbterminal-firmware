@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import logging.config
+import subprocess
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
 sys.path.insert(0, include_path)
@@ -26,7 +27,6 @@ from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
 import xbterminal.helpers.configs
 from xbterminal import defaults
-from xbterminal.stages import payment
 from xbterminal.stages.worker import StageWorker, move_to_thread
 import xbterminal.watcher
 
@@ -106,13 +106,14 @@ def main():
 
         # Read keypad input
         run['keypad'].getKey()
-
-        if run['keypad'].last_key_pressed is not None:
-            if run['keypad'].last_key_pressed == 'application_halt':
-                run['CURRENT_STAGE'] = defaults.STAGES['application_halt']
-            elif run['keypad'].last_key_pressed == 'system_halt':
-                run['CURRENT_STAGE'] = defaults.STAGES['system_halt']
         run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
+
+        if run['keypad'].last_key_pressed == 'application_halt':
+            gracefulExit()
+            break
+        elif run['keypad'].last_key_pressed == 'system_halt':
+            gracefulExit(system_halt=True)
+            break
 
         # Load remote config
         if run['init']['internet']:
@@ -139,7 +140,8 @@ def main():
                     run['main_window'].toggleTestnetNotice(False)
                 run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
-                payment.gracefullExit(system_reboot=True)
+                gracefulExit(system_reboot=True)
+                break
 
         # Manage stages
         if worker_thread is None:
@@ -154,9 +156,22 @@ def main():
 
         time.sleep(0.05)
 
-try:
-    main()
-except Exception as error:
-    logger.exception(error)
 
-payment.gracefullExit()
+def gracefulExit(system_halt=False, system_reboot=False):
+    xbterminal.helpers.configs.save_local_state()
+    logger.debug('application halted')
+    if system_halt:
+        logger.debug('system halt command sent')
+        subprocess.Popen(['halt', ])
+    if system_reboot:
+        logger.debug('system reboot command sent')
+        subprocess.Popen(['reboot', ])
+    sys.exit()
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:
+        logger.exception(error)
+    gracefulExit()

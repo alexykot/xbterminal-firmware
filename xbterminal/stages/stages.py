@@ -407,11 +407,3 @@ def wifi_connected(run, ui):
     ui.showScreen('wifi_connected')
     time.sleep(3)
     return defaults.STAGES['bootup']
-
-
-def application_halt(run, ui):
-    payment.gracefullExit()
-
-
-def system_halt(run, ui):
-    payment.gracefullExit(True)
