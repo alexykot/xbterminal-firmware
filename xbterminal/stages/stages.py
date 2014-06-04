@@ -160,6 +160,9 @@ def pay_loading(run, ui):
     run['payment_requested_timestamp'] = time.time()
     run['transaction_bitcoin_uri'] = payment.getBitcoinURI(run['transactions_addresses']['local'],
                                                            run['amounts']['amount_to_pay_btc'])
+    # Prepare QR image
+    run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+    xbterminal.helpers.qr.qr_gen(run['transaction_bitcoin_uri'], run['qr_image_path'])
     return defaults.STAGES['payment']['pay_rates']
 
 
@@ -206,12 +209,8 @@ def pay(run, ui):
             ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
             ui.setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                  defaults.EXCHANGE_RATE_DEC_PLACES))
-            image_path = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-            xbterminal.helpers.qr.qr_gen(payment.getBitcoinURI(run['transactions_addresses']['local'],
-                                                              run['amounts']['amount_to_pay_btc']),
-                                         image_path)
             ui.setText('qr_address_lbl', run['transactions_addresses']['local'])
-            ui.setImage("qr_image", image_path)
+            ui.setImage("qr_image", run['qr_image_path'])
             run['keypad'].resetKey()
 
         elif run['keypad'].last_key_pressed == 'backspace':
