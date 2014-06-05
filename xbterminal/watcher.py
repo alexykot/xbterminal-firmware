@@ -25,6 +25,7 @@ USB_DEVICES = {
     ],
     'wifi': [
         (0x148f, 0x5370, 'RT5370 Wireless Adapter'),
+        (0x0bda, 0x8172, 'Realtek Semiconductor Corp. RTL8191SU 802.11n WLAN Adapter'),
     ],
 }
 
