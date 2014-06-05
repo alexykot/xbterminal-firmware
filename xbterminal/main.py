@@ -156,7 +156,7 @@ def main():
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(main_window.stageWorkerSlot)
             worker_thread = move_to_thread(worker)
-        elif worker_thread.isFinished():
+        elif not worker_thread.is_alive():
             if worker.next_stage is not None:
                 run['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None

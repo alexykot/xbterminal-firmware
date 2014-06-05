@@ -1,5 +1,6 @@
 import logging
 import time
+import threading
 
 from PyQt4 import QtCore
 
@@ -39,6 +40,18 @@ class StageWorker(QtCore.QObject):
 
 
 def move_to_thread(worker):
+    """
+    Run StageWorker inside the python thread
+    """
+    thread = threading.Thread(target=worker.run)
+    thread.start()
+    return thread
+
+
+def move_to_qthread(worker):
+    """
+    Run StageWorker inside the QThread
+    """
     thread = QtCore.QThread()
     worker.moveToThread(thread)
     worker.finished.connect(thread.quit)
