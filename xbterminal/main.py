@@ -91,6 +91,7 @@ def main():
         # Reboot once per hour
         if (
             run['CURRENT_STAGE'] == defaults.STAGES['idle']
+            and xbterminal.local_state['last_started'] > 1388534400  # Jan 1, 2014
             and time.time() - xbterminal.local_state['last_started'] > 3600
         ):
             gracefulExit(system_reboot=True)
