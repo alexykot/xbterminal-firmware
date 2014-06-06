@@ -63,7 +63,7 @@ def bootup(run, ui):
         ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
 
     # Check system clock
-    # BBB has no battery, so the time may be incorrect
+    # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
     while True:
         internet_time = xbterminal.helpers.clock.get_internet_time()
         time_delta = abs(time.time() - internet_time)
