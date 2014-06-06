@@ -23,44 +23,43 @@ import xbterminal.gui.gui
 def bootup(run, ui):
     ui.showScreen('load_indefinite')
 
-    if not run['init']['internet']:
-        if xbterminal.helpers.wireless.is_wifi_available():
-            if (
-                xbterminal.local_state.get('wifi_ssid')
-                and xbterminal.local_state.get('wifi_pass')
-            ):
-                logger.debug('trying to connect to cached wifi,  '
-                    'ssid "{wifi_ssid}" '
-                    'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
-                                                     wifi_pass=xbterminal.local_state['wifi_pass']))
-                if isinstance(xbterminal.local_state['wifi_pass'], unicode):
-                    xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii','ignore')
-                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
-                                                                               xbterminal.local_state['wifi_pass'])
-                if run['wifi']['connected']:
-                    logger.debug('cached wifi connected')
-                else:
-                    del xbterminal.local_state['wifi_ssid']
-                    del xbterminal.local_state['wifi_pass']
-                    xbterminal.helpers.configs.save_local_state()
-                    logger.debug('cached wifi connection failed, wifi setup needed')
-                    return defaults.STAGES['wifi']['choose_ssid']
-
+    if xbterminal.helpers.wireless.is_wifi_available():
+        if (
+            xbterminal.local_state.get('wifi_ssid')
+            and xbterminal.local_state.get('wifi_pass')
+        ):
+            logger.debug('trying to connect to cached wifi,  '
+                'ssid "{wifi_ssid}" '
+                'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
+                                                 wifi_pass=xbterminal.local_state['wifi_pass']))
+            if isinstance(xbterminal.local_state['wifi_pass'], unicode):
+                xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii','ignore')
+            run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
+                                                                           xbterminal.local_state['wifi_pass'])
             if run['wifi']['connected']:
-                run['init']['internet'] = True
+                logger.debug('cached wifi connected')
             else:
-                run['wifi']['networks_last_listed_timestamp'] = 0
-                run['wifi']['networks_list_selected_index'] = 0
-                run['wifi']['networks_list_length'] = 0
-                if 'wifi_ssid' in xbterminal.local_state:
-                    return defaults.STAGES['wifi']['enter_passkey']
-                else:
-                    return defaults.STAGES['wifi']['choose_ssid']
+                del xbterminal.local_state['wifi_ssid']
+                del xbterminal.local_state['wifi_pass']
+                xbterminal.helpers.configs.save_local_state()
+                logger.debug('cached wifi connection failed, wifi setup needed')
+                return defaults.STAGES['wifi']['choose_ssid']
 
-        else:
-            logger.warning('no wifi found, hoping for preconfigured wired connection')
+        if run['wifi']['connected']:
             run['init']['internet'] = True
-        ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
+        else:
+            run['wifi']['networks_last_listed_timestamp'] = 0
+            run['wifi']['networks_list_selected_index'] = 0
+            run['wifi']['networks_list_length'] = 0
+            if 'wifi_ssid' in xbterminal.local_state:
+                return defaults.STAGES['wifi']['enter_passkey']
+            else:
+                return defaults.STAGES['wifi']['choose_ssid']
+
+    else:
+        logger.warning('no wifi found, hoping for preconfigured wired connection')
+        run['init']['internet'] = True
+    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
 
     # Check system clock
     # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
@@ -76,24 +75,22 @@ def bootup(run, ui):
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
-    if (not run['init']['remote_config']
-        or (run['init']['remote_config_last_update'] is not None
-            and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
-        try:
-            xbterminal.helpers.configs.load_remote_config()
-            ui.setText('merchant_name_lbl', "{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
-                                                           xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
-            run['init']['remote_config'] = True
-            run['init']['remote_config_last_update'] = int(time.time())
-        except ConfigLoadError as error:
-            logger.error('remote config load failed, exiting')
-            raise error
+    try:
+        xbterminal.helpers.configs.load_remote_config()
+    except ConfigLoadError as error:
+        logger.error('remote config load failed, exiting')
+        raise error
+    ui.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
+        xbterminal.remote_config['MERCHANT_NAME'],
+        xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) 
+    run['init']['remote_config'] = True
+    run['init']['remote_config_last_update'] = int(time.time())
 
-    if not run['init']['blockchain']:
-        xbterminal.blockchain.blockchain.init()
-        run['init']['blockchain'] = True
-        ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
-        ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
+
+    xbterminal.blockchain.blockchain.init()
+    run['init']['blockchain'] = True
+    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
+    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
     return defaults.STAGES['idle']
 
