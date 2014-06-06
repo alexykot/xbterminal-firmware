@@ -37,6 +37,7 @@ def main():
     run = xbterminal.runtime = {}
     run['init'] = {}
     run['init']['internet'] = False
+    run['init']['clock_synchronized'] = False
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
     run['init']['remote_config_last_update'] = None
@@ -87,11 +88,12 @@ def main():
         except NameError as error:
             logger.exception(error)
 
+
         # Temporary solution for the freezing of terminal
         # Reboot once per hour
         if (
-            run['CURRENT_STAGE'] == defaults.STAGES['idle']
-            and xbterminal.local_state['last_started'] > 1388534400  # Jan 1, 2014
+            run['init']['clock_synchronized']
+            and run['CURRENT_STAGE'] == defaults.STAGES['idle']
             and time.time() - xbterminal.local_state['last_started'] > 3600
         ):
             gracefulExit(system_reboot=True)
