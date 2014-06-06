@@ -12,6 +12,7 @@ from xbterminal.stages import payment
 
 import xbterminal.bitcoinaverage
 import xbterminal.blockchain.blockchain
+import xbterminal.helpers.clock
 import xbterminal.helpers.configs
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
@@ -60,6 +61,20 @@ def bootup(run, ui):
             logger.warning('no wifi found, hoping for preconfigured wired connection')
             run['init']['internet'] = True
         ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
+
+    # Check system clock
+    # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
+    while True:
+        internet_time = xbterminal.helpers.clock.get_internet_time()
+        time_delta = abs(time.time() - internet_time)
+        if time_delta < 60:  # 1 minute
+            logger.info('clock synchronized')
+            run['init']['clock_synchronized'] = True
+            xbterminal.local_state['last_started'] = time.time()
+            xbterminal.helpers.configs.save_local_state()
+            break
+        logger.warning('machine time differs from internet time: {0}'.format(time_delta))
+        time.sleep(5)
 
     if (not run['init']['remote_config']
         or (run['init']['remote_config_last_update'] is not None
