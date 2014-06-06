@@ -1,16 +1,17 @@
-import datetime
-import time
+import logging
 
-import requests
+import ntplib
+
+from xbterminal import defaults
+
+logger = logging.getLogger(__name__)
 
 
 def get_internet_time():
-    json_time_url = "http://json-time.appspot.com/time.json"
-    fmt = "%a, %d %b %Y %H:%M:%S +0000"  # %z is not supported
+    client = ntplib.NTPClient()
     try:
-        response = requests.get(json_time_url, timeout=2)
-        data = response.json()
-        now = datetime.datetime.strptime(data['datetime'], fmt)
-    except Exception:
+        response = client.request('europe.pool.ntp.org', version=3)
+    except Exception as error:
+        logger.exception(error)
         return 0
-    return time.mktime(now.timetuple())
+    return response.tx_time

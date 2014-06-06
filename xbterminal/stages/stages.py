@@ -66,13 +66,14 @@ def bootup(run, ui):
     # BBB has no battery, so the time may be incorrect
     while True:
         internet_time = xbterminal.helpers.clock.get_internet_time()
-        max_delta = 60  # 1 minute
-        if abs(time.time() - internet_time) < max_delta:
+        time_delta = abs(time.time() - internet_time)
+        if time_delta < 60:  # 1 minute
             logger.info('clock synchronized')
             run['init']['clock_synchronized'] = True
             xbterminal.local_state['last_started'] = time.time()
             xbterminal.helpers.configs.save_local_state()
             break
+        logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
     if (not run['init']['remote_config']
