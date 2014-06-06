@@ -98,19 +98,20 @@ def main():
             gracefulExit(system_reboot=True)
 
         # Load remote config
-        if run['init']['internet']:
-            if (not run['init']['remote_config']
-                or (run['init']['remote_config_last_update'] is not None
-                    and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
-                try:
-                    xbterminal.helpers.configs.load_remote_config()
-                    main_window.setText('merchant_name_lbl', "{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
-                                                                   xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
-                    run['init']['remote_config'] = True
-                    run['init']['remote_config_last_update'] = int(time.time())
-                except ConfigLoadError as error:
-                    logger.error('remote config load failed, exiting')
-                    raise error
+        if (
+            run['init']['remote_config_last_update'] is not None
+            and run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time()
+        ):
+            try:
+                xbterminal.helpers.configs.load_remote_config()
+            except ConfigLoadError as error:
+                # Do not raise error, wait for internet connection
+                logger.error('remote config load failed, exiting')
+            else:
+                main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
+                    xbterminal.remote_config['MERCHANT_NAME'],
+                    xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
+                run['init']['remote_config_last_update'] = int(time.time())
 
         # Communicate with watcher
         watcher_messages, watcher_errors = watcher.get_data()
