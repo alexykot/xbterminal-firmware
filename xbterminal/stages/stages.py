@@ -70,6 +70,8 @@ def bootup(run, ui):
         if abs(time.time() - internet_time) < max_delta:
             logger.info('clock synchronized')
             run['init']['clock_synchronized'] = True
+            xbterminal.local_state['last_started'] = time.time()
+            xbterminal.helpers.configs.save_local_state()
             break
         time.sleep(5)
 

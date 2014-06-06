@@ -76,9 +76,6 @@ def main():
     worker = None
     worker_thread = None
 
-    xbterminal.local_state['last_started'] = time.time()
-    xbterminal.helpers.configs.save_local_state() #@TODO make local_state a custom dict with automated saving on update and get rid of this call
-
     logger.debug('main loop starting')
     while True:
         # Processes all pending events
