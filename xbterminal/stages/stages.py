@@ -92,6 +92,9 @@ def bootup(run, ui):
     ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
     ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
+    ui.toggleTestnetNotice(xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet')
+    run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
+
     return defaults.STAGES['idle']
 
 

@@ -113,6 +113,14 @@ def main():
                     xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
                 run['init']['remote_config_last_update'] = int(time.time())
 
+        # Reboot if blockchain network has changed
+        if (
+            hasattr(xbterminal, 'remote_config')
+            and run['init']['blockchain_network'] is not None
+            and run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']
+        ):
+            gracefulExit(system_reboot=True)
+
         # Communicate with watcher
         watcher_messages, watcher_errors = watcher.get_data()
         for level, message in watcher_messages:
@@ -137,17 +145,6 @@ def main():
             gracefulExit()
         elif run['keypad'].last_key_pressed == 'system_halt':
             gracefulExit(system_halt=True)
-
-        # Show blockchain network notice
-        if hasattr(xbterminal, 'remote_config'):
-            if run['init']['blockchain_network'] is None:
-                if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
-                    main_window.toggleTestnetNotice(True)
-                else:
-                    main_window.toggleTestnetNotice(False)
-                run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
-            elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
-                gracefulExit(system_reboot=True)
 
         # Manage stages
         if worker_thread is None:
