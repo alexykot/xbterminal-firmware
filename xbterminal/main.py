@@ -78,6 +78,8 @@ def main():
 
     logger.debug('main loop starting')
     while True:
+        time.sleep(0.05)
+
         # Processes all pending events
         try:
             qt_application.sendPostedEvents()
@@ -94,7 +96,21 @@ def main():
             and time.time() - xbterminal.local_state['last_started'] > 3600
         ):
             gracefulExit(system_reboot=True)
-            break
+
+        # Load remote config
+        if run['init']['internet']:
+            if (not run['init']['remote_config']
+                or (run['init']['remote_config_last_update'] is not None
+                    and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
+                try:
+                    xbterminal.helpers.configs.load_remote_config()
+                    main_window.setText('merchant_name_lbl', "{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
+                                                                   xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
+                    run['init']['remote_config'] = True
+                    run['init']['remote_config_last_update'] = int(time.time())
+                except ConfigLoadError as error:
+                    logger.error('remote config load failed, exiting')
+                    raise error
 
         # Communicate with watcher
         watcher_messages, watcher_errors = watcher.get_data()
@@ -118,26 +134,8 @@ def main():
 
         if run['keypad'].last_key_pressed == 'application_halt':
             gracefulExit()
-            break
         elif run['keypad'].last_key_pressed == 'system_halt':
             gracefulExit(system_halt=True)
-            break
-
-        # Load remote config
-        if run['init']['internet']:
-            if (not run['init']['remote_config']
-                or (run['init']['remote_config_last_update'] is not None
-                    and run['init']['remote_config_last_update']+defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time())):
-                try:
-                    xbterminal.helpers.configs.load_remote_config()
-                    main_window.setText('merchant_name_lbl', "{} \n{} ".format(xbterminal.remote_config['MERCHANT_NAME'],
-                                                                   xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) #trailing space required
-                    run['init']['remote_config'] = True
-                    run['init']['remote_config_last_update'] = int(time.time())
-                except ConfigLoadError as error:
-                    logger.error('remote config load failed, exiting')
-                    raise error
-                continue
 
         # Show blockchain network notice
         if hasattr(xbterminal, 'remote_config'):
@@ -149,7 +147,6 @@ def main():
                 run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
             elif run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']:
                 gracefulExit(system_reboot=True)
-                break
 
         # Manage stages
         if worker_thread is None:
@@ -161,8 +158,6 @@ def main():
                 run['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None
             run['keypad'].resetKey()
-
-        time.sleep(0.05)
 
 
 def gracefulExit(system_halt=False, system_reboot=False):
