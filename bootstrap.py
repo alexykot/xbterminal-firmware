@@ -106,8 +106,10 @@ def run_firmware(idle=False, updates_enabled=True):
                     server_url, _ = xbterminal.helpers.configs.choose_remote_server(device_key)
                 except ConfigLoadError:
                     continue
+            new_version_hash = None
             updates_data = check_firmware(server_url, device_key)
-            new_version_hash = updates_data.get('next_firmware_version_hash')
+            if updates_data is not None:
+                new_version_hash = updates_data.get('next_firmware_version_hash')
             if new_version_hash is not None:
                 logger.info("current version: {cur_ver}, next version: {next_ver}, installing ...".format(
                     cur_ver=updates_data['current_firmware_version'],
