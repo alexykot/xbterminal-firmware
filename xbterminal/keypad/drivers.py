@@ -108,12 +108,10 @@ class KeypadDriverBBB():
                 binary_str = ''.join(bits_list)
                 binary_str = '0b' + binary_str
                 keynum = int(binary_str, 2)
-
                 try:
                     key = self.KEY_MAP[self.KEYPAD[keynum]]
                 except KeyError as error:
-                    logger.exception(error)
-
+                    pass
                 GPIO.cleanup()
                 self.pins_set_up = False
 
