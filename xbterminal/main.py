@@ -55,7 +55,7 @@ def main():
     run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
-    run['current_screen'] = None
+    run['current_screen'] = 'load_indefinite'
     run['keypad'] = None
 
     qt_application, main_window = xbterminal.gui.gui.initGUI()
@@ -106,13 +106,13 @@ def main():
                 xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:
                 # Do not raise error, wait for internet connection
-                logger.error('remote config load failed')
+                watcher.set_error('remote_config', 'remote config load failed')
             except InvalidAddressError as error:
-                # TODO: handle error
-                raise
+                watcher.set_error('remote_config', 'invalid merchant or fee address')
             else:
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())
+                watcher.discard_error('remote_config')
                 main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
                     xbterminal.remote_config['MERCHANT_NAME'],
                     xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
@@ -128,14 +128,14 @@ def main():
         # Communicate with watcher
         watcher_errors = watcher.get_errors()
         if watcher_errors:
+            # Show error screen
             if main_window.currentScreen() != 'errors':
-                # Show error screen
                 run['current_screen'] = main_window.currentScreen()
                 main_window.showScreen('errors')
-                main_window.setText('errors_lbl', "\n".join(watcher_errors))
+            main_window.setText('errors_lbl', '\n'.join(watcher_errors))
             continue
         else:
-            if main_window.currentScreen() == 'errors' and run['current_screen'] is not None:
+            if main_window.currentScreen() == 'errors':
                 # Restore previous screen
                 main_window.showScreen(run['current_screen'])
 

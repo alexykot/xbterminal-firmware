@@ -145,6 +145,16 @@ class Watcher(threading.Thread):
             errors = list(self.errors.values())
         return errors
 
+    def set_error(self, error_type, error_message):
+        with threading.RLock():
+            if self.errors.get(error_type) != error_message:
+                logger.error(error_message)
+                self.errors[error_type] = error_message
+
+    def discard_error(self, error_type):
+        with threading.RLock():
+            self.errors.pop(error_type, None)
+
     def run(self):
         logger.info("watcher started")
         while True:
