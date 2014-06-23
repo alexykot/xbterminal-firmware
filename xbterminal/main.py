@@ -106,7 +106,7 @@ def main():
                 xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:
                 # Do not raise error, wait for internet connection
-                logger.error('remote config load failed, exiting')
+                logger.error('remote config load failed')
             else:
                 main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
                     xbterminal.remote_config['MERCHANT_NAME'],

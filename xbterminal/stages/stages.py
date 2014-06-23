@@ -25,10 +25,14 @@ def bootup(run, ui):
 
     if not run['init']['internet']:
         if xbterminal.helpers.wireless.is_wifi_available():
+            run['wifi']['networks_last_listed_timestamp'] = 0
+            run['wifi']['networks_list_selected_index'] = 0
+            run['wifi']['networks_list_length'] = 0
             if (
-                xbterminal.local_state.get('wifi_ssid')
-                and xbterminal.local_state.get('wifi_pass')
+                'wifi_ssid' in xbterminal.local_state
+                and 'wifi_pass' in xbterminal.local_state
             ):
+                # Connect to cached wifi
                 logger.debug('trying to connect to cached wifi,  '
                     'ssid "{wifi_ssid}" '
                     'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
@@ -39,24 +43,19 @@ def bootup(run, ui):
                                                                                xbterminal.local_state['wifi_pass'])
                 if run['wifi']['connected']:
                     logger.debug('cached wifi connected')
+                    run['init']['internet'] = True
                 else:
+                    # Clear cache
                     del xbterminal.local_state['wifi_ssid']
                     del xbterminal.local_state['wifi_pass']
                     xbterminal.helpers.configs.save_local_state()
                     logger.debug('cached wifi connection failed, wifi setup needed')
                     return defaults.STAGES['wifi']['choose_ssid']
-
-            if run['wifi']['connected']:
-                run['init']['internet'] = True
+            elif 'wifi_ssid' in xbterminal.local_state:
+                # Enter passkey for cached wifi
+                return defaults.STAGES['wifi']['enter_passkey']
             else:
-                run['wifi']['networks_last_listed_timestamp'] = 0
-                run['wifi']['networks_list_selected_index'] = 0
-                run['wifi']['networks_list_length'] = 0
-                if 'wifi_ssid' in xbterminal.local_state:
-                    return defaults.STAGES['wifi']['enter_passkey']
-                else:
-                    return defaults.STAGES['wifi']['choose_ssid']
-
+                return defaults.STAGES['wifi']['choose_ssid']
         else:
             logger.warning('no wifi found, hoping for preconfigured wired connection')
             run['init']['internet'] = True
