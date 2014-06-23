@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # http://www.linux-usb.org/usb.ids
 # (vendor id, product id, device name)
 USB_DEVICES = {
-    'bluetooth': [
+    'bt': [
         (0x0a5c, 0x21e8, 'BCM20702A0 Bluetooth 4.0'),
     ],
     'nfc': [
