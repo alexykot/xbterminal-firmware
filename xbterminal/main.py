@@ -122,9 +122,7 @@ def main():
             gracefulExit(system_reboot=True)
 
         # Communicate with watcher
-        watcher_messages, watcher_errors = watcher.get_data()
-        for level, message in watcher_messages:
-            logger.log(level, message)
+        watcher_errors = watcher.get_errors()
         if watcher_errors:
             if main_window.currentScreen() != 'errors':
                 # Show error screen

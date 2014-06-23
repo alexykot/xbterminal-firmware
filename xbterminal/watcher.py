@@ -38,7 +38,6 @@ class Watcher(threading.Thread):
         self._internet = None
         self._peers = None
         self.period = 2
-        self.messages = []
         self.errors = {}
         self.system_stats_timestamp = 0
 
@@ -53,12 +52,12 @@ class Watcher(threading.Thread):
             if not interface_available:
                 message = "wireless interface not found"
                 if self.errors.get('wifi') != message:
-                    self.messages.append((logging.ERROR, message))
+                    logger.error(message)
                     self.errors['wifi'] = message
             else:
                 if not self._wifi:
                     message = "wireless interface found"
-                    self.messages.append((logging.INFO, message))
+                    logger.info(message)
                 self.errors.pop("wifi", None)
         self._wifi = interface_available
 
@@ -70,13 +69,13 @@ class Watcher(threading.Thread):
     def internet(self, internet_connected):
         if xbterminal.runtime['init']['internet']:
             if self._internet is None and not internet_connected:
-                self.messages.append((logging.ERROR, "no internet"))
+                logger.error("no internet")
                 self.errors["internet"] = "no internet"
             elif self._internet and not internet_connected:
-                self.messages.append((logging.ERROR, "internet disconnected"))
+                logger.error("internet disconnected")
                 self.errors["internet"] = "internet disconnected"
             elif not self._internet and internet_connected:
-                self.messages.append((logging.INFO, "internet connected"))
+                logger.info("internet connected")
                 self.errors.pop("internet", None)
         self._internet = internet_connected
 
@@ -90,18 +89,18 @@ class Watcher(threading.Thread):
             if peers is None:
                 message = "bitcoin server is not running"
                 if self.errors.get('blockchain') != message:
-                    self.messages.append((logging.ERROR, message))
+                    logger.error(message)
                     self.errors['blockchain'] = message
                 blockchain.updateDriverState(is_running=False)
             elif peers == 0:
                 message = "bitcoin server - no peers"
                 if self.errors.get('blockchain') != message:
-                    self.messages.append((logging.ERROR, message))
+                    logger.error(message)
                     self.errors['blockchain'] = message
             else:
                 if not self._peers:
                     message = "bitcoin server is running ({0} peers)".format(peers)
-                    self.messages.append((logging.INFO, message))
+                    logger.info(message)
                 self.errors.pop("blockchain", None)
                 blockchain.updateDriverState(is_running=True)
         self._peers = peers
@@ -141,11 +140,10 @@ class Watcher(threading.Thread):
         logger.info(str(stats))
         self.system_stats_timestamp = time.time()
 
-    def get_data(self):
+    def get_errors(self):
         with threading.RLock():
-            messages, self.messages = self.messages, []
             errors = list(self.errors.values())
-        return messages, errors
+        return errors
 
     def run(self):
         logger.info("watcher started")
