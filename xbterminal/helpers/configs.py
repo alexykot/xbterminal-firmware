@@ -49,6 +49,7 @@ def choose_remote_server(device_key):
 
 def load_remote_config():
     xbterminal.device_key = get_device_key()
+    remote_config_old_items = set(getattr(xbterminal, "remote_config", {}).items())
     try:
         xbterminal.runtime['remote_server'], xbterminal.remote_config = choose_remote_server(
             xbterminal.device_key)
@@ -65,9 +66,14 @@ def load_remote_config():
             raise InvalidAddressError('merchant', xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS'])
         if not isValidAddress(xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']):
             raise InvalidAddressError('fee', xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS'])
-        logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
-            server_url=xbterminal.runtime['remote_server'],
-            config_contents=xbterminal.remote_config))
+        # Compare configs
+        if remote_config_old_items ^ set(xbterminal.remote_config.items()):
+            logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
+                server_url=xbterminal.runtime['remote_server'],
+                config_contents=xbterminal.remote_config))
+        else:
+            logger.debug("remote config loaded from {server_url}, unchanged".format(
+                server_url=xbterminal.runtime['remote_server']))
         save_remote_config_cache()
 
 
