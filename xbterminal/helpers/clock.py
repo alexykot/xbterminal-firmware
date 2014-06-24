@@ -11,7 +11,6 @@ def get_internet_time():
     client = ntplib.NTPClient()
     try:
         response = client.request('europe.pool.ntp.org', version=3)
-    except Exception as error:
-        logger.exception(error)
+    except ntplib.NTPException as error:
         return 0
     return response.tx_time
