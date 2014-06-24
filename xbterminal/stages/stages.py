@@ -102,6 +102,8 @@ def idle(run, ui):
     ui.showScreen('idle')
     while True:
         if run['keypad'].last_key_pressed is not None:
+            if isinstance(run['keypad'].last_key_pressed, int):
+                run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
             return defaults.STAGES['payment']['enter_amount']
         time.sleep(0.1)
 
