@@ -97,8 +97,11 @@ def processKeyInput(display_value_unformatted, key_code):
             display_value_unformatted = display_value_unformatted[:-1]
         else:
             display_value_unformatted = ''
-    elif isinstance(key_code, (int, long)):
-        if len(display_value_unformatted) < defaults.OUTPUT_TOTAL_PLACES:
+    elif key_code in range(10):
+        if len(display_value_unformatted) + 1 <= defaults.OUTPUT_TOTAL_PLACES:
+            display_value_unformatted = str(display_value_unformatted) + str(key_code)
+    elif key_code == '00':
+        if len(display_value_unformatted) + 2 <= defaults.OUTPUT_TOTAL_PLACES:
             display_value_unformatted = str(display_value_unformatted) + str(key_code)
 
     return display_value_unformatted

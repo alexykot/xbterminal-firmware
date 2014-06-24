@@ -102,7 +102,7 @@ def idle(run, ui):
     ui.showScreen('idle')
     while True:
         if run['keypad'].last_key_pressed is not None:
-            if isinstance(run['keypad'].last_key_pressed, int):
+            if run['keypad'].last_key_pressed in range(10) + ['00']:
                 run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
             return defaults.STAGES['payment']['enter_amount']
         time.sleep(0.1)
@@ -113,7 +113,7 @@ def enter_amount(run, ui):
     ui.setText('amount_input', payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
     while True:
         if (
-            isinstance(run['keypad'].last_key_pressed, int)
+            run['keypad'].last_key_pressed in range(10) + ['00']
             or run['keypad'].last_key_pressed == 'backspace'
         ):
             if run['keypad'].last_key_pressed == 'backspace' and run['display_value_unformatted'] == '':
