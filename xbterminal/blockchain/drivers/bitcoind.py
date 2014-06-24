@@ -8,7 +8,7 @@ import logging
 
 import xbterminal
 from xbterminal import defaults
-from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
+from xbterminal.exceptions import PrivateKeysMissing
 
 import bitcoin
 import bitcoin.rpc
@@ -61,13 +61,14 @@ def getFreshAddress():
 
 def getLastUnspentTransactionId(address):
     txouts = connection.listunspent(minconf=0, addrs=[address])
-    most_recent_tx_details = None
+    most_recent_tx_id = None
+    most_recent_tx_timereceived = 0
     for out in txouts:
         txid = out['outpoint'].hash
         tx_details = connection.gettransaction(txid)
-        if most_recent_tx_details is None or most_recent_tx_details['timereceived'] < tx_details['timereceived']:
-            most_recent_tx_details = tx_details
-    return most_recent_tx_details['txid']
+        if most_recent_tx_timereceived < tx_details['timereceived']:
+            most_recent_tx_id = tx_details['txid']
+    return most_recent_tx_id
 
 
 def getUnspentTransactions(address):
