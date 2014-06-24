@@ -7,9 +7,7 @@ import time
 import xbterminal
 import xbterminal.blockchain.drivers
 from xbterminal import defaults
-from xbterminal.exceptions import (
-    NotEnoughFunds,
-    PrivateKeysMissing)
+from xbterminal.exceptions import NotEnoughFunds
 
 logger = logging.getLogger(__name__)
 

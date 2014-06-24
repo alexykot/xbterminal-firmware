@@ -212,6 +212,8 @@ def pay(run, ui):
                        amount_btc=run['amounts']['amount_to_pay_btc'],
                        effective_rate=run['effective_rate_btc'],
                        ))
+    # Wait for incoming transaction
+    incoming_tx_hash = None
     while True:
         if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
             logger.debug('QR code requested')
@@ -235,11 +237,14 @@ def pay(run, ui):
             logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
             time.sleep(0.5)
 
-        current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
-        time.sleep(0.5)
-        
-        if current_balance >= run['amounts']['amount_to_pay_btc']:
-            incoming_tx_hash = xbterminal.blockchain.blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
+        try:
+            current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
+            if current_balance >= run['amounts']['amount_to_pay_btc']:
+                incoming_tx_hash = xbterminal.blockchain.blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
+        except Exception as error:
+            pass
+
+        if incoming_tx_hash is not None:
             logger.debug('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
 
             if current_balance > run['amounts']['amount_to_pay_btc']:
@@ -292,7 +297,7 @@ def pay(run, ui):
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
             return defaults.STAGES['payment']['pay_cancel']
 
-        time.sleep(0.1)
+        time.sleep(0.5)
 
 
 def pay_success(run, ui):
