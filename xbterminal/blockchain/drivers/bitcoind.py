@@ -120,5 +120,3 @@ def sendRawTransaction(inputs, outputs):
         raise PrivateKeysMissing()
 
     return connection.proxy.sendrawtransaction(raw_transaction_signed_hex)
-
-
