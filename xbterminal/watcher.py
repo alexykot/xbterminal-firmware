@@ -114,7 +114,7 @@ class Watcher(threading.Thread):
         try:
             requests.get("https://xbterminal.com", timeout=5)
             self.internet = True
-        except requests.exceptions.RequestException:
+        except (requests.exceptions.RequestException, socket.timeout):
             self.internet = False
         # Check blockchain driver
         try:
