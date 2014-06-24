@@ -240,9 +240,12 @@ def pay(run, ui):
             logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
             time.sleep(0.5)
 
-        current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
-        if current_balance >= run['amounts']['amount_to_pay_btc']:
-            incoming_tx_hash = xbterminal.blockchain.blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
+        try:
+            current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
+            if current_balance >= run['amounts']['amount_to_pay_btc']:
+                incoming_tx_hash = xbterminal.blockchain.blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
+        except Exception as error:
+            pass
 
         if incoming_tx_hash is not None:
             logger.debug('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
