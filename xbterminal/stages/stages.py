@@ -393,7 +393,7 @@ def enter_passkey(run, ui):
                     xbterminal.helpers.configs.save_local_state()
                     return defaults.STAGES['wifi']['wifi_connected']
                 else:
-                    logger.debug('wifi wrong passkey')
+                    logger.warning('wifi wrong passkey')
                     ui.toggleWifiConnectingState(False)
                     ui.toggleWifiWrongPasswordState(True)
                     run['keypad'].resetKey()

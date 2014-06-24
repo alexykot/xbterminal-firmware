@@ -68,5 +68,4 @@ def connect(ssid, passkey=None):
                 scheme.activate()
                 return True
             except wifi.exceptions.ConnectionError as error:
-                logger.exception(error)
                 return False
