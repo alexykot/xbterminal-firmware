@@ -22,7 +22,7 @@ logging.config.dictConfig(log_config)
 logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-from xbterminal.exceptions import ConfigLoadError
+from xbterminal.exceptions import ConfigLoadError, InvalidAddressError
 from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
 import xbterminal.helpers.configs
@@ -40,7 +40,7 @@ def main():
     run['init']['clock_synchronized'] = False
     run['init']['blockchain'] = False
     run['init']['remote_config'] = False
-    run['init']['remote_config_last_update'] = None
+    run['init']['remote_config_last_update'] = 0
     run['init']['blockchain_network'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['bootup']
     run['amounts'] = {}
@@ -55,7 +55,7 @@ def main():
     run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
-    run['current_screen'] = None
+    run['current_screen'] = 'load_indefinite'
     run['keypad'] = None
 
     qt_application, main_window = xbterminal.gui.gui.initGUI()
@@ -97,43 +97,45 @@ def main():
         ):
             gracefulExit(system_reboot=True)
 
-        # Load remote config
+        # (Re)load remote config
         if (
-            run['init']['remote_config_last_update'] is not None
+            run['init']['internet']
             and run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time()
         ):
             try:
                 xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:
                 # Do not raise error, wait for internet connection
-                logger.error('remote config load failed')
+                watcher.set_error('remote_config', 'remote config load failed')
+            except InvalidAddressError as error:
+                watcher.set_error('remote_config', 'invalid merchant or fee address')
             else:
+                run['init']['remote_config'] = True
+                run['init']['remote_config_last_update'] = int(time.time())
+                watcher.discard_error('remote_config')
                 main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
                     xbterminal.remote_config['MERCHANT_NAME'],
                     xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
-                run['init']['remote_config_last_update'] = int(time.time())
 
         # Reboot if blockchain network has changed
         if (
-            hasattr(xbterminal, 'remote_config')
+            run['init']['remote_config']
             and run['init']['blockchain_network'] is not None
             and run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']
         ):
             gracefulExit(system_reboot=True)
 
         # Communicate with watcher
-        watcher_messages, watcher_errors = watcher.get_data()
-        for level, message in watcher_messages:
-            logger.log(level, message)
+        watcher_errors = watcher.get_errors()
         if watcher_errors:
+            # Show error screen
             if main_window.currentScreen() != 'errors':
-                # Show error screen
                 run['current_screen'] = main_window.currentScreen()
                 main_window.showScreen('errors')
-                main_window.setText('errors_lbl', "\n".join(watcher_errors))
+            main_window.setText('errors_lbl', '\n'.join(watcher_errors))
             continue
         else:
-            if main_window.currentScreen() == 'errors' and run['current_screen'] is not None:
+            if main_window.currentScreen() == 'errors':
                 # Restore previous screen
                 main_window.showScreen(run['current_screen'])
 

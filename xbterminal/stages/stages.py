@@ -75,18 +75,13 @@ def bootup(run, ui):
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
-    try:
-        xbterminal.helpers.configs.load_remote_config()
-    except ConfigLoadError as error:
-        logger.error('remote config load failed, exiting')
-        raise error
-    ui.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
-        xbterminal.remote_config['MERCHANT_NAME'],
-        xbterminal.remote_config['MERCHANT_DEVICE_NAME'])) 
-    run['init']['remote_config'] = True
-    run['init']['remote_config_last_update'] = int(time.time())
+    # Wait for remote config
+    while True:
+        if run['init']['remote_config']:
+            break
+        time.sleep(1)
 
-
+    # Initialize blockchain driver
     xbterminal.blockchain.blockchain.init()
     run['init']['blockchain'] = True
     ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
