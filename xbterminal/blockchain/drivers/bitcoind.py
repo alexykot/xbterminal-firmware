@@ -3,8 +3,6 @@ from decimal import Decimal
 import os
 import socket
 import subprocess
-import bitcoinrpc
-import bitcoinrpc.connection
 import time
 import logging
 
@@ -12,16 +10,15 @@ import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import NotEnoughFunds, PrivateKeysMissing
 
+import bitcoin
+import bitcoin.rpc
+from bitcoin.core import COIN, x, b2x, b2lx, CTransaction
+
 logger = logging.getLogger(__name__)
 
 BITCOIND_HOST = 'node.xbterminal.com'
-if xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet':
-    BITCOIND_PORT = 18332
-else:
-    BITCOIND_PORT = 8332
 BITCOIND_USER = 'root'
 BITCOIND_PASS = 'password'
-BITCOIND_HTTPS = True
 
 try:
     from xbterminal.bitcoind_auth import BITCOIND_USER, BITCOIND_PASS
@@ -31,21 +28,16 @@ except:
 connection = None
 
 
-class BitcoinConnection(bitcoinrpc.connection.BitcoinConnection):
-
-    def sendrawtransaction(self, hex_raw_tx):
-        self.proxy.sendrawtransaction(hex_raw_tx)
-
-
 def init():
     global connection
-
     if connection is None:
-        connection = BitcoinConnection(user=BITCOIND_USER,
-                                       password=BITCOIND_PASS,
-                                       host=BITCOIND_HOST,
-                                       port=BITCOIND_PORT,
-                                       use_https=BITCOIND_HTTPS)
+        bitcoin.SelectParams(xbterminal.remote_config['BITCOIN_NETWORK'])
+        service_url = "https://{user}:{password}@{host}:{port}".format(
+            user=BITCOIND_USER,
+            password=BITCOIND_PASS,
+            host=BITCOIND_HOST,
+            port=bitcoin.params.RPC_PORT)
+        connection = bitcoin.rpc.Proxy(service_url)
     try:
         getInfo()
     except Exception as error:
@@ -55,68 +47,54 @@ def init():
 
 
 def getAddressBalance(address):
-    global connection
-
     time.sleep(0.3) #hack required for slow machines like RPi
-    balance = connection.getreceivedbyaddress(address, minconf=0)
+    minconf = 0
+    balance = connection.getreceivedbyaddress(address, minconf)
     balance = Decimal(balance).quantize(defaults.BTC_DEC_PLACES)
-
     return balance
 
 
 def getFreshAddress():
-    global connection
-
     address = connection.getnewaddress()
-
-    return address
+    return str(address)
 
 
 def getLastUnspentTransactionId(address):
-    global connection
-
-    unspent_list = connection.listunspent(minconf=0)
+    txouts = connection.listunspent(minconf=0, addrs=[address])
     most_recent_tx_details = None
-    for transaction in unspent_list:
-        if transaction.address == address:
-            tx_details = connection.gettransaction(transaction.txid)
-            if most_recent_tx_details is None or most_recent_tx_details['timereceived'] < tx_details['timereceived']:
-                most_recent_tx_details = tx_details
-
-    return most_recent_tx_details.txid
+    for out in txouts:
+        txid = out['outpoint'].hash
+        tx_details = connection.gettransaction(txid)
+        if most_recent_tx_details is None or most_recent_tx_details['timereceived'] < tx_details['timereceived']:
+            most_recent_tx_details = tx_details
+    return most_recent_tx_details['txid']
 
 
 def getUnspentTransactions(address):
-    global connection
-
-    address_tx_list = []
-    unspent_tx_list = connection.listunspent(minconf=0)
-    for transaction in unspent_tx_list:
-        if transaction.address == address:
-            address_tx_list.append({'txid': transaction.txid,
-                                    'vout': transaction.vout,
-                                    'amount': transaction.amount,
-                                    })
-
-    return address_tx_list
+    txouts = connection.listunspent(minconf=0, addrs=[address])
+    transactions = []
+    for out in txouts:
+        transactions.append({
+            'txid': b2lx(out['outpoint'].hash),
+            'vout': out['outpoint'].n,
+            'amount': Decimal(out['amount']) / COIN,
+        })
+    return transactions
 
 
 def getInfo():
     server_info = connection.getinfo()
     data = {
-        'connections': server_info.connections,
+        'connections': server_info['connections'],
     }
     return data
 
 
 def sendRawTransaction(inputs, outputs):
-    global connection
-
-    raw_transaction_unsigned_hex = connection.createrawtransaction(inputs=inputs, outputs=outputs)
-    raw_transaction_signed = connection.signrawtransaction(raw_transaction_unsigned_hex)
-    if raw_transaction_signed['complete']:
-        raw_transaction_signed_hex = raw_transaction_signed['hex']
-    else:
+    raw_transaction_unsigned_hex = connection.createrawtransaction(inputs, outputs)
+    raw_transaction_unsigned = CTransaction.deserialize(x(raw_transaction_unsigned_hex))
+    result = connection.signrawtransaction(raw_transaction_unsigned)
+    if result.get('complete') != 1:
         raise PrivateKeysMissing()
-
-    return connection.proxy.sendrawtransaction(raw_transaction_signed_hex)
+    tx_id = connection.sendrawtransaction(result['tx'])
+    return b2x(tx_id)
