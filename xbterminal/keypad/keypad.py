@@ -68,8 +68,9 @@ class Keypad():
             ):
                 # Start new cycle
                 self._cycle_index = 0
+            else:
+                self._cycle_index += 1
             new_string = current_string[0:self._alphanum_char_index] + char_tuple[self._cycle_index]
-            self._cycle_index += 1
             self._alphanum_char_prev = self._getkey_value
             return new_string
         elif self._getkey_value == 'enter':
