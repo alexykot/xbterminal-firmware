@@ -87,16 +87,6 @@ def main():
         except NameError as error:
             logger.exception(error)
 
-
-        # Temporary solution for the freezing of terminal
-        # Reboot once per hour
-        if (
-            run['init']['clock_synchronized']
-            and run['CURRENT_STAGE'] == defaults.STAGES['idle']
-            and time.time() - xbterminal.local_state['last_started'] > 3600
-        ):
-            gracefulExit(system_reboot=True)
-
         # (Re)load remote config
         if (
             run['init']['internet']
