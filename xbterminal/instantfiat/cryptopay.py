@@ -2,8 +2,9 @@
 from decimal import Decimal
 import json
 import logging
-import requests
 import re
+
+import requests
 
 import xbterminal
 from xbterminal.exceptions import NetworkError, CurrencyNotRecognized
@@ -17,18 +18,22 @@ CRYPTOPAY_INVOICE_DATA_URL = "https://cryptopay.me/api/v1/invoices/{invoice_id}?
 def createInvoice(amount, currency, speed):
     global xbterminal
 
-    headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS
+    headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
     headers['Content-type'] = 'application/json'
     invoice_url = CRYPTOPAY_CREATE_INVOICE_API_URL.format(api_key=xbterminal.remote_config['MERCHANT_INSTANTFIAT_API_KEY'])
-
-    response = requests.post(url=invoice_url,
-                             headers=headers,
-                             data=json.dumps({'price': float(amount),
-                                               'currency': currency,
-                                               'description': xbterminal.remote_config['MERCHANT_TRANSACTION_DESCRIPTION'],
-                                                }),
-                             )
-    response = response.json()
+    payload = {
+        'price': float(amount),
+        'currency': currency,
+        'description': xbterminal.remote_config['MERCHANT_TRANSACTION_DESCRIPTION'],
+    }
+    try:
+        response = requests.post(url=invoice_url,
+                                 headers=headers,
+                                 data=json.dumps(payload))
+        response = response.json()
+    except (requests.exceptions.RequestException, ValueError):
+        # Handle network errors and json decoding errors
+        raise NetworkError
     result = {}
     result['invoice_id'] = response['uuid']
     result['amount_btc'] = Decimal(response['btc_price']).quantize(xbterminal.defaults.BTC_DEC_PLACES)
@@ -49,7 +54,7 @@ def isInvoicePaid(invoice_id):
                                                            api_key=xbterminal.remote_config['MERCHANT_INSTANTFIAT_API_KEY'])
     try:
         response = requests.get(url=invoice_status_url,
-                                headers=xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS,
+                                headers=xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy(),
                                 ).json()
     except requests.HTTPError as error:
         logger.exception(error)
