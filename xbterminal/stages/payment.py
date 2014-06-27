@@ -241,3 +241,72 @@ def getBitcoinURI(payment_addr, amount_btc):
                                                             urllib2.quote(str(xbterminal.remote_config['MERCHANT_TRANSACTION_DESCRIPTION'])).encode('utf8'),
                                                                 )
     return uri
+
+
+def get_payment_request(fiat_amount):
+    """
+    Accepts:
+        fiat_amount: amount to pay (Decimal)
+    Returns:
+        result: payment parameters as a dict
+    """
+    payment_init_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_init']
+    payload = {
+        'device_key': xbterminal.device_key,
+        'amount': float(fiat_amount),
+        'bt_mac': '',  # run['bluetooth'].mac_address
+    }
+    headers=defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+    headers['Content-Type'] = 'application/json'
+    try:
+        response = requests.post(
+            url=payment_init_url,
+            headers=headers,
+            data=payload)
+        result = response.json()
+    except (requests.exceptions.RequestException, ValueError) as error:
+        return None
+    return result
+
+
+def send_payment(payment_uid, message):
+    """
+    Accepts:
+        payment_uid: str
+        message: pb2-encoded Payment message
+    Returns:
+        payment_ack: pb2-encoded PaymentACK message
+    """
+    payment_response_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_response']
+    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+    headers['Content-Type'] = 'application/bitcoin-payment'
+    try:
+        response = requests.post(
+            url=payment_response_url.format(payment_uid=payment_uid),
+            headers=headers,
+            data=message)
+    except requests.exceptions.RequestException as error:
+        return None
+    payment_ack = response.content
+    return payment_ack
+
+
+def check_payment(payment_uid):
+    """
+    Accepts:
+        payment_uid: str
+    Returns:
+        receipt_url: str or None
+    """
+    payment_check_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_check']
+    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+    headers['Content-Type'] = 'application/json'
+    try:
+        response = requests.post(
+            url=payment_check_url.format(payment_uid=payment_uid),
+            headers=headers)
+        result = response.json()
+    except (requests.exceptions.RequestException, ValueError) as error:
+        return None
+    if result['paid'] == 1:
+        return result['receipt_url']
