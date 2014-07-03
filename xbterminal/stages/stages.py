@@ -18,6 +18,7 @@ import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.wireless
 import xbterminal.gui.gui
+import xbterminal.exceptions
 
 
 def bootup(run, ui):
@@ -146,19 +147,28 @@ def pay_loading(run, ui):
     run['transactions_addresses']['merchant'] = xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS']
     run['transactions_addresses']['fee'] = xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']
 
-    if (xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'] is not None
-        and xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE'] > 0):
-        (run['amounts']['instantfiat_fiat_amount'],
-         run['amounts']['instantfiat_btc_amount'],
-         run['instantfiat_invoice_id'],
-         run['transactions_addresses']['instantfiat'],
-         run['exchange_rate']) = payment.createInvoice(run['amounts']['amount_to_pay_fiat'])
-    else:
-        run['amounts']['instantfiat_fiat_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
-        run['amounts']['instantfiat_btc_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
-        run['instantfiat_invoice_id'] = None
-        run['transactions_addresses']['instantfiat'] = None
-        run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(xbterminal.remote_config['MERCHANT_CURRENCY'])
+    while True:
+        try:
+            if (
+                xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'] is not None
+                and xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE'] > 0
+            ):
+                (run['amounts']['instantfiat_fiat_amount'],
+                 run['amounts']['instantfiat_btc_amount'],
+                 run['instantfiat_invoice_id'],
+                 run['transactions_addresses']['instantfiat'],
+                 run['exchange_rate']) = payment.createInvoice(run['amounts']['amount_to_pay_fiat'])
+            else:
+                run['amounts']['instantfiat_fiat_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
+                run['amounts']['instantfiat_btc_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
+                run['instantfiat_invoice_id'] = None
+                run['transactions_addresses']['instantfiat'] = None
+                run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(xbterminal.remote_config['MERCHANT_CURRENCY'])
+            break
+        except xbterminal.exceptions.NetworkError as error:
+            # Wait for internet connection
+            logger.warning(str(error))
+            time.sleep(2)
 
     run['amounts']['our_fee_btc_amount'] = payment.getOurFeeBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
     run['amounts']['merchants_btc_amount'] = payment.getMerchantBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
