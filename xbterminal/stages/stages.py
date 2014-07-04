@@ -147,6 +147,7 @@ def pay_loading(run, ui):
             run['amounts']['amount_to_pay_btc'] = Decimal(result['btc_amount'])
             run['effective_rate_btc'] = Decimal(result['exchange_rate'])
             run['transaction_bitcoin_uri'] = result['payment_uri']
+            run['payment_uid'] = result['payment_uid']
 
             # Prepare QR image
             run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
@@ -232,6 +233,65 @@ def pay_rates(run, ui):
 
 
 def pay(run, ui):
+    ui.showScreen('pay_nfc')
+    ui.setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+    ui.setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+    ui.setText('exchange_rate_nfc', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+                                                          defaults.EXCHANGE_RATE_DEC_PLACES))
+    logger.debug('local payment requested, '
+                 'amount fiat: {amount_fiat}, '
+                 'amount btc: {amount_btc}, '
+                 'rate: {effective_rate}'.
+                    format(amount_fiat=run['amounts']['amount_to_pay_fiat'],
+                           amount_btc=run['amounts']['amount_to_pay_btc'],
+                           effective_rate=run['effective_rate_btc']))
+    while True:
+        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
+            logger.debug('QR code requested')
+            run['screen_buttons']['qr_button'] = False
+            ui.showScreen('pay_qr')
+            ui.setText('fiat_amount_qr', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
+            ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
+            ui.setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+                                                                 defaults.EXCHANGE_RATE_DEC_PLACES))
+            ui.setText('qr_address_lbl', '')
+            ui.setImage("qr_image", run['qr_image_path'])
+            run['keypad'].resetKey()
+
+        elif run['keypad'].last_key_pressed == 'backspace':
+            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
+            xbterminal.helpers.nfcpy.stop()
+            return defaults.STAGES['payment']['enter_amount']
+
+        if not xbterminal.helpers.nfcpy.is_active():
+            xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
+            logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
+            time.sleep(0.5)
+
+        result = payment.check_payment(run['payment_uid'])
+        if result is not None:
+            run['receipt_url'] = result
+            logger.debug('payment received, receipt: {}'.format(run['receipt_url']))
+
+            run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['receipt_url'], run['qr_image_path'])
+
+            payment.clearPaymentRuntime(run, ui)
+            xbterminal.helpers.nfcpy.stop()
+            return defaults.STAGES['payment']['pay_success']
+
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            payment.clearPaymentRuntime(run, ui)
+            xbterminal.helpers.nfcpy.stop()
+            run['last_activity_timestamp'] = (time.time()
+                                                  - defaults.TRANSACTION_TIMEOUT
+                                                  + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
+            return defaults.STAGES['payment']['pay_cancel']
+
+        time.sleep(0.5)
+
+
+def pay_old(run, ui):
     ui.showScreen('pay_nfc')
     ui.setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
     ui.setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))

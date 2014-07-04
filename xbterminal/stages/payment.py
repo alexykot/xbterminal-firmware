@@ -289,17 +289,13 @@ def send_payment(payment_uid, message):
 def check_payment(payment_uid):
     """
     Accepts:
-        payment_uid: str
+        payment_uid: string
     Returns:
-        receipt_url: str or None
+        receipt_url: url or None
     """
     payment_check_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_check']
-    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-    headers['Content-Type'] = 'application/json'
     try:
-        response = requests.post(
-            url=payment_check_url.format(payment_uid=payment_uid),
-            headers=headers)
+        response = requests.get(payment_check_url.format(payment_uid=payment_uid))
         result = response.json()
     except (requests.exceptions.RequestException, ValueError) as error:
         return None
