@@ -140,6 +140,30 @@ def pay_loading(run, ui):
     if run['amounts']['amount_to_pay_fiat'] is None:
         return defaults.STAGES['payment']['enter_amount']
 
+    while True:
+        result = payment.get_payment_request(run['amounts']['amount_to_pay_fiat'])
+        if result is not None:
+            # Payment parameters loaded
+            run['amounts']['amount_to_pay_btc'] = Decimal(result['btc_amount'])
+            run['effective_rate_btc'] = Decimal(result['exchange_rate'])
+            run['transaction_bitcoin_uri'] = result['payment_uri']
+
+            # Prepare QR image
+            run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['transaction_bitcoin_uri'], run['qr_image_path'])
+            return defaults.STAGES['payment']['pay_rates']
+        else:
+            # Network error
+            time.sleep(1)
+
+
+def pay_loading_old(run, ui):
+    ui.showScreen('load_indefinite')
+    ui.setText('indefinite_load_lbl', 'preparing payment')
+
+    if run['amounts']['amount_to_pay_fiat'] is None:
+        return defaults.STAGES['payment']['enter_amount']
+
     run['invoice_paid'] = False
 
     run['transactions_addresses'] = {}

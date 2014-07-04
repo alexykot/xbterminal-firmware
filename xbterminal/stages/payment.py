@@ -254,15 +254,10 @@ def get_payment_request(fiat_amount):
     payload = {
         'device_key': xbterminal.device_key,
         'amount': float(fiat_amount),
-        'bt_mac': '',  # run['bluetooth'].mac_address
+        'bt_mac': '00:00:00:00:00:00',
     }
-    headers=defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-    headers['Content-Type'] = 'application/json'
     try:
-        response = requests.post(
-            url=payment_init_url,
-            headers=headers,
-            data=payload)
+        response = requests.post(payment_init_url, data=payload)
         result = response.json()
     except (requests.exceptions.RequestException, ValueError) as error:
         return None
