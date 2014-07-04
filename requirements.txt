@@ -5,4 +5,5 @@ python-bitcoinlib==0.1.1
 pyusb==1.0.0b1
 qrcode==4.0.4
 requests==2.3.0
+PyBluez==0.20
 pep8==1.5.6
