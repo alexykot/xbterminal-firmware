@@ -141,12 +141,12 @@ def pay_loading(run, ui):
         return defaults.STAGES['payment']['enter_amount']
 
     while True:
-        result = payment.get_payment_request(run['amounts']['amount_to_pay_fiat'])
+        result = payment.create_payment_order(run['amounts']['amount_to_pay_fiat'])
         if result is not None:
             # Payment parameters loaded
             run['amounts']['amount_to_pay_btc'] = Decimal(result['btc_amount'])
             run['effective_rate_btc'] = Decimal(result['exchange_rate'])
-            run['transaction_bitcoin_uri'] = result['payment_uri']
+            run['transaction_bitcoin_uri'] = result['payment_uri'].split("&r=")[0]
             run['payment_uid'] = result['payment_uid']
 
             # Prepare QR image

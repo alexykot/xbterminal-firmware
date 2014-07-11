@@ -243,12 +243,12 @@ def getBitcoinURI(payment_addr, amount_btc):
     return uri
 
 
-def get_payment_request(fiat_amount):
+def create_payment_order(fiat_amount):
     """
     Accepts:
         fiat_amount: amount to pay (Decimal)
     Returns:
-        result: payment parameters as a dict
+        result: payment parameters as a dict or None
     """
     payment_init_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_init']
     payload = {
@@ -260,7 +260,11 @@ def get_payment_request(fiat_amount):
         response = requests.post(payment_init_url, data=payload)
         result = response.json()
     except (requests.exceptions.RequestException, ValueError) as error:
+        logger.error("create payment order: {0}".\
+            format(error.__class__.__name__))
         return None
+    logger.info("created payment order {0}".\
+        format(result['payment_uid']))
     return result
 
 
