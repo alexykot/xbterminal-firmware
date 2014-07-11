@@ -24,7 +24,7 @@ def createInvoice(amount, currency, speed):
     payload = {
         'price': float(amount),
         'currency': currency,
-        'confirmation_count': 0,
+        'confirmations_count': 0,
         'description': xbterminal.remote_config['MERCHANT_TRANSACTION_DESCRIPTION'],
     }
     try:
