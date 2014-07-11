@@ -152,7 +152,8 @@ def pay_loading(run, ui):
             run['amounts']['amount_to_pay_btc'] = Decimal(result['btc_amount'])
             run['effective_rate_btc'] = Decimal(result['exchange_rate'])
             run['transaction_bitcoin_uri'] = result['payment_uri']
-            run['payment_uid'] = result['payment_uid']
+            run['payment'] = payment.Payment(result['payment_uid'],
+                                             result['payment_request'].decode('base64'))
 
             # Prepare QR image
             run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
@@ -250,7 +251,7 @@ def pay(run, ui):
                     format(amount_fiat=run['amounts']['amount_to_pay_fiat'],
                            amount_btc=run['amounts']['amount_to_pay_btc'],
                            effective_rate=run['effective_rate_btc']))
-    run['bluetooth_server'].start()
+    run['bluetooth_server'].start(run['payment'])
     while True:
         if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
             logger.debug('QR code requested')
@@ -275,7 +276,7 @@ def pay(run, ui):
             logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
             time.sleep(0.5)
 
-        result = payment.check_payment(run['payment_uid'])
+        result = payment.check_payment(run['payment'].uid)
         if result is not None:
             run['receipt_url'] = result
             logger.debug('payment received, receipt: {}'.format(run['receipt_url']))

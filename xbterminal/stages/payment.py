@@ -305,3 +305,13 @@ def check_payment(payment_uid):
         return None
     if result['paid'] == 1:
         return result['receipt_url']
+
+
+class Payment(object):
+
+    def __init__(self, uid, request):
+        self.uid = uid
+        self.request = request
+
+    def send_payment(self, message):
+        return send_payment(self.uid, message)
