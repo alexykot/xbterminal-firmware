@@ -12,6 +12,7 @@ from xbterminal.stages import payment
 
 import xbterminal.bitcoinaverage
 import xbterminal.blockchain.blockchain
+import xbterminal.helpers.bt
 import xbterminal.helpers.clock
 import xbterminal.helpers.configs
 import xbterminal.helpers.nfcpy
@@ -91,6 +92,9 @@ def bootup(run, ui):
     ui.toggleTestnetNotice(xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet')
     run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
 
+    # Initialize bluetooth server
+    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
+
     return defaults.STAGES['idle']
 
 
@@ -141,12 +145,13 @@ def pay_loading(run, ui):
         return defaults.STAGES['payment']['enter_amount']
 
     while True:
-        result = payment.create_payment_order(run['amounts']['amount_to_pay_fiat'])
+        result = payment.create_payment_order(run['amounts']['amount_to_pay_fiat'],
+                                              run['bluetooth_server'].mac_address)
         if result is not None:
             # Payment parameters loaded
             run['amounts']['amount_to_pay_btc'] = Decimal(result['btc_amount'])
             run['effective_rate_btc'] = Decimal(result['exchange_rate'])
-            run['transaction_bitcoin_uri'] = result['payment_uri'].split("&r=")[0]
+            run['transaction_bitcoin_uri'] = result['payment_uri']
             run['payment_uid'] = result['payment_uid']
 
             # Prepare QR image
@@ -245,6 +250,7 @@ def pay(run, ui):
                     format(amount_fiat=run['amounts']['amount_to_pay_fiat'],
                            amount_btc=run['amounts']['amount_to_pay_btc'],
                            effective_rate=run['effective_rate_btc']))
+    run['bluetooth_server'].start()
     while True:
         if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
             logger.debug('QR code requested')
@@ -261,6 +267,7 @@ def pay(run, ui):
         elif run['keypad'].last_key_pressed == 'backspace':
             payment.clearPaymentRuntime(run, ui, clear_amounts=False)
             xbterminal.helpers.nfcpy.stop()
+            run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['enter_amount']
 
         if not xbterminal.helpers.nfcpy.is_active():
@@ -278,11 +285,13 @@ def pay(run, ui):
 
             payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
+            run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_success']
 
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
+            run['bluetooth_server'].stop()
             run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)

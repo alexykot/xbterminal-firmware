@@ -243,7 +243,7 @@ def getBitcoinURI(payment_addr, amount_btc):
     return uri
 
 
-def create_payment_order(fiat_amount):
+def create_payment_order(fiat_amount, bt_mac):
     """
     Accepts:
         fiat_amount: amount to pay (Decimal)
@@ -254,7 +254,7 @@ def create_payment_order(fiat_amount):
     payload = {
         'device_key': xbterminal.device_key,
         'amount': float(fiat_amount),
-        'bt_mac': '00:00:00:00:00:00',
+        'bt_mac': bt_mac,
     }
     try:
         response = requests.post(payment_init_url, data=payload)

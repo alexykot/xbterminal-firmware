@@ -57,6 +57,7 @@ def main():
     run['wifi']['connected'] = False
     run['current_screen'] = 'load_indefinite'
     run['keypad'] = None
+    run['bluetooth_server'] = None
 
     qt_application, main_window = xbterminal.gui.gui.initGUI()
     main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
