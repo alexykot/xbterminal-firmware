@@ -188,7 +188,7 @@ class PaymentResponseWorker(BluetoothWorker):
         logger.debug("{0} - recieved payment".format(self.service_name))
         value, pos = protobuf_decoder._DecodeVarint(data, 0)
         payment_message = data[pos:]
-        payment_ack = self.payment.send_payment(payment_message)
+        payment_ack = self.payment.send(payment_message)
         response = (protobuf_encoder._VarintBytes(len(payment_ack)) +
                     payment_ack)
         logger.debug("{0} - sending PaymentACK".format(self.service_name))
