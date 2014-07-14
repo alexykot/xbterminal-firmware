@@ -84,7 +84,8 @@ LOG_CONFIG = {
     },
 }
 
-REMOTE_SERVERS = ('https://xbterminal.com',
+REMOTE_SERVERS = ('https://xbterminal.io',
+                  'https://xbterminal.com',
                     )
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
