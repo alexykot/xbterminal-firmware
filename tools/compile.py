@@ -65,6 +65,7 @@ subprocess.check_call(['nuitka',
                       '--recurse-to=gui',
                       '--recurse-to=stages',
                       '--recurse-to=watcher',
+                      '--recurse-to=bitcoind_auth',
 
                       '--recurse-not-to=PyQt4',
                       '--recurse-not-to=bitcoinrpc',
