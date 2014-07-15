@@ -16,7 +16,7 @@ from bitcoin.core import COIN, x, b2x, b2lx, CTransaction
 
 logger = logging.getLogger(__name__)
 
-BITCOIND_HOST = 'node.xbterminal.com'
+BITCOIND_HOST = 'node.xbterminal.io'
 BITCOIND_USER = 'root'
 BITCOIND_PASS = 'password'
 
