@@ -78,6 +78,12 @@ subprocess.check_call(['nuitka',
                       '--recurse-not-to=eventlet.timeout',
                       '--recurse-not-to=simplejson',
                       '--recurse-not-to=Adafruit_BBIO',
+                      '--recurse-not-to=usb',
+                      '--recurse-not-to=bluetooth',
+                      '--recurse-not-to=dbus',
+                      '--recurse-not-to=ntplib',
+                      '--recurse-not-to=psutil',
+                      '--recurse-not-to=bitcoin',
 
                       '/opt/xbterminal/xbterminal/main.py'],
                       cwd='/opt/xbterminal/')
