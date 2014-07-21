@@ -31,6 +31,7 @@ class BitcoinSender(threading.Thread):
         comm_thread = threading.Thread(target=send_uri,
                                        args=(llc, self.uri))
         comm_thread.start()
+        return True
 
     def terminate_callback_function(self):
         return self.terminate
