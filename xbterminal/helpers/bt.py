@@ -203,15 +203,24 @@ class BluetoothServer(object):
         self.device_id = match.group('device')
         self.mac_address = match.group('mac')
         self.workers = []
+        # Disable SSP
+        subprocess.check_call(['hciconfig', self.device_id, 'sspmode', '0'])
+        # Disable auth
+        subprocess.check_call(['hciconfig', self.device_id, 'noauth'])
         logger.info("bluetooth init done, mac address: {0}".\
             format(self.mac_address))
 
     def get_bluetooth_url(self):
         return 'bt:' + self.mac_address.replace(':', '')
 
-    def start(self, payment):
-        # Make device visible
+    def make_discoverable(self):
         subprocess.check_call(['hciconfig', self.device_id, 'piscan'])
+
+    def make_hidden(self):
+        subprocess.check_call(['hciconfig', self.device_id, 'noscan'])
+
+    def start(self, payment):
+        self.make_discoverable()
         # Advertise services and accept connections
         self.workers = [
             PaymentRequestWorker(self.device_id, payment),
@@ -226,8 +235,7 @@ class BluetoothServer(object):
             worker.stop()
             worker.join()
         del self.workers[:]
-        # Make device hidden
-        subprocess.check_call(['hciconfig', self.device_id, 'noscan'])
+        self.make_hidden()
 
     def is_running(self):
         return any(w.is_alive() for w in self.workers)
