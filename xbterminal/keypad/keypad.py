@@ -36,7 +36,7 @@ class Keypad():
         self._getkey_value = None
         self._getkey_timestamp = 0
 
-        self._cycle_index = 0
+        self._cycle_index = None
         self._alphanum_char_index = 0
         self._alphanum_char_prev = None
 
@@ -80,14 +80,14 @@ class Keypad():
         elif self._getkey_value == 'enter':
             # Accept current character
             self._alphanum_char_index += 1
-            self._cycle_index = 0
+            self._cycle_index = -1
             self._alphanum_char_prev = self._getkey_value
             return current_string
         elif self._getkey_value == 'backspace':
             # Remove last character
-            if self._cycle_index == 0:
+            if self._cycle_index == -1:
                 self._alphanum_char_index = max(self._alphanum_char_index - 1, 0)
-            self._cycle_index = 0
+            self._cycle_index = -1
             self._alphanum_char_prev = self._getkey_value
             return current_string[:-1]
         else:
