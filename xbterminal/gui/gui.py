@@ -134,12 +134,20 @@ class GUI(QtGui.QWidget):
 
 
 def initGUI():
+    """
+    Initialize GUI
+    """
     application = QtGui.QApplication(sys.argv)
     application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
-
     main_window = GUI()
-
+    adjust_screen_brightness(defaults.SCREEN_BRIGHTNESS)
     return application, main_window
+
+
+def adjust_screen_brightness(value):
+    command = "echo {0} > /sys/class/backlight/backlight.11/brightness".\
+        format(value)
+    subprocess.check_call(command, shell=True)
 
 
 def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
