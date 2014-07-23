@@ -1,9 +1,5 @@
-# coding=utf-8
 import os
 from decimal import Decimal
-
-import xbterminal.helpers
-import xbterminal.helpers.misc
 
 
 STAGES = {'payment': {'enter_amount': 'enter_amount',
@@ -37,6 +33,8 @@ SCREENS = {'load_percent': 0,
            'pay_cancel': 11,
            'errors': 12,
     }
+
+SCREEN_BRIGHTNESS = 40
 
 LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         'gui_init': 2,
