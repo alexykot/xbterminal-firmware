@@ -13,6 +13,8 @@ import xml.etree.ElementTree as xml_et
 
 import bluetooth
 import dbus
+import google.protobuf.internal.decoder as protobuf_decoder
+import google.protobuf.internal.encoder as protobuf_encoder
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +52,7 @@ SDP_RECORD_XML_TEMPLATE = """
     """
 
 
-def create_sdp_record_xml(service_name, service_id, channel):
+def create_sdp_record_xml(service_name, channel):
     """
     Create xml file for SDP record
     """
@@ -58,11 +60,11 @@ def create_sdp_record_xml(service_name, service_id, channel):
     # 0x0001 - ServiceClassIDList
     sequence = record.find('./attribute[@id="0x0001"]/sequence')
     uuid = xml_et.SubElement(sequence, 'uuid')
-    uuid.set('value', service_id)
+    uuid.set('value', BLUETOOTH_SERVICE_UUIDS[service_name])
     # 0x0003 - ServiceID
     attribute = record.find('./attribute[@id="0x0003"]')
     uuid = xml_et.SubElement(attribute, 'uuid')
-    uuid.set('value', service_id)
+    uuid.set('value', BLUETOOTH_SERVICE_UUIDS[service_name])
     # 0x0004 - ProtocolDescriptorList
     sequence = record.find('./attribute[@id="0x0004"]/*/*/uuid[@value="0x0003"]/..')
     uint8 = xml_et.SubElement(sequence, 'uint8')
@@ -79,16 +81,19 @@ def create_sdp_record_xml(service_name, service_id, channel):
 
 class BluetoothWorker(threading.Thread):
 
+    service_name = None
+
     _socket_backlog = 1
     _socket_timeout = 2
 
-    def __init__(self, device_id, service_name):
+    def __init__(self, device_id, payment):
         super(BluetoothWorker, self).__init__()
         self.device_id = device_id
-        self.service_name = service_name
-        self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        self.sock.bind(("", bluetooth.PORT_ANY))
-        self.sock.listen(self._socket_backlog)
+        self.payment = payment
+        self.server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        self.server_sock.bind(("", bluetooth.PORT_ANY))
+        self.server_sock.listen(self._socket_backlog)
+        self.client_sock = None
         self._stop = threading.Event()
         self.advertise_service()
 
@@ -107,8 +112,7 @@ class BluetoothWorker(threading.Thread):
                                  "org.bluez.Service")
         sdp_record_xml = create_sdp_record_xml(
             self.service_name,
-            BLUETOOTH_SERVICE_UUIDS[self.service_name],
-            self.sock.getsockname()[1])
+            self.server_sock.getsockname()[1])
         service.AddRecord(sdp_record_xml)
 
     def run(self):
@@ -116,34 +120,79 @@ class BluetoothWorker(threading.Thread):
         Accept connections
         """
         logger.debug("{0} - waiting for connection".format(self.service_name))
-        client_sock = None
         while True:
             if self._stop.is_set():
                 break
-            if client_sock is None:
-                readable, _, _ = select.select([self.sock._sock], [], [],
+            if self.client_sock is None:
+                readable, _, _ = select.select([self.server_sock._sock],
+                                               [], [],
                                                self._socket_timeout)
                 if readable:
-                    client_sock, client_info = self.sock.accept()
+                    self.client_sock, client_info = self.server_sock.accept()
                     logger.debug("{0} - accepted connection from {1}".\
-                        format(self.service_name, client_info))
-                    client_sock.settimeout(self._socket_timeout)
+                        format(self.service_name, client_info[0]))
+                    self.client_sock.settimeout(self._socket_timeout)
             else:
                 try:
-                    data = client_sock.recv(1024)
-                    logger.debug(str(data))
+                    data = self.client_sock.recv(4096)
                 except IOError:
-                    pass
-        try:
-            client_sock.close()
-        except Exception:
-            pass
-        self.sock.close()
+                    logger.debug("{0} - closing connection".\
+                        format(self.service_name))
+                    self.client_sock.close()
+                    self.client_sock = None
+                else:
+                    self.handle_data(data)
+        if self.client_sock:
+            self.client_sock.close()
+        self.server_sock.close()
         logger.debug("{0} - bluetooth worker stopped".\
             format(self.service_name))
 
+    def handle_data(self, data):
+        """
+        Override this method
+        https://developers.google.com/protocol-buffers/docs/encoding
+        """
+        pass
+
     def stop(self):
         self._stop.set()
+
+
+class PaymentRequestWorker(BluetoothWorker):
+
+    service_name = 'Bitcoin payment requests'
+
+    def handle_data(self, data):
+        value, pos = protobuf_decoder._DecodeVarint(data, 0)
+        value, pos = protobuf_decoder._DecodeVarint(data, pos)
+        query, pos = protobuf_decoder.ReadTag(data, pos)
+        logger.debug("{0} - query {1}".format(self.service_name, query))
+        response_code = 200
+        response = (protobuf_encoder._VarintBytes(response_code) +
+                    protobuf_encoder._VarintBytes(len(self.payment.request)) +
+                    self.payment.request)
+        logger.debug("{0} - sending PaymentRequest".\
+            format(self.service_name))
+        self.client_sock.send(response)
+
+
+class PaymentResponseWorker(BluetoothWorker):
+
+    service_name = 'Bitcoin payment protocol'
+
+    def handle_data(self, data):
+        """
+        Process Payment message
+        """
+        logger.debug("{0} - recieved payment".format(self.service_name))
+        value, pos = protobuf_decoder._DecodeVarint(data, 0)
+        payment_message = data[pos:]
+        payment_ack = self.payment.send(payment_message)
+        response = (protobuf_encoder._VarintBytes(len(payment_ack)) +
+                    payment_ack)
+        logger.debug("{0} - sending PaymentACK".format(self.service_name))
+        self.client_sock.send(response)
 
 
 class BluetoothServer(object):
@@ -153,30 +202,40 @@ class BluetoothServer(object):
         match = HCICONFIG_REGEX.search(hciconfig_result)
         self.device_id = match.group('device')
         self.mac_address = match.group('mac')
-        self.workers = {}
+        self.workers = []
+        # Disable SSP
+        subprocess.check_call(['hciconfig', self.device_id, 'sspmode', '0'])
+        # Disable auth
+        subprocess.check_call(['hciconfig', self.device_id, 'noauth'])
         logger.info("bluetooth init done, mac address: {0}".\
             format(self.mac_address))
 
     def get_bluetooth_url(self):
         return 'bt:' + self.mac_address.replace(':', '')
 
-    def start(self):
-        # Make device visible
+    def make_discoverable(self):
         subprocess.check_call(['hciconfig', self.device_id, 'piscan'])
+
+    def make_hidden(self):
+        subprocess.check_call(['hciconfig', self.device_id, 'noscan'])
+
+    def start(self, payment):
+        self.make_discoverable()
         # Advertise services and accept connections
-        for service_name in BLUETOOTH_SERVICE_UUIDS:
-            worker = BluetoothWorker(self.device_id, service_name)
+        self.workers = [
+            PaymentRequestWorker(self.device_id, payment),
+            PaymentResponseWorker(self.device_id, payment),
+        ]
+        for worker in self.workers:
             worker.start()
-            self.workers[service_name] = worker
 
     def stop(self):
         # Stop workers
-        for service_name in BLUETOOTH_SERVICE_UUIDS:
-            worker = self.workers.pop(service_name)
+        for worker in self.workers:
             worker.stop()
             worker.join()
-        # Make device hidden
-        subprocess.check_call(['hciconfig', self.device_id, 'noscan'])
+        del self.workers[:]
+        self.make_hidden()
 
     def is_running(self):
-        return any(w.is_alive() for w in self.workers.values())
+        return any(w.is_alive() for w in self.workers)

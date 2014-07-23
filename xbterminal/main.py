@@ -43,6 +43,7 @@ def main():
     run['init']['remote_config_last_update'] = 0
     run['init']['blockchain_network'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['bootup']
+    run['payment'] = None
     run['amounts'] = {}
     run['amounts']['amount_to_pay_fiat'] = None
     run['amounts']['amount_to_pay_btc'] = None
@@ -57,6 +58,7 @@ def main():
     run['wifi']['connected'] = False
     run['current_screen'] = 'load_indefinite'
     run['keypad'] = None
+    run['bluetooth_server'] = None
 
     qt_application, main_window = xbterminal.gui.gui.initGUI()
     main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
