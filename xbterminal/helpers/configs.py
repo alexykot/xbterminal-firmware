@@ -33,9 +33,7 @@ def choose_remote_server(device_key):
         headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
         headers['Content-type'] = 'application/json'
         try:
-            response = requests.get(url=config_url,
-                                    headers=headers,
-                                    timeout=xbterminal.defaults.REMOTE_CONFIG_TIMEOUT)
+            response = requests.get(url=config_url, headers=headers)
             response.raise_for_status()
         except requests.exceptions.RequestException:
             logger.warning("remote config {config_url} unreachable, trying next server".format(
