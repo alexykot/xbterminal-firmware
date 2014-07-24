@@ -35,7 +35,7 @@ def choose_remote_server(device_key):
         try:
             response = requests.get(url=config_url,
                                     headers=headers,
-                                    timeout=REMOTE_CONFIG_TIMEOUT)
+                                    timeout=xbterminal.defaults.REMOTE_CONFIG_TIMEOUT)
             response.raise_for_status()
         except requests.exceptions.RequestException:
             logger.warning("remote config {config_url} unreachable, trying next server".format(
