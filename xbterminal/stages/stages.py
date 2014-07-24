@@ -10,8 +10,6 @@ import xbterminal
 from xbterminal import defaults
 from xbterminal.stages import payment
 
-import xbterminal.bitcoinaverage
-import xbterminal.blockchain.blockchain
 import xbterminal.helpers.bt
 import xbterminal.helpers.clock
 import xbterminal.helpers.configs
@@ -83,17 +81,13 @@ def bootup(run, ui):
             break
         time.sleep(1)
 
-    # Initialize blockchain driver
-    xbterminal.blockchain.blockchain.init()
-    run['init']['blockchain'] = True
-    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['blockchain_init'])
-    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
-
     ui.toggleTestnetNotice(xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet')
     run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
 
     # Initialize bluetooth server
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
+
+    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
     return defaults.STAGES['idle']
 
@@ -160,61 +154,6 @@ def pay_loading(run, ui):
         else:
             # Network error
             time.sleep(1)
-
-
-def pay_loading_old(run, ui):
-    ui.showScreen('load_indefinite')
-    ui.setText('indefinite_load_lbl', 'preparing payment')
-
-    if run['amounts']['amount_to_pay_fiat'] is None:
-        return defaults.STAGES['payment']['enter_amount']
-
-    run['invoice_paid'] = False
-
-    run['transactions_addresses'] = {}
-    run['transactions_addresses']['local'] = xbterminal.blockchain.blockchain.getFreshAddress()
-    run['transactions_addresses']['merchant'] = xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS']
-    run['transactions_addresses']['fee'] = xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']
-
-    while True:
-        try:
-            if (
-                xbterminal.remote_config['MERCHANT_INSTANTFIAT_EXCHANGE_SERVICE'] is not None
-                and xbterminal.remote_config['MERCHANT_INSTANTFIAT_SHARE'] > 0
-            ):
-                (run['amounts']['instantfiat_fiat_amount'],
-                 run['amounts']['instantfiat_btc_amount'],
-                 run['instantfiat_invoice_id'],
-                 run['transactions_addresses']['instantfiat'],
-                 run['exchange_rate']) = payment.createInvoice(run['amounts']['amount_to_pay_fiat'])
-            else:
-                run['amounts']['instantfiat_fiat_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
-                run['amounts']['instantfiat_btc_amount'] = Decimal(0).quantize(defaults.BTC_DEC_PLACES)
-                run['instantfiat_invoice_id'] = None
-                run['transactions_addresses']['instantfiat'] = None
-                run['exchange_rate'] = xbterminal.bitcoinaverage.getExchangeRate(xbterminal.remote_config['MERCHANT_CURRENCY'])
-            break
-        except xbterminal.exceptions.NetworkError as error:
-            # Wait for internet connection
-            logger.warning(str(error))
-            time.sleep(2)
-
-    run['amounts']['our_fee_btc_amount'] = payment.getOurFeeBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
-    run['amounts']['merchants_btc_amount'] = payment.getMerchantBtcAmount(run['amounts']['amount_to_pay_fiat'], run['exchange_rate'])
-
-    run['amounts']['amount_to_pay_btc'] = (run['amounts']['our_fee_btc_amount']
-                                + run['amounts']['instantfiat_btc_amount']
-                                + run['amounts']['merchants_btc_amount']
-                                + defaults.BTC_DEFAULT_FEE) #tx fee to be paid for forwarding transaction from device to merchant and/or instantfiat
-    run['effective_rate_btc'] = run['amounts']['amount_to_pay_fiat'] / run['amounts']['amount_to_pay_btc']
-
-    run['payment_requested_timestamp'] = time.time()
-    run['transaction_bitcoin_uri'] = payment.getBitcoinURI(run['transactions_addresses']['local'],
-                                                           run['amounts']['amount_to_pay_btc'])
-    # Prepare QR image
-    run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-    xbterminal.helpers.qr.qr_gen(run['transaction_bitcoin_uri'], run['qr_image_path'])
-    return defaults.STAGES['payment']['pay_rates']
 
 
 def pay_rates(run, ui):
@@ -290,109 +229,6 @@ def pay(run, ui):
             payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
-            run['last_activity_timestamp'] = (time.time()
-                                                  - defaults.TRANSACTION_TIMEOUT
-                                                  + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
-            return defaults.STAGES['payment']['pay_cancel']
-
-        time.sleep(0.5)
-
-
-def pay_old(run, ui):
-    ui.showScreen('pay_nfc')
-    ui.setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-    ui.setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-    ui.setText('exchange_rate_nfc', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
-                                                                defaults.EXCHANGE_RATE_DEC_PLACES))
-    logger.debug('local payment requested, address: {local_address}, '
-            'amount fiat: {amount_fiat}, '
-            'amount btc: {amount_btc}, '
-            'rate: {effective_rate}'.
-                format(local_address=run['transactions_addresses']['local'],
-                       amount_fiat=run['amounts']['amount_to_pay_fiat'],
-                       amount_btc=run['amounts']['amount_to_pay_btc'],
-                       effective_rate=run['effective_rate_btc'],
-                       ))
-    # Wait for incoming transaction
-    incoming_tx_hash = None
-    while True:
-        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
-            logger.debug('QR code requested')
-            run['screen_buttons']['qr_button'] = False
-            ui.showScreen('pay_qr')
-            ui.setText('fiat_amount_qr', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-            ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-            ui.setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
-                                                                 defaults.EXCHANGE_RATE_DEC_PLACES))
-            ui.setText('qr_address_lbl', run['transactions_addresses']['local'])
-            ui.setImage("qr_image", run['qr_image_path'])
-            run['keypad'].resetKey()
-
-        elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
-            xbterminal.helpers.nfcpy.stop()
-            return defaults.STAGES['payment']['enter_amount']
-    
-        if not xbterminal.helpers.nfcpy.is_active():
-            xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
-            logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
-            time.sleep(0.5)
-
-        try:
-            current_balance = xbterminal.blockchain.blockchain.getAddressBalance(run['transactions_addresses']['local'])
-            if current_balance >= run['amounts']['amount_to_pay_btc']:
-                incoming_tx_hash = xbterminal.blockchain.blockchain.getLastUnspentTransactionId(run['transactions_addresses']['local'])
-        except Exception as error:
-            pass
-
-        if incoming_tx_hash is not None:
-            logger.debug('payment received locally, incoming txid: {txid}'.format(txid=incoming_tx_hash))
-
-            if current_balance > run['amounts']['amount_to_pay_btc']:
-                run['amounts']['our_fee_btc_amount'] = run['amounts']['our_fee_btc_amount'] + current_balance - run['amounts']['amount_to_pay_btc'] #overpayment goes to our fee
-            amounts = {'instantfiat': run['amounts']['instantfiat_btc_amount'],
-                       'merchant': run['amounts']['merchants_btc_amount'],
-                       'fee': run['amounts']['our_fee_btc_amount'],
-                        }
-
-            outgoing_tx_hash = payment.createOutgoingTransaction(addresses=run['transactions_addresses'],
-                                                                amounts=amounts)
-            logger.debug('payment forwarded, outgoing txid: {txid},'
-                'addresses: {addresses},'
-                'amounts: {amounts},'.format(txid=outgoing_tx_hash,
-                                             amounts=amounts,
-                                             addresses=run['transactions_addresses']))
-
-            run['receipt_url'] = payment.logTransaction(
-                run['transactions_addresses']['local'],
-                run['transactions_addresses']['instantfiat'],
-                run['transactions_addresses']['merchant'],
-
-                incoming_tx_hash,
-                outgoing_tx_hash,
-                run['instantfiat_invoice_id'],
-
-                run['amounts']['amount_to_pay_fiat'],
-                run['amounts']['amount_to_pay_btc'],
-                run['amounts']['instantfiat_fiat_amount'],
-                run['amounts']['instantfiat_btc_amount'],
-                run['amounts']['our_fee_btc_amount'],
-
-                xbterminal.remote_config['MERCHANT_CURRENCY'],
-                run['effective_rate_btc']
-            )
-            logger.debug('receipt: {}'.format(run['receipt_url']))
-
-            run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-            xbterminal.helpers.qr.qr_gen(run['receipt_url'], run['qr_image_path'])
-
-            payment.clearPaymentRuntime(run, ui)
-            xbterminal.helpers.nfcpy.stop()
-            return defaults.STAGES['payment']['pay_success']
-
-        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
-            xbterminal.helpers.nfcpy.stop()
             run['last_activity_timestamp'] = (time.time()
                                                   - defaults.TRANSACTION_TIMEOUT
                                                   + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)

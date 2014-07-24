@@ -22,7 +22,7 @@ logging.config.dictConfig(log_config)
 logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-from xbterminal.exceptions import ConfigLoadError, InvalidAddressError
+from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
 import xbterminal.helpers.configs
@@ -38,7 +38,6 @@ def main():
     run['init'] = {}
     run['init']['internet'] = False
     run['init']['clock_synchronized'] = False
-    run['init']['blockchain'] = False
     run['init']['remote_config'] = False
     run['init']['remote_config_last_update'] = 0
     run['init']['blockchain_network'] = None
@@ -99,8 +98,6 @@ def main():
             except ConfigLoadError as error:
                 # Do not raise error, wait for internet connection
                 watcher.set_error('remote_config', 'remote config load failed')
-            except InvalidAddressError as error:
-                watcher.set_error('remote_config', 'invalid merchant or fee address')
             else:
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())
