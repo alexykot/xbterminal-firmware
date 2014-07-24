@@ -36,7 +36,6 @@ class Watcher(threading.Thread):
         threading.Thread.__init__(self)
         self._wifi = None
         self._internet = None
-        self._peers = None
         self.period = 2
         self.errors = {}
         self.system_stats_timestamp = 0
@@ -79,32 +78,6 @@ class Watcher(threading.Thread):
                 self.errors.pop("internet", None)
         self._internet = internet_connected
 
-    @property
-    def peers(self):
-        return self._peers
-
-    @peers.setter
-    def peers(self, peers):
-        if xbterminal.runtime['init']['blockchain']:
-            if peers is None:
-                message = "bitcoin server is not running"
-                if self.errors.get('blockchain') != message:
-                    logger.error(message)
-                    self.errors['blockchain'] = message
-                blockchain.updateDriverState(is_running=False)
-            elif peers == 0:
-                message = "bitcoin server - no peers"
-                if self.errors.get('blockchain') != message:
-                    logger.error(message)
-                    self.errors['blockchain'] = message
-            else:
-                if not self._peers:
-                    message = "bitcoin server is running ({0} peers)".format(peers)
-                    logger.info(message)
-                self.errors.pop("blockchain", None)
-                blockchain.updateDriverState(is_running=True)
-        self._peers = peers
-
     def check_system_state(self):
         # Check wifi interface
         if not xbterminal.local_state.get('use_predefined_connection', False):
@@ -116,11 +89,6 @@ class Watcher(threading.Thread):
             self.internet = True
         except (requests.exceptions.RequestException, socket.timeout):
             self.internet = False
-        # Check blockchain driver
-        try:
-            self.peers = int(blockchain.getInfo().get('connections'))
-        except Exception:
-            self.peers = None
 
     def log_system_stats(self):
         logger = logging.getLogger("system_monitor")

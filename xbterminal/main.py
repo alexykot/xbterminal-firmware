@@ -38,7 +38,6 @@ def main():
     run['init'] = {}
     run['init']['internet'] = False
     run['init']['clock_synchronized'] = False
-    run['init']['blockchain'] = False
     run['init']['remote_config'] = False
     run['init']['remote_config_last_update'] = 0
     run['init']['blockchain_network'] = None
