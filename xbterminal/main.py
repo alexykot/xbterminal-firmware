@@ -98,8 +98,6 @@ def main():
             except ConfigLoadError as error:
                 # Do not raise error, wait for internet connection
                 watcher.set_error('remote_config', 'remote config load failed')
-            except InvalidAddressError as error:
-                watcher.set_error('remote_config', 'invalid merchant or fee address')
             else:
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())

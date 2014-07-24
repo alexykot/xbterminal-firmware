@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import hashlib
 import json
 import os
 import requests
@@ -9,9 +8,7 @@ import xbterminal
 import xbterminal.defaults
 from xbterminal.exceptions import (
     ConfigLoadError,
-    DeviceKeyMissingError,
-    InvalidAddressError)
-from xbterminal.blockchain.blockchain import isValidAddress
+    DeviceKeyMissingError)
 
 logger = logging.getLogger(__name__)
 
@@ -61,11 +58,6 @@ def load_remote_config():
             raise config_error
         init_defaults_config()
     else:
-        # Check addresses
-        if not isValidAddress(xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS']):
-            raise InvalidAddressError('merchant', xbterminal.remote_config['MERCHANT_BITCOIN_ADDRESS'])
-        if not isValidAddress(xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS']):
-            raise InvalidAddressError('fee', xbterminal.remote_config['OUR_FEE_BITCOIN_ADDRESS'])
         # Compare configs
         if remote_config_old_items ^ set(xbterminal.remote_config.items()):
             logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
