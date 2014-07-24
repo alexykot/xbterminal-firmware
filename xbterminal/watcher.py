@@ -9,6 +9,7 @@ import psutil
 import usb.core
 
 import xbterminal
+from xbterminal import defaults
 from xbterminal.helpers import wireless
 
 logger = logging.getLogger(__name__)
@@ -84,7 +85,8 @@ class Watcher(threading.Thread):
                 and os.path.exists(os.path.join("/sys/class/net", wireless.interface)))
         # Check internet connection
         try:
-            requests.get("https://xbterminal.com", timeout=5)
+            requests.get("https://xbterminal.com",
+                         timeout=defaults.EXTERNAL_CALLS_TIMEOUT)
             self.internet = True
         except (requests.exceptions.RequestException, socket.timeout):
             self.internet = False
