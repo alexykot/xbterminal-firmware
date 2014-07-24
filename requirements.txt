@@ -1,7 +1,6 @@
 Adafruit-BBIO==0.0.20
 ntplib==0.3.2
 psutil==2.1.1
-python-bitcoinlib==0.1.1
 pyusb==1.0.0b1
 qrcode==4.0.4
 requests==2.3.0

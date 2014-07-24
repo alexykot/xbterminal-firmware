@@ -9,7 +9,6 @@ import psutil
 import usb.core
 
 import xbterminal
-from xbterminal.blockchain import blockchain
 from xbterminal.helpers import wireless
 
 logger = logging.getLogger(__name__)

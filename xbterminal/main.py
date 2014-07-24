@@ -22,7 +22,7 @@ logging.config.dictConfig(log_config)
 logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-from xbterminal.exceptions import ConfigLoadError, InvalidAddressError
+from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
 import xbterminal.helpers.configs
