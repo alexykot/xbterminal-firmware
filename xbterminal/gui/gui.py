@@ -31,8 +31,9 @@ except AttributeError:
 
 class GUI(QtGui.QWidget):
 
-    def __init__(self):
+    def __init__(self, application):
         super(GUI, self).__init__()
+        self._application = application
         self.keys = deque(maxlen=5)
         # Initialize UI
         self.ui = appui.Ui_Form()
@@ -47,6 +48,13 @@ class GUI(QtGui.QWidget):
         self.ui.wrong_passwd_lbl.hide()
         self.ui.connecting_lbl.hide()
         self.show()
+
+    def processEvents(self):
+        try:
+            self._application.sendPostedEvents()
+            self._application.processEvents()
+        except NameError as error:
+            logger.exception(error)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
@@ -149,9 +157,9 @@ def initGUI():
                     directory=ts_directory)
     application.installTranslator(translator)
 
-    main_window = GUI()
+    main_window = GUI(application)
     adjust_screen_brightness(defaults.SCREEN_BRIGHTNESS)
-    return application, main_window
+    return main_window
 
 
 def adjust_screen_brightness(value):

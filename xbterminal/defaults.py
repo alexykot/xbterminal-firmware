@@ -38,7 +38,6 @@ SCREEN_BRIGHTNESS = 40
 
 LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         'gui_init': 2,
-                        'local_config_load': 3,
                         'keypad_init': 6,
                         'wifi_init': 35,
                         'remote_config_load': 50,
