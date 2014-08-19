@@ -55,6 +55,7 @@ QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
+UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
 
 LOG_CONFIG = {
     'version': 1,

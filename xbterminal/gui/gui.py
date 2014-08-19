@@ -139,6 +139,16 @@ def initGUI():
     """
     application = QtGui.QApplication(sys.argv)
     application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+
+    translator = QtCore.QTranslator()
+    ts_directory = os.path.join(defaults.PROJECT_ABS_PATH,
+                                defaults.UI_TRANSLATIONS_PATH)
+    translator.load(QtCore.QLocale.system(),
+                    "xbterminal",
+                    prefix="_",
+                    directory=ts_directory)
+    application.installTranslator(translator)
+
     main_window = GUI()
     adjust_screen_brightness(defaults.SCREEN_BRIGHTNESS)
     return application, main_window
