@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+import re
 import subprocess
 import sys
 import time
@@ -11,6 +12,7 @@ from PyQt4 import QtGui, QtCore
 logger = logging.getLogger(__name__)
 
 import xbterminal
+import xbterminal.helpers
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
 
@@ -27,6 +29,44 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
+
+class Application(QtGui.QApplication):
+
+    def __init__(self, *args, **kwargs):
+        super(Application, self).__init__(*args, **kwargs)
+        self._translators = {}
+        self.language = defaults.UI_DEFAULT_LANGUAGE
+        self.loadTranslations()
+
+    def loadTranslations(self):
+        """
+        Load translations from files
+        """
+        ts_dir = os.path.join(defaults.PROJECT_ABS_PATH,
+                              defaults.UI_TRANSLATIONS_PATH)
+        for file_name in os.listdir(ts_dir):
+            match = re.match("xbterminal_(?P<code>\w+).qm", file_name)
+            if match:
+                language = match.group('code')
+                translator = QtCore.QTranslator()
+                translator.load(file_name, directory=ts_dir)
+                self._translators[language] = translator
+
+    def setLanguage(self, language_code):
+        """
+        Set language for application
+        Returns:
+            True - language changed, False otherwise
+        """
+        if self.language == language_code:
+            return False
+        if self.language != defaults.UI_DEFAULT_LANGUAGE:
+            self.removeTranslator(self._translators[self.language])
+        if language_code != defaults.UI_DEFAULT_LANGUAGE:
+            self.installTranslator(self._translators[language_code])
+        self.language = language_code
+        return True
 
 
 class GUI(QtGui.QWidget):
@@ -140,23 +180,26 @@ class GUI(QtGui.QWidget):
     def stageWorkerSlot(self, method_name, args):
         getattr(self, str(method_name))(*args)
 
+    def retranslateUi(self, language_code):
+        """
+        Change UI language
+        """
+        if self._application.setLanguage(language_code):
+            self.ui.retranslateUi(self)
+            xbterminal.local_state['language'] = language_code
+            xbterminal.helpers.configs.save_local_state()
+
 
 def initGUI():
     """
     Initialize GUI
     """
-    application = QtGui.QApplication(sys.argv)
+    application = Application(sys.argv)
     application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
-
-    translator = QtCore.QTranslator()
-    ts_directory = os.path.join(defaults.PROJECT_ABS_PATH,
-                                defaults.UI_TRANSLATIONS_PATH)
-    translator.load(QtCore.QLocale.system(),
-                    "xbterminal",
-                    prefix="_",
-                    directory=ts_directory)
-    application.installTranslator(translator)
-
+    language_code = xbterminal.local_state.get(
+        'language',
+        defaults.UI_DEFAULT_LANGUAGE)
+    application.setLanguage(language_code)
     main_window = GUI(application)
     adjust_screen_brightness(defaults.SCREEN_BRIGHTNESS)
     return main_window

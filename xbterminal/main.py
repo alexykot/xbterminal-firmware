@@ -99,6 +99,8 @@ def main():
                 main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
                     xbterminal.remote_config['MERCHANT_NAME'],
                     xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
+                main_window.retranslateUi(
+                    xbterminal.remote_config['MERCHANT_LANGUAGE'])
 
         # Reboot if blockchain network has changed
         if (
