@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -78,7 +78,7 @@
    <cursorShape>BlankCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Terminal</string>
   </property>
   <widget class="QStackedWidget" name="main_stackedWidget">
    <property name="geometry">
@@ -170,7 +170,7 @@
       <rect>
        <x>110</x>
        <y>90</y>
-       <width>281</width>
+       <width>271</width>
        <height>23</height>
       </rect>
      </property>
@@ -184,10 +184,10 @@
     <widget class="QLabel" name="percent_load_lbl">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>90</x>
        <y>120</y>
-       <width>161</width>
-       <height>16</height>
+       <width>291</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -208,10 +208,10 @@
     <widget class="QLabel" name="indefinite_load_lbl">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>90</x>
        <y>120</y>
-       <width>181</width>
-       <height>16</height>
+       <width>291</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -232,7 +232,7 @@
       <rect>
        <x>110</x>
        <y>90</y>
-       <width>281</width>
+       <width>271</width>
        <height>23</height>
       </rect>
      </property>
@@ -321,7 +321,7 @@
       <rect>
        <x>30</x>
        <y>190</y>
-       <width>171</width>
+       <width>191</width>
        <height>31</height>
       </rect>
      </property>
@@ -340,9 +340,9 @@
     <widget class="QLabel" name="ssid_lbl">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>10</x>
        <y>10</y>
-       <width>101</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -391,6 +391,9 @@
      </property>
      <property name="text">
       <string>selected WiFi</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="ssid_entered_lbl">
@@ -471,9 +474,9 @@
     <widget class="QLabel" name="password_lbl">
      <property name="geometry">
       <rect>
-       <x>51</x>
+       <x>11</x>
        <y>50</y>
-       <width>91</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -523,6 +526,9 @@
      <property name="text">
       <string>password</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="input_help_lbl">
      <property name="geometry">
@@ -539,9 +545,27 @@
         <colorrole role="WindowText">
          <brush brushstyle="SolidPattern">
           <color alpha="255">
-           <red>60</red>
-           <green>60</green>
-           <blue>60</blue>
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="ButtonText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
           </color>
          </brush>
         </colorrole>
@@ -550,9 +574,27 @@
         <colorrole role="WindowText">
          <brush brushstyle="SolidPattern">
           <color alpha="255">
-           <red>60</red>
-           <green>60</green>
-           <blue>60</blue>
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="ButtonText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
           </color>
          </brush>
         </colorrole>
@@ -561,9 +603,27 @@
         <colorrole role="WindowText">
          <brush brushstyle="SolidPattern">
           <color alpha="255">
-           <red>106</red>
-           <green>104</green>
-           <blue>100</blue>
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="Text">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
+          </color>
+         </brush>
+        </colorrole>
+        <colorrole role="ButtonText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>102</red>
+           <green>102</green>
+           <blue>102</blue>
           </color>
          </brush>
         </colorrole>
@@ -576,8 +636,17 @@
        <pointsize>16</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: #666666;</string>
+     </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;2 a b c A B C&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>2 a b c A B C</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="connecting_lbl">
@@ -716,7 +785,10 @@
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;WiFi connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>WiFi connected</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -724,13 +796,13 @@
     </widget>
    </widget>
    <widget class="QWidget" name="idle_scrn">
-    <widget class="QLabel" name="idle_lbl">
+    <widget class="QLabel" name="idle_lbl_1">
      <property name="geometry">
       <rect>
        <x>60</x>
        <y>10</y>
        <width>361</width>
-       <height>211</height>
+       <height>61</height>
       </rect>
      </property>
      <property name="palette">
@@ -777,7 +849,145 @@
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;press&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;any key&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;to begin&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>press</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="idle_lbl_2">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>70</y>
+       <width>361</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>any key</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="idle_lbl_3">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>130</y>
+       <width>361</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="palette">
+      <palette>
+       <active>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </active>
+       <inactive>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>60</red>
+           <green>60</green>
+           <blue>60</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </inactive>
+       <disabled>
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>106</red>
+           <green>104</green>
+           <blue>100</blue>
+          </color>
+         </brush>
+        </colorrole>
+       </disabled>
+      </palette>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>32</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>to begin</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -790,7 +1000,7 @@
       <rect>
        <x>100</x>
        <y>20</y>
-       <width>331</width>
+       <width>321</width>
        <height>51</height>
       </rect>
      </property>
@@ -927,7 +1137,7 @@
        <x>100</x>
        <y>130</y>
        <width>321</width>
-       <height>20</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="palette">
@@ -978,7 +1188,7 @@
       <string/>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
      </property>
     </widget>
    </widget>
@@ -986,10 +1196,10 @@
     <widget class="QLabel" name="currency_lbl_rates">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>25</x>
        <y>20</y>
-       <width>31</width>
-       <height>61</height>
+       <width>141</width>
+       <height>53</height>
       </rect>
      </property>
      <property name="font">
@@ -1003,13 +1213,16 @@
      <property name="text">
       <string>£</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="fiat_amount">
      <property name="geometry">
       <rect>
        <x>170</x>
        <y>30</y>
-       <width>181</width>
+       <width>191</width>
        <height>41</height>
       </rect>
      </property>
@@ -1029,9 +1242,9 @@
     <widget class="QLabel" name="btc_lbl">
      <property name="geometry">
       <rect>
-       <x>75</x>
+       <x>25</x>
        <y>70</y>
-       <width>81</width>
+       <width>141</width>
        <height>61</height>
       </rect>
      </property>
@@ -1046,13 +1259,16 @@
      <property name="text">
       <string>m฿</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="btc_amount">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>170</x>
        <y>80</y>
-       <width>221</width>
+       <width>191</width>
        <height>41</height>
       </rect>
      </property>
@@ -1072,9 +1288,9 @@
     <widget class="QLabel" name="exchange_rate_lbl">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>25</x>
        <y>130</y>
-       <width>151</width>
+       <width>141</width>
        <height>41</height>
       </rect>
      </property>
@@ -1087,13 +1303,16 @@
      <property name="text">
       <string>exchange rate</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="advice_lbl">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>60</x>
        <y>180</y>
-       <width>321</width>
+       <width>361</width>
        <height>41</height>
       </rect>
      </property>
@@ -1179,10 +1398,10 @@ NOW</string>
     <widget class="QLabel" name="currency_lbl_nfc">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>15</x>
        <y>40</y>
-       <width>16</width>
-       <height>16</height>
+       <width>41</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1196,14 +1415,17 @@ NOW</string>
      <property name="text">
       <string>£</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="fiat_amount_nfc">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>50</x>
        <y>40</y>
        <width>101</width>
-       <height>16</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1222,10 +1444,10 @@ NOW</string>
     <widget class="QLabel" name="btc_amount_nfc">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>50</x>
        <y>70</y>
        <width>101</width>
-       <height>16</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1244,10 +1466,10 @@ NOW</string>
     <widget class="QLabel" name="btc_lbl_nfc">
      <property name="geometry">
       <rect>
-       <x>25</x>
+       <x>15</x>
        <y>70</y>
-       <width>81</width>
-       <height>16</height>
+       <width>41</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1261,14 +1483,17 @@ NOW</string>
      <property name="text">
       <string>m฿</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="exchange_rate_nfc">
      <property name="geometry">
       <rect>
-       <x>60</x>
+       <x>50</x>
        <y>100</y>
-       <width>91</width>
-       <height>16</height>
+       <width>101</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1289,8 +1514,8 @@ NOW</string>
       <rect>
        <x>15</x>
        <y>100</y>
-       <width>51</width>
-       <height>16</height>
+       <width>41</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1302,16 +1527,19 @@ NOW</string>
      <property name="text">
       <string>rate</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="pay_qr_scrn">
     <widget class="QLabel" name="qr_image">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>229</x>
        <y>10</y>
-       <width>201</width>
-       <height>171</height>
+       <width>205</width>
+       <height>205</height>
       </rect>
      </property>
      <property name="text">
@@ -1321,38 +1549,13 @@ NOW</string>
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="qr_address_lbl">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>190</y>
-       <width>291</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>ArrowCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>1FCrwY2CsLJgsmbogSunECwCa6WswBBrfz</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
     <widget class="QLabel" name="exchange_rate_qr">
      <property name="geometry">
       <rect>
-       <x>60</x>
+       <x>50</x>
        <y>100</y>
-       <width>91</width>
-       <height>16</height>
+       <width>101</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1371,10 +1574,10 @@ NOW</string>
     <widget class="QLabel" name="btc_amount_qr">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>50</x>
        <y>70</y>
        <width>101</width>
-       <height>16</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1393,10 +1596,10 @@ NOW</string>
     <widget class="QLabel" name="btc_lbl_qr">
      <property name="geometry">
       <rect>
-       <x>25</x>
+       <x>15</x>
        <y>70</y>
-       <width>81</width>
-       <height>16</height>
+       <width>41</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1410,14 +1613,17 @@ NOW</string>
      <property name="text">
       <string>m฿</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="exchange_rate_lbl_qr">
      <property name="geometry">
       <rect>
        <x>15</x>
        <y>100</y>
-       <width>51</width>
-       <height>16</height>
+       <width>41</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1429,14 +1635,17 @@ NOW</string>
      <property name="text">
       <string>rate</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
     <widget class="QLabel" name="fiat_amount_qr">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>50</x>
        <y>40</y>
        <width>101</width>
-       <height>16</height>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1455,10 +1664,10 @@ NOW</string>
     <widget class="QLabel" name="currency_lbl_qr">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>15</x>
        <y>40</y>
-       <width>16</width>
-       <height>16</height>
+       <width>41</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="font">
@@ -1471,6 +1680,9 @@ NOW</string>
      </property>
      <property name="text">
       <string>£</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>
@@ -1514,8 +1726,8 @@ NOW</string>
      </property>
      <property name="text">
       <string>TOUCH NFC AGAIN
-  OR SCAN QR CODE 
- FOR RECEIPT</string>
+OR SCAN QR CODE
+FOR RECEIPT</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1526,8 +1738,8 @@ NOW</string>
       <rect>
        <x>40</x>
        <y>80</y>
-       <width>131</width>
-       <height>131</height>
+       <width>135</width>
+       <height>135</height>
       </rect>
      </property>
      <property name="text">
@@ -1539,7 +1751,7 @@ NOW</string>
     </widget>
    </widget>
    <widget class="QWidget" name="pay_cancel_scrn">
-    <widget class="QLabel" name="exchange_rate_lbl_qr_2">
+    <widget class="QLabel" name="pay_cancel_lbl">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -1655,11 +1867,15 @@ NOW</string>
      <stylestrategy>PreferAntialias</stylestrategy>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: #a61212;</string>
+   </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#a61212;&quot;&gt;testnet &lt;br/&gt;active&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>testnet
+active</string>
    </property>
    <property name="textFormat">
-    <enum>Qt::RichText</enum>
+    <enum>Qt::AutoText</enum>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

@@ -76,7 +76,7 @@ class GUI(QtGui.QWidget):
         self._application = application
         self.keys = deque(maxlen=5)
         # Initialize UI
-        self.ui = appui.Ui_Form()
+        self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(
             defaults.PROJECT_ABS_PATH,
@@ -211,18 +211,16 @@ def adjust_screen_brightness(value):
     subprocess.check_call(command, shell=True)
 
 
-def formatCharSelectHelperHMTL(char_tupl, char_selected = None):
+def formatCharSelectHelperHMTL(char_tupl, char_selected=None):
     char_list = []
-
+    selected_char_html = '<span style="color: #333333; font-size: x-large; font-weight: bold;">{char}</span>'
     for index, char in enumerate(char_tupl):
         if char_selected == char:
-            char_list.append("<strong><font color=\"#333333\" size=\"5\">{char_selected}</font></strong>".format(char_selected=char))
+            char_list.append(selected_char_html.format(char=char))
         else:
             char_list.append(str(char))
-
-    char_string = ' '.join(char_list)
-
-    return "<html><head/><body><p align=\"center\"><font color=\"#666666\">{char_string}</font></p></body></html>".format(char_string=char_string)
+    result_html = "<html><head/><body><p>{chars}</p></body></html>"
+    return result_html.format(chars=' '.join(char_list))
 
 
 def wake_up_screen():

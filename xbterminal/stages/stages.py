@@ -198,7 +198,6 @@ def pay(run, ui):
             ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
             ui.setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                  defaults.EXCHANGE_RATE_DEC_PLACES))
-            ui.setText('qr_address_lbl', '')
             ui.setImage("qr_image", run['qr_image_path'])
             run['keypad'].resetKey()
 
