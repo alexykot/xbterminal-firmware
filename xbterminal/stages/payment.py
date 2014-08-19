@@ -136,6 +136,7 @@ class Payment(object):
         }
         try:
             response = requests.post(payment_init_url, data=payload)
+            response.raise_for_status()
             result = response.json()
         except (requests.exceptions.RequestException, ValueError) as error:
             logger.error("create payment order: {0}".\
