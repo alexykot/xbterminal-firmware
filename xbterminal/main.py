@@ -100,7 +100,8 @@ def main():
                     xbterminal.remote_config['MERCHANT_NAME'],
                     xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
                 main_window.retranslateUi(
-                    xbterminal.remote_config['MERCHANT_LANGUAGE'])
+                    xbterminal.remote_config['MERCHANT_LANGUAGE'],
+                    xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
 
         # Reboot if blockchain network has changed
         if (

@@ -180,14 +180,18 @@ class GUI(QtGui.QWidget):
     def stageWorkerSlot(self, method_name, args):
         getattr(self, str(method_name))(*args)
 
-    def retranslateUi(self, language_code):
+    def retranslateUi(self, language_code, currency_prefix):
         """
-        Change UI language
+        Change UI localization
         """
         if self._application.setLanguage(language_code):
             self.ui.retranslateUi(self)
             xbterminal.local_state['language'] = language_code
             xbterminal.helpers.configs.save_local_state()
+        self.ui.currency_lbl.setText(currency_prefix)
+        self.ui.currency_lbl_rates.setText(currency_prefix)
+        self.ui.currency_lbl_nfc.setText(currency_prefix)
+        self.ui.currency_lbl_qr.setText(currency_prefix)
 
 
 def initGUI():
