@@ -89,7 +89,6 @@ REMOTE_SERVERS = ('https://xbterminal.io',
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
-                        'tx_log': '/api/transactions/create/',
                         'receipt': '/api/receipts/{receipt_key}/',
                         'firmware_check': '/api/device/{device_key}/firmware/',
                         'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
@@ -99,9 +98,7 @@ REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'payment_check': '/api/payments/{payment_uid}/check',
                         }
 EXTERNAL_CALLS_TIMEOUT = 15
-EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1',
-                                  'Origin': 'terminal #{serial_number}', #initiated in configs helper
-                                  }
+EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 
 TRANSACTION_TIMEOUT = 900 #in person transaction timeout in seconds
 TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60 #if transaction cancelled - how long to show "cancelled" message in seconds
