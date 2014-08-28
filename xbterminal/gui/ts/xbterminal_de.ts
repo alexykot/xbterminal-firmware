@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0">
+<!DOCTYPE TS><TS version="2.0" language="de_DE" sourcelanguage="">
 <context>
     <name>MainWindow</name>
     <message>
@@ -95,7 +95,7 @@
     <message>
         <location filename="ui.py" line="742"/>
         <source>exchange rate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wechselkurs</translation>
     </message>
     <message>
         <location filename="ui.py" line="743"/>
@@ -112,7 +112,8 @@
         <source>TO PAY
 TOUCH NFC
 NOW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Berühren
+sie das Terminal</translation>
     </message>
     <message>
         <location filename="ui.py" line="748"/>
@@ -127,14 +128,15 @@ NOW</source>
     <message>
         <location filename="ui.py" line="761"/>
         <source>payment successful</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zahlung erfolgreich</translation>
     </message>
     <message>
         <location filename="ui.py" line="762"/>
         <source>TOUCH NFC AGAIN
 OR SCAN QR CODE
 FOR RECEIPT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QR-Code scannen,
+um die Quittung zu erhalten</translation>
     </message>
     <message>
         <location filename="ui.py" line="765"/>
@@ -145,7 +147,8 @@ FOR RECEIPT</source>
         <location filename="ui.py" line="766"/>
         <source>testnet
 active</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Testnet
+aktiviert</translation>
     </message>
 </context>
 </TS>

@@ -20,7 +20,7 @@
     <message>
         <location filename="ui.py" line="726"/>
         <source>skip WiFi setup</source>
-        <translation>пропустить настройку WiFi</translation>
+        <translation>пропустить настройку</translation>
     </message>
     <message>
         <location filename="ui.py" line="727"/>
@@ -50,22 +50,22 @@
     <message>
         <location filename="ui.py" line="732"/>
         <source>WiFi connected</source>
-        <translation type="unfinished"></translation>
+        <translation>WiFi подключен</translation>
     </message>
     <message>
         <location filename="ui.py" line="733"/>
         <source>press</source>
-        <translation type="unfinished"></translation>
+        <translation>нажмите</translation>
     </message>
     <message>
         <location filename="ui.py" line="734"/>
         <source>any key</source>
-        <translation type="unfinished"></translation>
+        <translation>любую клавишу</translation>
     </message>
     <message>
         <location filename="ui.py" line="735"/>
         <source>to begin</source>
-        <translation type="unfinished"></translation>
+        <translation>чтобы начать</translation>
     </message>
     <message>
         <location filename="ui.py" line="736"/>
@@ -100,7 +100,7 @@
     <message>
         <location filename="ui.py" line="743"/>
         <source>press enter to accept payment</source>
-        <translation type="unfinished"></translation>
+        <translation>нажмите Enter для подтверждения</translation>
     </message>
     <message>
         <location filename="ui.py" line="755"/>
@@ -112,7 +112,8 @@
         <source>TO PAY
 TOUCH NFC
 NOW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">NFC
+активен</translation>
     </message>
     <message>
         <location filename="ui.py" line="748"/>
@@ -134,7 +135,8 @@ NOW</source>
         <source>TOUCH NFC AGAIN
 OR SCAN QR CODE
 FOR RECEIPT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">отсканируйте QR код
+для получения чека</translation>
     </message>
     <message>
         <location filename="ui.py" line="765"/>
@@ -145,7 +147,7 @@ FOR RECEIPT</source>
         <location filename="ui.py" line="766"/>
         <source>testnet
 active</source>
-        <translation type="unfinished"></translation>
+        <translation>testnet активен</translation>
     </message>
 </context>
 </TS>
