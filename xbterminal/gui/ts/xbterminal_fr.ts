@@ -96,7 +96,7 @@
     <message>
         <location filename="ui.py" line="759"/>
         <source>exchange rate</source>
-        <translation>faux de change</translation>
+        <translation>taux de change</translation>
     </message>
     <message>
         <location filename="ui.py" line="760"/>
@@ -125,7 +125,7 @@ payer</translation>
     <message>
         <location filename="ui.py" line="775"/>
         <source>rate</source>
-        <translation>faux de change</translation>
+        <translation>taux</translation>
     </message>
     <message>
         <location filename="ui.py" line="778"/>
