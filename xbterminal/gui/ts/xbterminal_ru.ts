@@ -114,8 +114,8 @@
 TOUCH NFC
 NOW</source>
         <translation>прикоснитесь
-к NFC сейчас
-чтобы оплатить</translation>
+к NFC
+для оплаты</translation>
     </message>
     <message>
         <location filename="ui.py" line="765"/>

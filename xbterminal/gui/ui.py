@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Thu Aug 28 18:29:41 2014
+# Created: Thu Aug 28 20:05:14 2014
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -134,7 +134,7 @@ class Ui_MainWindow(object):
         self.wifi_listWidget.setFont(font)
         self.wifi_listWidget.setObjectName(_fromUtf8("wifi_listWidget"))
         self.skip_wifi_btn = QtGui.QPushButton(self.choose_ssid_scrn)
-        self.skip_wifi_btn.setGeometry(QtCore.QRect(30, 190, 191, 31))
+        self.skip_wifi_btn.setGeometry(QtCore.QRect(30, 190, 240, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
         font.setPointSize(14)
@@ -527,7 +527,7 @@ class Ui_MainWindow(object):
         self.nfc_advice_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.nfc_advice_lbl.setObjectName(_fromUtf8("nfc_advice_lbl"))
         self.show_qr_btn = QtGui.QPushButton(self.pay_nfc_scrn)
-        self.show_qr_btn.setGeometry(QtCore.QRect(20, 150, 151, 61))
+        self.show_qr_btn.setGeometry(QtCore.QRect(20, 150, 175, 61))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
         font.setPointSize(14)
@@ -657,7 +657,7 @@ class Ui_MainWindow(object):
         self.pay_success_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.pay_success_lbl.setObjectName(_fromUtf8("pay_success_lbl"))
         self.touch_for_receipt_lbl = QtGui.QLabel(self.pay_success_scrn)
-        self.touch_for_receipt_lbl.setGeometry(QtCore.QRect(230, 100, 211, 81))
+        self.touch_for_receipt_lbl.setGeometry(QtCore.QRect(210, 100, 241, 81))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
         font.setPointSize(14)

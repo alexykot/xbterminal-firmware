@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR">
 <context>
     <name>MainWindow</name>
     <message>
@@ -74,7 +75,7 @@
     </message>
     <message>
         <location filename="ui.py" line="777"/>
-        <source>&#xc2;&#xa3;</source>
+        <source>Â£</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -84,7 +85,7 @@
     </message>
     <message>
         <location filename="ui.py" line="774"/>
-        <source>m&#xe0;&#xb8;&#xbf;</source>
+        <source>mà¸¿</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -154,12 +155,12 @@ active</source>
     <message>
         <location filename="ui.py" line="753"/>
         <source>no amount entered</source>
-        <translation type="unfinished"></translation>
+        <translation>entrer le montant</translation>
     </message>
     <message>
         <location filename="ui.py" line="754"/>
         <source>preparing payment</source>
-        <translation type="unfinished"></translation>
+        <translation>paiement préparation</translation>
     </message>
     <message>
         <location filename="gui.py" line="208"/>
@@ -174,12 +175,12 @@ active</source>
     <message>
         <location filename="gui.py" line="212"/>
         <source>no internet</source>
-        <translation type="unfinished"></translation>
+        <translation>pas d&apos;internet</translation>
     </message>
     <message>
         <location filename="gui.py" line="214"/>
         <source>internet disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Internet déconnecté</translation>
     </message>
 </context>
 </TS>
