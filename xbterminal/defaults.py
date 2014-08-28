@@ -19,26 +19,27 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
           'system_halt': 'system_halt',
           }
 
-SCREENS = {'load_percent': 0,
-           'load_indefinite': 1,
-           'choose_ssid': 2,
-           'enter_passkey': 3,
-           'wifi_connected': 4,
-           'idle': 5,
-           'enter_amount': 6,
-           'pay_rates': 7,
-           'pay_nfc': 8,
-           'pay_qr': 9,
-           'pay_success': 10,
-           'pay_cancel': 11,
-           'errors': 12,
-    }
+SCREENS = {
+    'load_percent': 0,
+    'load_indefinite': 1,
+    'choose_ssid': 2,
+    'enter_passkey': 3,
+    'wifi_connected': 4,
+    'idle': 5,
+    'enter_amount': 6,
+    'pay_loading': 7,
+    'pay_rates': 8,
+    'pay_nfc': 9,
+    'pay_qr': 10,
+    'pay_success': 11,
+    'pay_cancel': 12,
+    'errors': 13,
+}
 
 SCREEN_BRIGHTNESS = 40
 
 LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         'gui_init': 2,
-                        'local_config_load': 3,
                         'keypad_init': 6,
                         'wifi_init': 35,
                         'remote_config_load': 50,
@@ -55,6 +56,8 @@ QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
+UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
+UI_DEFAULT_LANGUAGE = 'en'
 
 LOG_CONFIG = {
     'version': 1,
@@ -88,7 +91,6 @@ REMOTE_SERVERS = ('https://xbterminal.io',
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
-                        'tx_log': '/api/transactions/create/',
                         'receipt': '/api/receipts/{receipt_key}/',
                         'firmware_check': '/api/device/{device_key}/firmware/',
                         'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
@@ -98,9 +100,7 @@ REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
                         'payment_check': '/api/payments/{payment_uid}/check',
                         }
 EXTERNAL_CALLS_TIMEOUT = 15
-EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1',
-                                  'Origin': 'terminal #{serial_number}', #initiated in configs helper
-                                  }
+EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 
 TRANSACTION_TIMEOUT = 900 #in person transaction timeout in seconds
 TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60 #if transaction cancelled - how long to show "cancelled" message in seconds

@@ -55,18 +55,16 @@ def main():
     run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
-    run['current_screen'] = 'load_indefinite'
     run['keypad'] = None
     run['bluetooth_server'] = None
-
-    qt_application, main_window = xbterminal.gui.gui.initGUI()
-    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):
         run['init']['internet'] = True
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['local_config_load'])
+
+    main_window = xbterminal.gui.gui.initGUI()
+    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     run['keypad'] = Keypad()
     main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
@@ -81,12 +79,7 @@ def main():
     while True:
         time.sleep(0.05)
 
-        # Processes all pending events
-        try:
-            qt_application.sendPostedEvents()
-            qt_application.processEvents()
-        except NameError as error:
-            logger.exception(error)
+        main_window.processEvents()
 
         # (Re)load remote config
         if (
@@ -105,6 +98,9 @@ def main():
                 main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
                     xbterminal.remote_config['MERCHANT_NAME'],
                     xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
+                main_window.retranslateUi(
+                    xbterminal.remote_config['MERCHANT_LANGUAGE'],
+                    xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
 
         # Reboot if blockchain network has changed
         if (
@@ -117,16 +113,10 @@ def main():
         # Communicate with watcher
         watcher_errors = watcher.get_errors()
         if watcher_errors:
-            # Show error screen
-            if main_window.currentScreen() != 'errors':
-                run['current_screen'] = main_window.currentScreen()
-                main_window.showScreen('errors')
-            main_window.setText('errors_lbl', '\n'.join(watcher_errors))
+            main_window.showErrors(watcher_errors)
             continue
         else:
-            if main_window.currentScreen() == 'errors':
-                # Restore previous screen
-                main_window.showScreen(run['current_screen'])
+            main_window.hideErrors()
 
         # Read keypad input
         run['keypad'].getKey()

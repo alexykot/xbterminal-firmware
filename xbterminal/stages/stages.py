@@ -112,8 +112,7 @@ def enter_amount(run, ui):
         ):
             if run['keypad'].last_key_pressed == 'backspace' and run['display_value_unformatted'] == '':
                 return defaults.STAGES['idle']
-            ui.setStyle('amount_input', 'background: #FFF')
-            ui.setText('error_text_lbl', '')
+            ui.toggleAmountErrorState(False)
             run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
             run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
             ui.setText('amount_input', run['display_value_formatted'])
@@ -122,8 +121,7 @@ def enter_amount(run, ui):
             if run['amounts']['amount_to_pay_fiat'] > 0:
                 return defaults.STAGES['payment']['pay_loading']
             else:
-                ui.setStyle('amount_input', 'background: #B33A3A')
-                ui.setText('error_text_lbl', "no amount entered ") #trailing space here is needed, otherwise last letter if halfcut
+                ui.toggleAmountErrorState(True)
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             payment.clearPaymentRuntime(run, ui)
             return defaults.STAGES['idle']
@@ -132,8 +130,7 @@ def enter_amount(run, ui):
 
 
 def pay_loading(run, ui):
-    ui.showScreen('load_indefinite')
-    ui.setText('indefinite_load_lbl', 'preparing payment')
+    ui.showScreen('pay_loading')
 
     if run['amounts']['amount_to_pay_fiat'] is None:
         return defaults.STAGES['payment']['enter_amount']
@@ -198,7 +195,6 @@ def pay(run, ui):
             ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
             ui.setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
                                                                  defaults.EXCHANGE_RATE_DEC_PLACES))
-            ui.setText('qr_address_lbl', '')
             ui.setImage("qr_image", run['qr_image_path'])
             run['keypad'].resetKey()
 

@@ -56,7 +56,6 @@ def load_remote_config():
             load_remote_config_cache()
         except IOError:
             raise config_error
-        init_defaults_config()
     else:
         # Compare configs
         if remote_config_old_items ^ set(xbterminal.remote_config.items()):
@@ -70,66 +69,54 @@ def load_remote_config():
 
 
 def load_local_state():
-    global xbterminal
-
     local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                              xbterminal.defaults.STATE_FILE_PATH))
+                                                             xbterminal.defaults.STATE_FILE_PATH))
 
-    with open(local_state_file_abs_path, 'a') as config_file:
+    with open(local_state_file_abs_path, 'a') as state_file:
         pass
-
     with open(local_state_file_abs_path, 'rb') as state_file:
+        local_state_contents = state_file.read()
         try:
-            local_state_contents = state_file.read()
-
             xbterminal.local_state = json.loads(local_state_contents)
-            logger.debug('local state loaded from {path}, {contents}'.format(path=local_state_file_abs_path,
-                                                                    contents=local_state_contents))
-
-            if 'use_dev_remote_server' in xbterminal.local_state and xbterminal.local_state['use_dev_remote_server']:
-                xbterminal.defaults.REMOTE_SERVERS = ('http://stage.xbterminal.com',)
-                logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.format(xbterminal.defaults.REMOTE_SERVERS[0]))
-
         except ValueError:
             xbterminal.local_state = {}
             save_local_state()
             logger.debug('local state load error, local state purged')
+        else:
+            logger.debug('local state loaded from {path}, {contents}'.format(
+                path=local_state_file_abs_path,
+                contents=local_state_contents))
+            if xbterminal.local_state.get('use_dev_remote_server'):
+                xbterminal.defaults.REMOTE_SERVERS = ('http://stage.xbterminal.com',)
+                logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.\
+                    format(xbterminal.defaults.REMOTE_SERVERS[0]))
 
 
 def save_local_state():
-    global xbterminal
-
     local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                              xbterminal.defaults.STATE_FILE_PATH))
+                                                             xbterminal.defaults.STATE_FILE_PATH))
     with open(local_state_file_abs_path, 'wb') as state_file:
         state_file.write(json.dumps(xbterminal.local_state, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
 def save_remote_config_cache():
-    global xbterminal
-
     remote_config_cache_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
                                                                      xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH))
     with open(remote_config_cache_file_abs_path, 'wb') as cache_file:
         cache_file.write(json.dumps(xbterminal.remote_config))
 
-def load_remote_config_cache():
-    global xbterminal
 
+def load_remote_config_cache():
     remote_config_cache_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
                                                                      xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH))
 
     if not os.path.exists(remote_config_cache_file_abs_path):
-        logger.warning('config cache file {cache_path} not exists, cache load failed'.format(cache_path=remote_config_cache_file_abs_path))
+        logger.warning('config cache file {cache_path} not exists, cache load failed'.\
+            format(cache_path=remote_config_cache_file_abs_path))
         raise IOError
 
     with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
         xbterminal.remote_config = json.loads(cache_file.read())
 
-    logger.debug('remote config loaded from cache file {cache_path}'.format(cache_path=remote_config_cache_file_abs_path))
-
-
-def init_defaults_config():
-    global xbterminal
-
-    xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS['Origin'].format(serial_number=xbterminal.remote_config['SERIAL_NUMBER'])
+    logger.debug('remote config loaded from cache file {cache_path}'.\
+        format(cache_path=remote_config_cache_file_abs_path))

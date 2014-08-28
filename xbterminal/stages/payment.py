@@ -82,7 +82,7 @@ def formatBitcoin(amount_bitcoin):
 
 
 def clearPaymentRuntime(run, ui, clear_amounts=True):
-    ui.showScreen('load_indefinite')
+    ui.showScreen('pay_loading')
     logger.debug('clearing payment runtime')
     if clear_amounts:
         run['display_value_unformatted'] = ''
@@ -136,6 +136,7 @@ class Payment(object):
         }
         try:
             response = requests.post(payment_init_url, data=payload)
+            response.raise_for_status()
             result = response.json()
         except (requests.exceptions.RequestException, ValueError) as error:
             logger.error("create payment order: {0}".\
