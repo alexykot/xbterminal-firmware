@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="de_DE" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>MainWindow</name>
     <message>
@@ -15,22 +16,22 @@
     <message>
         <location filename="ui.py" line="725"/>
         <source>please select WiFi network</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte, wählen Sie ein WiFi-Netzwerk</translation>
     </message>
     <message>
         <location filename="ui.py" line="726"/>
         <source>skip WiFi setup</source>
-        <translation type="unfinished"></translation>
+        <translation>WiFi Setup überspringen</translation>
     </message>
     <message>
         <location filename="ui.py" line="727"/>
         <source>selected WiFi</source>
-        <translation type="unfinished"></translation>
+        <translation>gewähltes WiFi</translation>
     </message>
     <message>
         <location filename="ui.py" line="728"/>
         <source>password</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort</translation>
     </message>
     <message>
         <location filename="ui.py" line="729"/>
@@ -74,7 +75,7 @@
     </message>
     <message>
         <location filename="ui.py" line="760"/>
-        <source>&#xc2;&#xa3;</source>
+        <source>Â£</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -84,7 +85,7 @@
     </message>
     <message>
         <location filename="ui.py" line="757"/>
-        <source>m&#xe0;&#xb8;&#xbf;</source>
+        <source>mà¸¿</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

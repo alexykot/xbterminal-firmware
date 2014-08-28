@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ru_RU" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>MainWindow</name>
     <message>
@@ -10,7 +11,7 @@
     <message>
         <location filename="ui.py" line="724"/>
         <source>loading, please wait</source>
-        <translation>подождите, идёт загрузка</translation>
+        <translation>загружается, пожалуйста подождите</translation>
     </message>
     <message>
         <location filename="ui.py" line="725"/>
@@ -40,12 +41,12 @@
     <message>
         <location filename="ui.py" line="730"/>
         <source>connecting, please wait</source>
-        <translation>подождите, идёт подключение</translation>
+        <translation>подключается, пожалуйста подождите</translation>
     </message>
     <message>
         <location filename="ui.py" line="731"/>
         <source>wrong password</source>
-        <translation>неправильный пароль</translation>
+        <translation>неверный пароль</translation>
     </message>
     <message>
         <location filename="ui.py" line="732"/>
@@ -60,7 +61,7 @@
     <message>
         <location filename="ui.py" line="734"/>
         <source>any key</source>
-        <translation>любую клавишу</translation>
+        <translation>любую кнопку</translation>
     </message>
     <message>
         <location filename="ui.py" line="735"/>
@@ -74,7 +75,7 @@
     </message>
     <message>
         <location filename="ui.py" line="760"/>
-        <source>&#xc2;&#xa3;</source>
+        <source>Â£</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -84,7 +85,7 @@
     </message>
     <message>
         <location filename="ui.py" line="757"/>
-        <source>m&#xe0;&#xb8;&#xbf;</source>
+        <source>mà¸¿</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -112,8 +113,8 @@
         <source>TO PAY
 TOUCH NFC
 NOW</source>
-        <translation type="unfinished">NFC
-активен</translation>
+        <translation>прикоснитесь к NFC сейчас
+чтобы оплатить</translation>
     </message>
     <message>
         <location filename="ui.py" line="748"/>
@@ -128,15 +129,16 @@ NOW</source>
     <message>
         <location filename="ui.py" line="761"/>
         <source>payment successful</source>
-        <translation>оплата прошла успешно</translation>
+        <translation>оплата завершена</translation>
     </message>
     <message>
         <location filename="ui.py" line="762"/>
         <source>TOUCH NFC AGAIN
 OR SCAN QR CODE
 FOR RECEIPT</source>
-        <translation type="unfinished">отсканируйте QR код
-для получения чека</translation>
+        <translation>прикоснитесь к NFC снова
+или отсканируйте QR код
+чтобы получить чек</translation>
     </message>
     <message>
         <location filename="ui.py" line="765"/>
@@ -147,7 +149,7 @@ FOR RECEIPT</source>
         <location filename="ui.py" line="766"/>
         <source>testnet
 active</source>
-        <translation>testnet активен</translation>
+        <translation>testnet включен</translation>
     </message>
 </context>
 </TS>
