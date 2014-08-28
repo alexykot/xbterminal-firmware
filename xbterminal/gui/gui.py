@@ -88,6 +88,7 @@ class GUI(QtGui.QWidget):
         self.ui.wrong_passwd_lbl.hide()
         self.ui.error_text_lbl.hide()
         self.ui.connecting_lbl.hide()
+        self._saved_screen = self.currentScreen()
         self.show()
 
     def processEvents(self):
@@ -201,6 +202,29 @@ class GUI(QtGui.QWidget):
         self.ui.currency_lbl_rates.setText(currency_prefix)
         self.ui.currency_lbl_nfc.setText(currency_prefix)
         self.ui.currency_lbl_qr.setText(currency_prefix)
+
+    def showErrors(self, errors):
+        translations = {
+            'remote config load failed': _translate('MainWindow',
+                'remote config load failed', None),
+            'wireless interface not found': _translate('MainWindow',
+                'wireless interface not found', None),
+            'no internet': _translate('MainWindow',
+                'no internet', None),
+            'internet disconnected': _translate('MainWindow',
+                'internet disconnected', None),
+        }
+        if self.currentScreen() != 'errors':
+            # Show error screen
+            self._saved_screen = self.currentScreen()
+            self.showScreen('errors')
+        self.ui.errors_lbl.setText(
+            '\n'.join(unicode(translations[error]) for error in errors))
+
+    def hideErrors(self):
+        if self.currentScreen() == 'errors':
+            # Restore previous screen
+            self.showScreen(self._saved_screen)
 
 
 def initGUI():

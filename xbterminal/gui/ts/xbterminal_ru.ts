@@ -41,7 +41,7 @@
     <message>
         <location filename="ui.py" line="745"/>
         <source>connecting, please wait</source>
-        <translation>подключается, пожалуйста подождите</translation>
+        <translation>идёт подключение, подождите</translation>
     </message>
     <message>
         <location filename="ui.py" line="746"/>
@@ -161,6 +161,26 @@ active</source>
         <location filename="ui.py" line="754"/>
         <source>preparing payment</source>
         <translation>подготовка оплаты</translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="208"/>
+        <source>remote config load failed</source>
+        <translation>ошибка при загрузке настроек</translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="210"/>
+        <source>wireless interface not found</source>
+        <translation>беспроводной интерфейс не найден</translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="212"/>
+        <source>no internet</source>
+        <translation>отсутствует подключение к интернету</translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="214"/>
+        <source>internet disconnected</source>
+        <translation>интернет отключен</translation>
     </message>
 </context>
 </TS>

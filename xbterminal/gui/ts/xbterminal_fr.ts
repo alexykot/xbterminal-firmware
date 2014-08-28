@@ -161,5 +161,25 @@ active</source>
         <source>preparing payment</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="gui.py" line="208"/>
+        <source>remote config load failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="210"/>
+        <source>wireless interface not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="212"/>
+        <source>no internet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="214"/>
+        <source>internet disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

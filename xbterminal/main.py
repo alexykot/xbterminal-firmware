@@ -55,7 +55,6 @@ def main():
     run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
-    run['current_screen'] = 'load_indefinite'
     run['keypad'] = None
     run['bluetooth_server'] = None
 
@@ -114,16 +113,10 @@ def main():
         # Communicate with watcher
         watcher_errors = watcher.get_errors()
         if watcher_errors:
-            # Show error screen
-            if main_window.currentScreen() != 'errors':
-                run['current_screen'] = main_window.currentScreen()
-                main_window.showScreen('errors')
-            main_window.setText('errors_lbl', '\n'.join(watcher_errors))
+            main_window.showErrors(watcher_errors)
             continue
         else:
-            if main_window.currentScreen() == 'errors':
-                # Restore previous screen
-                main_window.showScreen(run['current_screen'])
+            main_window.hideErrors()
 
         # Read keypad input
         run['keypad'].getKey()
