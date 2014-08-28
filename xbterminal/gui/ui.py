@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Wed Aug 20 10:55:46 2014
+# Created: Thu Aug 28 18:29:41 2014
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -433,10 +433,25 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         font.setItalic(True)
         self.error_text_lbl.setFont(font)
-        self.error_text_lbl.setText(_fromUtf8(""))
         self.error_text_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
         self.error_text_lbl.setObjectName(_fromUtf8("error_text_lbl"))
         self.main_stackedWidget.addWidget(self.enter_amount_scrn)
+        self.pay_loading_scrn = QtGui.QWidget()
+        self.pay_loading_scrn.setObjectName(_fromUtf8("pay_loading_scrn"))
+        self.pay_loading_lbl = QtGui.QLabel(self.pay_loading_scrn)
+        self.pay_loading_lbl.setGeometry(QtCore.QRect(90, 120, 291, 20))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(12)
+        self.pay_loading_lbl.setFont(font)
+        self.pay_loading_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.pay_loading_lbl.setObjectName(_fromUtf8("pay_loading_lbl"))
+        self.pay_loading_progressBar = QtGui.QProgressBar(self.pay_loading_scrn)
+        self.pay_loading_progressBar.setGeometry(QtCore.QRect(110, 90, 271, 23))
+        self.pay_loading_progressBar.setMaximum(0)
+        self.pay_loading_progressBar.setProperty("value", -1)
+        self.pay_loading_progressBar.setObjectName(_fromUtf8("pay_loading_progressBar"))
+        self.main_stackedWidget.addWidget(self.pay_loading_scrn)
         self.pay_rates_scrn = QtGui.QWidget()
         self.pay_rates_scrn.setObjectName(_fromUtf8("pay_rates_scrn"))
         self.currency_lbl_rates = QtGui.QLabel(self.pay_rates_scrn)
@@ -735,6 +750,8 @@ class Ui_MainWindow(object):
         self.idle_lbl_3.setText(_translate("MainWindow", "to begin", None))
         self.amount_lbl.setText(_translate("MainWindow", "amount", None))
         self.currency_lbl.setText(_translate("MainWindow", "£", None))
+        self.error_text_lbl.setText(_translate("MainWindow", "no amount entered", None))
+        self.pay_loading_lbl.setText(_translate("MainWindow", "preparing payment", None))
         self.currency_lbl_rates.setText(_translate("MainWindow", "£", None))
         self.fiat_amount.setText(_translate("MainWindow", "10.00", None))
         self.btc_lbl.setText(_translate("MainWindow", "m฿", None))

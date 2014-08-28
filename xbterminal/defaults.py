@@ -19,20 +19,22 @@ STAGES = {'payment': {'enter_amount': 'enter_amount',
           'system_halt': 'system_halt',
           }
 
-SCREENS = {'load_percent': 0,
-           'load_indefinite': 1,
-           'choose_ssid': 2,
-           'enter_passkey': 3,
-           'wifi_connected': 4,
-           'idle': 5,
-           'enter_amount': 6,
-           'pay_rates': 7,
-           'pay_nfc': 8,
-           'pay_qr': 9,
-           'pay_success': 10,
-           'pay_cancel': 11,
-           'errors': 12,
-    }
+SCREENS = {
+    'load_percent': 0,
+    'load_indefinite': 1,
+    'choose_ssid': 2,
+    'enter_passkey': 3,
+    'wifi_connected': 4,
+    'idle': 5,
+    'enter_amount': 6,
+    'pay_loading': 7,
+    'pay_rates': 8,
+    'pay_nfc': 9,
+    'pay_qr': 10,
+    'pay_success': 11,
+    'pay_cancel': 12,
+    'errors': 13,
+}
 
 SCREEN_BRIGHTNESS = 40
 

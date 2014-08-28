@@ -1185,10 +1185,50 @@
       </font>
      </property>
      <property name="text">
-      <string/>
+      <string>no amount entered</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="pay_loading_scrn">
+    <widget class="QLabel" name="pay_loading_lbl">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>120</y>
+       <width>291</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>preparing payment</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="pay_loading_progressBar">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>90</y>
+       <width>271</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>0</number>
+     </property>
+     <property name="value">
+      <number>-1</number>
      </property>
     </widget>
    </widget>
@@ -1887,6 +1927,10 @@ active</string>
     <number>3</number>
    </property>
   </widget>
+  <zorder>logo</zorder>
+  <zorder>merchant_name_lbl</zorder>
+  <zorder>testnet_notice</zorder>
+  <zorder>main_stackedWidget</zorder>
  </widget>
  <resources/>
  <connections/>

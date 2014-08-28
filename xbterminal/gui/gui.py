@@ -86,6 +86,7 @@ class GUI(QtGui.QWidget):
         self.ui.skip_wifi_btn.clicked.connect(self.skipWiFiBtnPressEvent)
         self.ui.testnet_notice.hide()
         self.ui.wrong_passwd_lbl.hide()
+        self.ui.error_text_lbl.hide()
         self.ui.connecting_lbl.hide()
         self.show()
 
@@ -153,6 +154,14 @@ class GUI(QtGui.QWidget):
     def advanceLoadingProgressBar(self, level):
         self.ui.progressBar_percent.setValue(level)
         time.sleep(0.3)
+
+    def toggleAmountErrorState(self, show):
+        if show:
+            self.ui.error_text_lbl.show()
+            self.ui.amount_input.setStyleSheet('background: #B33A3A')
+        else:
+            self.ui.error_text_lbl.hide()
+            self.ui.amount_input.setStyleSheet('background: #FFFFFF')
 
     def currentScreen(self):
         screen_index = self.ui.main_stackedWidget.currentIndex()

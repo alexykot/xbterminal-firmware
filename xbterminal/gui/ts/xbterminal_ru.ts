@@ -4,135 +4,136 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="ui.py" line="722"/>
+        <location filename="ui.py" line="737"/>
         <source>Terminal</source>
         <translation>Терминал</translation>
     </message>
     <message>
-        <location filename="ui.py" line="724"/>
+        <location filename="ui.py" line="739"/>
         <source>loading, please wait</source>
         <translation>загружается, пожалуйста подождите</translation>
     </message>
     <message>
-        <location filename="ui.py" line="725"/>
+        <location filename="ui.py" line="740"/>
         <source>please select WiFi network</source>
         <translation>выберите WiFi сеть</translation>
     </message>
     <message>
-        <location filename="ui.py" line="726"/>
+        <location filename="ui.py" line="741"/>
         <source>skip WiFi setup</source>
         <translation>пропустить настройку</translation>
     </message>
     <message>
-        <location filename="ui.py" line="727"/>
+        <location filename="ui.py" line="742"/>
         <source>selected WiFi</source>
         <translation>сеть WiFi</translation>
     </message>
     <message>
-        <location filename="ui.py" line="728"/>
+        <location filename="ui.py" line="743"/>
         <source>password</source>
         <translation>пароль</translation>
     </message>
     <message>
-        <location filename="ui.py" line="729"/>
+        <location filename="ui.py" line="744"/>
         <source>2 a b c A B C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui.py" line="730"/>
+        <location filename="ui.py" line="745"/>
         <source>connecting, please wait</source>
         <translation>подключается, пожалуйста подождите</translation>
     </message>
     <message>
-        <location filename="ui.py" line="731"/>
+        <location filename="ui.py" line="746"/>
         <source>wrong password</source>
         <translation>неверный пароль</translation>
     </message>
     <message>
-        <location filename="ui.py" line="732"/>
+        <location filename="ui.py" line="747"/>
         <source>WiFi connected</source>
         <translation>WiFi подключен</translation>
     </message>
     <message>
-        <location filename="ui.py" line="733"/>
+        <location filename="ui.py" line="748"/>
         <source>press</source>
         <translation>нажмите</translation>
     </message>
     <message>
-        <location filename="ui.py" line="734"/>
+        <location filename="ui.py" line="749"/>
         <source>any key</source>
         <translation>любую кнопку</translation>
     </message>
     <message>
-        <location filename="ui.py" line="735"/>
+        <location filename="ui.py" line="750"/>
         <source>to begin</source>
         <translation>чтобы начать</translation>
     </message>
     <message>
-        <location filename="ui.py" line="736"/>
+        <location filename="ui.py" line="751"/>
         <source>amount</source>
         <translation>сумма</translation>
     </message>
     <message>
-        <location filename="ui.py" line="760"/>
+        <location filename="ui.py" line="777"/>
         <source>Â£</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui.py" line="759"/>
+        <location filename="ui.py" line="776"/>
         <source>10.00</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui.py" line="757"/>
+        <location filename="ui.py" line="774"/>
         <source>mà¸¿</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui.py" line="756"/>
+        <location filename="ui.py" line="773"/>
         <source>12.05</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui.py" line="742"/>
+        <location filename="ui.py" line="759"/>
         <source>exchange rate</source>
         <translation>курс обмена</translation>
     </message>
     <message>
-        <location filename="ui.py" line="743"/>
+        <location filename="ui.py" line="760"/>
         <source>press enter to accept payment</source>
         <translation>нажмите Enter для подтверждения</translation>
     </message>
     <message>
-        <location filename="ui.py" line="755"/>
+        <location filename="ui.py" line="772"/>
         <source>0.845</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui.py" line="745"/>
+        <location filename="ui.py" line="762"/>
         <source>TO PAY
 TOUCH NFC
 NOW</source>
-        <translation>прикоснитесь к NFC сейчас
+        <translation>прикоснитесь
+к NFC сейчас
 чтобы оплатить</translation>
     </message>
     <message>
-        <location filename="ui.py" line="748"/>
+        <location filename="ui.py" line="765"/>
         <source>show QR code</source>
         <translation>показать QR код</translation>
     </message>
     <message>
-        <location filename="ui.py" line="758"/>
+        <location filename="ui.py" line="775"/>
         <source>rate</source>
-        <translation>курс обмена</translation>
+        <translation>курс</translation>
     </message>
     <message>
-        <location filename="ui.py" line="761"/>
+        <location filename="ui.py" line="778"/>
         <source>payment successful</source>
         <translation>оплата завершена</translation>
     </message>
     <message>
-        <location filename="ui.py" line="762"/>
+        <location filename="ui.py" line="779"/>
         <source>TOUCH NFC AGAIN
 OR SCAN QR CODE
 FOR RECEIPT</source>
@@ -141,15 +142,25 @@ FOR RECEIPT</source>
 чтобы получить чек</translation>
     </message>
     <message>
-        <location filename="ui.py" line="765"/>
+        <location filename="ui.py" line="782"/>
         <source>payment cancelled</source>
         <translation>оплата отменена</translation>
     </message>
     <message>
-        <location filename="ui.py" line="766"/>
+        <location filename="ui.py" line="783"/>
         <source>testnet
 active</source>
         <translation>testnet включен</translation>
+    </message>
+    <message>
+        <location filename="ui.py" line="753"/>
+        <source>no amount entered</source>
+        <translation>введите сумму</translation>
+    </message>
+    <message>
+        <location filename="ui.py" line="754"/>
+        <source>preparing payment</source>
+        <translation>подготовка оплаты</translation>
     </message>
 </context>
 </TS>

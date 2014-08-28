@@ -82,7 +82,7 @@ def formatBitcoin(amount_bitcoin):
 
 
 def clearPaymentRuntime(run, ui, clear_amounts=True):
-    ui.showScreen('load_indefinite')
+    ui.showScreen('pay_loading')
     logger.debug('clearing payment runtime')
     if clear_amounts:
         run['display_value_unformatted'] = ''
