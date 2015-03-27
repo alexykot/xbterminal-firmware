@@ -95,6 +95,9 @@ def bootup(run, ui):
 def idle(run, ui):
     ui.showScreen('idle')
     while True:
+        if run['screen_buttons']['pay']:
+            run['screen_buttons']['pay'] = False
+            return defaults.STAGES['payment']['enter_amount']
         if run['keypad'].last_key_pressed is not None:
             if run['keypad'].last_key_pressed in range(10) + ['00']:
                 run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
@@ -187,9 +190,9 @@ def pay(run, ui):
                            effective_rate=run['effective_rate_btc']))
     run['bluetooth_server'].start(run['payment'])
     while True:
-        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
+        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['show_qr']:
             logger.debug('QR code requested')
-            run['screen_buttons']['qr_button'] = False
+            run['screen_buttons']['show_qr'] = False
             ui.showScreen('pay_qr')
             ui.setText('fiat_amount_qr', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
             ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
@@ -225,9 +228,6 @@ def pay(run, ui):
             payment.clearPaymentRuntime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
-            run['last_activity_timestamp'] = (time.time()
-                                                  - defaults.TRANSACTION_TIMEOUT
-                                                  + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
             return defaults.STAGES['payment']['pay_cancel']
 
         time.sleep(0.5)

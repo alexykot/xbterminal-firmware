@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 from collections import deque
+import functools
 
 from PyQt4 import QtGui, QtCore
 
@@ -82,8 +83,16 @@ class GUI(QtGui.QWidget):
             defaults.PROJECT_ABS_PATH,
             defaults.UI_IMAGES_PATH,
             'logo.png'))))
-        self.ui.show_qr_btn.clicked.connect(self.qrBtnPressEvent)
-        self.ui.skip_wifi_btn.clicked.connect(self.skipWiFiBtnPressEvent)
+        # Set up buttons
+        self.ui.pay_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'pay'))
+        self.ui.withdraw_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'withdraw'))
+        self.ui.show_qr_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'show_qr'))
+        self.ui.skip_wifi_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'skip_wifi'))
+        # Hide notices
         self.ui.testnet_notice.hide()
         self.ui.wrong_passwd_lbl.hide()
         self.ui.error_text_lbl.hide()
@@ -109,11 +118,10 @@ class GUI(QtGui.QWidget):
     def closeEvent(self, event):
         xbterminal.runtime['CURRENT_STAGE'] = 'application_halt'
 
-    def qrBtnPressEvent(self):
-        xbterminal.runtime['screen_buttons']['qr_button'] = True
-
-    def skipWiFiBtnPressEvent(self):
-        xbterminal.runtime['screen_buttons']['skip_wifi'] = True
+    def buttonPressEvent(self, button_name):
+        logger.debug('button "{0}" pressed'.format(button_name))
+        xbterminal.runtime['last_activity_timestamp'] = time.time()
+        xbterminal.runtime['screen_buttons'][button_name] = True
 
     def toggleTestnetNotice(self, show):
         if show:
