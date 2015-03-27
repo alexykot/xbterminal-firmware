@@ -38,7 +38,7 @@ def bootup(run, ui):
                     'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
                                                      wifi_pass=xbterminal.local_state['wifi_pass']))
                 if isinstance(xbterminal.local_state['wifi_pass'], unicode):
-                    xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii','ignore')
+                    xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii', 'ignore')
                 run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
                                                                                xbterminal.local_state['wifi_pass'])
                 if run['wifi']['connected']:

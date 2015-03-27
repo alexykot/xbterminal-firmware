@@ -7,6 +7,5 @@ xbterminal/runtime/*
 xbterminal/device_key
 xbterminal/bitcoind_auth.py
 xbterminal/main.so
-tests/*
 bitcoinj-server.tar.gz
 fabfile
