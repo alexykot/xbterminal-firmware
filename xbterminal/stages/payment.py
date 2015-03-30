@@ -6,6 +6,7 @@ import requests
 import xbterminal
 from xbterminal.helpers.misc import strrepeat, splitThousands, strpad
 from xbterminal import defaults
+from xbterminal.stages import amounts
 
 logger = logging.getLogger(__name__)
 
@@ -85,15 +86,10 @@ def clearPaymentRuntime(run, ui, clear_amounts=True):
     ui.showScreen('pay_loading')
     logger.debug('clearing payment runtime')
     if clear_amounts:
-        run['display_value_unformatted'] = ''
-        run['display_value_formatted'] = formatInput(run['display_value_unformatted'],
-                                                     defaults.OUTPUT_DEC_PLACES)
-        ui.setText('amount_input', run['display_value_formatted'])
+        run['payment']['fiat_amount'] = Decimal(0)
+        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
 
-    run['amounts']['amount_to_pay_btc'] = None
-    run['amounts']['amount_to_pay_fiat'] = None
-    run['effective_rate_btc'] = None
-    run['transactions_addresses'] = None
+    run['payment']['order'] = None
 
     ui.setText('fiat_amount', "0")
     ui.setText('btc_amount', "0")

@@ -42,10 +42,13 @@ def main():
     run['init']['remote_config_last_update'] = 0
     run['init']['blockchain_network'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['bootup']
-    run['payment'] = None
-    run['amounts'] = {}
-    run['amounts']['amount_to_pay_fiat'] = None
-    run['amounts']['amount_to_pay_btc'] = None
+    run['payment'] = {
+        # Store variables related to payment process
+        'fiat_amount': None,
+        'order': None,
+        'qr_image_path': None,
+        'receipt_url': None,
+    }
     run['screen_buttons'] = {
         # Store button states
         'skip_wifi': False,
@@ -54,9 +57,6 @@ def main():
         'show_qr': False,
     }
     run['last_activity_timestamp'] = None
-    run['current_text_piece'] = 'decimal'
-    run['display_value_unformatted'] = ''
-    run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
     run['keypad'] = None
