@@ -8,6 +8,7 @@ This README would normally document whatever steps are necessary to get your app
 * PyQt4
 * libusb
 * bluez
+* python-dbus
 * [nfcpy](http://nfcpy.readthedocs.org/en/latest/)
 * modules from requirements.txt
 

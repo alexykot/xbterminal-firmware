@@ -1,10 +1,17 @@
 from decimal import Decimal
-from mock import patch
+from mock import patch, Mock
 import unittest
+import sys
+
+sys.modules['PyQt4'] = Mock()
+sys.modules['dbus'] = Mock()
+sys.modules['nfc'] = Mock()
+sys.modules['nfc.snep'] = Mock()
+sys.modules['nfc.llcp'] = Mock()
 
 import xbterminal
 from xbterminal import defaults
-from xbterminal.stages import amounts
+from xbterminal.stages import stages, amounts
 
 
 class AmountsUtilsTestCase(unittest.TestCase):
@@ -35,3 +42,28 @@ class AmountsUtilsTestCase(unittest.TestCase):
         amount = Decimal('1.5751').quantize(defaults.FIAT_DEC_PLACES)
         result = amounts.format_btc_amount(amount)
         self.assertEqual(result, '1,575.10')
+
+
+class IdleStageTestCase(unittest.TestCase):
+
+    def test_pay_button(self):
+        run = {
+            'screen_buttons': {'pay': True},
+            'payment': {},
+        }
+        ui = Mock()
+        next_stage = stages.idle(run, ui)
+        self.assertEqual(next_stage, 'enter_amount')
+        self.assertEqual(run['payment']['fiat_amount'], 0)
+
+    def test_key_input(self):
+        keypad = Mock(last_key_pressed=1)
+        run = {
+            'keypad': keypad,
+            'screen_buttons': {'pay': False},
+            'payment': {},
+        }
+        ui = Mock()
+        next_stage = stages.idle(run, ui)
+        self.assertEqual(next_stage, 'enter_amount')
+        self.assertEqual(run['payment']['fiat_amount'], Decimal('0.01'))
