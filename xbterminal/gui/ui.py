@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri Mar 27 20:00:13 2015
+# Created: Tue Mar 31 03:42:05 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -301,24 +301,29 @@ class Ui_MainWindow(object):
         self.idle_scrn = QtGui.QWidget()
         self.idle_scrn.setObjectName(_fromUtf8("idle_scrn"))
         self.pay_btn = QtGui.QPushButton(self.idle_scrn)
-        self.pay_btn.setGeometry(QtCore.QRect(90, 30, 311, 61))
+        self.pay_btn.setGeometry(QtCore.QRect(10, 70, 111, 61))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(24)
+        font.setPointSize(20)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
         self.pay_btn.setFont(font)
         self.pay_btn.setObjectName(_fromUtf8("pay_btn"))
         self.withdraw_btn = QtGui.QPushButton(self.idle_scrn)
-        self.withdraw_btn.setGeometry(QtCore.QRect(90, 120, 311, 61))
+        self.withdraw_btn.setGeometry(QtCore.QRect(360, 70, 111, 61))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(20)
+        font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
         self.withdraw_btn.setFont(font)
         self.withdraw_btn.setObjectName(_fromUtf8("withdraw_btn"))
+        self.bc_logo_image = QtGui.QLabel(self.idle_scrn)
+        self.bc_logo_image.setGeometry(QtCore.QRect(140, 10, 200, 200))
+        self.bc_logo_image.setText(_fromUtf8(""))
+        self.bc_logo_image.setScaledContents(True)
+        self.bc_logo_image.setObjectName(_fromUtf8("bc_logo_image"))
         self.main_stackedWidget.addWidget(self.idle_scrn)
         self.enter_amount_scrn = QtGui.QWidget()
         self.enter_amount_scrn.setObjectName(_fromUtf8("enter_amount_scrn"))
@@ -699,8 +704,8 @@ class Ui_MainWindow(object):
         self.connecting_lbl.setText(_translate("MainWindow", "connecting, please wait", None))
         self.wrong_passwd_lbl.setText(_translate("MainWindow", "wrong password", None))
         self.wifi_connected_lbl.setText(_translate("MainWindow", "WiFi connected", None))
-        self.pay_btn.setText(_translate("MainWindow", "Pay", None))
-        self.withdraw_btn.setText(_translate("MainWindow", "Withdraw", None))
+        self.pay_btn.setText(_translate("MainWindow", "pay", None))
+        self.withdraw_btn.setText(_translate("MainWindow", "withdraw", None))
         self.amount_lbl.setText(_translate("MainWindow", "amount", None))
         self.currency_lbl.setText(_translate("MainWindow", "£", None))
         self.error_text_lbl.setText(_translate("MainWindow", "no amount entered", None))

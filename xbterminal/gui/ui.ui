@@ -799,31 +799,9 @@
     <widget class="QPushButton" name="pay_btn">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>30</y>
-       <width>311</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>24</pointsize>
-       <weight>75</weight>
-       <italic>false</italic>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Pay</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="withdraw_btn">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>120</y>
-       <width>311</width>
+       <x>10</x>
+       <y>70</y>
+       <width>111</width>
        <height>61</height>
       </rect>
      </property>
@@ -832,11 +810,49 @@
        <family>Arial</family>
        <pointsize>20</pointsize>
        <weight>75</weight>
+       <italic>false</italic>
        <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string>Withdraw</string>
+      <string>pay</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="withdraw_btn">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>70</y>
+       <width>111</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>withdraw</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="bc_logo_image">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>10</y>
+       <width>200</width>
+       <height>200</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>

@@ -83,6 +83,10 @@ class GUI(QtGui.QWidget):
             defaults.PROJECT_ABS_PATH,
             defaults.UI_IMAGES_PATH,
             'logo.png'))))
+        self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(os.path.join(
+            defaults.PROJECT_ABS_PATH,
+            defaults.UI_IMAGES_PATH,
+            'bc_logo.png')))
         # Set up buttons
         self.ui.pay_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'pay'))
