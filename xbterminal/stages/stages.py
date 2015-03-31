@@ -127,7 +127,7 @@ def enter_amount(run, ui):
             else:
                 ui.toggleAmountErrorState(True)
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         run['keypad'].resetKey()
         time.sleep(0.1)
@@ -165,10 +165,10 @@ def pay_rates(run, ui):
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['payment']['pay']
         elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['payment']['enter_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
@@ -202,7 +202,7 @@ def pay(run, ui):
             run['keypad'].resetKey()
 
         elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui, clear_amounts=False)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['enter_amount']
@@ -220,13 +220,13 @@ def pay(run, ui):
             xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
                                          run['payment']['qr_image_path'])
 
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_success']
 
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_cancel']
@@ -258,7 +258,7 @@ def pay_cancel(run, ui):
     ui.showScreen('pay_cancel')
     while True:
         if run['keypad'].last_key_pressed is not None:
-            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['payment']['enter_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             return defaults.STAGES['idle']
@@ -356,3 +356,27 @@ def wifi_connected(run, ui):
     ui.showScreen('wifi_connected')
     time.sleep(3)
     return defaults.STAGES['bootup']
+
+
+def _clear_payment_runtime(run, ui, clear_amounts=True):
+    ui.showScreen('pay_loading')
+    logger.debug('clearing payment runtime')
+    if clear_amounts:
+        run['payment']['fiat_amount'] = Decimal(0)
+        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
+
+    run['payment']['order'] = None
+
+    ui.setText('fiat_amount', "0")
+    ui.setText('btc_amount', "0")
+    ui.setText('exchange_rate_amount', "0")
+
+    ui.setText('fiat_amount_qr', "0")
+    ui.setText('btc_amount_qr', "0")
+    ui.setText('exchange_rate_qr', "0")
+    ui.setImage('qr_image', None)
+    ui.setImage("receipt_qr_image", None)
+
+    ui.setText('fiat_amount_nfc', "0")
+    ui.setText('btc_amount_nfc', "0")
+    ui.setText('exchange_rate_nfc', "0")
