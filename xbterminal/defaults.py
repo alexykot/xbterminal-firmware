@@ -19,6 +19,7 @@ STAGES = {
         'pay_cancel': 'pay_cancel',
     },
     'withdrawal': {
+        'withdraw_amount': 'withdraw_amount',
     },
     'application_halt': 'application_halt',
     'system_halt': 'system_halt',

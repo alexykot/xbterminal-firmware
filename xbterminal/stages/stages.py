@@ -102,6 +102,8 @@ def idle(run, ui):
             return defaults.STAGES['payment']['pay_amount']
         if run['screen_buttons']['withdraw']:
             run['screen_buttons']['withdraw'] = False
+            run['withdrawal']['fiat_amount'] = Decimal(0)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
         if run['keypad'].last_key_pressed is not None:
             run['payment']['fiat_amount'] = Decimal(0)
             if run['keypad'].last_key_pressed in range(10) + ['00']:
@@ -267,6 +269,32 @@ def pay_cancel(run, ui):
         time.sleep(0.1)
 
 
+def withdraw_amount(run, ui):
+    ui.showScreen('enter_amount')
+    ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
+    while True:
+        if (
+            run['keypad'].last_key_pressed in range(10) + ['00']
+            or run['keypad'].last_key_pressed == 'backspace'
+        ):
+            if run['keypad'].last_key_pressed == 'backspace' and run['withdrawal']['fiat_amount'] == 0:
+                _clear_withdrawal_runtime(run, ui)
+                return defaults.STAGES['idle']
+            ui.toggleAmountErrorState(False)
+            run['withdrawal']['fiat_amount'] = amounts.process_key_input(run['withdrawal']['fiat_amount'], run['keypad'].last_key_pressed)
+            ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
+        elif run['keypad'].last_key_pressed == 'enter':
+            if run['withdrawal']['fiat_amount'] > 0:
+                return defaults.STAGES['idle']
+            else:
+                ui.toggleAmountErrorState(True)
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        run['keypad'].resetKey()
+        time.sleep(0.1)
+
+
 def choose_ssid(run, ui):
     ui.showScreen('choose_ssid')
     while True:
@@ -382,3 +410,11 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
     ui.setText('fiat_amount_nfc', "0")
     ui.setText('btc_amount_nfc', "0")
     ui.setText('exchange_rate_nfc', "0")
+
+
+def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
+    ui.showScreen('load_indefinite')
+    logger.debug('clearing withdrawal runtime')
+    if clear_amounts:
+        run['withdrawal']['fiat_amount'] = None
+        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
