@@ -49,6 +49,10 @@ def main():
         'qr_image_path': None,
         'receipt_url': None,
     }
+    run['withdrawal'] = {
+        # Variables related to withdrawal process
+        'fiat_amount': None,
+    }
     run['screen_buttons'] = {
         # Store button states
         'skip_wifi': False,

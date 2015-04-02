@@ -99,16 +99,18 @@ def idle(run, ui):
         if run['screen_buttons']['pay']:
             run['screen_buttons']['pay'] = False
             run['payment']['fiat_amount'] = Decimal(0)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
+        if run['screen_buttons']['withdraw']:
+            run['screen_buttons']['withdraw'] = False
         if run['keypad'].last_key_pressed is not None:
             run['payment']['fiat_amount'] = Decimal(0)
             if run['keypad'].last_key_pressed in range(10) + ['00']:
                 run['payment']['fiat_amount'] = amounts.process_key_input(run['payment']['fiat_amount'], run['keypad'].last_key_pressed)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         time.sleep(0.1)
 
 
-def enter_amount(run, ui):
+def pay_amount(run, ui):
     ui.showScreen('enter_amount')
     ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
     while True:
@@ -137,7 +139,7 @@ def pay_loading(run, ui):
     ui.showScreen('pay_loading')
 
     if run['payment']['fiat_amount'] is None:
-        return defaults.STAGES['payment']['enter_amount']
+        return defaults.STAGES['payment']['pay_amount']
 
     while True:
         run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
@@ -166,7 +168,7 @@ def pay_rates(run, ui):
             return defaults.STAGES['payment']['pay']
         elif run['keypad'].last_key_pressed == 'backspace':
             _clear_payment_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
@@ -205,7 +207,7 @@ def pay(run, ui):
             _clear_payment_runtime(run, ui, clear_amounts=False)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
 
         if not xbterminal.helpers.nfcpy.is_active():
             xbterminal.helpers.nfcpy.start(run['payment']['order'].payment_uri)
@@ -244,7 +246,7 @@ def pay_success(run, ui):
             time.sleep(0.5)
         if run['keypad'].last_key_pressed == 'enter':
             xbterminal.helpers.nfcpy.stop()
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         elif run['keypad'].last_key_pressed == 'backspace':
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['idle']
@@ -259,7 +261,7 @@ def pay_cancel(run, ui):
     while True:
         if run['keypad'].last_key_pressed is not None:
             _clear_payment_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             return defaults.STAGES['idle']
         time.sleep(0.1)

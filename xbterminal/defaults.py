@@ -2,22 +2,27 @@ import os
 from decimal import Decimal
 
 
-STAGES = {'payment': {'enter_amount': 'enter_amount',
-                      'pay_loading': 'pay_loading',
-                      'pay_rates': 'pay_rates',
-                      'pay': 'pay',
-                      'pay_success': 'pay_success',
-                      'pay_cancel': 'pay_cancel',
-                        },
-          'wifi': {'choose_ssid': 'choose_ssid',
-                   'enter_passkey': 'enter_passkey',
-                   'wifi_connected': 'wifi_connected',
-                    },
-          'idle': 'idle',
-          'bootup': 'bootup',
-          'application_halt': 'application_halt',
-          'system_halt': 'system_halt',
-          }
+STAGES = {
+    'bootup': 'bootup',
+    'wifi': {
+        'choose_ssid': 'choose_ssid',
+        'enter_passkey': 'enter_passkey',
+        'wifi_connected': 'wifi_connected',
+    },
+    'idle': 'idle',
+    'payment': {
+        'pay_amount': 'pay_amount',
+        'pay_loading': 'pay_loading',
+        'pay_rates': 'pay_rates',
+        'pay': 'pay',
+        'pay_success': 'pay_success',
+        'pay_cancel': 'pay_cancel',
+    },
+    'withdrawal': {
+    },
+    'application_halt': 'application_halt',
+    'system_halt': 'system_halt',
+}
 
 SCREENS = {
     'load_percent': 0,
