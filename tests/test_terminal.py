@@ -39,6 +39,11 @@ class AmountsUtilsTestCase(unittest.TestCase):
         result = amounts.format_btc_amount(amount)
         self.assertEqual(result, '1,575.10')
 
+    def test_format_exchange_rate(self):
+        rate = Decimal('241.85').quantize(defaults.FIAT_DEC_PLACES)
+        result = amounts.format_exchange_rate(rate)
+        self.assertEqual(result, '0.242')
+
 
 class IdleStageTestCase(unittest.TestCase):
 
@@ -120,4 +125,16 @@ class WithdrawAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_amount(run, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         defaults.STAGES['withdrawal']['withdraw_loading'])
+
+
+class WithdrawLoadingStageTestCase(unittest.TestCase):
+
+    def test_proceed(self):
+        run = {
+            'withdrawal': {'fiat_amount': Decimal('1.00')},
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_scan'])

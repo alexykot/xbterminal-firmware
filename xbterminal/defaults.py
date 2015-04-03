@@ -20,6 +20,8 @@ STAGES = {
     },
     'withdrawal': {
         'withdraw_amount': 'withdraw_amount',
+        'withdraw_loading': 'withdraw_loading',
+        'withdraw_scan': 'withdraw_scan',
     },
     'application_halt': 'application_halt',
     'system_halt': 'system_halt',
@@ -39,7 +41,8 @@ SCREENS = {
     'pay_qr': 10,
     'pay_success': 11,
     'pay_cancel': 12,
-    'errors': 13,
+    'withdraw_scan': 13,
+    'errors': 14,
 }
 
 SCREEN_BRIGHTNESS = 40

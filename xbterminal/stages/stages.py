@@ -285,7 +285,7 @@ def withdraw_amount(run, ui):
             ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
         elif run['keypad'].last_key_pressed == 'enter':
             if run['withdrawal']['fiat_amount'] > 0:
-                return defaults.STAGES['idle']
+                return defaults.STAGES['withdrawal']['withdraw_loading']
             else:
                 ui.toggleAmountErrorState(True)
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -293,6 +293,34 @@ def withdraw_amount(run, ui):
             return defaults.STAGES['idle']
         run['keypad'].resetKey()
         time.sleep(0.1)
+
+
+def withdraw_loading(run, ui):
+    ui.showScreen('load_indefinite')
+    assert run['withdrawal']['fiat_amount'] > 0
+    while True:
+        # TODO: get rates from server
+        run['withdrawal']['order'] = {
+            'btc_amount': defaults.BTC_DEC_PLACES,
+            'exchange_rate': defaults.BTC_DEC_PLACES,
+        }
+        # TODO: loading timeout
+        if run['withdrawal']['order'] is not None:
+            return defaults.STAGES['withdrawal']['withdraw_scan']
+        else:
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+
+
+def withdraw_scan(run, ui):
+    ui.showScreen('withdraw_scan')
+    ui.setText('wscan_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
+    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
+    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
+    while True:
+        time.sleep(5)
+        _clear_withdrawal_runtime(run, ui)
+        return defaults.STAGES['idle']
 
 
 def choose_ssid(run, ui):
@@ -413,8 +441,18 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
 
 
 def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
-    ui.showScreen('load_indefinite')
     logger.debug('clearing withdrawal runtime')
+    ui.showScreen('load_indefinite')
+
     if clear_amounts:
         run['withdrawal']['fiat_amount'] = None
         ui.setText('amount_input', amounts.format_amount(Decimal(0)))
+
+    run['withdrawal']['order'] = None
+
+    ui.setText('wscan_fiat_amount_lbl',
+               amounts.format_amount(Decimal(0)))
+    ui.setText('wscan_btc_amount_lbl',
+               amounts.format_btc_amount(Decimal(0)))
+    ui.setText('wscan_xrate_amount_lbl',
+               amounts.format_exchange_rate(Decimal(0)))
