@@ -1681,7 +1681,7 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>110</y>
+       <y>140</y>
        <width>141</width>
        <height>41</height>
       </rect>
@@ -1699,11 +1699,11 @@ FOR RECEIPT</string>
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="wscan_mbtc_lbl">
+    <widget class="QLabel" name="wscan_btc_lbl">
      <property name="geometry">
       <rect>
        <x>250</x>
-       <y>110</y>
+       <y>140</y>
        <width>71</width>
        <height>41</height>
       </rect>
@@ -1727,7 +1727,7 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>110</y>
+       <y>140</y>
        <width>51</width>
        <height>41</height>
       </rect>
@@ -1752,7 +1752,7 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>180</y>
+       <y>190</y>
        <width>141</width>
        <height>21</height>
       </rect>
@@ -1771,7 +1771,7 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>180</y>
+       <y>190</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -1793,7 +1793,7 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>110</y>
+       <y>140</y>
        <width>171</width>
        <height>41</height>
       </rect>
@@ -1815,7 +1815,7 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>10</y>
+       <y>40</y>
        <width>441</width>
        <height>71</height>
       </rect>
@@ -1839,6 +1839,205 @@ QR CODE NOW</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="withdraw_confirm_scrn">
+    <widget class="QLabel" name="wconfirm_address_h_lbl">
+     <property name="geometry">
+      <rect>
+       <x>163</x>
+       <y>10</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>your address:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_address_lbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>461</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="wconfirm_confirm_btn">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>80</y>
+       <width>261</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>confirm and send</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_fiat_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>140</y>
+       <width>171</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>100.00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_currency_lbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>£</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_btc_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>140</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>30.05</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_btc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>140</y>
+       <width>71</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>36</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>m฿</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_xrate_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>190</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.845</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_xrate_lbl">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>190</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>exchange rate</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>

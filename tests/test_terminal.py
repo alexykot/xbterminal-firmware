@@ -138,3 +138,83 @@ class WithdrawLoadingStageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_loading(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_scan'])
+
+
+class WithdrawScanStageTestCase(unittest.TestCase):
+
+    def test_return(self):
+        run = {
+            'keypad': Mock(last_key_pressed='backspace'),
+            'withdrawal': {
+                'fiat_amount': Decimal(0),
+                'order': {
+                    'btc_amount': Decimal(0),
+                    'exchange_rate': Decimal(0),
+                },
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_scan(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_amount'])
+        self.assertIsNone(run['withdrawal']['order'])
+        self.assertIsNotNone(run['withdrawal']['fiat_amount'])
+
+    def test_proceed(self):
+        run = {
+            'keypad': Mock(last_key_pressed='enter'),
+            'withdrawal': {
+                'fiat_amount': Decimal(0),
+                'order': {
+                    'btc_amount': Decimal(0),
+                    'exchange_rate': Decimal(0),
+                },
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_scan(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_confirm'])
+        self.assertIsNotNone(run['withdrawal']['address'])
+
+
+class WithdrawConfirmStageTestCase(unittest.TestCase):
+
+    def test_return(self):
+        run = {
+            'keypad': Mock(last_key_pressed='backspace'),
+            'screen_buttons': {'confirm_withdrawal': False},
+            'withdrawal': {
+                'fiat_amount': Decimal(0),
+                'order': {
+                    'btc_amount': Decimal(0),
+                    'exchange_rate': Decimal(0),
+                },
+                'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_confirm(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_amount'])
+        self.assertIsNone(run['withdrawal']['order'])
+        self.assertIsNone(run['withdrawal']['address'])
+        self.assertIsNotNone(run['withdrawal']['fiat_amount'])
+
+    def test_proceed(self):
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {'confirm_withdrawal': True},
+            'withdrawal': {
+                'fiat_amount': Decimal(0),
+                'order': {
+                    'btc_amount': Decimal(0),
+                    'exchange_rate': Decimal(0),
+                },
+                'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_confirm(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_success'])

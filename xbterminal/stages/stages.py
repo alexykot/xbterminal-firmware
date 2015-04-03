@@ -318,9 +318,44 @@ def withdraw_scan(run, ui):
     ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
     ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
     while True:
-        time.sleep(5)
-        _clear_withdrawal_runtime(run, ui)
-        return defaults.STAGES['idle']
+        if run['keypad'].last_key_pressed == 'enter':
+            # TODO: get address from the camera
+            run['withdrawal']['address'] = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
+            if run['withdrawal']['address'] is not None:
+                return defaults.STAGES['withdrawal']['withdraw_confirm']
+        elif run['keypad'].last_key_pressed == 'backspace':
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def withdraw_confirm(run, ui):
+    ui.showScreen('withdraw_confirm')
+    assert run['withdrawal']['address'] is not None
+    ui.setText('wconfirm_address_lbl', run['withdrawal']['address'])
+    ui.setText('wconfirm_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
+    ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
+    ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
+    while True:
+        if run['screen_buttons']['confirm_withdrawal']:
+            run['screen_buttons']['confirm_withdrawal'] = False
+            return defaults.STAGES['withdrawal']['withdraw_success']
+        if run['keypad'].last_key_pressed == 'enter':
+            return defaults.STAGES['withdrawal']['withdraw_success']
+        elif run['keypad'].last_key_pressed == 'backspace':
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def withdraw_success(run, ui):
+    return defaults.STAGES['idle']
 
 
 def choose_ssid(run, ui):
@@ -449,10 +484,17 @@ def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
         ui.setText('amount_input', amounts.format_amount(Decimal(0)))
 
     run['withdrawal']['order'] = None
+    run['withdrawal']['address'] = None
 
     ui.setText('wscan_fiat_amount_lbl',
                amounts.format_amount(Decimal(0)))
     ui.setText('wscan_btc_amount_lbl',
                amounts.format_btc_amount(Decimal(0)))
     ui.setText('wscan_xrate_amount_lbl',
+               amounts.format_exchange_rate(Decimal(0)))
+    ui.setText('wconfirm_fiat_amount_lbl',
+               amounts.format_amount(Decimal(0)))
+    ui.setText('wconfirm_btc_amount_lbl',
+               amounts.format_btc_amount(Decimal(0)))
+    ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate(Decimal(0)))
