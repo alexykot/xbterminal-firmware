@@ -125,19 +125,20 @@ class WithdrawAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_amount(run, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_loading'])
+                         defaults.STAGES['withdrawal']['withdraw_loading1'])
 
 
-class WithdrawLoadingStageTestCase(unittest.TestCase):
+class WithdrawLoading1StageTestCase(unittest.TestCase):
 
     def test_proceed(self):
         run = {
             'withdrawal': {'fiat_amount': Decimal('1.00')},
         }
         ui = Mock()
-        next_stage = stages.withdraw_loading(run, ui)
+        next_stage = stages.withdraw_loading1(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_scan'])
+        self.assertIsNotNone(run['withdrawal']['order'])
 
 
 class WithdrawScanStageTestCase(unittest.TestCase):
@@ -217,4 +218,36 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_confirm(run, ui)
         self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_loading2'])
+
+
+class WithdrawLoading2StageTestCase(unittest.TestCase):
+
+    def test_proceed(self):
+        run = {
+            'withdrawal': {
+                'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading2(run, ui)
+        self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_success'])
+        self.assertIsNotNone(run['withdrawal']['receipt_url'])
+        self.assertIsNotNone(run['withdrawal']['qr_image_path'])
+
+
+class WithdrawConfirmStageTestCase(unittest.TestCase):
+
+    def test_return(self):
+        run = {
+            'keypad': Mock(last_key_pressed='enter'),
+            'withdrawal': {
+                'qr_image_path': '/path/to/image',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_success(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
+        self.assertIsNone(run['withdrawal']['qr_image_path'])

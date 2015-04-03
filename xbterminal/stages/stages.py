@@ -114,6 +114,7 @@ def idle(run, ui):
 
 def pay_amount(run, ui):
     ui.showScreen('enter_amount')
+    assert run['payment']['fiat_amount'] is not None
     ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
     while True:
         if (
@@ -271,6 +272,7 @@ def pay_cancel(run, ui):
 
 def withdraw_amount(run, ui):
     ui.showScreen('enter_amount')
+    assert run['withdrawal']['fiat_amount'] is not None
     ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
     while True:
         if (
@@ -285,7 +287,7 @@ def withdraw_amount(run, ui):
             ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
         elif run['keypad'].last_key_pressed == 'enter':
             if run['withdrawal']['fiat_amount'] > 0:
-                return defaults.STAGES['withdrawal']['withdraw_loading']
+                return defaults.STAGES['withdrawal']['withdraw_loading1']
             else:
                 ui.toggleAmountErrorState(True)
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -295,7 +297,7 @@ def withdraw_amount(run, ui):
         time.sleep(0.1)
 
 
-def withdraw_loading(run, ui):
+def withdraw_loading1(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['fiat_amount'] > 0
     while True:
@@ -314,6 +316,7 @@ def withdraw_loading(run, ui):
 
 def withdraw_scan(run, ui):
     ui.showScreen('withdraw_scan')
+    assert run['withdrawal']['order'] is not None
     ui.setText('wscan_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
     ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
     ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
@@ -342,9 +345,9 @@ def withdraw_confirm(run, ui):
     while True:
         if run['screen_buttons']['confirm_withdrawal']:
             run['screen_buttons']['confirm_withdrawal'] = False
-            return defaults.STAGES['withdrawal']['withdraw_success']
+            return defaults.STAGES['withdrawal']['withdraw_loading2']
         if run['keypad'].last_key_pressed == 'enter':
-            return defaults.STAGES['withdrawal']['withdraw_success']
+            return defaults.STAGES['withdrawal']['withdraw_loading2']
         elif run['keypad'].last_key_pressed == 'backspace':
             _clear_withdrawal_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['withdrawal']['withdraw_amount']
@@ -354,8 +357,37 @@ def withdraw_confirm(run, ui):
         time.sleep(0.1)
 
 
+def withdraw_loading2(run, ui):
+    ui.showScreen('load_indefinite')
+    assert run['withdrawal']['address'] is not None
+    while True:
+        # TODO: get receipt from the server
+        run['withdrawal']['receipt_url'] = 'https://xbterminal.io/rc/CV2ALZ'
+        # TODO: loading timeout
+        if run['withdrawal']['receipt_url'] is not None:
+            run['withdrawal']['qr_image_path'] = os.path.join(
+                defaults.PROJECT_ABS_PATH,
+                defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
+                                         run['withdrawal']['qr_image_path'])
+            return defaults.STAGES['withdrawal']['withdraw_success']
+        else:
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+
+
 def withdraw_success(run, ui):
-    return defaults.STAGES['idle']
+    ui.showScreen('withdraw_success')
+    assert run['withdrawal']['qr_image_path'] is not None
+    ui.setImage('wsuccess_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    while True:
+        if run['keypad'].last_key_pressed in ['backspace', 'enter']:
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def choose_ssid(run, ui):
@@ -485,6 +517,8 @@ def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
 
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None
+    run['withdrawal']['receipt_url'] = None
+    run['withdrawal']['qr_image_path'] = None
 
     ui.setText('wscan_fiat_amount_lbl',
                amounts.format_amount(Decimal(0)))
@@ -498,3 +532,4 @@ def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
                amounts.format_btc_amount(Decimal(0)))
     ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate(Decimal(0)))
+    ui.setImage('wsuccess_receipt_qr_img', None)

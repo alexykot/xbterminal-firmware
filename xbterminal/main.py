@@ -52,7 +52,10 @@ def main():
     run['withdrawal'] = {
         # Variables related to withdrawal process
         'fiat_amount': None,
+        'order': None,
         'address': None,
+        'receipt_url': None,
+        'qr_image_path': None,
     }
     run['screen_buttons'] = {
         # Store button states

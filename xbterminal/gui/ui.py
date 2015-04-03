@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri Apr  3 18:14:21 2015
+# Created: Fri Apr  3 19:05:16 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -784,6 +784,33 @@ class Ui_MainWindow(object):
         self.wconfirm_xrate_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.wconfirm_xrate_lbl.setObjectName(_fromUtf8("wconfirm_xrate_lbl"))
         self.main_stackedWidget.addWidget(self.withdraw_confirm_scrn)
+        self.withdraw_success_scrn = QtGui.QWidget()
+        self.withdraw_success_scrn.setObjectName(_fromUtf8("withdraw_success_scrn"))
+        self.wsuccess_success_lbl = QtGui.QLabel(self.withdraw_success_scrn)
+        self.wsuccess_success_lbl.setGeometry(QtCore.QRect(20, 10, 441, 61))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(28)
+        self.wsuccess_success_lbl.setFont(font)
+        self.wsuccess_success_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.wsuccess_success_lbl.setObjectName(_fromUtf8("wsuccess_success_lbl"))
+        self.wsuccess_tip_lbl = QtGui.QLabel(self.withdraw_success_scrn)
+        self.wsuccess_tip_lbl.setGeometry(QtCore.QRect(210, 100, 241, 81))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(14)
+        self.wsuccess_tip_lbl.setFont(font)
+        self.wsuccess_tip_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.wsuccess_tip_lbl.setObjectName(_fromUtf8("wsuccess_tip_lbl"))
+        self.wsuccess_receipt_qr_img = QtGui.QLabel(self.withdraw_success_scrn)
+        self.wsuccess_receipt_qr_img.setGeometry(QtCore.QRect(40, 80, 135, 135))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        self.wsuccess_receipt_qr_img.setFont(font)
+        self.wsuccess_receipt_qr_img.setText(_fromUtf8(""))
+        self.wsuccess_receipt_qr_img.setScaledContents(True)
+        self.wsuccess_receipt_qr_img.setObjectName(_fromUtf8("wsuccess_receipt_qr_img"))
+        self.main_stackedWidget.addWidget(self.withdraw_success_scrn)
         self.error_scrn = QtGui.QWidget()
         self.error_scrn.setObjectName(_fromUtf8("error_scrn"))
         self.errors_lbl = QtGui.QLabel(self.error_scrn)
@@ -899,6 +926,10 @@ class Ui_MainWindow(object):
         self.wconfirm_btc_lbl.setText(_translate("MainWindow", "m฿", None))
         self.wconfirm_xrate_amount_lbl.setText(_translate("MainWindow", "0.845", None))
         self.wconfirm_xrate_lbl.setText(_translate("MainWindow", "exchange rate", None))
+        self.wsuccess_success_lbl.setText(_translate("MainWindow", "payout successful", None))
+        self.wsuccess_tip_lbl.setText(_translate("MainWindow", "TOUCH NFC AGAIN\n"
+"OR SCAN QR CODE\n"
+"FOR RECEIPT", None))
         self.testnet_notice.setText(_translate("MainWindow", "testnet\n"
 "active", None))
 
