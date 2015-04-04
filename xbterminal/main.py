@@ -5,6 +5,7 @@ import sys
 import os
 import logging.config
 import subprocess
+from collections import deque
 
 include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
 sys.path.insert(0, include_path)
@@ -69,7 +70,9 @@ def main():
     run['wifi'] = {}
     run['wifi']['connected'] = False
     run['keypad'] = None
+    run['keyboard_events'] = deque(maxlen=1)  # Only for keyboard driver
     run['bluetooth_server'] = None
+    run['nfc_server'] = None
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):

@@ -136,13 +136,10 @@ class KeyboardDriver(object):
         QtCore.Qt.Key_Escape: 'system_halt',
     }
 
-    def __init__(self):
-        self.main_window = xbterminal.runtime['main_window']
-
     def getKey(self):
+        events = xbterminal.runtime['keyboard_events']
         try:
-            key = self.main_window.keys.pop()
-            self.main_window.keys.clear()
+            key = events.pop()
         except IndexError:
             return None
         return self.key_map.get(key)

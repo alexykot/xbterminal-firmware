@@ -1,3 +1,4 @@
+
 """
 http://nfcpy.readthedocs.org/en/latest/
 """
@@ -12,16 +13,15 @@ import nfc.llcp
 
 logger = logging.getLogger(__name__)
 
-nfc_thread = None
+READER_PATH = 'usb'
 
 
 class BitcoinSender(threading.Thread):
 
-    def __init__(self, bitcoin_uri):
+    def __init__(self, uri):
         super(BitcoinSender, self).__init__()
-        self.reader_path = 'usb'
         self.terminate = False
-        self.uri = bitcoin_uri
+        self.uri = uri
 
     def on_connect(self, llc):
         """
@@ -38,10 +38,10 @@ class BitcoinSender(threading.Thread):
 
     def run(self):
         try:
-            clf = nfc.ContactlessFrontend(self.reader_path)
+            clf = nfc.ContactlessFrontend(READER_PATH)
         except IOError:
             reset_usb_hub()
-            clf = nfc.ContactlessFrontend(self.reader_path)
+            clf = nfc.ContactlessFrontend(READER_PATH)
         clf.connect(llcp={'on-connect': self.on_connect},
                     terminate=self.terminate_callback_function)
         clf.close()
@@ -76,28 +76,40 @@ def reset_usb_hub():
     time.sleep(10)
 
 
-def start(bitcoin_uri):
-    global nfc_thread
+class NFCServer(object):
 
-    if nfc_thread is not None and nfc_thread.is_alive():
-        stop()
+    def __init__(self):
+        self._nfc_thread = None
+        try:
+            clf = nfc.ContactlessFrontend(READER_PATH)
+        except IOError:
+            self.is_available = False
+        else:
+            self.is_available = True
 
-    time.sleep(0.3) #required to free up device before reusing
+    def is_active(self):
+        return self._nfc_thread is not None and self._nfc_thread.is_alive()
 
-    nfc_thread = BitcoinSender(bitcoin_uri)
-    nfc_thread.start()
-    logger.debug('NFC activated')
+    def start(self, uri):
+        if not self.is_available:
+            # Do nothing if device is not available
+            return
 
-def is_active():
-    global nfc_thread
+        if self.is_active():
+            self.stop()
 
-    return nfc_thread is not None and nfc_thread.is_alive()
+        time.sleep(0.3)  # required to free up device before reusing
 
-def stop():
-    global nfc_thread
+        self._nfc_thread = BitcoinSender(uri)
+        self._nfc_thread.start()
+        logger.info('nfc activated: {}'.format(uri))
 
-    if nfc_thread is not None and nfc_thread.is_alive():
-        nfc_thread.terminate = True
-        nfc_thread.join()
+    def stop(self):
+        if not self.is_available:
+            # Do nothing if device is not available
+            return
 
-    nfc_thread = None
+        if self.is_active():
+            self._nfc_thread.terminate = True
+            self._nfc_thread.join()
+        self._nfc_thread = None
