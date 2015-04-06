@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 import xbterminal
 from xbterminal import defaults
 from xbterminal.stages import payment
+from xbterminal.stages import amounts
 
 import xbterminal.helpers.bt
 import xbterminal.helpers.clock
@@ -95,35 +96,38 @@ def bootup(run, ui):
 def idle(run, ui):
     ui.showScreen('idle')
     while True:
+        if run['screen_buttons']['pay']:
+            run['screen_buttons']['pay'] = False
+            run['payment']['fiat_amount'] = Decimal(0)
+            return defaults.STAGES['payment']['enter_amount']
         if run['keypad'].last_key_pressed is not None:
+            run['payment']['fiat_amount'] = Decimal(0)
             if run['keypad'].last_key_pressed in range(10) + ['00']:
-                run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
+                run['payment']['fiat_amount'] = amounts.process_key_input(run['payment']['fiat_amount'], run['keypad'].last_key_pressed)
             return defaults.STAGES['payment']['enter_amount']
         time.sleep(0.1)
 
 
 def enter_amount(run, ui):
     ui.showScreen('enter_amount')
-    ui.setText('amount_input', payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES))
+    ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
     while True:
         if (
             run['keypad'].last_key_pressed in range(10) + ['00']
             or run['keypad'].last_key_pressed == 'backspace'
         ):
-            if run['keypad'].last_key_pressed == 'backspace' and run['display_value_unformatted'] == '':
+            if run['keypad'].last_key_pressed == 'backspace' and run['payment']['fiat_amount'] == 0:
                 return defaults.STAGES['idle']
             ui.toggleAmountErrorState(False)
-            run['display_value_unformatted'] = payment.processKeyInput(run['display_value_unformatted'], run['keypad'].last_key_pressed)
-            run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-            ui.setText('amount_input', run['display_value_formatted'])
+            run['payment']['fiat_amount'] = amounts.process_key_input(run['payment']['fiat_amount'], run['keypad'].last_key_pressed)
+            ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
         elif run['keypad'].last_key_pressed == 'enter':
-            run['amounts']['amount_to_pay_fiat'] = payment.inputToDecimal(run['display_value_unformatted'])
-            if run['amounts']['amount_to_pay_fiat'] > 0:
+            if run['payment']['fiat_amount'] > 0:
                 return defaults.STAGES['payment']['pay_loading']
             else:
                 ui.toggleAmountErrorState(True)
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         run['keypad'].resetKey()
         time.sleep(0.1)
@@ -132,21 +136,18 @@ def enter_amount(run, ui):
 def pay_loading(run, ui):
     ui.showScreen('pay_loading')
 
-    if run['amounts']['amount_to_pay_fiat'] is None:
+    if run['payment']['fiat_amount'] is None:
         return defaults.STAGES['payment']['enter_amount']
 
     while True:
-        run['payment'] = payment.Payment.create_order(run['amounts']['amount_to_pay_fiat'],
-                                              run['bluetooth_server'].mac_address)
-        if run['payment'] is not None:
+        run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
+                                                               run['bluetooth_server'].mac_address)
+        if run['payment']['order'] is not None:
             # Payment parameters loaded
-            run['amounts']['amount_to_pay_btc'] = run['payment'].btc_amount
-            run['effective_rate_btc'] = run['payment'].exchange_rate
-            run['transaction_bitcoin_uri'] = run['payment'].payment_uri
-
             # Prepare QR image
-            run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-            xbterminal.helpers.qr.qr_gen(run['transaction_bitcoin_uri'], run['qr_image_path'])
+            run['payment']['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
+                                         run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_rates']
         else:
             # Network error
@@ -155,79 +156,79 @@ def pay_loading(run, ui):
 
 def pay_rates(run, ui):
     ui.showScreen('pay_rates')
-    ui.setText('fiat_amount', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-    ui.setText('btc_amount', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-    ui.setText('exchange_rate_amount', payment.formatDecimal(
-        run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
+    ui.setText('fiat_amount', amounts.format_amount(run['payment']['fiat_amount']))
+    ui.setText('btc_amount', amounts.format_btc_amount(run['payment']['order'].btc_amount))
+    ui.setText('exchange_rate_amount', amounts.format_amount(
+        run['payment']['order'].exchange_rate / defaults.BITCOIN_SCALE_DIVIZER,
         defaults.EXCHANGE_RATE_DEC_PLACES))
     while True:
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['payment']['pay']
         elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['payment']['enter_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
 
 def pay(run, ui):
     ui.showScreen('pay_nfc')
-    ui.setText('fiat_amount_nfc', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-    ui.setText('btc_amount_nfc', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-    ui.setText('exchange_rate_nfc', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
-                                                          defaults.EXCHANGE_RATE_DEC_PLACES))
+    ui.setText('fiat_amount_nfc', amounts.format_amount(run['payment']['fiat_amount']))
+    ui.setText('btc_amount_nfc', amounts.format_btc_amount(run['payment']['order'].btc_amount))
+    ui.setText('exchange_rate_nfc', amounts.format_amount(
+        run['payment']['order'].exchange_rate / defaults.BITCOIN_SCALE_DIVIZER,
+        defaults.EXCHANGE_RATE_DEC_PLACES))
     logger.debug('local payment requested, '
                  'amount fiat: {amount_fiat}, '
                  'amount btc: {amount_btc}, '
                  'rate: {effective_rate}'.
-                    format(amount_fiat=run['amounts']['amount_to_pay_fiat'],
-                           amount_btc=run['amounts']['amount_to_pay_btc'],
-                           effective_rate=run['effective_rate_btc']))
-    run['bluetooth_server'].start(run['payment'])
+                    format(amount_fiat=run['payment']['fiat_amount'],
+                           amount_btc=run['payment']['order'].btc_amount,
+                           effective_rate=run['payment']['order'].exchange_rate))
+    run['bluetooth_server'].start(run['payment']['order'])
     while True:
-        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['qr_button']:
+        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['show_qr']:
             logger.debug('QR code requested')
-            run['screen_buttons']['qr_button'] = False
+            run['screen_buttons']['show_qr'] = False
             ui.showScreen('pay_qr')
-            ui.setText('fiat_amount_qr', payment.formatDecimal(run['amounts']['amount_to_pay_fiat'], defaults.OUTPUT_DEC_PLACES))
-            ui.setText('btc_amount_qr', payment.formatBitcoin(run['amounts']['amount_to_pay_btc']))
-            ui.setText('exchange_rate_qr', payment.formatDecimal(run['effective_rate_btc'] / defaults.BITCOIN_SCALE_DIVIZER,
-                                                                 defaults.EXCHANGE_RATE_DEC_PLACES))
-            ui.setImage("qr_image", run['qr_image_path'])
+            ui.setText('fiat_amount_qr', amounts.format_amount(run['payment']['fiat_amount']))
+            ui.setText('btc_amount_qr', amounts.format_btc_amount(run['payment']['order'].btc_amount))
+            ui.setText('exchange_rate_qr', amounts.format_amount(
+                run['payment']['order'].exchange_rate / defaults.BITCOIN_SCALE_DIVIZER,
+                defaults.EXCHANGE_RATE_DEC_PLACES))
+            ui.setImage("qr_image", run['payment']['qr_image_path'])
             run['keypad'].resetKey()
 
         elif run['keypad'].last_key_pressed == 'backspace':
-            payment.clearPaymentRuntime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui, clear_amounts=False)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['enter_amount']
 
         if not xbterminal.helpers.nfcpy.is_active():
-            xbterminal.helpers.nfcpy.start(run['transaction_bitcoin_uri'])
-            logger.debug('nfc bitcoin URI activated: {}'.format(run['transaction_bitcoin_uri']))
+            xbterminal.helpers.nfcpy.start(run['payment']['order'].payment_uri)
+            logger.debug('nfc bitcoin URI activated: {}'.format(run['payment']['order'].payment_uri))
             time.sleep(0.5)
 
-        run['receipt_url'] = run['payment'].check()
-        if run['receipt_url'] is not None:
-            logger.debug('payment received, receipt: {}'.format(run['receipt_url']))
+        run['payment']['receipt_url'] = run['payment']['order'].check()
+        if run['payment']['receipt_url'] is not None:
+            logger.debug('payment received, receipt: {}'.format(run['payment']['receipt_url']))
 
-            run['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
-            xbterminal.helpers.qr.qr_gen(run['receipt_url'], run['qr_image_path'])
+            run['payment']['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
+                                         run['payment']['qr_image_path'])
 
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_success']
 
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            payment.clearPaymentRuntime(run, ui)
+            _clear_payment_runtime(run, ui)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
-            run['last_activity_timestamp'] = (time.time()
-                                                  - defaults.TRANSACTION_TIMEOUT
-                                                  + defaults.TRANSACTION_CANCELLED_MESSAGE_TIMEOUT)
             return defaults.STAGES['payment']['pay_cancel']
 
         time.sleep(0.5)
@@ -235,11 +236,11 @@ def pay(run, ui):
 
 def pay_success(run, ui):
     ui.showScreen('pay_success')
-    ui.setImage("receipt_qr_image", run['qr_image_path'])
+    ui.setImage("receipt_qr_image", run['payment']['qr_image_path'])
     while True:
         if not xbterminal.helpers.nfcpy.is_active():
-            xbterminal.helpers.nfcpy.start(run['receipt_url'])
-            logger.debug('nfc receipt URI activated: {}'.format(run['receipt_url']))
+            xbterminal.helpers.nfcpy.start(run['payment']['receipt_url'])
+            logger.debug('nfc receipt URI activated: {}'.format(run['payment']['receipt_url']))
             time.sleep(0.5)
         if run['keypad'].last_key_pressed == 'enter':
             xbterminal.helpers.nfcpy.stop()
@@ -257,9 +258,7 @@ def pay_cancel(run, ui):
     ui.showScreen('pay_cancel')
     while True:
         if run['keypad'].last_key_pressed is not None:
-            run['display_value_unformatted'] = ''
-            run['display_value_formatted'] = payment.formatInput(run['display_value_unformatted'], defaults.OUTPUT_DEC_PLACES)
-            ui.setText('amount_input', run['display_value_formatted'])
+            _clear_payment_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['payment']['enter_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             return defaults.STAGES['idle']
@@ -357,3 +356,27 @@ def wifi_connected(run, ui):
     ui.showScreen('wifi_connected')
     time.sleep(3)
     return defaults.STAGES['bootup']
+
+
+def _clear_payment_runtime(run, ui, clear_amounts=True):
+    ui.showScreen('pay_loading')
+    logger.debug('clearing payment runtime')
+    if clear_amounts:
+        run['payment']['fiat_amount'] = Decimal(0)
+        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
+
+    run['payment']['order'] = None
+
+    ui.setText('fiat_amount', "0")
+    ui.setText('btc_amount', "0")
+    ui.setText('exchange_rate_amount', "0")
+
+    ui.setText('fiat_amount_qr', "0")
+    ui.setText('btc_amount_qr', "0")
+    ui.setText('exchange_rate_qr', "0")
+    ui.setImage('qr_image', None)
+    ui.setImage("receipt_qr_image", None)
+
+    ui.setText('fiat_amount_nfc', "0")
+    ui.setText('btc_amount_nfc', "0")
+    ui.setText('exchange_rate_nfc', "0")

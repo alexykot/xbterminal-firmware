@@ -33,7 +33,7 @@ import xbterminal.watcher
 
 def main():
     logger.debug('starting')
-    #init runtime
+    # init runtime
     run = xbterminal.runtime = {}
     run['init'] = {}
     run['init']['internet'] = False
@@ -42,17 +42,21 @@ def main():
     run['init']['remote_config_last_update'] = 0
     run['init']['blockchain_network'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['bootup']
-    run['payment'] = None
-    run['amounts'] = {}
-    run['amounts']['amount_to_pay_fiat'] = None
-    run['amounts']['amount_to_pay_btc'] = None
-    run['screen_buttons'] = {}
-    run['screen_buttons']['qr_button'] = False
-    run['screen_buttons']['skip_wifi'] = False
+    run['payment'] = {
+        # Store variables related to payment process
+        'fiat_amount': None,
+        'order': None,
+        'qr_image_path': None,
+        'receipt_url': None,
+    }
+    run['screen_buttons'] = {
+        # Store button states
+        'skip_wifi': False,
+        'pay': False,
+        'withdraw': False,
+        'show_qr': False,
+    }
     run['last_activity_timestamp'] = None
-    run['current_text_piece'] = 'decimal'
-    run['display_value_unformatted'] = ''
-    run['display_value_formatted'] = ''
     run['wifi'] = {}
     run['wifi']['connected'] = False
     run['keypad'] = None
@@ -120,7 +124,8 @@ def main():
 
         # Read keypad input
         run['keypad'].getKey()
-        run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
+        if run['last_activity_timestamp'] < run['keypad'].last_activity_timestamp:
+            run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
 
         if run['keypad'].last_key_pressed == 'application_halt':
             gracefulExit()
