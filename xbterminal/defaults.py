@@ -2,22 +2,33 @@ import os
 from decimal import Decimal
 
 
-STAGES = {'payment': {'enter_amount': 'enter_amount',
-                      'pay_loading': 'pay_loading',
-                      'pay_rates': 'pay_rates',
-                      'pay': 'pay',
-                      'pay_success': 'pay_success',
-                      'pay_cancel': 'pay_cancel',
-                        },
-          'wifi': {'choose_ssid': 'choose_ssid',
-                   'enter_passkey': 'enter_passkey',
-                   'wifi_connected': 'wifi_connected',
-                    },
-          'idle': 'idle',
-          'bootup': 'bootup',
-          'application_halt': 'application_halt',
-          'system_halt': 'system_halt',
-          }
+STAGES = {
+    'bootup': 'bootup',
+    'wifi': {
+        'choose_ssid': 'choose_ssid',
+        'enter_passkey': 'enter_passkey',
+        'wifi_connected': 'wifi_connected',
+    },
+    'idle': 'idle',
+    'payment': {
+        'pay_amount': 'pay_amount',
+        'pay_loading': 'pay_loading',
+        'pay_rates': 'pay_rates',
+        'pay': 'pay',
+        'pay_success': 'pay_success',
+        'pay_cancel': 'pay_cancel',
+    },
+    'withdrawal': {
+        'withdraw_amount': 'withdraw_amount',
+        'withdraw_loading1': 'withdraw_loading1',
+        'withdraw_scan': 'withdraw_scan',
+        'withdraw_confirm': 'withdraw_confirm',
+        'withdraw_loading2': 'withdraw_loading2',
+        'withdraw_success': 'withdraw_success',
+    },
+    'application_halt': 'application_halt',
+    'system_halt': 'system_halt',
+}
 
 SCREENS = {
     'load_percent': 0,
@@ -33,7 +44,10 @@ SCREENS = {
     'pay_qr': 10,
     'pay_success': 11,
     'pay_cancel': 12,
-    'errors': 13,
+    'withdraw_scan': 13,
+    'withdraw_confirm': 14,
+    'withdraw_success': 15,
+    'errors': 16,
 }
 
 SCREEN_BRIGHTNESS = 40

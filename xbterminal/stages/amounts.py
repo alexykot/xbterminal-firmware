@@ -5,7 +5,8 @@ from xbterminal.defaults import (
     OUTPUT_DEC_PLACES,
     OUTPUT_TOTAL_PLACES,
     BITCOIN_SCALE_DIVIZER,
-    BITCOIN_OUTPUT_DEC_PLACES)
+    BITCOIN_OUTPUT_DEC_PLACES,
+    EXCHANGE_RATE_DEC_PLACES)
 
 
 def process_key_input(amount, key=None):
@@ -40,3 +41,8 @@ def format_amount(amount, dec_places=OUTPUT_DEC_PLACES):
 def format_btc_amount(amount):
     amount_scaled = amount * BITCOIN_SCALE_DIVIZER
     return format_amount(amount_scaled, BITCOIN_OUTPUT_DEC_PLACES)
+
+
+def format_exchange_rate(rate):
+    rate_scaled = rate / BITCOIN_SCALE_DIVIZER
+    return format_amount(rate_scaled, EXCHANGE_RATE_DEC_PLACES)

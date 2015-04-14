@@ -96,6 +96,8 @@ class GUI(QtGui.QWidget):
             functools.partial(self.buttonPressEvent, 'show_qr'))
         self.ui.skip_wifi_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'skip_wifi'))
+        self.ui.wconfirm_confirm_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'confirm_withdrawal'))
         # Hide notices
         self.ui.testnet_notice.hide()
         self.ui.wrong_passwd_lbl.hide()

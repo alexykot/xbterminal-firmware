@@ -99,17 +99,22 @@ def idle(run, ui):
         if run['screen_buttons']['pay']:
             run['screen_buttons']['pay'] = False
             run['payment']['fiat_amount'] = Decimal(0)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
+        if run['screen_buttons']['withdraw']:
+            run['screen_buttons']['withdraw'] = False
+            run['withdrawal']['fiat_amount'] = Decimal(0)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
         if run['keypad'].last_key_pressed is not None:
             run['payment']['fiat_amount'] = Decimal(0)
             if run['keypad'].last_key_pressed in range(10) + ['00']:
                 run['payment']['fiat_amount'] = amounts.process_key_input(run['payment']['fiat_amount'], run['keypad'].last_key_pressed)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         time.sleep(0.1)
 
 
-def enter_amount(run, ui):
+def pay_amount(run, ui):
     ui.showScreen('enter_amount')
+    assert run['payment']['fiat_amount'] is not None
     ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
     while True:
         if (
@@ -137,7 +142,7 @@ def pay_loading(run, ui):
     ui.showScreen('pay_loading')
 
     if run['payment']['fiat_amount'] is None:
-        return defaults.STAGES['payment']['enter_amount']
+        return defaults.STAGES['payment']['pay_amount']
 
     while True:
         run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
@@ -166,7 +171,7 @@ def pay_rates(run, ui):
             return defaults.STAGES['payment']['pay']
         elif run['keypad'].last_key_pressed == 'backspace':
             _clear_payment_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
@@ -205,7 +210,7 @@ def pay(run, ui):
             _clear_payment_runtime(run, ui, clear_amounts=False)
             xbterminal.helpers.nfcpy.stop()
             run['bluetooth_server'].stop()
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
 
         if not xbterminal.helpers.nfcpy.is_active():
             xbterminal.helpers.nfcpy.start(run['payment']['order'].payment_uri)
@@ -244,7 +249,7 @@ def pay_success(run, ui):
             time.sleep(0.5)
         if run['keypad'].last_key_pressed == 'enter':
             xbterminal.helpers.nfcpy.stop()
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         elif run['keypad'].last_key_pressed == 'backspace':
             xbterminal.helpers.nfcpy.stop()
             return defaults.STAGES['idle']
@@ -259,8 +264,128 @@ def pay_cancel(run, ui):
     while True:
         if run['keypad'].last_key_pressed is not None:
             _clear_payment_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['payment']['enter_amount']
+            return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def withdraw_amount(run, ui):
+    ui.showScreen('enter_amount')
+    assert run['withdrawal']['fiat_amount'] is not None
+    ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
+    while True:
+        if (
+            run['keypad'].last_key_pressed in range(10) + ['00']
+            or run['keypad'].last_key_pressed == 'backspace'
+        ):
+            if run['keypad'].last_key_pressed == 'backspace' and run['withdrawal']['fiat_amount'] == 0:
+                _clear_withdrawal_runtime(run, ui)
+                return defaults.STAGES['idle']
+            ui.toggleAmountErrorState(False)
+            run['withdrawal']['fiat_amount'] = amounts.process_key_input(run['withdrawal']['fiat_amount'], run['keypad'].last_key_pressed)
+            ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
+        elif run['keypad'].last_key_pressed == 'enter':
+            if run['withdrawal']['fiat_amount'] > 0:
+                return defaults.STAGES['withdrawal']['withdraw_loading1']
+            else:
+                ui.toggleAmountErrorState(True)
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        run['keypad'].resetKey()
+        time.sleep(0.1)
+
+
+def withdraw_loading1(run, ui):
+    ui.showScreen('load_indefinite')
+    assert run['withdrawal']['fiat_amount'] > 0
+    while True:
+        # TODO: get rates from server
+        run['withdrawal']['order'] = {
+            'btc_amount': defaults.BTC_DEC_PLACES,
+            'exchange_rate': defaults.BTC_DEC_PLACES,
+        }
+        # TODO: loading timeout
+        if run['withdrawal']['order'] is not None:
+            return defaults.STAGES['withdrawal']['withdraw_scan']
+        else:
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+
+
+def withdraw_scan(run, ui):
+    ui.showScreen('withdraw_scan')
+    assert run['withdrawal']['order'] is not None
+    ui.setText('wscan_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
+    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
+    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
+    while True:
+        if run['keypad'].last_key_pressed == 'enter':
+            # TODO: get address from the camera
+            run['withdrawal']['address'] = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
+            if run['withdrawal']['address'] is not None:
+                return defaults.STAGES['withdrawal']['withdraw_confirm']
+        elif run['keypad'].last_key_pressed == 'backspace':
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def withdraw_confirm(run, ui):
+    ui.showScreen('withdraw_confirm')
+    assert run['withdrawal']['address'] is not None
+    ui.setText('wconfirm_address_lbl', run['withdrawal']['address'])
+    ui.setText('wconfirm_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
+    ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
+    ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
+    while True:
+        if run['screen_buttons']['confirm_withdrawal']:
+            run['screen_buttons']['confirm_withdrawal'] = False
+            return defaults.STAGES['withdrawal']['withdraw_loading2']
+        if run['keypad'].last_key_pressed == 'enter':
+            return defaults.STAGES['withdrawal']['withdraw_loading2']
+        elif run['keypad'].last_key_pressed == 'backspace':
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def withdraw_loading2(run, ui):
+    ui.showScreen('load_indefinite')
+    assert run['withdrawal']['address'] is not None
+    while True:
+        # TODO: get receipt from the server
+        run['withdrawal']['receipt_url'] = 'https://xbterminal.io/rc/CV2ALZ'
+        # TODO: loading timeout
+        if run['withdrawal']['receipt_url'] is not None:
+            run['withdrawal']['qr_image_path'] = os.path.join(
+                defaults.PROJECT_ABS_PATH,
+                defaults.QR_IMAGE_PATH)
+            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
+                                         run['withdrawal']['qr_image_path'])
+            return defaults.STAGES['withdrawal']['withdraw_success']
+        else:
+            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
+            return defaults.STAGES['withdrawal']['withdraw_amount']
+
+
+def withdraw_success(run, ui):
+    ui.showScreen('withdraw_success')
+    assert run['withdrawal']['qr_image_path'] is not None
+    ui.setImage('wsuccess_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    while True:
+        if run['keypad'].last_key_pressed in ['backspace', 'enter']:
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
@@ -380,3 +505,31 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
     ui.setText('fiat_amount_nfc', "0")
     ui.setText('btc_amount_nfc', "0")
     ui.setText('exchange_rate_nfc', "0")
+
+
+def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
+    logger.debug('clearing withdrawal runtime')
+    ui.showScreen('load_indefinite')
+
+    if clear_amounts:
+        run['withdrawal']['fiat_amount'] = None
+        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
+
+    run['withdrawal']['order'] = None
+    run['withdrawal']['address'] = None
+    run['withdrawal']['receipt_url'] = None
+    run['withdrawal']['qr_image_path'] = None
+
+    ui.setText('wscan_fiat_amount_lbl',
+               amounts.format_amount(Decimal(0)))
+    ui.setText('wscan_btc_amount_lbl',
+               amounts.format_btc_amount(Decimal(0)))
+    ui.setText('wscan_xrate_amount_lbl',
+               amounts.format_exchange_rate(Decimal(0)))
+    ui.setText('wconfirm_fiat_amount_lbl',
+               amounts.format_amount(Decimal(0)))
+    ui.setText('wconfirm_btc_amount_lbl',
+               amounts.format_btc_amount(Decimal(0)))
+    ui.setText('wconfirm_xrate_amount_lbl',
+               amounts.format_exchange_rate(Decimal(0)))
+    ui.setImage('wsuccess_receipt_qr_img', None)

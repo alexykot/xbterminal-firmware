@@ -49,12 +49,21 @@ def main():
         'qr_image_path': None,
         'receipt_url': None,
     }
+    run['withdrawal'] = {
+        # Variables related to withdrawal process
+        'fiat_amount': None,
+        'order': None,
+        'address': None,
+        'receipt_url': None,
+        'qr_image_path': None,
+    }
     run['screen_buttons'] = {
         # Store button states
         'skip_wifi': False,
         'pay': False,
         'withdraw': False,
         'show_qr': False,
+        'confirm_withdrawal': False,
     }
     run['last_activity_timestamp'] = None
     run['wifi'] = {}
