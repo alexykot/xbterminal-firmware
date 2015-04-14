@@ -9,3 +9,4 @@ xbterminal/bitcoind_auth.py
 xbterminal/main.so
 bitcoinj-server.tar.gz
 fabfile
+.vagrant

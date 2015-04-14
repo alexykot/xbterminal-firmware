@@ -85,8 +85,9 @@ def bootup(run, ui):
     ui.toggleTestnetNotice(xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet')
     run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
 
-    # Initialize bluetooth server
+    # Initialize bluetooth and NFC servers
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
+    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
 
     ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
@@ -208,13 +209,12 @@ def pay(run, ui):
 
         elif run['keypad'].last_key_pressed == 'backspace':
             _clear_payment_runtime(run, ui, clear_amounts=False)
-            xbterminal.helpers.nfcpy.stop()
+            run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_amount']
 
-        if not xbterminal.helpers.nfcpy.is_active():
-            xbterminal.helpers.nfcpy.start(run['payment']['order'].payment_uri)
-            logger.debug('nfc bitcoin URI activated: {}'.format(run['payment']['order'].payment_uri))
+        if not run['nfc_server'].is_active():
+            run['nfc_server'].start(run['payment']['order'].payment_uri)
             time.sleep(0.5)
 
         run['payment']['receipt_url'] = run['payment']['order'].check()
@@ -226,13 +226,13 @@ def pay(run, ui):
                                          run['payment']['qr_image_path'])
 
             _clear_payment_runtime(run, ui)
-            xbterminal.helpers.nfcpy.stop()
+            run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_success']
 
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(run, ui)
-            xbterminal.helpers.nfcpy.stop()
+            run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_cancel']
 
@@ -243,18 +243,17 @@ def pay_success(run, ui):
     ui.showScreen('pay_success')
     ui.setImage("receipt_qr_image", run['payment']['qr_image_path'])
     while True:
-        if not xbterminal.helpers.nfcpy.is_active():
-            xbterminal.helpers.nfcpy.start(run['payment']['receipt_url'])
-            logger.debug('nfc receipt URI activated: {}'.format(run['payment']['receipt_url']))
+        if not run['nfc_server'].is_active():
+            run['nfc_server'].start(run['payment']['receipt_url'])
             time.sleep(0.5)
         if run['keypad'].last_key_pressed == 'enter':
-            xbterminal.helpers.nfcpy.stop()
+            run['nfc_server'].stop()
             return defaults.STAGES['payment']['pay_amount']
         elif run['keypad'].last_key_pressed == 'backspace':
-            xbterminal.helpers.nfcpy.stop()
+            run['nfc_server'].stop()
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            xbterminal.helpers.nfcpy.stop()
+            run['nfc_server'].stop()
             return defaults.STAGES['idle']
         time.sleep(0.1)
 

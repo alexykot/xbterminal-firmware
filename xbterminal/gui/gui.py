@@ -5,7 +5,6 @@ import re
 import subprocess
 import sys
 import time
-from collections import deque
 import functools
 
 from PyQt4 import QtGui, QtCore
@@ -70,12 +69,11 @@ class Application(QtGui.QApplication):
         return True
 
 
-class GUI(QtGui.QWidget):
+class GUI(QtGui.QMainWindow):
 
     def __init__(self, application):
         super(GUI, self).__init__()
         self._application = application
-        self.keys = deque(maxlen=5)
         # Initialize UI
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
@@ -87,6 +85,8 @@ class GUI(QtGui.QWidget):
             defaults.PROJECT_ABS_PATH,
             defaults.UI_IMAGES_PATH,
             'bc_logo.png')))
+        # Disable keyboard on amount input widget
+        self.ui.amount_input.keyPressEvent = lambda event: event.ignore()
         # Set up buttons
         self.ui.pay_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'pay'))
@@ -114,15 +114,7 @@ class GUI(QtGui.QWidget):
             logger.exception(error)
 
     def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Escape:
-            self.close()
-        if event.key() == QtCore.Qt.Key_Return:
-            xbterminal.runtime['CURRENT_STAGE'] = 'enter_amount'
-            self.ui.main_stackedWidget.setCurrentIndex(6)
-        self.keys.append(event.key())
-
-    def closeEvent(self, event):
-        xbterminal.runtime['CURRENT_STAGE'] = 'application_halt'
+        xbterminal.runtime['keyboard_events'].append(event.key())
 
     def buttonPressEvent(self, button_name):
         logger.debug('button "{0}" pressed'.format(button_name))
@@ -259,7 +251,10 @@ def initGUI():
 def adjust_screen_brightness(value):
     command = "echo {0} > /sys/class/backlight/backlight.11/brightness".\
         format(value)
-    subprocess.check_call(command, shell=True)
+    retcode = subprocess.call(command, shell=True)
+    if retcode != 0:
+        logger.warning('Failed to adjust '
+                       'screen brigtness (code {0})'.format(retcode))
 
 
 def formatCharSelectHelperHMTL(char_tupl, char_selected=None):

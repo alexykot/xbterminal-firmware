@@ -1,19 +1,27 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### Requirements ###
 
 * Python 2
-* PyQt4
-* libusb
-* bluez
-* python-dbus
-* [nfcpy](http://nfcpy.readthedocs.org/en/latest/)
-* modules from requirements.txt
+* Vagrant
+* VirtualBox
 
-### Run ###
+### Running VM ###
+
+Put these options in `xbterminal/runtime/local_state`:
 
 ```
-xinit /opt/xbterminal/xbterminal/main.py
+{
+  "use_default_keypad_override": true,
+  "use_dev_remote_server": true,
+  "use_predefined_connection": true
+}
+```
+
+Create VM and run main process:
+
+```
+vagrant up
+vagrant ssh
+xinit /vagrant/xbterminal/main.py
 ```
