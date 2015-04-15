@@ -155,38 +155,21 @@ def pay_loading(run, ui):
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
                                          run['payment']['qr_image_path'])
-            return defaults.STAGES['payment']['pay_rates']
+            return defaults.STAGES['payment']['pay_wait']
         else:
             # Network error
             time.sleep(1)
 
 
-def pay_rates(run, ui):
-    ui.showScreen('pay_rates')
-    ui.setText('fiat_amount', amounts.format_amount(run['payment']['fiat_amount']))
-    ui.setText('btc_amount', amounts.format_btc_amount(run['payment']['order'].btc_amount))
-    ui.setText('exchange_rate_amount', amounts.format_amount(
-        run['payment']['order'].exchange_rate / defaults.BITCOIN_SCALE_DIVIZER,
-        defaults.EXCHANGE_RATE_DEC_PLACES))
-    while True:
-        if run['keypad'].last_key_pressed == 'enter':
-            return defaults.STAGES['payment']['pay']
-        elif run['keypad'].last_key_pressed == 'backspace':
-            _clear_payment_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['payment']['pay_amount']
-        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            _clear_payment_runtime(run, ui)
-            return defaults.STAGES['idle']
-        time.sleep(0.1)
-
-
-def pay(run, ui):
-    ui.showScreen('pay_nfc')
-    ui.setText('fiat_amount_nfc', amounts.format_amount(run['payment']['fiat_amount']))
-    ui.setText('btc_amount_nfc', amounts.format_btc_amount(run['payment']['order'].btc_amount))
-    ui.setText('exchange_rate_nfc', amounts.format_amount(
-        run['payment']['order'].exchange_rate / defaults.BITCOIN_SCALE_DIVIZER,
-        defaults.EXCHANGE_RATE_DEC_PLACES))
+def pay_wait(run, ui):
+    ui.showScreen('pay_wait')
+    ui.setText('pwait_fiat_amount_lbl',
+               amounts.format_amount(run['payment']['fiat_amount']))
+    ui.setText('pwait_btc_amount_lbl',
+               amounts.format_btc_amount(run['payment']['order'].btc_amount))
+    ui.setText('pwait_xrate_amount_lbl',
+               amounts.format_exchange_rate(run['payment']['order'].exchange_rate))
+    ui.setImage('pwait_qr_img', run['payment']['qr_image_path'])
     logger.debug('local payment requested, '
                  'amount fiat: {amount_fiat}, '
                  'amount btc: {amount_btc}, '
@@ -196,19 +179,7 @@ def pay(run, ui):
                            effective_rate=run['payment']['order'].exchange_rate))
     run['bluetooth_server'].start(run['payment']['order'])
     while True:
-        if run['keypad'].last_key_pressed == 'qr_code' or run['screen_buttons']['show_qr']:
-            logger.debug('QR code requested')
-            run['screen_buttons']['show_qr'] = False
-            ui.showScreen('pay_qr')
-            ui.setText('fiat_amount_qr', amounts.format_amount(run['payment']['fiat_amount']))
-            ui.setText('btc_amount_qr', amounts.format_btc_amount(run['payment']['order'].btc_amount))
-            ui.setText('exchange_rate_qr', amounts.format_amount(
-                run['payment']['order'].exchange_rate / defaults.BITCOIN_SCALE_DIVIZER,
-                defaults.EXCHANGE_RATE_DEC_PLACES))
-            ui.setImage("qr_image", run['payment']['qr_image_path'])
-            run['keypad'].resetKey()
-
-        elif run['keypad'].last_key_pressed == 'backspace':
+        if run['keypad'].last_key_pressed == 'backspace':
             _clear_payment_runtime(run, ui, clear_amounts=False)
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
@@ -490,19 +461,14 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
 
     run['payment']['order'] = None
 
-    ui.setText('fiat_amount', "0")
-    ui.setText('btc_amount', "0")
-    ui.setText('exchange_rate_amount', "0")
-
-    ui.setText('fiat_amount_qr', "0")
-    ui.setText('btc_amount_qr', "0")
-    ui.setText('exchange_rate_qr', "0")
-    ui.setImage('qr_image', None)
+    ui.setText('pwait_fiat_amount_lbl',
+               amounts.format_amount(Decimal(0)))
+    ui.setText('pwait_btc_amount_lbl',
+               amounts.format_btc_amount(Decimal(0)))
+    ui.setText('pwait_xrate_amount_lbl',
+               amounts.format_exchange_rate(Decimal(0)))
+    ui.setImage('pwait_qr_img', None)
     ui.setImage("receipt_qr_image", None)
-
-    ui.setText('fiat_amount_nfc', "0")
-    ui.setText('btc_amount_nfc', "0")
-    ui.setText('exchange_rate_nfc', "0")
 
 
 def _clear_withdrawal_runtime(run, ui, clear_amounts=True):

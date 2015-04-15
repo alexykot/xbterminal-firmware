@@ -91,8 +91,6 @@ class GUI(QtGui.QMainWindow):
             functools.partial(self.buttonPressEvent, 'pay'))
         self.ui.withdraw_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'withdraw'))
-        self.ui.show_qr_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'show_qr'))
         self.ui.skip_wifi_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'skip_wifi'))
         self.ui.wconfirm_confirm_btn.clicked.connect(
@@ -195,9 +193,7 @@ class GUI(QtGui.QMainWindow):
             xbterminal.local_state['language'] = language_code
             xbterminal.helpers.configs.save_local_state()
         self.ui.currency_lbl.setText(currency_prefix)
-        self.ui.currency_lbl_rates.setText(currency_prefix)
-        self.ui.currency_lbl_nfc.setText(currency_prefix)
-        self.ui.currency_lbl_qr.setText(currency_prefix)
+        self.ui.pwait_currency_lbl.setText(currency_prefix)
 
     def showErrors(self, errors):
         translations = {

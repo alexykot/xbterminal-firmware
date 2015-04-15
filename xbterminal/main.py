@@ -56,7 +56,6 @@ def main():
         'skip_wifi': False,
         'pay': False,
         'withdraw': False,
-        'show_qr': False,
         'confirm_withdrawal': False,
     }
     run['last_activity_timestamp'] = None

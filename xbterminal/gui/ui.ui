@@ -899,142 +899,8 @@ color: #b33a3a;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="pay_rates_scrn">
-    <widget class="QLabel" name="currency_lbl_rates">
-     <property name="geometry">
-      <rect>
-       <x>25</x>
-       <y>20</y>
-       <width>141</width>
-       <height>53</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Univers-Light-Normal</family>
-       <pointsize>36</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>£</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="fiat_amount">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>30</y>
-       <width>191</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Univers-Light-Normal</family>
-       <pointsize>36</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>10.00</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="btc_lbl">
-     <property name="geometry">
-      <rect>
-       <x>25</x>
-       <y>70</y>
-       <width>141</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Univers-Light-Normal</family>
-       <pointsize>36</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>m฿</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="btc_amount">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>80</y>
-       <width>191</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Univers-Light-Normal</family>
-       <pointsize>36</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>12.05</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="exchange_rate_lbl">
-     <property name="geometry">
-      <rect>
-       <x>25</x>
-       <y>130</y>
-       <width>141</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Univers-Light-Normal</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>exchange rate</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="advice_lbl">
+   <widget class="QWidget" name="pay_wait_scrn">
+    <widget class="QLabel" name="pwait_advice_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1047,32 +913,139 @@ color: #33363e;</string>
       <font>
        <family>Univers-Light-Normal</family>
        <pointsize>17</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
       <string notr="true">background: #d34c0a;
-color: #fff;</string>
+color: #fff;
+padding-left: 10px;</string>
      </property>
      <property name="text">
-      <string>PRESS ENTER TO ACCEPT PAYMENT</string>
+      <string>TOUCH NFC NOW</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="exchange_rate_amount">
+    <widget class="QLabel" name="pwait_currency_lbl">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>140</y>
-       <width>161</width>
-       <height>21</height>
+       <x>10</x>
+       <y>20</y>
+       <width>61</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Univers-Light-Normal</family>
-       <pointsize>14</pointsize>
+       <pointsize>28</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>£</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_fiat_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>20</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>10.00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_btc_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>70</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>12.05</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_btc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>61</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>m฿</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_xrate_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>120</y>
+       <width>91</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Univers-Light-Normal</family>
+       <pointsize>16</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -1082,342 +1055,53 @@ color: #33363e;</string>
      <property name="text">
       <string>0.845</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="pay_nfc_scrn">
-    <widget class="QLabel" name="nfc_advice_lbl">
+    <widget class="QLabel" name="pwait_xrate_lbl">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>0</y>
-       <width>261</width>
-       <height>201</height>
+       <x>10</x>
+       <y>120</y>
+       <width>111</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>26</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <family>Univers-Light-Normal</family>
+       <pointsize>13</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
      <property name="text">
-      <string>TO PAY
-TOUCH NFC
-NOW</string>
+      <string>exchange rate</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="show_qr_btn">
+    <widget class="QLabel" name="pwait_qr_img">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>150</y>
-       <width>175</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>show QR code</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="currency_lbl_nfc">
-     <property name="geometry">
-      <rect>
-       <x>15</x>
-       <y>40</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>£</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="fiat_amount_nfc">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>40</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>10.00</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="btc_amount_nfc">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>70</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>12.05</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="btc_lbl_nfc">
-     <property name="geometry">
-      <rect>
-       <x>15</x>
-       <y>70</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>m฿</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="exchange_rate_nfc">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>100</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>0.845</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="exchange_rate_lbl_nfc">
-     <property name="geometry">
-      <rect>
-       <x>15</x>
-       <y>100</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>rate</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="pay_qr_scrn">
-    <widget class="QLabel" name="qr_image">
-     <property name="geometry">
-      <rect>
-       <x>229</x>
+       <x>220</x>
        <y>10</y>
-       <width>205</width>
-       <height>205</height>
+       <width>250</width>
+       <height>250</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;</string>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="exchange_rate_qr">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>100</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>0.845</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="btc_amount_qr">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>70</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>12.05</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="btc_lbl_qr">
-     <property name="geometry">
-      <rect>
-       <x>15</x>
-       <y>70</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>m฿</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="exchange_rate_lbl_qr">
-     <property name="geometry">
-      <rect>
-       <x>15</x>
-       <y>100</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>rate</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="fiat_amount_qr">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>40</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>10.00</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="currency_lbl_qr">
-     <property name="geometry">
-      <rect>
-       <x>15</x>
-       <y>40</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>£</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>

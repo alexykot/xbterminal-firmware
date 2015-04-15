@@ -13,8 +13,7 @@ STAGES = {
     'payment': {
         'pay_amount': 'pay_amount',
         'pay_loading': 'pay_loading',
-        'pay_rates': 'pay_rates',
-        'pay': 'pay',
+        'pay_wait': 'pay_wait',
         'pay_success': 'pay_success',
         'pay_cancel': 'pay_cancel',
     },
@@ -39,15 +38,13 @@ SCREENS = {
     'idle': 5,
     'enter_amount': 6,
     'pay_loading': 7,
-    'pay_rates': 8,
-    'pay_nfc': 9,
-    'pay_qr': 10,
-    'pay_success': 11,
-    'pay_cancel': 12,
-    'withdraw_scan': 13,
-    'withdraw_confirm': 14,
-    'withdraw_success': 15,
-    'errors': 16,
+    'pay_wait': 8,
+    'pay_success': 9,
+    'pay_cancel': 10,
+    'withdraw_scan': 11,
+    'withdraw_confirm': 12,
+    'withdraw_success': 13,
+    'errors': 14,
 }
 
 SCREEN_BRIGHTNESS = 40
