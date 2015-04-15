@@ -157,10 +157,8 @@ class GUI(QtGui.QMainWindow):
     def toggleAmountErrorState(self, show):
         if show:
             self.ui.error_text_lbl.show()
-            self.ui.amount_input.setStyleSheet('background: #B33A3A')
         else:
             self.ui.error_text_lbl.hide()
-            self.ui.amount_input.setStyleSheet('background: #FFFFFF')
 
     def currentScreen(self):
         screen_index = self.ui.main_stackedWidget.currentIndex()

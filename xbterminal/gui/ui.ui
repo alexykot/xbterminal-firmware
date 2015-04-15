@@ -691,7 +691,8 @@
       <string notr="true">background: #fff;
 border-width: 1px 1px 0;
 border-style: solid;
-border-color: #d4d4d4;</string>
+border-color: #d4d4d4;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>PAY</string>
@@ -716,7 +717,8 @@ border-color: #d4d4d4;</string>
       <string notr="true">background: #fff;
 border-width: 1px 1px 0;
 border-style: solid;
-border-color: #d4d4d4;</string>
+border-color: #d4d4d4;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>WITHDRAW</string>
@@ -786,7 +788,9 @@ color: #fff;
       <string notr="true">background: #fff;
 border-width: 2px;
 border-style: solid;
-border-color: #d4d4d4;</string>
+border-color: #d4d4d4;
+border-radius: 5px;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>0.00</string>
@@ -815,6 +819,9 @@ border-color: #d4d4d4;</string>
      <property name="cursor">
       <cursorShape>BlankCursor</cursorShape>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
      <property name="text">
       <string>£</string>
      </property>
@@ -832,7 +839,12 @@ border-color: #d4d4d4;</string>
       <font>
        <family>Univers-Light-Normal</family>
        <pointsize>13</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #b33a3a;</string>
      </property>
      <property name="text">
       <string>no amount entered</string>
@@ -894,11 +906,14 @@ border-color: #d4d4d4;</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>36</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>£</string>
@@ -918,9 +933,12 @@ border-color: #d4d4d4;</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>36</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>10.00</string>
@@ -940,11 +958,14 @@ border-color: #d4d4d4;</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>36</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>m฿</string>
@@ -964,9 +985,12 @@ border-color: #d4d4d4;</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>36</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>12.05</string>
@@ -986,9 +1010,12 @@ border-color: #d4d4d4;</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>14</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>exchange rate</string>
@@ -1000,20 +1027,24 @@ border-color: #d4d4d4;</string>
     <widget class="QLabel" name="advice_lbl">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>180</y>
-       <width>361</width>
-       <height>41</height>
+       <x>0</x>
+       <y>182</y>
+       <width>480</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+color: #fff;</string>
+     </property>
      <property name="text">
-      <string>press enter to accept payment</string>
+      <string>PRESS ENTER TO ACCEPT PAYMENT</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1030,9 +1061,12 @@ border-color: #d4d4d4;</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>14</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>0.845</string>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Wed Apr 15 20:38:23 2015
+# Created: Wed Apr 15 21:12:02 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -271,7 +271,8 @@ class Ui_MainWindow(object):
         self.pay_btn.setStyleSheet(_fromUtf8("background: #fff;\n"
 "border-width: 1px 1px 0;\n"
 "border-style: solid;\n"
-"border-color: #d4d4d4;"))
+"border-color: #d4d4d4;\n"
+"color: #33363e;"))
         self.pay_btn.setObjectName(_fromUtf8("pay_btn"))
         self.withdraw_btn = QtGui.QPushButton(self.idle_scrn)
         self.withdraw_btn.setGeometry(QtCore.QRect(250, 232, 155, 40))
@@ -282,7 +283,8 @@ class Ui_MainWindow(object):
         self.withdraw_btn.setStyleSheet(_fromUtf8("background: #fff;\n"
 "border-width: 1px 1px 0;\n"
 "border-style: solid;\n"
-"border-color: #d4d4d4;"))
+"border-color: #d4d4d4;\n"
+"color: #33363e;"))
         self.withdraw_btn.setObjectName(_fromUtf8("withdraw_btn"))
         self.bc_logo_image = QtGui.QLabel(self.idle_scrn)
         self.bc_logo_image.setGeometry(QtCore.QRect(190, 80, 100, 100))
@@ -312,7 +314,9 @@ class Ui_MainWindow(object):
         self.amount_input.setStyleSheet(_fromUtf8("background: #fff;\n"
 "border-width: 2px;\n"
 "border-style: solid;\n"
-"border-color: #d4d4d4;"))
+"border-color: #d4d4d4;\n"
+"border-radius: 5px;\n"
+"color: #33363e;"))
         self.amount_input.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.amount_input.setObjectName(_fromUtf8("amount_input"))
         self.currency_lbl = QtGui.QLabel(self.enter_amount_scrn)
@@ -324,13 +328,17 @@ class Ui_MainWindow(object):
         font.setWeight(50)
         self.currency_lbl.setFont(font)
         self.currency_lbl.setCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+        self.currency_lbl.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.currency_lbl.setObjectName(_fromUtf8("currency_lbl"))
         self.error_text_lbl = QtGui.QLabel(self.enter_amount_scrn)
         self.error_text_lbl.setGeometry(QtCore.QRect(100, 210, 321, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(13)
+        font.setBold(True)
+        font.setWeight(75)
         self.error_text_lbl.setFont(font)
+        self.error_text_lbl.setStyleSheet(_fromUtf8("color: #b33a3a;"))
         self.error_text_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
         self.error_text_lbl.setObjectName(_fromUtf8("error_text_lbl"))
         self.main_stackedWidget.addWidget(self.enter_amount_scrn)
@@ -355,61 +363,69 @@ class Ui_MainWindow(object):
         self.currency_lbl_rates = QtGui.QLabel(self.pay_rates_scrn)
         self.currency_lbl_rates.setGeometry(QtCore.QRect(25, 20, 141, 53))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(36)
         font.setBold(False)
         font.setWeight(50)
         self.currency_lbl_rates.setFont(font)
+        self.currency_lbl_rates.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.currency_lbl_rates.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.currency_lbl_rates.setObjectName(_fromUtf8("currency_lbl_rates"))
         self.fiat_amount = QtGui.QLabel(self.pay_rates_scrn)
         self.fiat_amount.setGeometry(QtCore.QRect(170, 30, 191, 41))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(36)
         self.fiat_amount.setFont(font)
+        self.fiat_amount.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.fiat_amount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.fiat_amount.setObjectName(_fromUtf8("fiat_amount"))
         self.btc_lbl = QtGui.QLabel(self.pay_rates_scrn)
         self.btc_lbl.setGeometry(QtCore.QRect(25, 70, 141, 61))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(36)
         font.setBold(False)
         font.setWeight(50)
         self.btc_lbl.setFont(font)
+        self.btc_lbl.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.btc_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.btc_lbl.setObjectName(_fromUtf8("btc_lbl"))
         self.btc_amount = QtGui.QLabel(self.pay_rates_scrn)
         self.btc_amount.setGeometry(QtCore.QRect(170, 80, 191, 41))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(36)
         self.btc_amount.setFont(font)
+        self.btc_amount.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.btc_amount.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.btc_amount.setObjectName(_fromUtf8("btc_amount"))
         self.exchange_rate_lbl = QtGui.QLabel(self.pay_rates_scrn)
         self.exchange_rate_lbl.setGeometry(QtCore.QRect(25, 130, 141, 41))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(14)
         self.exchange_rate_lbl.setFont(font)
+        self.exchange_rate_lbl.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.exchange_rate_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.exchange_rate_lbl.setObjectName(_fromUtf8("exchange_rate_lbl"))
         self.advice_lbl = QtGui.QLabel(self.pay_rates_scrn)
-        self.advice_lbl.setGeometry(QtCore.QRect(60, 180, 361, 41))
+        self.advice_lbl.setGeometry(QtCore.QRect(0, 182, 480, 90))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(12)
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
+        font.setPointSize(17)
         self.advice_lbl.setFont(font)
+        self.advice_lbl.setStyleSheet(_fromUtf8("background: #d34c0a;\n"
+"color: #fff;"))
         self.advice_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.advice_lbl.setObjectName(_fromUtf8("advice_lbl"))
         self.exchange_rate_amount = QtGui.QLabel(self.pay_rates_scrn)
         self.exchange_rate_amount.setGeometry(QtCore.QRect(280, 140, 161, 21))
         font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
         font.setPointSize(14)
         self.exchange_rate_amount.setFont(font)
+        self.exchange_rate_amount.setStyleSheet(_fromUtf8("color: #33363e;"))
         self.exchange_rate_amount.setObjectName(_fromUtf8("exchange_rate_amount"))
         self.main_stackedWidget.addWidget(self.pay_rates_scrn)
         self.pay_nfc_scrn = QtGui.QWidget()
@@ -793,7 +809,7 @@ class Ui_MainWindow(object):
         self.btc_lbl.setText(_translate("MainWindow", "m฿", None))
         self.btc_amount.setText(_translate("MainWindow", "12.05", None))
         self.exchange_rate_lbl.setText(_translate("MainWindow", "exchange rate", None))
-        self.advice_lbl.setText(_translate("MainWindow", "press enter to accept payment", None))
+        self.advice_lbl.setText(_translate("MainWindow", "PRESS ENTER TO ACCEPT PAYMENT", None))
         self.exchange_rate_amount.setText(_translate("MainWindow", "0.845", None))
         self.nfc_advice_lbl.setText(_translate("MainWindow", "TO PAY\n"
 "TOUCH NFC\n"
