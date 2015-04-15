@@ -238,7 +238,12 @@ def initGUI():
     Initialize GUI
     """
     application = Application(sys.argv)
-    application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+
+    if xbterminal.local_state.get('show_cursor'):
+        application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
+    else:
+        application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+
     language_code = xbterminal.local_state.get(
         'language',
         defaults.UI_DEFAULT_LANGUAGE)
