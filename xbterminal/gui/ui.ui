@@ -727,11 +727,14 @@ color: #33363e;</string>
     <widget class="QLabel" name="bc_logo_image">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>80</y>
-       <width>100</width>
-       <height>100</height>
+       <x>180</x>
+       <y>75</y>
+       <width>107</width>
+       <height>107</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;</string>
      </property>
      <property name="text">
       <string/>
@@ -820,7 +823,8 @@ color: #33363e;</string>
       <cursorShape>BlankCursor</cursorShape>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>£</string>
@@ -844,7 +848,8 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #b33a3a;</string>
+      <string notr="true">background: none;
+color: #b33a3a;</string>
      </property>
      <property name="text">
       <string>no amount entered</string>
@@ -913,7 +918,8 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>£</string>
@@ -938,7 +944,8 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>10.00</string>
@@ -965,7 +972,8 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>m฿</string>
@@ -990,7 +998,8 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>12.05</string>
@@ -1015,7 +1024,8 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>exchange rate</string>
@@ -1066,7 +1076,8 @@ color: #fff;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>0.845</string>
