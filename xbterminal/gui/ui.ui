@@ -1045,7 +1045,7 @@ color: #33363e;</string>
      <property name="font">
       <font>
        <family>Univers-Light-Normal</family>
-       <pointsize>16</pointsize>
+       <pointsize>13</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -1221,9 +1221,13 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>30.05</string>
@@ -1243,11 +1247,13 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>m฿</string>
@@ -1259,7 +1265,7 @@ FOR RECEIPT</string>
     <widget class="QLabel" name="wscan_currency_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>30</x>
        <y>140</y>
        <width>51</width>
        <height>41</height>
@@ -1267,12 +1273,16 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
        <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>£</string>
@@ -1285,16 +1295,20 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>190</y>
+       <y>200</y>
        <width>141</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>13</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>0.845</string>
@@ -1304,16 +1318,20 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>190</y>
+       <y>200</y>
        <width>161</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>13</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>exchange rate</string>
@@ -1325,17 +1343,21 @@ FOR RECEIPT</string>
     <widget class="QLabel" name="wscan_fiat_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>90</x>
        <y>140</y>
-       <width>171</width>
+       <width>151</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>100.00</string>
@@ -1347,21 +1369,22 @@ FOR RECEIPT</string>
     <widget class="QLabel" name="wscan_tip_lbl">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>40</y>
-       <width>441</width>
-       <height>71</height>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>20</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
        <italic>false</italic>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">background: #d34c0a;
+color: #fff;</string>
      </property>
      <property name="text">
       <string>SCAN YOUR BITCOIN ADDRESS
@@ -1379,20 +1402,24 @@ QR CODE NOW</string>
     <widget class="QLabel" name="wconfirm_address_h_lbl">
      <property name="geometry">
       <rect>
-       <x>163</x>
-       <y>10</y>
+       <x>150</x>
+       <y>20</y>
        <width>161</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
      <property name="text">
-      <string>your address:</string>
+      <string>YOUR ADDRESS</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1402,16 +1429,20 @@ QR CODE NOW</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>50</y>
        <width>461</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
        <pointsize>16</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE</string>
@@ -1423,36 +1454,45 @@ QR CODE NOW</string>
     <widget class="QPushButton" name="wconfirm_confirm_btn">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>80</y>
-       <width>261</width>
-       <height>41</height>
+       <x>80</x>
+       <y>100</y>
+       <width>315</width>
+       <height>55</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>16</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+border: none;
+color: #fff;</string>
+     </property>
      <property name="text">
-      <string>confirm and send</string>
+      <string>CONFIRM AND SEND</string>
      </property>
     </widget>
     <widget class="QLabel" name="wconfirm_fiat_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>70</x>
-       <y>140</y>
-       <width>171</width>
+       <x>80</x>
+       <y>170</y>
+       <width>161</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>100.00</string>
@@ -1464,20 +1504,24 @@ QR CODE NOW</string>
     <widget class="QLabel" name="wconfirm_currency_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>140</y>
+       <x>20</x>
+       <y>170</y>
        <width>51</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
        <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>£</string>
@@ -1490,16 +1534,20 @@ QR CODE NOW</string>
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>140</y>
+       <y>170</y>
        <width>141</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>30.05</string>
@@ -1512,18 +1560,22 @@ QR CODE NOW</string>
      <property name="geometry">
       <rect>
        <x>250</x>
-       <y>140</y>
+       <y>170</y>
        <width>71</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>36</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>28</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>m฿</string>
@@ -1536,16 +1588,20 @@ QR CODE NOW</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>190</y>
+       <y>230</y>
        <width>141</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>13</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>0.845</string>
@@ -1555,16 +1611,20 @@ QR CODE NOW</string>
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>190</y>
+       <y>230</y>
        <width>161</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>13</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>exchange rate</string>
@@ -1578,20 +1638,24 @@ QR CODE NOW</string>
     <widget class="QLabel" name="wsuccess_success_lbl">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>10</y>
-       <width>441</width>
-       <height>61</height>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>28</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+color: #fff;</string>
+     </property>
      <property name="text">
-      <string>payout successful</string>
+      <string>PAYOUT SUCCESSFUL</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1601,16 +1665,20 @@ QR CODE NOW</string>
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>100</y>
-       <width>241</width>
+       <y>140</y>
+       <width>251</width>
        <height>81</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>TOUCH NFC AGAIN
@@ -1625,15 +1693,18 @@ FOR RECEIPT</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>80</y>
-       <width>135</width>
-       <height>135</height>
+       <y>110</y>
+       <width>151</width>
+       <height>151</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>Univers-Light-Normal</family>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;</string>
      </property>
      <property name="text">
       <string/>
