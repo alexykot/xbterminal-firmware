@@ -932,7 +932,7 @@ padding-left: 10px;</string>
     <widget class="QLabel" name="pwait_currency_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>20</y>
        <width>61</width>
        <height>41</height>
@@ -958,9 +958,9 @@ color: #33363e;</string>
     <widget class="QLabel" name="pwait_fiat_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>80</x>
        <y>20</y>
-       <width>141</width>
+       <width>131</width>
        <height>41</height>
       </rect>
      </property>
@@ -984,9 +984,9 @@ color: #33363e;</string>
     <widget class="QLabel" name="pwait_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>80</x>
        <y>70</y>
-       <width>141</width>
+       <width>131</width>
        <height>41</height>
       </rect>
      </property>
@@ -1010,7 +1010,7 @@ color: #33363e;</string>
     <widget class="QLabel" name="pwait_btc_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>70</y>
        <width>61</width>
        <height>41</height>
@@ -1106,42 +1106,50 @@ color: #33363e;</string>
     </widget>
    </widget>
    <widget class="QWidget" name="pay_success_scrn">
-    <widget class="QLabel" name="pay_success_lbl">
+    <widget class="QLabel" name="psuccess_success_lbl">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>10</y>
-       <width>441</width>
-       <height>61</height>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>28</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+color: #fff;</string>
+     </property>
      <property name="text">
-      <string>payment successful</string>
+      <string>PAYMENT SUCCESSFUL</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="touch_for_receipt_lbl">
+    <widget class="QLabel" name="psuccess_tip_lbl">
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>100</y>
-       <width>241</width>
+       <y>140</y>
+       <width>251</width>
        <height>81</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
+       <family>Univers-Light-Normal</family>
+       <pointsize>17</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
      </property>
      <property name="text">
       <string>TOUCH NFC AGAIN
@@ -1152,14 +1160,22 @@ FOR RECEIPT</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="receipt_qr_image">
+    <widget class="QLabel" name="psuccess_receipt_qr_img">
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>80</y>
-       <width>135</width>
-       <height>135</height>
+       <y>110</y>
+       <width>151</width>
+       <height>151</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Univers-Light-Normal</family>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;</string>
      </property>
      <property name="text">
       <string/>

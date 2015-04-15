@@ -213,7 +213,7 @@ def pay_wait(run, ui):
 
 def pay_success(run, ui):
     ui.showScreen('pay_success')
-    ui.setImage("receipt_qr_image", run['payment']['qr_image_path'])
+    ui.setImage('psuccess_receipt_qr_img', run['payment']['qr_image_path'])
     while True:
         if not run['nfc_server'].is_active():
             run['nfc_server'].start(run['payment']['receipt_url'])
@@ -468,7 +468,7 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
     ui.setText('pwait_xrate_amount_lbl',
                amounts.format_exchange_rate(Decimal(0)))
     ui.setImage('pwait_qr_img', None)
-    ui.setImage("receipt_qr_image", None)
+    ui.setImage('psuccess_receipt_qr_img', None)
 
 
 def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
