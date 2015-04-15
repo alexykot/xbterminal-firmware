@@ -76,9 +76,11 @@ class GUI(QtGui.QMainWindow):
         # Initialize UI
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(
-            defaults.UI_IMAGES_PATH,
-            'logo.png'))))
+        # Set up images
+        self.ui.main_stackedWidget.setStyleSheet(
+            'background-image: url({});'.format(os.path.join(
+                defaults.UI_IMAGES_PATH,
+                'bg.png')))
         self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(os.path.join(
             defaults.UI_IMAGES_PATH,
             'bc_logo.png')))
@@ -96,7 +98,6 @@ class GUI(QtGui.QMainWindow):
         self.ui.wconfirm_confirm_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'confirm_withdrawal'))
         # Hide notices
-        self.ui.testnet_notice.hide()
         self.ui.wrong_passwd_lbl.hide()
         self.ui.error_text_lbl.hide()
         self.ui.connecting_lbl.hide()
@@ -117,12 +118,6 @@ class GUI(QtGui.QMainWindow):
         logger.debug('button "{0}" pressed'.format(button_name))
         xbterminal.runtime['last_activity_timestamp'] = time.time()
         xbterminal.runtime['screen_buttons'][button_name] = True
-
-    def toggleTestnetNotice(self, show):
-        if show:
-            self.ui.testnet_notice.show()
-        else:
-            self.ui.testnet_notice.hide()
 
     def toggleWifiConnectingState(self, show):
         if show:
@@ -235,6 +230,10 @@ def initGUI():
     Initialize GUI
     """
     application = Application(sys.argv)
+
+    # Load custom fonts
+    QtGui.QFontDatabase.addApplicationFont(os.path.join(
+        defaults.UI_FONTS_PATH, 'univers-light-normal.ttf'))
 
     if xbterminal.local_state.get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))

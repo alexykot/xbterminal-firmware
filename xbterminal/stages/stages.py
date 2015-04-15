@@ -82,8 +82,9 @@ def bootup(run, ui):
             break
         time.sleep(1)
 
-    ui.toggleTestnetNotice(xbterminal.remote_config['BITCOIN_NETWORK'] == 'testnet')
     run['init']['blockchain_network'] = xbterminal.remote_config['BITCOIN_NETWORK']
+    logger.warning('working with {0}'.format(
+        xbterminal.remote_config['BITCOIN_NETWORK']))
 
     # Initialize bluetooth and NFC servers
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
