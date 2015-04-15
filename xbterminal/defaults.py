@@ -61,14 +61,16 @@ LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
                         'finish': 100,
                         }
 
-PROJECT_ABS_PATH = ''  # initialized in main.py
-PROJECT_LOCAL_PATH = 'xbterminal'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
+
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
 LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
+
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
 UI_DEFAULT_LANGUAGE = 'en'
@@ -91,11 +93,17 @@ LOG_CONFIG = {
             'class': 'logging.FileHandler',
             'level': 'WARNING',
             'formatter': 'simple',
+            'filename': LOG_FILE_PATH,
         },
     },
-    'root': {
-        'handlers': ['console', 'file'],
-        'level': 'DEBUG',
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'requests.packages.urllib3.connectionpool': {
+            'level': 'WARNING',
+        }
     },
 }
 

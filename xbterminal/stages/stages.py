@@ -151,7 +151,7 @@ def pay_loading(run, ui):
         if run['payment']['order'] is not None:
             # Payment parameters loaded
             # Prepare QR image
-            run['payment']['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
                                          run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_rates']
@@ -221,7 +221,7 @@ def pay(run, ui):
         if run['payment']['receipt_url'] is not None:
             logger.debug('payment received, receipt: {}'.format(run['payment']['receipt_url']))
 
-            run['payment']['qr_image_path'] = os.path.join(defaults.PROJECT_ABS_PATH, defaults.QR_IMAGE_PATH)
+            run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
                                          run['payment']['qr_image_path'])
 
@@ -364,9 +364,7 @@ def withdraw_loading2(run, ui):
         run['withdrawal']['receipt_url'] = 'https://xbterminal.io/rc/CV2ALZ'
         # TODO: loading timeout
         if run['withdrawal']['receipt_url'] is not None:
-            run['withdrawal']['qr_image_path'] = os.path.join(
-                defaults.PROJECT_ABS_PATH,
-                defaults.QR_IMAGE_PATH)
+            run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
                                          run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_success']

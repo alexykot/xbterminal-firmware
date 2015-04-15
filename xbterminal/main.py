@@ -11,16 +11,9 @@ include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
 sys.path.insert(0, include_path)
 import xbterminal
 import xbterminal.defaults
-xbterminal.defaults.PROJECT_ABS_PATH = include_path
 
 # Set up logging
-log_config = xbterminal.defaults.LOG_CONFIG
-log_file_path = os.path.abspath(os.path.join(
-    xbterminal.defaults.PROJECT_ABS_PATH,
-    xbterminal.defaults.LOG_FILE_PATH))
-log_config['handlers']['file']['filename'] = log_file_path
-logging.config.dictConfig(log_config)
-logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
+logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
 logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError

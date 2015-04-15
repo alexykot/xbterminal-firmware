@@ -43,8 +43,7 @@ class Application(QtGui.QApplication):
         """
         Load translations from files
         """
-        ts_dir = os.path.join(defaults.PROJECT_ABS_PATH,
-                              defaults.UI_TRANSLATIONS_PATH)
+        ts_dir = defaults.UI_TRANSLATIONS_PATH
         for file_name in os.listdir(ts_dir):
             match = re.match("xbterminal_(?P<code>\w+).qm", file_name)
             if match:
@@ -78,11 +77,9 @@ class GUI(QtGui.QMainWindow):
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.logo.setPixmap(QtGui.QPixmap(_fromUtf8(os.path.join(
-            defaults.PROJECT_ABS_PATH,
             defaults.UI_IMAGES_PATH,
             'logo.png'))))
         self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(os.path.join(
-            defaults.PROJECT_ABS_PATH,
             defaults.UI_IMAGES_PATH,
             'bc_logo.png')))
         # Disable keyboard on amount input widget

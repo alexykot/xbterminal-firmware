@@ -14,9 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_device_key():
-    device_key_file_abs_path = os.path.abspath(os.path.join(
-        xbterminal.defaults.PROJECT_ABS_PATH,
-        xbterminal.defaults.DEVICE_KEY_FILE_PATH))
+    device_key_file_abs_path = xbterminal.defaults.DEVICE_KEY_FILE_PATH
     if not os.path.exists(device_key_file_abs_path):
         logger.critical("device key missing at path \"{device_key_path}\", exiting".format(
             device_key_path=device_key_file_abs_path))
@@ -69,8 +67,7 @@ def load_remote_config():
 
 
 def load_local_state():
-    local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                             xbterminal.defaults.STATE_FILE_PATH))
+    local_state_file_abs_path = xbterminal.defaults.STATE_FILE_PATH
 
     with open(local_state_file_abs_path, 'a') as state_file:
         pass
@@ -93,22 +90,19 @@ def load_local_state():
 
 
 def save_local_state():
-    local_state_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                             xbterminal.defaults.STATE_FILE_PATH))
+    local_state_file_abs_path = xbterminal.defaults.STATE_FILE_PATH
     with open(local_state_file_abs_path, 'wb') as state_file:
         state_file.write(json.dumps(xbterminal.local_state, indent=2, sort_keys=True, separators=(',', ': ')))
 
 
 def save_remote_config_cache():
-    remote_config_cache_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                                     xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH))
+    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
     with open(remote_config_cache_file_abs_path, 'wb') as cache_file:
         cache_file.write(json.dumps(xbterminal.remote_config))
 
 
 def load_remote_config_cache():
-    remote_config_cache_file_abs_path = os.path.abspath(os.path.join(xbterminal.defaults.PROJECT_ABS_PATH,
-                                                                     xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH))
+    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
 
     if not os.path.exists(remote_config_cache_file_abs_path):
         logger.warning('config cache file {cache_path} not exists, cache load failed'.\
