@@ -8,10 +8,10 @@ logger = logging.getLogger(__name__)
 
 import xbterminal
 from xbterminal import defaults
-from xbterminal.stages import payment
-from xbterminal.stages import amounts
+from xbterminal.stages import amounts, payment, withdrawal
 
 import xbterminal.helpers.bt
+import xbterminal.helpers.camera
 import xbterminal.helpers.clock
 import xbterminal.helpers.configs
 import xbterminal.helpers.nfcpy
@@ -89,6 +89,7 @@ def bootup(run, ui):
     # Initialize bluetooth and NFC servers
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
+    run['camera'] = xbterminal.helpers.camera.Camera()
 
     ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
@@ -292,12 +293,13 @@ def withdraw_scan(run, ui):
     ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
     ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
     while True:
-        if run['keypad'].last_key_pressed == 'enter':
-            # TODO: get address from the camera
-            run['withdrawal']['address'] = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
-            if run['withdrawal']['address'] is not None:
-                return defaults.STAGES['withdrawal']['withdraw_confirm']
-        elif run['keypad'].last_key_pressed == 'backspace':
+        address = withdrawal.get_bitcoin_address(
+            run['camera'].decode_qr() or '')
+        if address:
+            logger.debug('address scanned: {0}'.format(address))
+            run['withdrawal']['address'] = address
+            return defaults.STAGES['withdrawal']['withdraw_confirm']
+        if run['keypad'].last_key_pressed == 'backspace':
             _clear_withdrawal_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['withdrawal']['withdraw_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
