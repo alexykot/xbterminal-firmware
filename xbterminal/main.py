@@ -11,16 +11,9 @@ include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
 sys.path.insert(0, include_path)
 import xbterminal
 import xbterminal.defaults
-xbterminal.defaults.PROJECT_ABS_PATH = include_path
 
 # Set up logging
-log_config = xbterminal.defaults.LOG_CONFIG
-log_file_path = os.path.abspath(os.path.join(
-    xbterminal.defaults.PROJECT_ABS_PATH,
-    xbterminal.defaults.LOG_FILE_PATH))
-log_config['handlers']['file']['filename'] = log_file_path
-logging.config.dictConfig(log_config)
-logging.getLogger("requests.packages.urllib3.connectionpool").setLevel(logging.WARNING)
+logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
 logger = logging.getLogger(__name__)
 
 from xbterminal.exceptions import ConfigLoadError
@@ -63,7 +56,6 @@ def main():
         'skip_wifi': False,
         'pay': False,
         'withdraw': False,
-        'show_qr': False,
         'confirm_withdrawal': False,
     }
     run['last_activity_timestamp'] = None
@@ -111,9 +103,6 @@ def main():
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())
                 watcher.discard_error('remote_config')
-                main_window.setText('merchant_name_lbl', "{} \n{} ".format(  # trailing space required
-                    xbterminal.remote_config['MERCHANT_NAME'],
-                    xbterminal.remote_config['MERCHANT_DEVICE_NAME']))
                 main_window.retranslateUi(
                     xbterminal.remote_config['MERCHANT_LANGUAGE'],
                     xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
