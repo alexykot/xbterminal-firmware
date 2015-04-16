@@ -1,7 +1,7 @@
 #!/bin/bash
 
 apt-get update
-apt-get install --yes xinit x11-xserver-utils
+apt-get install --yes xinit x11-xserver-utils usbutils
 sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
 
 # Install dependencies

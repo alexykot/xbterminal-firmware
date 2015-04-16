@@ -3,8 +3,9 @@
 ### Requirements ###
 
 * Python 2
-* Vagrant
 * VirtualBox
+* Oracle VirtualBox Extension Pack
+* Vagrant
 
 ### Running VM ###
 
@@ -19,10 +20,21 @@ Put these options in `xbterminal/runtime/local_state`:
 }
 ```
 
-Create VM and run main process:
+Create the VM and run it:
 
 ```
 vagrant up
+```
+
+Attach a webcam to the running VM ([more info](http://www.virtualbox.org/manual/ch09.html#idp99569632)):
+
+```
+VBoxManage controlvm "XBTerminal" webcam attach /dev/video0
+```
+
+Start the main process:
+
+```
 vagrant ssh
 xinit /vagrant/xbterminal/main.py
 ```
