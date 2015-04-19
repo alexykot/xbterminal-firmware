@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class Worker(threading.Thread):
 
-    fps = 1
+    fps = 2
 
     def __init__(self, camera):
         super(Worker, self).__init__()
@@ -21,20 +21,21 @@ class Worker(threading.Thread):
         self._stop = threading.Event()
 
     def run(self):
-        logger.info('qr scanner started')
+        logger.debug('qr scanner started')
         while True:
             if self._stop.is_set():
                 break
-            logger.debug('reading image from camera...')
             retcode, data = self.camera.read()
             time.sleep(1 / self.fps)
-            if not retcode:
+            if not retcode or not data.any():
                 logger.error('could not get image from camera')
                 break
             image = Image.fromarray(data[..., ::-1])  # Convert from BGR to RGB
-            logger.debug('read image from camera ({0}x{1})'.format(*image.size))
-            self.data = qr.decode(image)
-        logger.info('qr scanner stopped')
+            data = qr.decode(image)
+            if data:
+                logger.debug('qr scanner has decoded message: {0}'.format(data))
+                self.data = data
+        logger.debug('qr scanner stopped')
 
     def stop(self):
         self._stop.set()

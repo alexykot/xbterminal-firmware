@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# Set options for uvcvideo kernel module
+echo "options uvcvideo nodrop=1 timeout=5000 quirks=0x80" > /etc/modprobe.d/uvcvideo.conf
+
+# Install X server and utils
 apt-get update
-apt-get install --yes xinit x11-xserver-utils usbutils ntp
+apt-get install --yes xinit x11-xserver-utils ntp usbutils htop
 sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
 
 # Install dependencies
