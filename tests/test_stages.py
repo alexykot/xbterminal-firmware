@@ -126,7 +126,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
     def test_return(self):
         run = {
             'keypad': Mock(last_key_pressed='backspace'),
-            'camera': Mock(**{'decode_qr.return_value': None}),
+            'qr_scanner': Mock(**{'get_data.return_value': None}),
             'withdrawal': {
                 'fiat_amount': Decimal(0),
                 'order': {
@@ -145,7 +145,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
     def test_proceed(self):
         run = {
             'keypad': Mock(last_key_pressed=None),
-            'camera': Mock(**{'decode_qr.return_value': self.address}),
+            'qr_scanner': Mock(**{'get_data.return_value': self.address}),
             'withdrawal': {
                 'fiat_amount': Decimal(0),
                 'order': {
