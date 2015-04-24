@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Wed Apr 15 22:38:56 2015
+# Created: Fri Apr 24 06:52:26 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,19 +54,11 @@ class Ui_MainWindow(object):
         self.main_stackedWidget.addWidget(self.load_percent_scrn)
         self.load_indefinite_scrn = QtGui.QWidget()
         self.load_indefinite_scrn.setObjectName(_fromUtf8("load_indefinite_scrn"))
-        self.indefinite_load_lbl = QtGui.QLabel(self.load_indefinite_scrn)
-        self.indefinite_load_lbl.setGeometry(QtCore.QRect(90, 120, 291, 20))
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(12)
-        self.indefinite_load_lbl.setFont(font)
-        self.indefinite_load_lbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.indefinite_load_lbl.setObjectName(_fromUtf8("indefinite_load_lbl"))
-        self.progressBar_indefinite = QtGui.QProgressBar(self.load_indefinite_scrn)
-        self.progressBar_indefinite.setGeometry(QtCore.QRect(110, 90, 271, 23))
-        self.progressBar_indefinite.setMaximum(0)
-        self.progressBar_indefinite.setProperty("value", -1)
-        self.progressBar_indefinite.setObjectName(_fromUtf8("progressBar_indefinite"))
+        self.loader_lbl = QtGui.QLabel(self.load_indefinite_scrn)
+        self.loader_lbl.setGeometry(QtCore.QRect(0, 0, 480, 272))
+        self.loader_lbl.setText(_fromUtf8(""))
+        self.loader_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.loader_lbl.setObjectName(_fromUtf8("loader_lbl"))
         self.main_stackedWidget.addWidget(self.load_indefinite_scrn)
         self.choose_ssid_scrn = QtGui.QWidget()
         self.choose_ssid_scrn.setObjectName(_fromUtf8("choose_ssid_scrn"))
@@ -345,22 +337,6 @@ class Ui_MainWindow(object):
         self.error_text_lbl.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
         self.error_text_lbl.setObjectName(_fromUtf8("error_text_lbl"))
         self.main_stackedWidget.addWidget(self.enter_amount_scrn)
-        self.pay_loading_scrn = QtGui.QWidget()
-        self.pay_loading_scrn.setObjectName(_fromUtf8("pay_loading_scrn"))
-        self.pay_loading_lbl = QtGui.QLabel(self.pay_loading_scrn)
-        self.pay_loading_lbl.setGeometry(QtCore.QRect(90, 120, 291, 20))
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(12)
-        self.pay_loading_lbl.setFont(font)
-        self.pay_loading_lbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.pay_loading_lbl.setObjectName(_fromUtf8("pay_loading_lbl"))
-        self.pay_loading_progressBar = QtGui.QProgressBar(self.pay_loading_scrn)
-        self.pay_loading_progressBar.setGeometry(QtCore.QRect(110, 90, 271, 23))
-        self.pay_loading_progressBar.setMaximum(0)
-        self.pay_loading_progressBar.setProperty("value", -1)
-        self.pay_loading_progressBar.setObjectName(_fromUtf8("pay_loading_progressBar"))
-        self.main_stackedWidget.addWidget(self.pay_loading_scrn)
         self.pay_wait_scrn = QtGui.QWidget()
         self.pay_wait_scrn.setObjectName(_fromUtf8("pay_wait_scrn"))
         self.pwait_advice_lbl = QtGui.QLabel(self.pay_wait_scrn)
@@ -714,7 +690,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Terminal", None))
         self.percent_load_lbl.setText(_translate("MainWindow", "loading, please wait", None))
-        self.indefinite_load_lbl.setText(_translate("MainWindow", "loading, please wait", None))
         self.wifi_lbl.setText(_translate("MainWindow", "please select WiFi network", None))
         self.skip_wifi_btn.setText(_translate("MainWindow", "skip WiFi setup", None))
         self.ssid_lbl.setText(_translate("MainWindow", "selected WiFi", None))
@@ -729,7 +704,6 @@ class Ui_MainWindow(object):
         self.amount_input.setText(_translate("MainWindow", "0.00", None))
         self.currency_lbl.setText(_translate("MainWindow", "£", None))
         self.error_text_lbl.setText(_translate("MainWindow", "no amount entered", None))
-        self.pay_loading_lbl.setText(_translate("MainWindow", "preparing payment", None))
         self.pwait_advice_lbl.setText(_translate("MainWindow", "TOUCH NFC NOW", None))
         self.pwait_currency_lbl.setText(_translate("MainWindow", "£", None))
         self.pwait_fiat_amount_lbl.setText(_translate("MainWindow", "10.00", None))

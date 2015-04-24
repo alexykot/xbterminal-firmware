@@ -78,42 +78,20 @@
     </widget>
    </widget>
    <widget class="QWidget" name="load_indefinite_scrn">
-    <widget class="QLabel" name="indefinite_load_lbl">
+    <widget class="QLabel" name="loader_lbl">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>120</y>
-       <width>291</width>
-       <height>20</height>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>272</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
      <property name="text">
-      <string>loading, please wait</string>
+      <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QProgressBar" name="progressBar_indefinite">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>90</y>
-       <width>271</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <number>0</number>
-     </property>
-     <property name="value">
-      <number>-1</number>
      </property>
     </widget>
    </widget>
@@ -856,46 +834,6 @@ color: #b33a3a;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="pay_loading_scrn">
-    <widget class="QLabel" name="pay_loading_lbl">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>120</y>
-       <width>291</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>preparing payment</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QProgressBar" name="pay_loading_progressBar">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>90</y>
-       <width>271</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <number>0</number>
-     </property>
-     <property name="value">
-      <number>-1</number>
      </property>
     </widget>
    </widget>

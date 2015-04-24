@@ -141,7 +141,7 @@ def pay_amount(run, ui):
 
 
 def pay_loading(run, ui):
-    ui.showScreen('pay_loading')
+    ui.showScreen('load_indefinite')
 
     if run['payment']['fiat_amount'] is None:
         return defaults.STAGES['payment']['pay_amount']
@@ -453,7 +453,7 @@ def wifi_connected(run, ui):
 
 
 def _clear_payment_runtime(run, ui, clear_amounts=True):
-    ui.showScreen('pay_loading')
+    ui.showScreen('load_indefinite')
     logger.debug('clearing payment runtime')
     if clear_amounts:
         run['payment']['fiat_amount'] = Decimal(0)

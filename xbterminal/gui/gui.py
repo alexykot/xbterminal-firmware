@@ -84,6 +84,12 @@ class GUI(QtGui.QMainWindow):
         self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(os.path.join(
             defaults.UI_IMAGES_PATH,
             'bc_logo.png')))
+        # Loader
+        self.loader = QtGui.QMovie(os.path.join(
+            defaults.UI_IMAGES_PATH,
+            'loading.gif'))
+        self.ui.loader_lbl.setMovie(self.loader)
+        self.loader.start()
         # Disable keyboard on amount input widget
         self.ui.amount_input.keyPressEvent = lambda event: event.ignore()
         # Set up buttons
