@@ -72,10 +72,8 @@ def main():
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
 
     main_window = xbterminal.gui.gui.initGUI()
-    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['gui_init'])
 
     run['keypad'] = Keypad()
-    main_window.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['keypad_init'])
 
     watcher = xbterminal.watcher.Watcher()
     watcher.start()

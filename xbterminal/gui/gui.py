@@ -154,10 +154,6 @@ class GUI(QtGui.QMainWindow):
     def wifiListClear(self):
         self.ui.wifi_listWidget.clear()
 
-    def advanceLoadingProgressBar(self, level):
-        self.ui.progressBar_percent.setValue(level)
-        time.sleep(0.3)
-
     def toggleAmountErrorState(self, show):
         if show:
             self.ui.error_text_lbl.show()

@@ -60,7 +60,6 @@ def bootup(run, ui):
         else:
             logger.warning('no wifi found, hoping for preconfigured wired connection')
             run['init']['internet'] = True
-        ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['wifi_init'])
 
     # Check system clock
     # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
@@ -89,8 +88,6 @@ def bootup(run, ui):
     # Initialize bluetooth and NFC servers
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
-
-    ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
     return defaults.STAGES['idle']
 
