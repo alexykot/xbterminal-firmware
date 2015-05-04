@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Fri Apr 24 06:52:26 2015
+# Created: Mon Apr 27 14:29:13 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -36,22 +36,6 @@ class Ui_MainWindow(object):
         self.main_stackedWidget.setGeometry(QtCore.QRect(0, 0, 480, 272))
         self.main_stackedWidget.setCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
         self.main_stackedWidget.setObjectName(_fromUtf8("main_stackedWidget"))
-        self.load_percent_scrn = QtGui.QWidget()
-        self.load_percent_scrn.setObjectName(_fromUtf8("load_percent_scrn"))
-        self.progressBar_percent = QtGui.QProgressBar(self.load_percent_scrn)
-        self.progressBar_percent.setGeometry(QtCore.QRect(110, 90, 271, 23))
-        self.progressBar_percent.setMaximum(100)
-        self.progressBar_percent.setProperty("value", 0)
-        self.progressBar_percent.setObjectName(_fromUtf8("progressBar_percent"))
-        self.percent_load_lbl = QtGui.QLabel(self.load_percent_scrn)
-        self.percent_load_lbl.setGeometry(QtCore.QRect(90, 120, 291, 20))
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Arial"))
-        font.setPointSize(12)
-        self.percent_load_lbl.setFont(font)
-        self.percent_load_lbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.percent_load_lbl.setObjectName(_fromUtf8("percent_load_lbl"))
-        self.main_stackedWidget.addWidget(self.load_percent_scrn)
         self.load_indefinite_scrn = QtGui.QWidget()
         self.load_indefinite_scrn.setObjectName(_fromUtf8("load_indefinite_scrn"))
         self.loader_lbl = QtGui.QLabel(self.load_indefinite_scrn)
@@ -689,7 +673,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Terminal", None))
-        self.percent_load_lbl.setText(_translate("MainWindow", "loading, please wait", None))
         self.wifi_lbl.setText(_translate("MainWindow", "please select WiFi network", None))
         self.skip_wifi_btn.setText(_translate("MainWindow", "skip WiFi setup", None))
         self.ssid_lbl.setText(_translate("MainWindow", "selected WiFi", None))

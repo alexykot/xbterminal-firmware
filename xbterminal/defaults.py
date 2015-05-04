@@ -30,32 +30,22 @@ STAGES = {
 }
 
 SCREENS = {
-    'load_percent': 0,
-    'load_indefinite': 1,
-    'choose_ssid': 2,
-    'enter_passkey': 3,
-    'wifi_connected': 4,
-    'idle': 5,
-    'enter_amount': 6,
-    'pay_wait': 7,
-    'pay_success': 8,
-    'pay_cancel': 9,
-    'withdraw_scan': 10,
-    'withdraw_confirm': 11,
-    'withdraw_success': 12,
-    'errors': 13,
+    'load_indefinite': 0,
+    'choose_ssid': 1,
+    'enter_passkey': 2,
+    'wifi_connected': 3,
+    'idle': 4,
+    'enter_amount': 5,
+    'pay_wait': 6,
+    'pay_success': 7,
+    'pay_cancel': 8,
+    'withdraw_scan': 9,
+    'withdraw_confirm': 10,
+    'withdraw_success': 11,
+    'errors': 12,
 }
 
 SCREEN_BRIGHTNESS = 40
-
-LOAD_PROGRESS_LEVELS = {'runtime_init': 2,
-                        'gui_init': 2,
-                        'keypad_init': 6,
-                        'wifi_init': 35,
-                        'remote_config_load': 50,
-                        'blockchain_init': 95,
-                        'finish': 100,
-                        }
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
