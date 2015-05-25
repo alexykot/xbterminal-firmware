@@ -167,13 +167,15 @@ def pay_wait(run, ui):
     ui.setText('pwait_xrate_amount_lbl',
                amounts.format_exchange_rate(run['payment']['order'].exchange_rate))
     ui.setImage('pwait_qr_img', run['payment']['qr_image_path'])
-    logger.debug('local payment requested, '
-                 'amount fiat: {amount_fiat}, '
-                 'amount btc: {amount_btc}, '
-                 'rate: {effective_rate}'.
-                    format(amount_fiat=run['payment']['fiat_amount'],
-                           amount_btc=run['payment']['order'].btc_amount,
-                           effective_rate=run['payment']['order'].exchange_rate))
+    logger.info(
+        'local payment requested, '
+        'amount fiat: {amount_fiat}, '
+        'amount btc: {amount_btc}, '
+        'rate: {effective_rate}'.format(
+            amount_fiat=run['payment']['fiat_amount'],
+            amount_btc=run['payment']['order'].btc_amount,
+            effective_rate=run['payment']['order'].exchange_rate))
+    logger.info('payment uri: {}'.format(run['payment']['order'].payment_uri))
     run['bluetooth_server'].start(run['payment']['order'])
     while True:
         if run['keypad'].last_key_pressed == 'backspace':

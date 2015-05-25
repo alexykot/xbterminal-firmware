@@ -102,7 +102,7 @@ class NFCServer(object):
 
         self._nfc_thread = BitcoinSender(uri)
         self._nfc_thread.start()
-        logger.info('nfc activated: {}'.format(uri))
+        logger.info('NFC activated')
 
     def stop(self):
         if not self.is_available:
