@@ -42,11 +42,12 @@ class Payment(object):
                 format(error.__class__.__name__))
             return None
         # Parse result
-        instance = cls(result['payment_uid'],
-                       Decimal(result['btc_amount']),
-                       Decimal(result['exchange_rate']),
-                       result['payment_uri'],
-                       result['payment_request'].decode('base64'))
+        instance = cls(
+            result['payment_uid'],
+            Decimal(result['btc_amount']).quantize(defaults.BTC_DEC_PLACES),
+            Decimal(result['exchange_rate']).quantize(defaults.BTC_DEC_PLACES),
+            result['payment_uri'],
+            result['payment_request'].decode('base64'))
         logger.info("created payment order {0}".format(instance.uid))
         return instance
 
