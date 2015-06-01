@@ -10,6 +10,27 @@ from xbterminal.helpers import qr
 logger = logging.getLogger(__name__)
 
 
+class OpenCVBackend(object):
+
+    source_index = 0
+
+    def __init__(self):
+        self._camera = cv2.VideoCapture(self.source_index)
+
+    def is_available(self):
+        return self._camera is not None and self._camera.isOpened()
+
+    def get_image(self):
+        """
+        Should return PIL Image instance or None
+        """
+        retcode, data = self._camera.read()
+        if not retcode or not data.any():
+            return None
+        image = Image.fromarray(data[..., ::-1])  # Convert from BGR to RGB
+        return image
+
+
 class Worker(threading.Thread):
 
     fps = 2
@@ -25,12 +46,11 @@ class Worker(threading.Thread):
         while True:
             if self._stop.is_set():
                 break
-            retcode, data = self.camera.read()
+            image = self.camera.get_image()
             time.sleep(1 / self.fps)
-            if not retcode or not data.any():
+            if not image:
                 logger.error('could not get image from camera')
                 break
-            image = Image.fromarray(data[..., ::-1])  # Convert from BGR to RGB
             data = qr.decode(image)
             if data:
                 logger.debug('qr scanner has decoded message: {0}'.format(data))
@@ -43,20 +63,22 @@ class Worker(threading.Thread):
 
 class QRScanner(object):
 
-    def __init__(self, source=0):
-        self._camera = cv2.VideoCapture(source)
-        if not self.is_available():
+    backends = {
+        'opencv': OpenCVBackend,
+    }
+
+    def __init__(self, backend='opencv'):
+        logger.info('using {0} backend'.format(backend))
+        self.camera = self.backends[backend]()
+        if not self.camera.is_available():
             logger.warning('camera is not available')
         else:
             logger.info('camera is active')
         self.worker = None
 
-    def is_available(self):
-        return self._camera is not None and self._camera.isOpened()
-
     def start(self):
-        if self.is_available() and not self.worker:
-            self.worker = Worker(self._camera)
+        if self.camera.is_available() and not self.worker:
+            self.worker = Worker(self.camera)
             self.worker.start()
 
     def stop(self):
