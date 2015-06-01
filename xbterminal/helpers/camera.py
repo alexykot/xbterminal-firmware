@@ -1,11 +1,14 @@
 import logging
+import os
 import time
 import threading
+import subprocess
 
 import cv2
 from PIL import Image
 
 from xbterminal.helpers import qr
+from xbterminal.defaults import RUNTIME_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +31,33 @@ class OpenCVBackend(object):
         if not retcode or not data.any():
             return None
         image = Image.fromarray(data[..., ::-1])  # Convert from BGR to RGB
+        return image
+
+
+class FsWebCamBackend(object):
+
+    device = '/dev/video0'
+
+    def __init__(self):
+        self.image_path = os.path.join(RUNTIME_PATH, 'camera.jpg')
+
+    def is_available(self):
+        output = subprocess.check_output(
+            ['fswebcam', '--device', self.device],
+            stderr=subprocess.STDOUT)
+        return 'Captured frame' in output
+
+    def get_image(self):
+        output = subprocess.check_output([
+            'fswebcam',
+            '--device', self.device,
+            '--resolution', '320x240',
+            '--no-banner',
+            self.image_path,
+        ], stderr=subprocess.STDOUT)
+        if 'Writing JPEG image' not in output:
+            return None
+        image = Image.open(self.image_path)
         return image
 
 
@@ -65,6 +95,7 @@ class QRScanner(object):
 
     backends = {
         'opencv': OpenCVBackend,
+        'fswebcam': FsWebCamBackend,
     }
 
     def __init__(self, backend='opencv'):

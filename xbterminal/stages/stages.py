@@ -89,7 +89,7 @@ def bootup(run, ui):
     # Initialize bluetooth and NFC servers
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
-    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner()
+    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
 
     ui.advanceLoadingProgressBar(defaults.LOAD_PROGRESS_LEVELS['finish'])
 
