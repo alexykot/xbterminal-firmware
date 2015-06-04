@@ -52,6 +52,7 @@ class FsWebCamBackend(object):
             'fswebcam',
             '--device', self.device,
             '--resolution', '320x240',
+            '--skip', '1',
             '--no-banner',
             self.image_path,
         ], stderr=subprocess.STDOUT)
