@@ -65,6 +65,7 @@ def main():
     run['keyboard_events'] = deque(maxlen=1)  # Only for keyboard driver
     run['bluetooth_server'] = None
     run['nfc_server'] = None
+    run['qr_scanner'] = None
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):
