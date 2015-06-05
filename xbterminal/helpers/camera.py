@@ -4,8 +4,11 @@ import time
 import threading
 import subprocess
 
-import cv2
 from PIL import Image
+try:
+    import cv2
+except ImportError:
+    pass
 
 from xbterminal.helpers import qr
 from xbterminal.defaults import RUNTIME_PATH
