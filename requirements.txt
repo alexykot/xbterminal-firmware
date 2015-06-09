@@ -8,3 +8,4 @@ PyBluez==0.20
 protobuf==2.5.0
 wifi==0.3.4
 Pillow==2.8.1
+cryptography==0.9.1
