@@ -4,8 +4,11 @@ import time
 import threading
 import subprocess
 
-import cv2
 from PIL import Image
+try:
+    import cv2
+except ImportError:
+    pass
 
 from xbterminal.helpers import qr
 from xbterminal.defaults import RUNTIME_PATH
@@ -42,20 +45,32 @@ class FsWebCamBackend(object):
         self.image_path = os.path.join(RUNTIME_PATH, 'camera.jpg')
 
     def is_available(self):
-        output = subprocess.check_output(
-            ['fswebcam', '--device', self.device],
-            stderr=subprocess.STDOUT)
-        return 'Captured frame' in output
+        try:
+            output = subprocess.check_output(
+                ['fswebcam', '--device', self.device],
+                stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as error:
+            logger.exception(error)
+            return False
+        else:
+            return 'Captured frame' in output
 
     def get_image(self):
-        output = subprocess.check_output([
-            'fswebcam',
-            '--device', self.device,
-            '--resolution', '320x240',
-            '--skip', '1',
-            '--no-banner',
-            self.image_path,
-        ], stderr=subprocess.STDOUT)
+        """
+        Returns PIL.Image instance or None
+        """
+        try:
+            output = subprocess.check_output([
+                'fswebcam',
+                '--device', self.device,
+                '--resolution', '320x240',
+                '--skip', '1',
+                '--no-banner',
+                self.image_path,
+            ], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as error:
+            logger.exception(error)
+            return None
         if 'Writing JPEG image' not in output:
             return None
         image = Image.open(self.image_path)
