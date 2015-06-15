@@ -56,6 +56,7 @@ LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
+SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
 
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 UI_FONTS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'fonts')
