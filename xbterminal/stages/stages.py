@@ -336,15 +336,15 @@ def withdraw_loading2(run, ui):
     run['withdrawal']['order'].confirm(run['withdrawal']['address'])
     while True:
         run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
-        # TODO: loading timeout
         if run['withdrawal']['receipt_url'] is not None:
             run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
                                          run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_success']
-        else:
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['withdrawal']['withdraw_amount']
+        time.sleep(0.5)
 
 
 def withdraw_success(run, ui):
