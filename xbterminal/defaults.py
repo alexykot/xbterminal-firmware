@@ -100,15 +100,19 @@ REMOTE_SERVERS = ('https://xbterminal.io',
                     )
 REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
 
-REMOTE_API_ENDPOINTS = {'config': '/api/devices/{device_key}/',
-                        'receipt': '/api/receipts/{receipt_key}/',
-                        'firmware_check': '/api/device/{device_key}/firmware/',
-                        'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
-                        'firmware_updated': '/api/device/{device_key}/firmware_updated/',
-                        'payment_init': '/api/payments/init',
-                        'payment_response': '/api/payments/{payment_uid}/response',
-                        'payment_check': '/api/payments/{payment_uid}/check',
-                        }
+REMOTE_API_ENDPOINTS = {
+    'config': '/api/devices/{device_key}/',
+    'receipt': '/api/receipts/{receipt_key}/',
+    'firmware_check': '/api/device/{device_key}/firmware/',
+    'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}',
+    'firmware_updated': '/api/device/{device_key}/firmware_updated/',
+    'payment_init': '/api/payments/init',
+    'payment_response': '/api/payments/{payment_uid}/response',
+    'payment_check': '/api/payments/{payment_uid}/check',
+    'withdrawal_init': '/api/withdrawals/',
+    'withdrawal_confirm': '/api/withdrawals/{uid}/confirm/',
+    'withdrawal_check': '/api/withdrawals/{uid}/',
+}
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 

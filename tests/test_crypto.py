@@ -1,6 +1,7 @@
 import unittest
 from mock import patch
 
+import base64
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -35,7 +36,7 @@ class CryptoTestCase(unittest.TestCase):
         public_key = serialization.load_pem_public_key(
             public_key_pem, backend=default_backend())
         verifier = public_key.verifier(
-            signature,
+            base64.b64decode(signature),
             padding.PSS(
                 mgf=padding.MGF1(hashes.SHA256()),
                 salt_length=padding.PSS.MAX_LENGTH),

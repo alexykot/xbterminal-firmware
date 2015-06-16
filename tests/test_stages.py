@@ -107,15 +107,17 @@ class WithdrawAmountStageTestCase(unittest.TestCase):
 
 class WithdrawLoading1StageTestCase(unittest.TestCase):
 
-    def test_proceed(self):
+    @patch('xbterminal.stages.withdrawal.Withdrawal.create_order')
+    def test_proceed(self, create_order_mock):
         run = {
             'withdrawal': {'fiat_amount': Decimal('1.00')},
         }
         ui = Mock()
+        create_order_mock.return_value = 'test_order'
         next_stage = stages.withdraw_loading1(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_scan'])
-        self.assertIsNotNone(run['withdrawal']['order'])
+        self.assertEqual(run['withdrawal']['order'], 'test_order')
 
 
 class WithdrawScanStageTestCase(unittest.TestCase):
@@ -124,15 +126,13 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         self.address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
 
     def test_return(self):
+        order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
             'keypad': Mock(last_key_pressed='backspace'),
             'qr_scanner': Mock(**{'get_data.return_value': None}),
             'withdrawal': {
                 'fiat_amount': Decimal(0),
-                'order': {
-                    'btc_amount': Decimal(0),
-                    'exchange_rate': Decimal(0),
-                },
+                'order': order_mock,
             },
         }
         ui = Mock()
@@ -143,15 +143,13 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         self.assertIsNotNone(run['withdrawal']['fiat_amount'])
 
     def test_proceed(self):
+        order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
             'keypad': Mock(last_key_pressed=None),
             'qr_scanner': Mock(**{'get_data.return_value': self.address}),
             'withdrawal': {
                 'fiat_amount': Decimal(0),
-                'order': {
-                    'btc_amount': Decimal(0),
-                    'exchange_rate': Decimal(0),
-                },
+                'order': order_mock,
             },
         }
         ui = Mock()
@@ -164,15 +162,13 @@ class WithdrawScanStageTestCase(unittest.TestCase):
 class WithdrawConfirmStageTestCase(unittest.TestCase):
 
     def test_return(self):
+        order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
             'keypad': Mock(last_key_pressed='backspace'),
             'screen_buttons': {'confirm_withdrawal': False},
             'withdrawal': {
                 'fiat_amount': Decimal(0),
-                'order': {
-                    'btc_amount': Decimal(0),
-                    'exchange_rate': Decimal(0),
-                },
+                'order': order_mock,
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
             },
         }
@@ -185,15 +181,13 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         self.assertIsNotNone(run['withdrawal']['fiat_amount'])
 
     def test_proceed(self):
+        order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {'confirm_withdrawal': True},
             'withdrawal': {
                 'fiat_amount': Decimal(0),
-                'order': {
-                    'btc_amount': Decimal(0),
-                    'exchange_rate': Decimal(0),
-                },
+                'order': order_mock,
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
             },
         }
@@ -206,16 +200,23 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
 class WithdrawLoading2StageTestCase(unittest.TestCase):
 
     def test_proceed(self):
+        order_mock = Mock(**{
+            'btc_amount': Decimal(0),
+            'exchange_rate': Decimal(0),
+            'check.return_value': 'test_url',
+        })
         run = {
             'withdrawal': {
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+                'order': order_mock,
             },
         }
         ui = Mock()
         next_stage = stages.withdraw_loading2(run, ui)
+        self.assertTrue(order_mock.confirm.called)
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_success'])
-        self.assertIsNotNone(run['withdrawal']['receipt_url'])
+        self.assertEqual(run['withdrawal']['receipt_url'], 'test_url')
         self.assertIsNotNone(run['withdrawal']['qr_image_path'])
 
 
