@@ -220,7 +220,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertIsNotNone(run['withdrawal']['qr_image_path'])
 
 
-class WithdrawConfirmStageTestCase(unittest.TestCase):
+class WithdrawSuccessStageTestCase(unittest.TestCase):
 
     def test_return(self):
         run = {
