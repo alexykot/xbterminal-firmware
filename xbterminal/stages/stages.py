@@ -272,11 +272,8 @@ def withdraw_loading1(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['fiat_amount'] > 0
     while True:
-        # TODO: get rates from server
-        run['withdrawal']['order'] = {
-            'btc_amount': defaults.BTC_DEC_PLACES,
-            'exchange_rate': defaults.BTC_DEC_PLACES,
-        }
+        run['withdrawal']['order'] = withdrawal.Withdrawal.create_order(
+            run['withdrawal']['fiat_amount'])
         # TODO: loading timeout
         if run['withdrawal']['order'] is not None:
             return defaults.STAGES['withdrawal']['withdraw_scan']
@@ -289,8 +286,8 @@ def withdraw_scan(run, ui):
     ui.showScreen('withdraw_scan')
     assert run['withdrawal']['order'] is not None
     ui.setText('wscan_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
-    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
+    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
+    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
     run['qr_scanner'].start()
     while True:
         address = withdrawal.get_bitcoin_address(
@@ -316,8 +313,8 @@ def withdraw_confirm(run, ui):
     assert run['withdrawal']['address'] is not None
     ui.setText('wconfirm_address_lbl', run['withdrawal']['address'])
     ui.setText('wconfirm_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order']['btc_amount']))
-    ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order']['exchange_rate']))
+    ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
+    ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
     while True:
         if run['screen_buttons']['confirm_withdrawal']:
             run['screen_buttons']['confirm_withdrawal'] = False
@@ -336,18 +333,18 @@ def withdraw_confirm(run, ui):
 def withdraw_loading2(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['address'] is not None
+    run['withdrawal']['order'].confirm(run['withdrawal']['address'])
     while True:
-        # TODO: get receipt from the server
-        run['withdrawal']['receipt_url'] = 'https://xbterminal.io/rc/CV2ALZ'
-        # TODO: loading timeout
+        run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
         if run['withdrawal']['receipt_url'] is not None:
             run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
                                          run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_success']
-        else:
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui, clear_amounts=False)
             return defaults.STAGES['withdrawal']['withdraw_amount']
+        time.sleep(0.5)
 
 
 def withdraw_success(run, ui):

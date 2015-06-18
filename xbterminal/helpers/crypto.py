@@ -1,3 +1,4 @@
+import base64
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
@@ -51,7 +52,7 @@ def create_signature(message):
         hashes.SHA256())
     signer.update(message)
     signature = signer.finalize()
-    return signature
+    return base64.b64encode(signature)
 
 
 if __name__ == '__main__':
