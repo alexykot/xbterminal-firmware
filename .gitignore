@@ -8,5 +8,5 @@ xbterminal/device_key
 xbterminal/bitcoind_auth.py
 xbterminal/main.so
 bitcoinj-server.tar.gz
-fabfile
+fabfile/deploy.py
 .vagrant
