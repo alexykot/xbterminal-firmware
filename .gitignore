@@ -10,3 +10,4 @@ xbterminal/main.so
 bitcoinj-server.tar.gz
 fabfile/deploy.py
 .vagrant
+build
