@@ -1,5 +1,5 @@
 Vagrant.configure(2) do |config|
-  config.vm.box = "chef/debian-7.8"
+  config.vm.box = "debian/wheezy64"
   config.vm.hostname = "xbterminal-vm"
   config.ssh.username = "vagrant"
   config.ssh.password = "vagrant"

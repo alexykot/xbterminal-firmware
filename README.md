@@ -1,13 +1,13 @@
-# README #
+# README
 
-### Requirements ###
+## Requirements
 
 * Python 2
 * VirtualBox
 * Oracle VirtualBox Extension Pack
 * Vagrant
 
-### Running VM ###
+## Running VM
 
 Put these options in `xbterminal/runtime/local_state`:
 
@@ -38,3 +38,33 @@ Start the main process:
 vagrant ssh
 xinit /vagrant/xbterminal/main.py
 ```
+
+## Compiling
+
+Requirements:
+
+* QEMU
+* Fabric
+
+Create and run VM:
+
+```
+fab build.qemu_start
+```
+
+This command downloads necessary files and starts QEMU in daemonized mode.
+
+* Root password: **root**
+* User account: **user**
+* User password: **user**
+* SSH port: **32522** (*@localhost*).
+
+More info can be found here: https://people.debian.org/~aurel32/qemu/armhf/README.txt
+
+Wait until VM is ready, then start the compilation:
+
+```
+fab build.qemu_compile
+```
+
+This command outputs compiled module to `build/main.so`. Module's working directory assumed to be `/opt/xbterminal/xbterminal`.
