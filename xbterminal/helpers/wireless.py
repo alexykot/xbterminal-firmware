@@ -41,6 +41,7 @@ def is_wifi_available():
             raise
     return False
 
+
 def discover_networks():
     networks = []
     try:
@@ -54,6 +55,7 @@ def discover_networks():
                          'encryption': cell.encryption_type if cell.encrypted else None,
                          })
     return networks
+
 
 def connect(ssid, passkey=None):
     cell_list = wifi.scan.Cell.all(interface)

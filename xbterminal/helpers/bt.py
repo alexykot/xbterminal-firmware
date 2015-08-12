@@ -129,15 +129,14 @@ class BluetoothWorker(threading.Thread):
                                                self._socket_timeout)
                 if readable:
                     self.client_sock, client_info = self.server_sock.accept()
-                    logger.debug("{0} - accepted connection from {1}".\
-                        format(self.service_name, client_info[0]))
+                    logger.debug("{0} - accepted connection from {1}".format(
+                        self.service_name, client_info[0]))
                     self.client_sock.settimeout(self._socket_timeout)
             else:
                 try:
                     data = self.client_sock.recv(4096)
                 except IOError:
-                    logger.debug("{0} - closing connection".\
-                        format(self.service_name))
+                    logger.debug("{0} - closing connection".format(self.service_name))
                     self.client_sock.close()
                     self.client_sock = None
                 else:
@@ -145,8 +144,7 @@ class BluetoothWorker(threading.Thread):
         if self.client_sock:
             self.client_sock.close()
         self.server_sock.close()
-        logger.debug("{0} - bluetooth worker stopped".\
-            format(self.service_name))
+        logger.debug("{0} - bluetooth worker stopped".format(self.service_name))
 
     def handle_data(self, data):
         """
@@ -172,8 +170,7 @@ class PaymentRequestWorker(BluetoothWorker):
         response = (protobuf_encoder._VarintBytes(response_code) +
                     protobuf_encoder._VarintBytes(len(self.payment.request)) +
                     self.payment.request)
-        logger.debug("{0} - sending PaymentRequest".\
-            format(self.service_name))
+        logger.debug("{0} - sending PaymentRequest".format(self.service_name))
         self.client_sock.send(response)
 
 
@@ -213,8 +210,7 @@ class BluetoothServer(object):
         subprocess.check_call(['hciconfig', self.device_id, 'sspmode', '0'])
         # Disable auth
         subprocess.check_call(['hciconfig', self.device_id, 'noauth'])
-        logger.info("bluetooth init done, mac address: {0}".\
-            format(self.mac_address))
+        logger.info("bluetooth init done, mac address: {0}".format(self.mac_address))
 
     def make_discoverable(self):
         subprocess.check_call(['hciconfig', self.device_id, 'piscan'])

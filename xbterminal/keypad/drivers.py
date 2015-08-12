@@ -83,7 +83,7 @@ class KeypadDriverBBB():
             tmpRead = GPIO.input(self.ROW[i])
             if tmpRead == 0:
                 rowVal = i
-                bits_list[7-i] = 1
+                bits_list[7 - i] = 1
 
         if rowVal in range(len(self.ROW)):
             for j in range(len(self.COLUMN)):
@@ -99,7 +99,7 @@ class KeypadDriverBBB():
                 tmpRead = GPIO.input(self.COLUMN[j])
                 if tmpRead == 1:
                     colVal = j
-                    bits_list[3-j] = 1
+                    bits_list[3 - j] = 1
 
             if colVal in range(len(self.COLUMN)):
                 for key, val in enumerate(bits_list):

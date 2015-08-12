@@ -96,9 +96,8 @@ LOG_CONFIG = {
 }
 
 REMOTE_SERVERS = ('https://xbterminal.io',
-                  'https://xbterminal.com',
-                    )
-REMOTE_CONFIG_UPDATE_CYCLE = 60 #seconds between remote config updates
+                  'https://xbterminal.com')
+REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {
     'config': '/api/devices/{device_key}/',
@@ -116,19 +115,19 @@ REMOTE_API_ENDPOINTS = {
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 
-TRANSACTION_TIMEOUT = 900 #in person transaction timeout in seconds
-TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60 #if transaction cancelled - how long to show "cancelled" message in seconds
+TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
+TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60  # if transaction cancelled - how long to show "cancelled" message in seconds
 
-OUTPUT_DEC_PLACES = 2 #fractional decimal places to show on screen
-OUTPUT_TOTAL_PLACES = 7 #total decimal places to show on screen
+OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
+OUTPUT_TOTAL_PLACES = 7  # total decimal places to show on screen
 
-EXCHANGE_RATE_DEC_PLACES = 3 #fractional decimal places for exchange rate to show on screen
+EXCHANGE_RATE_DEC_PLACES = 3  # fractional decimal places for exchange rate to show on screen
 
-BITCOIN_SCALE_DIVIZER = 1000 #1 for BTC, 1000 for mBTC, 1000000 for uBTC
+BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 2
 
-SATOSHI_FACTOR = Decimal(100000000) #satoshis per BTC
+SATOSHI_FACTOR = Decimal(100000000)  # satoshis per BTC
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES = Decimal('0.00000000')
-BTC_DEFAULT_FEE = Decimal('0.00010000') #typical transaction expected to be less than 1024 bytes
-BTC_MIN_OUTPUT = Decimal('0.00005460') #minimal tx output
+BTC_DEFAULT_FEE = Decimal('0.00010000')  # typical transaction expected to be less than 1024 bytes
+BTC_MIN_OUTPUT = Decimal('0.00005460')  # minimal tx output

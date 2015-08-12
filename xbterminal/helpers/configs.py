@@ -85,8 +85,8 @@ def load_local_state():
                 contents=local_state_contents))
             if xbterminal.local_state.get('use_dev_remote_server'):
                 xbterminal.defaults.REMOTE_SERVERS = ('http://stage.xbterminal.com',)
-                logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.\
-                    format(xbterminal.defaults.REMOTE_SERVERS[0]))
+                logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.format(
+                    xbterminal.defaults.REMOTE_SERVERS[0]))
 
 
 def save_local_state():
@@ -105,12 +105,12 @@ def load_remote_config_cache():
     remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
 
     if not os.path.exists(remote_config_cache_file_abs_path):
-        logger.warning('config cache file {cache_path} not exists, cache load failed'.\
-            format(cache_path=remote_config_cache_file_abs_path))
+        logger.warning('config cache file {cache_path} not exists, cache load failed'.format(
+            cache_path=remote_config_cache_file_abs_path))
         raise IOError
 
     with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
         xbterminal.remote_config = json.loads(cache_file.read())
 
-    logger.debug('remote config loaded from cache file {cache_path}'.\
-        format(cache_path=remote_config_cache_file_abs_path))
+    logger.debug('remote config loaded from cache file {cache_path}'.format(
+        cache_path=remote_config_cache_file_abs_path))

@@ -38,8 +38,7 @@ class Payment(object):
             response.raise_for_status()
             result = response.json()
         except (requests.exceptions.RequestException, ValueError) as error:
-            logger.error("create payment order: {0}".\
-                format(error.__class__.__name__))
+            logger.error("create payment order: {0}".format(error.__class__.__name__))
             return None
         # Parse result
         instance = cls(
