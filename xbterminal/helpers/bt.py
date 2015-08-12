@@ -199,7 +199,11 @@ class BluetoothServer(object):
         self.mac_address = '00:00:00:00:00:00'
         self.workers = []
         # Read config
-        hciconfig_result = subprocess.check_output(['hciconfig'])
+        try:
+            hciconfig_result = subprocess.check_output(['hciconfig'])
+        except subprocess.CalledProcessError as error:
+            logger.exception(error)
+            return
         match = HCICONFIG_REGEX.search(hciconfig_result)
         if not match:
             logger.warning('bluetooth init failed')
