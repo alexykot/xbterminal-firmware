@@ -1,4 +1,4 @@
-from fabric.api import env, task, local, cd, lcd, run, settings, prefix, put, get
+from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get
 from fabric.contrib.files import exists
 from fabric.context_managers import shell_env
 

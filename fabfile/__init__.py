@@ -1,6 +1,6 @@
-import build
-import check
+import build  # noqa
+import check  # noqa
 try:
-    import deploy
+    import deploy  # noqa
 except ImportError:
     pass

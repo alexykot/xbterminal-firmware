@@ -1,6 +1,5 @@
 from decimal import Decimal
 import logging
-import os.path
 import time
 import unicodedata
 

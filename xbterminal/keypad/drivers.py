@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import time
 
 from PyQt4 import QtCore
 import Adafruit_BBIO.GPIO as GPIO
