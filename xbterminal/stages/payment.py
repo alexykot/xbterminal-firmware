@@ -16,7 +16,7 @@ class Payment(object):
         self.btc_amount = btc_amount
         self.exchange_rate = exchange_rate
         self.payment_uri = payment_uri
-        self.request = request
+        self.request = request.decode('base64') if request else None
 
     @classmethod
     def create_order(cls, fiat_amount, bt_mac):
@@ -46,7 +46,7 @@ class Payment(object):
             Decimal(result['btc_amount']).quantize(defaults.BTC_DEC_PLACES),
             Decimal(result['exchange_rate']).quantize(defaults.BTC_DEC_PLACES),
             result['payment_uri'],
-            result['payment_request'].decode('base64'))
+            result.get('payment_request'))
         logger.info("created payment order {0}".format(instance.uid))
         return instance
 

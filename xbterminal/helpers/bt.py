@@ -196,7 +196,7 @@ class BluetoothServer(object):
 
     def __init__(self):
         self.device_id = None
-        self.mac_address = '00:00:00:00:00:00'
+        self.mac_address = None
         self.workers = []
         # Read config
         try:
