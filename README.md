@@ -49,7 +49,7 @@ Requirements:
 Create and run VM:
 
 ```
-fab build.qemu_start
+fab build.qemu_start:arch=armhf
 ```
 
 This command downloads necessary files and starts QEMU in daemonized mode.
@@ -67,4 +67,10 @@ Wait until VM is ready, then start the compilation:
 fab build.qemu_compile
 ```
 
-This command outputs compiled module to `build/main.so`. Module's working directory assumed to be `/opt/xbterminal/xbterminal`.
+This command outputs compiled module to `build/main_{arch}`. Module's working directory assumed to be `/srv/xbterminal/xbterminal`.
+
+Create a package:
+
+```
+fab build.package:arch=armhf
+```
