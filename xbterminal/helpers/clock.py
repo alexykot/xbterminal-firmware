@@ -2,8 +2,6 @@ import logging
 
 import ntplib
 
-from xbterminal import defaults
-
 logger = logging.getLogger(__name__)
 
 

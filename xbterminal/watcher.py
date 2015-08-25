@@ -82,7 +82,7 @@ class Watcher(threading.Thread):
         # Check wifi interface
         if not xbterminal.local_state.get('use_predefined_connection', False):
             self.wifi = (wireless.interface is not None
-                and os.path.exists(os.path.join("/sys/class/net", wireless.interface)))
+                         and os.path.exists(os.path.join("/sys/class/net", wireless.interface)))
         # Check internet connection
         try:
             requests.get(defaults.REMOTE_SERVERS[0],

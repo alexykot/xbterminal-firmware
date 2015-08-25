@@ -1,8 +1,5 @@
-import os
-
 import qrcode
 import zbar
-from PIL import Image
 
 
 def qr_gen(content, path):

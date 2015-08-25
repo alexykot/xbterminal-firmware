@@ -1,6 +1,5 @@
 from decimal import Decimal
 import logging
-import os.path
 import time
 import unicodedata
 
@@ -34,12 +33,15 @@ def bootup(run, ui):
                 and 'wifi_pass' in xbterminal.local_state
             ):
                 # Connect to cached wifi
-                logger.debug('trying to connect to cached wifi,  '
+                logger.debug(
+                    'trying to connect to cached wifi,  '
                     'ssid "{wifi_ssid}" '
                     'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
                                                      wifi_pass=xbterminal.local_state['wifi_pass']))
                 if isinstance(xbterminal.local_state['wifi_pass'], unicode):
-                    xbterminal.local_state['wifi_pass'] = unicodedata.normalize('NFKD', xbterminal.local_state['wifi_pass']).encode('ascii', 'ignore')
+                    xbterminal.local_state['wifi_pass'] = unicodedata.\
+                        normalize('NFKD', xbterminal.local_state['wifi_pass']).\
+                        encode('ascii', 'ignore')
                 run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
                                                                                xbterminal.local_state['wifi_pass'])
                 if run['wifi']['connected']:
@@ -107,7 +109,9 @@ def idle(run, ui):
         if run['keypad'].last_key_pressed is not None:
             run['payment']['fiat_amount'] = Decimal(0)
             if run['keypad'].last_key_pressed in range(10) + ['00']:
-                run['payment']['fiat_amount'] = amounts.process_key_input(run['payment']['fiat_amount'], run['keypad'].last_key_pressed)
+                run['payment']['fiat_amount'] = amounts.process_key_input(
+                    run['payment']['fiat_amount'],
+                    run['keypad'].last_key_pressed)
             return defaults.STAGES['payment']['pay_amount']
         time.sleep(0.1)
 
@@ -124,7 +128,9 @@ def pay_amount(run, ui):
             if run['keypad'].last_key_pressed == 'backspace' and run['payment']['fiat_amount'] == 0:
                 return defaults.STAGES['idle']
             ui.toggleAmountErrorState(False)
-            run['payment']['fiat_amount'] = amounts.process_key_input(run['payment']['fiat_amount'], run['keypad'].last_key_pressed)
+            run['payment']['fiat_amount'] = amounts.process_key_input(
+                run['payment']['fiat_amount'],
+                run['keypad'].last_key_pressed)
             ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
         elif run['keypad'].last_key_pressed == 'enter':
             if run['payment']['fiat_amount'] > 0:
@@ -254,7 +260,9 @@ def withdraw_amount(run, ui):
                 _clear_withdrawal_runtime(run, ui)
                 return defaults.STAGES['idle']
             ui.toggleAmountErrorState(False)
-            run['withdrawal']['fiat_amount'] = amounts.process_key_input(run['withdrawal']['fiat_amount'], run['keypad'].last_key_pressed)
+            run['withdrawal']['fiat_amount'] = amounts.process_key_input(
+                run['withdrawal']['fiat_amount'],
+                run['keypad'].last_key_pressed)
             ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
         elif run['keypad'].last_key_pressed == 'enter':
             if run['withdrawal']['fiat_amount'] > 0:
@@ -412,7 +420,8 @@ def enter_passkey(run, ui):
 
             if run['keypad'].checkIsDone():
                 ui.toggleWifiConnectingState(True)
-                logger.debug('trying to connect to wifi, '
+                logger.debug(
+                    'trying to connect to wifi, '
                     'ssid: "{ssid}", pass: "{passkey}" '.format(ssid=xbterminal.local_state['wifi_ssid'],
                                                                 passkey=xbterminal.local_state['wifi_pass']))
                 run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
@@ -438,8 +447,9 @@ def enter_passkey(run, ui):
                 xbterminal.local_state['wifi_pass'] = run['keypad'].createAlphaNumString(xbterminal.local_state['wifi_pass'])
                 char_selector_tupl = run['keypad'].getCharSelectorTupl()
                 if char_selector_tupl is not None:
-                    char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(char_selector_tupl,
-                                                                     xbterminal.local_state['wifi_pass'][-1])
+                    char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(
+                        char_selector_tupl,
+                        xbterminal.local_state['wifi_pass'][-1])
                 else:
                     char_select_str = ''
                 ui.setText('input_help_lbl', char_select_str)
