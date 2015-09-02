@@ -21,4 +21,5 @@ nuitka \
         --recurse-not-to=psutil \
         --output-dir=build \
         --show-progress \
+        --show-modules \
         xbterminal/main.py

@@ -62,6 +62,8 @@ def qemu_start(arch='armhf'):
         elif arch == 'armhf':
             local('qemu-system-arm '
                 '-machine vexpress-a9 '
+                '-smp 2 '
+                '-m 1024M '
                 '-kernel vmlinuz-3.2.0-4-vexpress '
                 '-initrd initrd.img-3.2.0-4-vexpress '
                 '-drive if=sd,file=debian_wheezy_armhf_standard.qcow2 '
