@@ -37,11 +37,7 @@ class BitcoinSender(threading.Thread):
         return self.terminate
 
     def run(self):
-        try:
-            clf = nfc.ContactlessFrontend(READER_PATH)
-        except IOError:
-            reset_usb_hub()
-            clf = nfc.ContactlessFrontend(READER_PATH)
+        clf = nfc.ContactlessFrontend(READER_PATH)
         clf.connect(llcp={'on-connect': self.on_connect},
                     terminate=self.terminate_callback_function)
         clf.close()
