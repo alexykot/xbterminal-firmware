@@ -53,6 +53,7 @@ def qemu_start(arch='armhf'):
         if arch == 'armel':
             local('qemu-system-arm '
                 '-machine versatilepb '
+                '-m 1024M '
                 '-kernel vmlinuz-3.2.0-4-versatile '
                 '-initrd initrd.img-3.2.0-4-versatile '
                 '-hda debian_wheezy_armel_standard.qcow2 '
