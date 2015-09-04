@@ -15,7 +15,7 @@ pip install distribute --upgrade
 pip install -r /vagrant/requirements.txt
 
 # Install nfcpy
-wget --quiet https://launchpad.net/nfcpy/0.9/0.9.2/+download/nfcpy-0.9.2.tar.gz
-tar -xzf nfcpy-0.9.2.tar.gz
-cp -r nfcpy-0.9.2/nfc /usr/local/lib/python2.7/dist-packages/
-rm -rf nfcpy-0.9.2 nfcpy-0.9.2.tar.gz
+wget --quiet https://launchpad.net/nfcpy/0.10/0.10.0/+download/nfcpy-0.10.0.tar.gz
+tar -xzf nfcpy-0.10.0.tar.gz
+cp -r 0.10.0/nfc /usr/local/lib/python2.7/dist-packages/
+rm -rf 0.10.0 nfcpy-0.10.0.tar.gz

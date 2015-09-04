@@ -132,6 +132,8 @@ class KeyboardDriver(object):
         QtCore.Qt.Key_9: 9,
         QtCore.Qt.Key_Backspace: 'backspace',
         QtCore.Qt.Key_Enter: 'enter',
+        QtCore.Qt.Key_Return: 'enter',
+        QtCore.Qt.Key_Alt: 'alt',
         QtCore.Qt.Key_Escape: 'system_halt',
     }
 

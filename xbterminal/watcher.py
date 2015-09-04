@@ -27,6 +27,9 @@ USB_DEVICES = {
         (0x148f, 0x5370, 'RT5370 Wireless Adapter'),
         (0x0bda, 0x8172, 'Realtek Semiconductor Corp. RTL8191SU 802.11n WLAN Adapter'),
     ],
+    'camera': [
+        (0x1871, 0x0142, '300K Pixel USB 2.0 Mini Webcam'),
+    ],
 }
 
 
@@ -94,9 +97,9 @@ class Watcher(threading.Thread):
     def log_system_stats(self):
         logger = logging.getLogger("system_monitor")
         stats = {
-            'cpu': psutil.cpu_percent(interval=1),
-            'memory': psutil.virtual_memory().percent,
-            'disk': psutil.disk_usage("/").percent,
+            'cpu': '{0:.1f}'.format(psutil.cpu_percent(interval=1)),
+            'memory': '{0:.1f}'.format(psutil.virtual_memory().percent),
+            'disk': '{0:.1f}'.format(psutil.disk_usage("/").percent),
         }
         for device_type, device_list in USB_DEVICES.items():
             stats[device_type] = None

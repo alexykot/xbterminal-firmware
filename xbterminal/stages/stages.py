@@ -107,12 +107,16 @@ def idle(run, ui):
             run['withdrawal']['fiat_amount'] = Decimal(0)
             return defaults.STAGES['withdrawal']['withdraw_amount']
         if run['keypad'].last_key_pressed is not None:
-            run['payment']['fiat_amount'] = Decimal(0)
-            if run['keypad'].last_key_pressed in range(10) + ['00']:
-                run['payment']['fiat_amount'] = amounts.process_key_input(
-                    run['payment']['fiat_amount'],
-                    run['keypad'].last_key_pressed)
-            return defaults.STAGES['payment']['pay_amount']
+            if run['keypad'].last_key_pressed == 'alt':
+                run['withdrawal']['fiat_amount'] = Decimal(0)
+                return defaults.STAGES['withdrawal']['withdraw_amount']
+            else:
+                run['payment']['fiat_amount'] = Decimal(0)
+                if run['keypad'].last_key_pressed in range(10) + ['00']:
+                    run['payment']['fiat_amount'] = amounts.process_key_input(
+                        run['payment']['fiat_amount'],
+                        run['keypad'].last_key_pressed)
+                return defaults.STAGES['payment']['pay_amount']
         time.sleep(0.1)
 
 

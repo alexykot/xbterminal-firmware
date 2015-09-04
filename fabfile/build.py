@@ -51,8 +51,10 @@ def qemu_start(arch='armhf'):
         local('wget --quiet --no-clobber {}'.format(images[arch]['initrd']))
         local('wget --quiet --no-clobber {}'.format(images[arch]['kernel']))
         if arch == 'armel':
-            local('qemu-system-arm '
+            local(
+                'qemu-system-arm '
                 '-machine versatilepb '
+                '-m 1024M '
                 '-kernel vmlinuz-3.2.0-4-versatile '
                 '-initrd initrd.img-3.2.0-4-versatile '
                 '-hda debian_wheezy_armel_standard.qcow2 '
@@ -60,7 +62,8 @@ def qemu_start(arch='armhf'):
                 '-redir tcp:32522::22 '
                 '-daemonize')
         elif arch == 'armhf':
-            local('qemu-system-arm '
+            local(
+                'qemu-system-arm '
                 '-machine vexpress-a9 '
                 '-smp 2 '
                 '-m 1024M '
