@@ -77,6 +77,59 @@ def qemu_start(arch='armhf'):
                 '-daemonize')
 
 
+def compile_and_package(working_dir):
+    with cd(working_dir):
+        # Collect data
+        machine = run('uname -m')
+        arch = {
+            'armv5tejl': 'armel',
+            'armv7l': 'armhf',
+        }[machine]
+        version = run('cat VERSION')
+        timestamp = int(time.time())
+
+        main_name = 'main_{arch}_{pv}'.format(
+            arch=arch, pv=version)
+        package_name = 'xbterminal-firmware_{arch}_{pv}'.format(
+            arch=arch, pv=version)
+
+        puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
+                     version, timestamp, arch)))
+
+        # Run compilation
+        run('chmod +x tools/compile.sh')
+        run('nice -n -10 tools/compile.sh')
+
+        # Remove package dir
+        run('rm -rf build/pkg/')
+        run('rm -rf build/{pn}/'.format(pn=package_name))
+
+        # Collect files
+        run('mkdir -p build/pkg/xbterminal/gui/ts')
+        run('mkdir -p build/pkg/xbterminal/runtime')
+        run('cp LICENSE build/pkg/')
+        run('cp build/main.exe build/pkg/xbterminal/main')
+        run('cp -r xbterminal/gui/fonts build/pkg/xbterminal/gui/')
+        run('cp -r xbterminal/gui/images build/pkg/xbterminal/gui/')
+        run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
+
+        # Create tarball
+        run('mv build/pkg build/{pn}'.format(pn=package_name))
+        run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
+
+        # Copy resulting files to host machine
+        get('build/main.exe',
+            'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
+        get('build/{pn}.tar.gz'.format(pn=package_name),
+            'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))
+
+    with lcd('build'):
+        local('rm -f {mn}'.format(mn=main_name))
+        local('rm -f {pn}.tar.gz'.format(pn=package_name))
+        local('ln -s {mn}.{ts} {mn}'.format(mn=main_name, ts=timestamp))
+        local('ln -s {pn}.{ts}.tar.gz {pn}.tar.gz'.format(pn=package_name, ts=timestamp))
+
+
 @task
 def qemu_compile(working_dir='/srv/xbterminal'):
     with settings(host_string='root@127.0.0.1:32522',
@@ -98,53 +151,4 @@ def qemu_compile(working_dir='/srv/xbterminal'):
         put('VERSION', working_dir)
         put('LICENSE', working_dir)
 
-        with cd(working_dir):
-            # Collect data
-            machine = run('uname -m')
-            arch = {
-                'armv5tejl': 'armel',
-                'armv7l': 'armhf',
-            }[machine]
-            version = run('cat VERSION')
-            timestamp = int(time.time())
-
-            main_name = 'main_{arch}_{pv}'.format(
-                arch=arch, pv=version)
-            package_name = 'xbterminal-firmware_{arch}_{pv}'.format(
-                arch=arch, pv=version)
-
-            puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
-                         version, timestamp, arch)))
-
-            # Run compilation
-            run('chmod +x tools/compile.sh')
-            run('nice -n -10 tools/compile.sh')
-
-            # Remove package dir
-            run('rm -rf build/pkg/')
-            run('rm -rf build/{pn}/'.format(pn=package_name))
-
-            # Collect files
-            run('mkdir -p build/pkg/xbterminal/gui/ts')
-            run('mkdir -p build/pkg/xbterminal/runtime')
-            run('cp LICENSE build/pkg/')
-            run('cp build/main.exe build/pkg/xbterminal/main')
-            run('cp -r xbterminal/gui/fonts build/pkg/xbterminal/gui/')
-            run('cp -r xbterminal/gui/images build/pkg/xbterminal/gui/')
-            run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
-
-            # Create tarball
-            run('mv build/pkg build/{pn}'.format(pn=package_name))
-            run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
-
-            # Copy resulting files to host machine
-            get('build/main.exe',
-                'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
-            get('build/{pn}.tar.gz'.format(pn=package_name),
-                'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))
-
-        with lcd('build'):
-            local('rm -f {mn}'.format(mn=main_name))
-            local('rm -f {pn}.tar.gz'.format(pn=package_name))
-            local('ln -s {mn}.{ts} {mn}'.format(mn=main_name, ts=timestamp))
-            local('ln -s {pn}.{ts}.tar.gz {pn}.tar.gz'.format(pn=package_name, ts=timestamp))
+        compile_and_package(working_dir)
