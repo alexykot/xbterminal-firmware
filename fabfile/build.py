@@ -2,6 +2,7 @@ import time
 
 from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get, puts
 from fabric.contrib.files import exists
+from fabric.contrib.project import rsync_project
 from fabric.context_managers import shell_env
 from fabric.colors import magenta
 
@@ -85,6 +86,7 @@ def compile_and_package(working_dir):
             'armv5tejl': 'armel',
             'armv7l': 'armhf',
         }[machine]
+        nuitka_version = run('nuitka --version')
         version = run('cat VERSION')
         timestamp = int(time.time())
 
@@ -93,6 +95,7 @@ def compile_and_package(working_dir):
         package_name = 'xbterminal-firmware_{arch}_{pv}'.format(
             arch=arch, pv=version)
 
+        puts(magenta('Nuitka {0}'.format(nuitka_version)))
         puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
                      version, timestamp, arch)))
 
@@ -152,3 +155,20 @@ def qemu_compile(working_dir='/srv/xbterminal'):
         put('LICENSE', working_dir)
 
         compile_and_package(working_dir)
+
+
+@task
+def remote_compile(working_dir='xbterminal'):
+    if not exists(working_dir):
+        run('mkdir -p {}'.format(working_dir))
+
+    # Copy current sources to remote machine
+    rsync_project(local_dir='xbterminal',
+                  remote_dir=working_dir,
+                  exclude=['*.pyc', '__pycache__', 'runtime'])
+    rsync_project(local_dir='tools',
+                  remote_dir=working_dir)
+    put('VERSION', working_dir)
+    put('LICENSE', working_dir)
+
+    compile_and_package(working_dir)
