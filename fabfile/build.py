@@ -1,4 +1,3 @@
-import os.path
 import time
 
 from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get, puts
@@ -96,50 +95,56 @@ def qemu_compile(working_dir='/srv/xbterminal'):
         # Copy current sources to VM
         put('xbterminal', working_dir)
         put('tools', working_dir)
-
-        # Collect data
-        machine = run('uname -m')
-        arch = {
-            'armv5tejl': 'armel',
-            'armv7l': 'armhf',
-        }[machine]
-        version = local('cat VERSION', capture=True)
-        timestamp = int(time.time())
-        puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
-                     version, timestamp, arch)))
+        put('VERSION', working_dir)
+        put('LICENSE', working_dir)
 
         with cd(working_dir):
+            # Collect data
+            machine = run('uname -m')
+            arch = {
+                'armv5tejl': 'armel',
+                'armv7l': 'armhf',
+            }[machine]
+            version = run('cat VERSION')
+            timestamp = int(time.time())
+
+            main_name = 'main_{arch}_{pv}'.format(
+                arch=arch, pv=version)
+            package_name = 'xbterminal-firmware_{arch}_{pv}'.format(
+                arch=arch, pv=version)
+
+            puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
+                         version, timestamp, arch)))
+
             # Run compilation
             run('chmod +x tools/compile.sh')
             run('nice -n -10 tools/compile.sh')
 
-            # Copy compiled binary file to host machine
+            # Remove package dir
+            run('rm -rf build/pkg/')
+            run('rm -rf build/{pn}/'.format(pn=package_name))
+
+            # Collect files
+            run('mkdir -p build/pkg/xbterminal/gui/ts')
+            run('mkdir -p build/pkg/xbterminal/runtime')
+            run('cp LICENSE build/pkg/')
+            run('cp build/main.exe build/pkg/xbterminal/main')
+            run('cp -r xbterminal/gui/fonts build/pkg/xbterminal/gui/')
+            run('cp -r xbterminal/gui/images build/pkg/xbterminal/gui/')
+            run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
+
+            # Create tarball
+            run('mv build/pkg build/{pn}'.format(pn=package_name))
+            run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
+
+            # Copy resulting files to host machine
             get('build/main.exe',
-                'build/main-{0}-{1}.{2}'.format(arch, version, timestamp))
+                'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
+            get('build/{pn}.tar.gz'.format(pn=package_name),
+                'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))
 
         with lcd('build'):
-            local('rm -f  main-{0}-{1}'.format(arch, version))
-            local('ln -s main-{0}-{1}.{2} main-{0}-{1}'.format(
-                  arch, version, timestamp))
-
-
-@task
-def package(arch='armhf'):
-    version = local('cat VERSION', capture=True)
-    package_name = 'xbterminal-firmware-{0}-{1}'.format(version, arch)
-    package_dir = os.path.join('build', package_name)
-    # Remove old build
-    local('rm -rf {}'.format(package_dir))
-    # Collect files
-    local('mkdir {}'.format(package_dir))
-    with lcd(package_dir):
-        local('mkdir -p xbterminal/gui/ts')
-        local('mkdir -p xbterminal/runtime')
-        local('cp ../../LICENSE .')
-        local('cp ../main-{arch}-{pv} xbterminal/main'.format(
-              arch=arch, pv=version))
-        local('cp -r ../../xbterminal/gui/fonts xbterminal/gui/')
-        local('cp -r ../../xbterminal/gui/images xbterminal/gui/')
-        local('cp -r ../../xbterminal/gui/ts/*.qm xbterminal/gui/ts')
-    # Create tarball
-    local('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
+            local('rm -f {mn}'.format(mn=main_name))
+            local('rm -f {pn}.tar.gz'.format(pn=package_name))
+            local('ln -s {mn}.{ts} {mn}'.format(mn=main_name, ts=timestamp))
+            local('ln -s {pn}.{ts}.tar.gz {pn}.tar.gz'.format(pn=package_name, ts=timestamp))
