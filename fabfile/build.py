@@ -1,7 +1,10 @@
 import os.path
+import time
+
 from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get, puts
 from fabric.contrib.files import exists
 from fabric.context_managers import shell_env
+from fabric.colors import magenta
 
 
 @task
@@ -76,20 +79,11 @@ def qemu_start(arch='armhf'):
 
 
 @task
-def qemu_compile():
+def qemu_compile(working_dir='/srv/xbterminal'):
     with settings(host_string='root@127.0.0.1:32522',
                   password='root',
                   disable_known_hosts=True):
 
-        # Determine architecture
-        machine = run('uname -m')
-        arch = {
-            'armv5tejl': 'armel',
-            'armv7l': 'armhf',
-        }[machine]
-        puts('Compiling for {} architecture'.format(arch))
-
-        working_dir = '/srv/xbterminal'
         if not exists(working_dir):
             # Install required packages, quietly
             with shell_env(DEBIAN_FRONTEND='noninteractive'):
@@ -97,17 +91,36 @@ def qemu_compile():
                 run('apt-get install --yes --quiet '
                     'git python-dev python-pip')
             run('pip install --quiet Nuitka==0.5.13.4')
-            run('mkdir {}'.format(working_dir))
+            run('mkdir -p {}'.format(working_dir))
+
+        # Copy current sources to VM
+        put('xbterminal', working_dir)
+        put('tools', working_dir)
+
+        # Collect data
+        machine = run('uname -m')
+        arch = {
+            'armv5tejl': 'armel',
+            'armv7l': 'armhf',
+        }[machine]
+        version = local('cat VERSION', capture=True)
+        timestamp = int(time.time())
+        puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
+                     version, timestamp, arch)))
 
         with cd(working_dir):
-            # Copy current sources to VM
-            put('xbterminal', '.')
-            put('tools', '.')
-            # Run compile script
+            # Run compilation
             run('chmod +x tools/compile.sh')
-            run('tools/compile.sh')
+            run('nice -n -10 tools/compile.sh')
+
             # Copy compiled binary file to host machine
-            get('build/main.exe', 'build/main_{}'.format(arch))
+            get('build/main.exe',
+                'build/main-{0}-{1}.{2}'.format(arch, version, timestamp))
+
+        with lcd('build'):
+            local('rm -f  main-{0}-{1}'.format(arch, version))
+            local('ln -s main-{0}-{1}.{2} main-{0}-{1}'.format(
+                  arch, version, timestamp))
 
 
 @task
@@ -123,7 +136,8 @@ def package(arch='armhf'):
         local('mkdir -p xbterminal/gui/ts')
         local('mkdir -p xbterminal/runtime')
         local('cp ../../LICENSE .')
-        local('cp ../main_{arch} xbterminal/main'.format(arch=arch))
+        local('cp ../main-{arch}-{pv} xbterminal/main'.format(
+              arch=arch, pv=version))
         local('cp -r ../../xbterminal/gui/fonts xbterminal/gui/')
         local('cp -r ../../xbterminal/gui/images xbterminal/gui/')
         local('cp -r ../../xbterminal/gui/ts/*.qm xbterminal/gui/ts')
