@@ -26,10 +26,8 @@ from xbterminal.stages.worker import StageWorker, move_to_thread
 import xbterminal.watcher
 
 
-def main():
-    logger.debug('starting')
-    # init runtime
-    run = xbterminal.runtime = {}
+def get_initial_state():
+    run = {}
     run['init'] = {}
     run['init']['internet'] = False
     run['init']['clock_synchronized'] = False
@@ -67,6 +65,13 @@ def main():
     run['bluetooth_server'] = None
     run['nfc_server'] = None
     run['qr_scanner'] = None
+    return run
+
+
+def main():
+    logger.debug('starting')
+    # init runtime
+    run = xbterminal.runtime = get_initial_state()
 
     xbterminal.helpers.configs.load_local_state()
     if xbterminal.local_state.get('use_predefined_connection'):
