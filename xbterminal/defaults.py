@@ -47,7 +47,11 @@ SCREENS = {
 
 SCREEN_BRIGHTNESS = 40
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from xbterminal.nuitka_fix import BASE_DIR
+except ImportError:
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')

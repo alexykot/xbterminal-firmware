@@ -158,7 +158,7 @@ def qemu_compile(working_dir='/srv/xbterminal'):
 
 
 @task
-def remote_compile(working_dir='xbterminal'):
+def remote_compile(working_dir='xbterminal', target_dir='/srv/xbterminal'):
     if not exists(working_dir):
         run('mkdir -p {}'.format(working_dir))
 
@@ -170,5 +170,8 @@ def remote_compile(working_dir='xbterminal'):
                   remote_dir=working_dir)
     put('VERSION', working_dir)
     put('LICENSE', working_dir)
+
+    run('echo "BASE_DIR = \'{0}\'" > {1}/xbterminal/nuitka_fix.py'.format(
+        target_dir, working_dir))
 
     compile_and_package(working_dir)

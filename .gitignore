@@ -6,6 +6,7 @@ bitcoinj_server/*
 xbterminal/runtime/*
 xbterminal/device_key
 xbterminal/bitcoind_auth.py
+xbterminal/nuitka_fix.py
 xbterminal/main.so
 bitcoinj-server.tar.gz
 fabfile/deploy.py
