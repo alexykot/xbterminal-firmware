@@ -2,6 +2,7 @@
 
 nuitka \
         --python-version=2.7 \
+        --clang \
         --recurse-all \
         --recurse-not-to=PyQt4 \
         --recurse-not-to=requests \

@@ -154,6 +154,8 @@ def qemu_compile(working_dir='/srv/xbterminal'):
         put('VERSION', working_dir)
         put('LICENSE', working_dir)
 
+        run("sed -i '/--clang/d' {}/tools/compile.sh".format(working_dir))
+
         compile_and_package(working_dir)
 
 
