@@ -43,8 +43,21 @@ xinit /vagrant/xbterminal/main.py
 
 Requirements:
 
-* QEMU
 * Fabric
+* QEMU
+
+### Remote server
+
+```
+fab build.remote_compile
+```
+
+This command outputs two files:
+
+* Binary executable `build/main_{arch}_{version}`
+* Installation package `build/xbterminal-firmware_{arch}_{version}.tar.gz`.
+
+### QEMU VM
 
 Create and run VM:
 
@@ -65,12 +78,4 @@ Wait until VM is ready, then start the compilation:
 
 ```
 fab build.qemu_compile
-```
-
-This command outputs compiled module to `build/main_{arch}`. Module's working directory assumed to be `/srv/xbterminal/xbterminal`.
-
-Create a package:
-
-```
-fab build.package:arch=armhf
 ```
