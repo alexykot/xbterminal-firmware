@@ -24,45 +24,46 @@ logger = logging.getLogger(__name__)
 
 
 def get_initial_state():
-    run = {}
-    run['init'] = {}
-    run['init']['clock_synchronized'] = False
-    run['init']['remote_config'] = False
-    run['init']['remote_config_last_update'] = 0
-    run['CURRENT_STAGE'] = defaults.STAGES['bootup']
-    run['payment'] = {
-        # Store variables related to payment process
-        'fiat_amount': None,
-        'order': None,
-        'qr_image_path': None,
-        'receipt_url': None,
+    return {
+        'device_key': None,
+        'local_config': {},
+        'remote_server': None,
+        'remote_config': {},
+        'last_activity_timestamp': None,
+        'keypad': None,
+        'keyboard_events': deque(maxlen=1),  # Only for keyboard driver
+        'bluetooth_server': None,
+        'nfc_server': None,
+        'qr_scanner': None,
+        'screen_buttons': {
+            # Button states
+            'skip_wifi': False,
+            'pay': False,
+            'withdraw': False,
+            'confirm_withdrawal': False,
+        },
+        'init': {
+            'clock_synchronized': False,
+            'remote_config': False,
+            'remote_config_last_update': 0,
+        },
+        'CURRENT_STAGE': defaults.STAGES['bootup'],
+        'payment': {
+            # Variables related to payment process
+            'fiat_amount': None,
+            'order': None,
+            'qr_image_path': None,
+            'receipt_url': None,
+        },
+        'withdrawal': {
+            # Variables related to withdrawal process
+            'fiat_amount': None,
+            'order': None,
+            'address': None,
+            'receipt_url': None,
+            'qr_image_path': None,
+        },
     }
-    run['withdrawal'] = {
-        # Variables related to withdrawal process
-        'fiat_amount': None,
-        'order': None,
-        'address': None,
-        'receipt_url': None,
-        'qr_image_path': None,
-    }
-    run['screen_buttons'] = {
-        # Store button states
-        'skip_wifi': False,
-        'pay': False,
-        'withdraw': False,
-        'confirm_withdrawal': False,
-    }
-    run['device_key'] = None
-    run['local_config'] = {}
-    run['remote_server'] = None
-    run['remote_config'] = {}
-    run['last_activity_timestamp'] = None
-    run['keypad'] = None
-    run['keyboard_events'] = deque(maxlen=1)  # Only for keyboard driver
-    run['bluetooth_server'] = None
-    run['nfc_server'] = None
-    run['qr_scanner'] = None
-    return run
 
 
 def main():
