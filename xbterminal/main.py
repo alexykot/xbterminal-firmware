@@ -7,8 +7,9 @@ import logging.config
 import subprocess
 from collections import deque
 
-include_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
+include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
+
 import xbterminal
 import xbterminal.defaults
 

@@ -1,7 +1,10 @@
-import os.path
+import time
+
 from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get, puts
 from fabric.contrib.files import exists
+from fabric.contrib.project import rsync_project
 from fabric.context_managers import shell_env
+from fabric.colors import magenta
 
 
 @task
@@ -75,21 +78,67 @@ def qemu_start(arch='armhf'):
                 '-daemonize')
 
 
-@task
-def qemu_compile():
-    with settings(host_string='root@127.0.0.1:32522',
-                  password='root',
-                  disable_known_hosts=True):
-
-        # Determine architecture
+def compile_and_package(working_dir):
+    with cd(working_dir):
+        # Collect data
         machine = run('uname -m')
         arch = {
             'armv5tejl': 'armel',
             'armv7l': 'armhf',
         }[machine]
-        puts('Compiling for {} architecture'.format(arch))
+        nuitka_version = run('nuitka --version')
+        version = run('cat VERSION')
+        timestamp = int(time.time())
 
-        working_dir = '/srv/xbterminal'
+        main_name = 'main_{pv}_{arch}'.format(
+            arch=arch, pv=version)
+        package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
+            arch=arch, pv=version)
+
+        puts(magenta('Nuitka {0}'.format(nuitka_version)))
+        puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
+                     version, timestamp, arch)))
+
+        # Run compilation
+        run('chmod +x tools/compile.sh')
+        run('nice -n -10 tools/compile.sh')
+
+        # Remove package dir
+        run('rm -rf build/pkg/')
+        run('rm -rf build/{pn}/'.format(pn=package_name))
+
+        # Collect files
+        run('mkdir -p build/pkg/xbterminal/gui/ts')
+        run('mkdir -p build/pkg/xbterminal/runtime')
+        run('cp LICENSE build/pkg/')
+        run('cp build/main.exe build/pkg/xbterminal/main')
+        run('cp -r xbterminal/gui/fonts build/pkg/xbterminal/gui/')
+        run('cp -r xbterminal/gui/images build/pkg/xbterminal/gui/')
+        run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
+
+        # Create tarball
+        run('mv build/pkg build/{pn}'.format(pn=package_name))
+        run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
+
+        # Copy resulting files to host machine
+        get('build/main.exe',
+            'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
+        get('build/{pn}.tar.gz'.format(pn=package_name),
+            'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))
+
+    with lcd('build'):
+        local('rm -f {mn}'.format(mn=main_name))
+        local('rm -f {pn}.tar.gz'.format(pn=package_name))
+        local('ln -s {mn}.{ts} {mn}'.format(mn=main_name, ts=timestamp))
+        local('ln -s {pn}.{ts}.tar.gz {pn}.tar.gz'.format(pn=package_name, ts=timestamp))
+
+
+@task
+def qemu_compile(working_dir='/srv/xbterminal'):
+    with settings(host_string='root@127.0.0.1:32522',
+                  password='root',
+                  disable_known_hosts=True):
+
         if not exists(working_dir):
             # Install required packages, quietly
             with shell_env(DEBIAN_FRONTEND='noninteractive'):
@@ -97,35 +146,34 @@ def qemu_compile():
                 run('apt-get install --yes --quiet '
                     'git python-dev python-pip')
             run('pip install --quiet Nuitka==0.5.13.4')
-            run('mkdir {}'.format(working_dir))
+            run('mkdir -p {}'.format(working_dir))
 
-        with cd(working_dir):
-            # Copy current sources to VM
-            put('xbterminal', '.')
-            put('tools', '.')
-            # Run compile script
-            run('chmod +x tools/compile.sh')
-            run('tools/compile.sh')
-            # Copy compiled binary file to host machine
-            get('build/main.exe', 'build/main_{}'.format(arch))
+        # Copy current sources to VM
+        put('xbterminal', working_dir)
+        put('tools', working_dir)
+        put('VERSION', working_dir)
+        put('LICENSE', working_dir)
+
+        run("sed -i '/--clang/d' {}/tools/compile.sh".format(working_dir))
+
+        compile_and_package(working_dir)
 
 
 @task
-def package(arch='armhf'):
-    version = local('cat VERSION', capture=True)
-    package_name = 'xbterminal-firmware-{0}-{1}'.format(version, arch)
-    package_dir = os.path.join('build', package_name)
-    # Remove old build
-    local('rm -rf {}'.format(package_dir))
-    # Collect files
-    local('mkdir {}'.format(package_dir))
-    with lcd(package_dir):
-        local('mkdir -p xbterminal/gui/ts')
-        local('mkdir -p xbterminal/runtime')
-        local('cp ../../LICENSE .')
-        local('cp ../main_{arch} xbterminal/main'.format(arch=arch))
-        local('cp -r ../../xbterminal/gui/fonts xbterminal/gui/')
-        local('cp -r ../../xbterminal/gui/images xbterminal/gui/')
-        local('cp -r ../../xbterminal/gui/ts/*.qm xbterminal/gui/ts')
-    # Create tarball
-    local('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
+def remote_compile(working_dir='xbterminal', target_dir='/srv/xbterminal'):
+    if not exists(working_dir):
+        run('mkdir -p {}'.format(working_dir))
+
+    # Copy current sources to remote machine
+    rsync_project(local_dir='xbterminal',
+                  remote_dir=working_dir,
+                  exclude=['*.pyc', '__pycache__', 'runtime'])
+    rsync_project(local_dir='tools',
+                  remote_dir=working_dir)
+    put('VERSION', working_dir)
+    put('LICENSE', working_dir)
+
+    run('echo "BASE_DIR = \'{0}\'" > {1}/xbterminal/nuitka_fix.py'.format(
+        target_dir, working_dir))
+
+    compile_and_package(working_dir)
