@@ -8,6 +8,11 @@ from xbterminal.stages.payment import Payment
 from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
 
 
+@patch.dict('xbterminal.stages.amounts.xbterminal.runtime',
+            remote_config={
+                'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
+                'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
+            })
 class AmountsUtilsTestCase(unittest.TestCase):
 
     def test_process_key_input(self):

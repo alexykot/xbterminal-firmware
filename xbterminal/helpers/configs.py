@@ -25,7 +25,6 @@ def get_device_key():
 
 
 def load_remote_config():
-    remote_config_old_items = set(getattr(xbterminal, "remote_config", {}).items())
     config_url = xbterminal.runtime['remote_server'] + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
         device_key=xbterminal.runtime['device_key'])
     headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
@@ -33,23 +32,24 @@ def load_remote_config():
     try:
         response = requests.get(url=config_url, headers=headers)
         response.raise_for_status()
-        xbterminal.remote_config = response.json()
+        remote_config = response.json()
     except Exception as error:
         logger.warning("no remote configs available, trying local cache")
         try:
-            xbterminal.remote_config = load_remote_config_cache()
+            return load_remote_config_cache()
         except IOError:
             raise ConfigLoadError()
     else:
         # Compare configs
-        if remote_config_old_items ^ set(xbterminal.remote_config.items()):
+        if set(xbterminal.runtime['remote_config'].items()) ^ set(remote_config.items()):
             logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
                 server_url=xbterminal.runtime['remote_server'],
-                config_contents=xbterminal.remote_config))
+                config_contents=remote_config))
         else:
             logger.debug("remote config loaded from {server_url}, unchanged".format(
                 server_url=xbterminal.runtime['remote_server']))
-        save_remote_config_cache(xbterminal.remote_config)
+        save_remote_config_cache(remote_config)
+        return remote_config
 
 
 def save_remote_config_cache(remote_config):

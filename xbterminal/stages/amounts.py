@@ -31,8 +31,8 @@ def format_amount(amount, dec_places=OUTPUT_DEC_PLACES):
     quantum = Decimal(1) / 10 ** dec_places
     integer_part = amount.quantize(0, ROUND_FLOOR)
     fractional_part = (amount - integer_part).quantize(quantum)
-    thousand_sep = xbterminal.remote_config['OUTPUT_DEC_THOUSANDS_SPLIT']
-    decimal_sep = xbterminal.remote_config['OUTPUT_DEC_FRACTIONAL_SPLIT']
+    thousand_sep = xbterminal.runtime['remote_config']['OUTPUT_DEC_THOUSANDS_SPLIT']
+    decimal_sep = xbterminal.runtime['remote_config']['OUTPUT_DEC_FRACTIONAL_SPLIT']
     return '{0}{1}{2}'.format(format(integer_part, thousand_sep),
                               decimal_sep,
                               str(fractional_part)[2:])

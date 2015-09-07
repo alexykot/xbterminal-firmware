@@ -56,6 +56,7 @@ def get_initial_state():
     }
     run['device_key'] = None
     run['remote_server'] = None
+    run['remote_config'] = {}
     run['last_activity_timestamp'] = None
     run['wifi'] = {}
     run['wifi']['connected'] = False
@@ -111,7 +112,7 @@ def main():
             and run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time()
         ):
             try:
-                xbterminal.helpers.configs.load_remote_config()
+                run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:
                 # Do not raise error, wait for internet connection
                 watcher.set_error('remote_config', 'remote config load failed')
@@ -120,14 +121,14 @@ def main():
                 run['init']['remote_config_last_update'] = int(time.time())
                 watcher.discard_error('remote_config')
                 main_window.retranslateUi(
-                    xbterminal.remote_config['MERCHANT_LANGUAGE'],
-                    xbterminal.remote_config['MERCHANT_CURRENCY_SIGN_PREFIX'])
+                    run['remote_config']['MERCHANT_LANGUAGE'],
+                    run['remote_config']['MERCHANT_CURRENCY_SIGN_PREFIX'])
 
         # Reboot if blockchain network has changed
         if (
             run['init']['remote_config']
             and run['init']['blockchain_network'] is not None
-            and run['init']['blockchain_network'] != xbterminal.remote_config['BITCOIN_NETWORK']
+            and run['init']['blockchain_network'] != run['remote_config']['BITCOIN_NETWORK']
         ):
             gracefulExit(system_reboot=True)
 

@@ -2,15 +2,24 @@ from decimal import Decimal
 from mock import patch, Mock
 import unittest
 
-import xbterminal
-
-xbterminal.remote_config = {
-    'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
-    'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
-}
-
 from xbterminal import defaults
 from xbterminal.stages import stages
+
+
+patcher = patch.dict(
+    'xbterminal.stages.amounts.xbterminal.runtime',
+    remote_config={
+        'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
+        'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
+    })
+
+
+def setUpModule():
+    patcher.start()
+
+
+def tearDownModule():
+    patcher.stop()
 
 
 class IdleStageTestCase(unittest.TestCase):
