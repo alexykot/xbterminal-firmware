@@ -49,7 +49,30 @@ def load_remote_config():
         else:
             logger.debug("remote config loaded from {server_url}, unchanged".format(
                 server_url=xbterminal.runtime['remote_server']))
-        save_remote_config_cache()
+        save_remote_config_cache(xbterminal.remote_config)
+
+
+def save_remote_config_cache(remote_config):
+    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
+    with open(remote_config_cache_file_abs_path, 'wb') as cache_file:
+        cache_file.write(json.dumps(remote_config))
+
+
+def load_remote_config_cache():
+    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
+
+    if not os.path.exists(remote_config_cache_file_abs_path):
+        logger.warning('config cache file {cache_path} not exists, cache load failed'.format(
+            cache_path=remote_config_cache_file_abs_path))
+        raise IOError
+
+    with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
+        remote_config = json.loads(cache_file.read())
+
+    logger.debug('remote config loaded from cache file {cache_path}'.format(
+        cache_path=remote_config_cache_file_abs_path))
+
+    return remote_config
 
 
 def load_local_state():
@@ -75,26 +98,3 @@ def save_local_state():
     local_state_file_abs_path = xbterminal.defaults.STATE_FILE_PATH
     with open(local_state_file_abs_path, 'wb') as state_file:
         state_file.write(json.dumps(xbterminal.local_state, indent=2, sort_keys=True, separators=(',', ': ')))
-
-
-def save_remote_config_cache():
-    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
-    with open(remote_config_cache_file_abs_path, 'wb') as cache_file:
-        cache_file.write(json.dumps(xbterminal.remote_config))
-
-
-def load_remote_config_cache():
-    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
-
-    if not os.path.exists(remote_config_cache_file_abs_path):
-        logger.warning('config cache file {cache_path} not exists, cache load failed'.format(
-            cache_path=remote_config_cache_file_abs_path))
-        raise IOError
-
-    with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
-        remote_config = json.loads(cache_file.read())
-
-    logger.debug('remote config loaded from cache file {cache_path}'.format(
-        cache_path=remote_config_cache_file_abs_path))
-
-    return remote_config
