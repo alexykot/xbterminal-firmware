@@ -24,36 +24,23 @@ def get_device_key():
     return device_key
 
 
-def choose_remote_server(device_key):
-    for server in xbterminal.defaults.REMOTE_SERVERS:
-        config_url = server + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
-            device_key=device_key)
-        headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-        headers['Content-type'] = 'application/json'
-        try:
-            response = requests.get(url=config_url, headers=headers)
-            response.raise_for_status()
-        except requests.exceptions.RequestException:
-            logger.warning("remote config {config_url} unreachable, trying next server".format(
-                config_url=config_url))
-            continue
-        config = response.json()
-        return server, config
-    raise ConfigLoadError()
-
-
 def load_remote_config():
     xbterminal.device_key = get_device_key()
     remote_config_old_items = set(getattr(xbterminal, "remote_config", {}).items())
+    config_url = xbterminal.runtime['remote_server'] + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
+        device_key=xbterminal.device_key)
+    headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+    headers['Content-type'] = 'application/json'
     try:
-        xbterminal.runtime['remote_server'], xbterminal.remote_config = choose_remote_server(
-            xbterminal.device_key)
-    except ConfigLoadError as config_error:
+        response = requests.get(url=config_url, headers=headers)
+        response.raise_for_status()
+        xbterminal.remote_config = response.json()
+    except Exception as error:
         logger.warning("no remote configs available, trying local cache")
         try:
-            load_remote_config_cache()
+            xbterminal.remote_config = load_remote_config_cache()
         except IOError:
-            raise config_error
+            raise ConfigLoadError()
     else:
         # Compare configs
         if remote_config_old_items ^ set(xbterminal.remote_config.items()):
@@ -83,10 +70,6 @@ def load_local_state():
             logger.debug('local state loaded from {path}, {contents}'.format(
                 path=local_state_file_abs_path,
                 contents=local_state_contents))
-            if xbterminal.local_state.get('use_dev_remote_server'):
-                xbterminal.defaults.REMOTE_SERVERS = ('http://stage.xbterminal.com',)
-                logger.debug('!!! DEV SERVER OVERRRIDE ACTIVE, servers: {}'.format(
-                    xbterminal.defaults.REMOTE_SERVERS[0]))
 
 
 def save_local_state():
@@ -110,7 +93,9 @@ def load_remote_config_cache():
         raise IOError
 
     with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
-        xbterminal.remote_config = json.loads(cache_file.read())
+        remote_config = json.loads(cache_file.read())
 
     logger.debug('remote config loaded from cache file {cache_path}'.format(
         cache_path=remote_config_cache_file_abs_path))
+
+    return remote_config

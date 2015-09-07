@@ -88,7 +88,7 @@ class Watcher(threading.Thread):
                          and os.path.exists(os.path.join("/sys/class/net", wireless.interface)))
         # Check internet connection
         try:
-            requests.get(defaults.REMOTE_SERVERS[0],
+            requests.get(xbterminal.runtime['remote_server'],
                          timeout=defaults.EXTERNAL_CALLS_TIMEOUT)
             self.internet = True
         except (requests.exceptions.RequestException, socket.timeout):

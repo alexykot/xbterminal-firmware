@@ -57,6 +57,7 @@ def get_initial_state():
         'withdraw': False,
         'confirm_withdrawal': False,
     }
+    run['remote_server'] = None
     run['last_activity_timestamp'] = None
     run['wifi'] = {}
     run['wifi']['connected'] = False
@@ -74,6 +75,14 @@ def main():
     run = xbterminal.runtime = get_initial_state()
 
     xbterminal.helpers.configs.load_local_state()
+
+    if xbterminal.local_state.get('use_dev_remote_server'):
+        run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['dev']
+        logger.warning('!!! DEV SERVER OVERRRIDE ACTIVE')
+    else:
+        run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['main']
+    logger.info('remote server: {}'.format(run['remote_server']))
+
     if xbterminal.local_state.get('use_predefined_connection'):
         run['init']['internet'] = True
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
