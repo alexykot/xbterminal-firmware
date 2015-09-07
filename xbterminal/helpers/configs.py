@@ -3,6 +3,7 @@ import json
 import os
 import requests
 import logging
+import pprint
 
 import xbterminal
 import xbterminal.defaults
@@ -42,11 +43,10 @@ def load_remote_config():
     else:
         # Compare configs
         if set(xbterminal.runtime['remote_config'].items()) ^ set(remote_config.items()):
-            logger.debug("remote config loaded from {server_url}, contents: {config_contents}".format(
-                server_url=xbterminal.runtime['remote_server'],
-                config_contents=remote_config))
+            logger.info('remote config loaded, contents:\n{config_contents}'.format(
+                config_contents=pprint.pformat(remote_config)))
         else:
-            logger.debug("remote config loaded from {server_url}, unchanged".format(
+            logger.debug('remote config loaded, unchanged'.format(
                 server_url=xbterminal.runtime['remote_server']))
         save_remote_config_cache(remote_config)
         return remote_config
@@ -62,14 +62,14 @@ def load_remote_config_cache():
     remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
 
     if not os.path.exists(remote_config_cache_file_abs_path):
-        logger.warning('config cache file {cache_path} not exists, cache load failed'.format(
+        logger.warning('remote config cache file not exists, cache load failed'.format(
             cache_path=remote_config_cache_file_abs_path))
         raise IOError
 
     with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
         remote_config = json.loads(cache_file.read())
 
-    logger.debug('remote config loaded from cache file {cache_path}'.format(
+    logger.debug('remote config loaded from cache'.format(
         cache_path=remote_config_cache_file_abs_path))
 
     return remote_config
@@ -92,11 +92,14 @@ def load_local_config():
     if not os.path.exists(local_config_path):
         local_config = {}
         save_local_config(local_config)
-        logger.debug('created new local config')
+        logger.info('created new local config at {}'.format(
+            local_config_path))
     else:
         with open(local_config_path) as local_config_file:
             local_config = json.loads(local_config_file.read())
-            logger.debug('local config loaded: {}'.format(local_config))
+            logger.info('local config loaded from {0}:\n{1}'.format(
+                local_config_path,
+                pprint.pformat(local_config)))
     return local_config
 
 

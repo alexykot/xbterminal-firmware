@@ -81,7 +81,7 @@ class Watcher(threading.Thread):
                 if device:
                     stats[device_type] = device_name
                     break
-        logger.info(str(stats))
+        logger.debug(str(stats))
         self.system_stats_timestamp = time.time()
 
     def get_errors(self):
