@@ -1,15 +1,6 @@
 from decimal import Decimal
 from mock import patch, Mock
 import unittest
-import sys
-
-sys.modules['PyQt4'] = Mock()
-sys.modules['dbus'] = Mock()
-sys.modules['nfc'] = Mock()
-sys.modules['nfc.snep'] = Mock()
-sys.modules['nfc.llcp'] = Mock()
-sys.modules['cv2'] = Mock()
-sys.modules['zbar'] = Mock()
 
 import xbterminal
 

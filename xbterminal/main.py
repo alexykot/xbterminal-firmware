@@ -12,11 +12,6 @@ sys.path.insert(0, include_path)
 
 import xbterminal
 import xbterminal.defaults
-
-# Set up logging
-logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
-logger = logging.getLogger(__name__)
-
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
@@ -24,6 +19,8 @@ import xbterminal.helpers.configs
 from xbterminal import defaults
 from xbterminal.stages.worker import StageWorker, move_to_thread
 import xbterminal.watcher
+
+logger = logging.getLogger(__name__)
 
 
 def get_initial_state():
@@ -71,6 +68,7 @@ def get_initial_state():
 
 
 def main():
+    logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
     logger.debug('starting')
 
     run = xbterminal.runtime = get_initial_state()

@@ -1,12 +1,7 @@
 import unittest
-import logging
 
 from xbterminal.main import get_initial_state
 from xbterminal import defaults
-
-logger = logging.getLogger('')
-logger.removeHandler('file')
-logger.setLevel(logging.ERROR)
 
 
 class InitialStateTestCase(unittest.TestCase):
