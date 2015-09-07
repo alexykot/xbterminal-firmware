@@ -4,9 +4,15 @@ from mock import patch, Mock
 
 from xbterminal import defaults
 from xbterminal.stages import amounts
+from xbterminal.stages.payment import Payment
 from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
 
 
+@patch.dict('xbterminal.stages.amounts.xbterminal.runtime',
+            remote_config={
+                'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
+                'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
+            })
 class AmountsUtilsTestCase(unittest.TestCase):
 
     def test_process_key_input(self):
@@ -48,7 +54,83 @@ class GetAddressTestCase(unittest.TestCase):
         self.assertEqual(result, self.address)
 
 
+@patch.dict('xbterminal.stages.payment.xbterminal.runtime',
+            device_key='testKey',
+            remote_server='https://xbterminal.io')
+class PaymentTestCase(unittest.TestCase):
+
+    @patch('xbterminal.stages.withdrawal.requests.post')
+    def test_create_order(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'payment_uid': 'test_uid',
+                'btc_amount': '0.25',
+                'exchange_rate': '200.0',
+                'payment_uri': 'bitcoin:test',
+            },
+        })
+        mac_addr = '01:23:45:67:89:00'
+
+        order = Payment.create_order(Decimal('1.00'), mac_addr)
+        self.assertTrue(post_mock.called)
+        data = post_mock.call_args[1]['data']
+        self.assertEqual(data['device_key'], 'testKey')
+        self.assertEqual(data['amount'], 1.0)
+        self.assertEqual(data['bt_mac'], mac_addr)
+
+        self.assertEqual(order.uid, 'test_uid')
+        self.assertEqual(order.btc_amount, Decimal('0.25'))
+        self.assertEqual(order.exchange_rate, Decimal('200.0'))
+        self.assertEqual(order.payment_uri, 'bitcoin:test')
+        self.assertIsNone(order.request)
+
+    @patch('xbterminal.stages.withdrawal.requests.post')
+    def test_send(self, post_mock):
+        post_mock.return_value = Mock(content='ack')
+
+        order = Payment('test_uid', Decimal('0.25'), Decimal('200'),
+                        'bitcoin:uri', None)
+        result = order.send('message')
+
+        self.assertTrue(post_mock.called)
+        kwargs = post_mock.call_args[1]
+        self.assertEqual(kwargs['data'], 'message')
+        self.assertEqual(kwargs['headers']['Content-Type'],
+                         'application/bitcoin-payment')
+        self.assertEqual(result, 'ack')
+
+    @patch('xbterminal.stages.withdrawal.requests.get')
+    def test_check_unpaid(self, get_mock):
+        get_mock.return_value = Mock(**{
+            'json.return_value': {
+                'paid': '0',
+            },
+        })
+
+        order = Payment('test_uid', Decimal('0.25'), Decimal('200'),
+                        'bitcoin:uri', None)
+        result = order.check()
+        self.assertTrue(get_mock.called)
+        self.assertIsNone(result)
+
+    @patch('xbterminal.stages.withdrawal.requests.get')
+    def test_check_paid(self, get_mock):
+        get_mock.return_value = Mock(**{
+            'json.return_value': {
+                'paid': 1,
+                'receipt_url': 'test_url',
+            },
+        })
+
+        order = Payment('test_uid', Decimal('0.25'), Decimal('200'),
+                        'bitcoin:uri', None)
+        result = order.check()
+        self.assertTrue(get_mock.called)
+        self.assertEqual(result, 'test_url')
+
+
 @patch.dict('xbterminal.stages.withdrawal.xbterminal.runtime',
+            device_key='test',
             remote_server='https://xbterminal.io')
 class WithdrawalTestCase(unittest.TestCase):
 

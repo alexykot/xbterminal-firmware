@@ -15,7 +15,7 @@ def flake8():
 @task
 def unit():
     with prefix('. venv/bin/activate'):
-        local('python -m unittest discover tests')
+        local('python tests/run.py')
 
 
 @task(default=True)

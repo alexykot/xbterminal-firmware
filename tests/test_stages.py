@@ -1,25 +1,60 @@
 from decimal import Decimal
 from mock import patch, Mock
+import time
 import unittest
-import sys
-
-sys.modules['PyQt4'] = Mock()
-sys.modules['dbus'] = Mock()
-sys.modules['nfc'] = Mock()
-sys.modules['nfc.snep'] = Mock()
-sys.modules['nfc.llcp'] = Mock()
-sys.modules['cv2'] = Mock()
-sys.modules['zbar'] = Mock()
-
-import xbterminal
-
-xbterminal.remote_config = {
-    'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
-    'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
-}
 
 from xbterminal import defaults
 from xbterminal.stages import stages
+
+
+patcher = patch.dict(
+    'xbterminal.stages.amounts.xbterminal.runtime',
+    remote_config={
+        'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
+        'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
+    })
+
+
+def setUpModule():
+    patcher.start()
+
+
+def tearDownModule():
+    patcher.stop()
+
+
+class BootupStageTestCase(unittest.TestCase):
+
+    @patch('xbterminal.stages.stages.time.sleep')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'clock.get_internet_time')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'configs.save_local_config')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
+    def test_bootup(self, qr_scanner_mock, nfc_server_mock, bt_server_mock,
+                    save_local_config_mock, get_time_mock, sleep_mock):
+        run = {
+            'init': {'remote_config': True},
+            'local_config': {},
+            'remote_config': {'BITCOIN_NETWORK': 'mainnet'},
+        }
+        ui = Mock()
+        get_time_mock.return_value = time.time()
+        bt_server_mock.return_value = 'bt_server'
+        nfc_server_mock.return_value = 'nfc_server'
+        qr_scanner_mock.return_value = 'qr_scanner'
+        next_stage = stages.bootup(run, ui)
+
+        self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
+        self.assertTrue(run['init']['clock_synchronized'])
+        self.assertIn('last_started', run['local_config'])
+        self.assertTrue(save_local_config_mock.called)
+        self.assertEqual(run['bluetooth_server'], 'bt_server')
+        self.assertEqual(run['nfc_server'], 'nfc_server')
+        self.assertEqual(run['qr_scanner'], 'qr_scanner')
+        self.assertEqual(next_stage, defaults.STAGES['idle'])
 
 
 class IdleStageTestCase(unittest.TestCase):

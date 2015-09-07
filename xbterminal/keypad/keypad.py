@@ -28,7 +28,7 @@ class Keypad():
     _screensaver_delay = 300
 
     def __init__(self):
-        if xbterminal.local_state.get("use_default_keypad_override"):
+        if xbterminal.runtime['local_config'].get("use_default_keypad_override"):
             self.driver = drivers.KeyboardDriver()
             logger.info("using standard keyboard driver")
         else:

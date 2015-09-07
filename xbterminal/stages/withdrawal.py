@@ -59,7 +59,7 @@ class Withdrawal(object):
         """
         url = get_api_url('withdrawal_init')
         payload = {
-            'device': xbterminal.device_key,
+            'device': xbterminal.runtime['device_key'],
             'amount': str(fiat_amount),
         }
         try:

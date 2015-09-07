@@ -58,7 +58,7 @@ DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
 LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
-STATE_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
+LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
 
@@ -99,8 +99,10 @@ LOG_CONFIG = {
     },
 }
 
-REMOTE_SERVERS = ('https://xbterminal.io',
-                  'https://xbterminal.com')
+REMOTE_SERVERS = {
+    'main': 'https://xbterminal.io',
+    'dev': 'http://stage.xbterminal.com',
+}
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {
@@ -116,7 +118,7 @@ REMOTE_API_ENDPOINTS = {
     'withdrawal_confirm': '/api/withdrawals/{uid}/confirm/',
     'withdrawal_check': '/api/withdrawals/{uid}/',
 }
-EXTERNAL_CALLS_TIMEOUT = 15
+EXTERNAL_CALLS_TIMEOUT = 5
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
