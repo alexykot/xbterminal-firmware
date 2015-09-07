@@ -82,7 +82,6 @@ def load_local_config():
         show_cursor: boolean
         use_default_keypad_override: boolean
         use_dev_remote_server: boolean
-        use_predefined_connection: boolean
         wifi_ssid: string
         wifi_pass: string
     Returns:

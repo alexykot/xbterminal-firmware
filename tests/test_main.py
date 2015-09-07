@@ -8,7 +8,6 @@ class InitialStateTestCase(unittest.TestCase):
 
     def test_initial_state(self):
         state = get_initial_state()
-        self.assertFalse(state['init']['internet'])
         self.assertFalse(state['init']['clock_synchronized'])
         self.assertFalse(state['init']['remote_config'])
         self.assertEqual(state['init']['remote_config_last_update'], 0)
@@ -31,7 +30,6 @@ class InitialStateTestCase(unittest.TestCase):
         self.assertIsNone(state['remote_server'])
         self.assertEqual(len(state['remote_config'].keys()), 0)
         self.assertIsNone(state['last_activity_timestamp'])
-        self.assertFalse(state['wifi']['connected'])
         self.assertIsNone(state['keypad'])
         self.assertEqual(len(state['keyboard_events']), 0)
         self.assertIsNone(state['bluetooth_server'])

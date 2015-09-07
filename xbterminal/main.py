@@ -26,7 +26,6 @@ logger = logging.getLogger(__name__)
 def get_initial_state():
     run = {}
     run['init'] = {}
-    run['init']['internet'] = False
     run['init']['clock_synchronized'] = False
     run['init']['remote_config'] = False
     run['init']['remote_config_last_update'] = 0
@@ -58,8 +57,6 @@ def get_initial_state():
     run['remote_server'] = None
     run['remote_config'] = {}
     run['last_activity_timestamp'] = None
-    run['wifi'] = {}
-    run['wifi']['connected'] = False
     run['keypad'] = None
     run['keyboard_events'] = deque(maxlen=1)  # Only for keyboard driver
     run['bluetooth_server'] = None
@@ -86,10 +83,6 @@ def main():
         run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['main']
     logger.info('remote server: {}'.format(run['remote_server']))
 
-    if run['local_config'].get('use_predefined_connection'):
-        run['init']['internet'] = True
-        logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
-
     main_window = xbterminal.gui.gui.initGUI()
 
     run['keypad'] = Keypad()
@@ -107,10 +100,7 @@ def main():
         main_window.processEvents()
 
         # (Re)load remote config
-        if (
-            run['init']['internet']
-            and run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time()
-        ):
+        if run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             try:
                 run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:

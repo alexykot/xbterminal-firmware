@@ -1,4 +1,3 @@
-import os
 import logging
 import socket
 import threading
@@ -10,7 +9,6 @@ import usb.core
 
 import xbterminal
 from xbterminal import defaults
-from xbterminal.helpers import wireless
 
 logger = logging.getLogger(__name__)
 
@@ -37,31 +35,10 @@ class Watcher(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        self._wifi = None
         self._internet = None
         self.period = 2
         self.errors = {}
         self.system_stats_timestamp = 0
-
-    @property
-    def wifi(self):
-        return self._wifi
-
-    @wifi.setter
-    def wifi(self, interface_available):
-        # TODO: add runtime['init']['wifi']
-        if xbterminal.runtime['init']['internet']:
-            if not interface_available:
-                message = "wireless interface not found"
-                if self.errors.get('wifi') != message:
-                    logger.error(message)
-                    self.errors['wifi'] = message
-            else:
-                if not self._wifi:
-                    message = "wireless interface found"
-                    logger.info(message)
-                self.errors.pop("wifi", None)
-        self._wifi = interface_available
 
     @property
     def internet(self):
@@ -69,23 +46,18 @@ class Watcher(threading.Thread):
 
     @internet.setter
     def internet(self, internet_connected):
-        if xbterminal.runtime['init']['internet']:
-            if self._internet is None and not internet_connected:
-                logger.error("no internet")
-                self.errors["internet"] = "no internet"
-            elif self._internet and not internet_connected:
-                logger.error("internet disconnected")
-                self.errors["internet"] = "internet disconnected"
-            elif not self._internet and internet_connected:
-                logger.info("internet connected")
-                self.errors.pop("internet", None)
+        if self._internet is None and not internet_connected:
+            logger.error("no internet")
+            self.errors["internet"] = "no internet"
+        elif self._internet and not internet_connected:
+            logger.error("internet disconnected")
+            self.errors["internet"] = "internet disconnected"
+        elif not self._internet and internet_connected:
+            logger.info("internet connected")
+            self.errors.pop("internet", None)
         self._internet = internet_connected
 
     def check_system_state(self):
-        # Check wifi interface
-        if not xbterminal.runtime['local_config'].get('use_predefined_connection', False):
-            self.wifi = (wireless.interface is not None
-                         and os.path.exists(os.path.join("/sys/class/net", wireless.interface)))
         # Check internet connection
         try:
             requests.get(xbterminal.runtime['remote_server'],

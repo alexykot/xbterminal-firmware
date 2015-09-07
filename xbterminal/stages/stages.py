@@ -1,7 +1,6 @@
 from decimal import Decimal
 import logging
 import time
-import unicodedata
 
 logger = logging.getLogger(__name__)
 
@@ -22,47 +21,6 @@ import xbterminal.exceptions
 
 def bootup(run, ui):
     ui.showScreen('load_indefinite')
-
-    if not run['init']['internet']:
-        if xbterminal.helpers.wireless.is_wifi_available():
-            run['wifi']['networks_last_listed_timestamp'] = 0
-            run['wifi']['networks_list_selected_index'] = 0
-            run['wifi']['networks_list_length'] = 0
-            if (
-                'wifi_ssid' in run['local_config']
-                and 'wifi_pass' in run['local_config']
-            ):
-                # Connect to cached wifi
-                logger.debug(
-                    'trying to connect to cached wifi,  '
-                    'ssid "{wifi_ssid}" '
-                    'password "{wifi_pass}" '.format(
-                        wifi_ssid=run['local_config']['wifi_ssid'],
-                        wifi_pass=run['local_config']['wifi_pass']))
-                if isinstance(run['local_config']['wifi_pass'], unicode):
-                    run['local_config']['wifi_pass'] = unicodedata.\
-                        normalize('NFKD', run['local_config']['wifi_pass']).\
-                        encode('ascii', 'ignore')
-                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(run['local_config']['wifi_ssid'],
-                                                                               run['local_config']['wifi_pass'])
-                if run['wifi']['connected']:
-                    logger.debug('cached wifi connected')
-                    run['init']['internet'] = True
-                else:
-                    # Clear cache
-                    del run['local_config']['wifi_ssid']
-                    del run['local_config']['wifi_pass']
-                    xbterminal.helpers.configs.save_local_config(run['local_config'])
-                    logger.debug('cached wifi connection failed, wifi setup needed')
-                    return defaults.STAGES['wifi']['choose_ssid']
-            elif 'wifi_ssid' in run['local_config']:
-                # Enter passkey for cached wifi
-                return defaults.STAGES['wifi']['enter_passkey']
-            else:
-                return defaults.STAGES['wifi']['choose_ssid']
-        else:
-            logger.warning('no wifi found, hoping for preconfigured wired connection')
-            run['init']['internet'] = True
 
     # Check system clock
     # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
