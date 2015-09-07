@@ -30,7 +30,6 @@ def get_initial_state():
     run['init']['clock_synchronized'] = False
     run['init']['remote_config'] = False
     run['init']['remote_config_last_update'] = 0
-    run['init']['blockchain_network'] = None
     run['CURRENT_STAGE'] = defaults.STAGES['bootup']
     run['payment'] = {
         # Store variables related to payment process
@@ -124,14 +123,6 @@ def main():
                 main_window.retranslateUi(
                     run['remote_config']['MERCHANT_LANGUAGE'],
                     run['remote_config']['MERCHANT_CURRENCY_SIGN_PREFIX'])
-
-        # Reboot if blockchain network has changed
-        if (
-            run['init']['remote_config']
-            and run['init']['blockchain_network'] is not None
-            and run['init']['blockchain_network'] != run['remote_config']['BITCOIN_NETWORK']
-        ):
-            gracefulExit(system_reboot=True)
 
         # Communicate with watcher
         watcher_errors = watcher.get_errors()

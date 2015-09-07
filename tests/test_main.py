@@ -12,7 +12,6 @@ class InitialStateTestCase(unittest.TestCase):
         self.assertFalse(state['init']['clock_synchronized'])
         self.assertFalse(state['init']['remote_config'])
         self.assertEqual(state['init']['remote_config_last_update'], 0)
-        self.assertIsNone(state['init']['blockchain_network'])
         self.assertEqual(state['CURRENT_STAGE'], defaults.STAGES['bootup'])
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['order'])
