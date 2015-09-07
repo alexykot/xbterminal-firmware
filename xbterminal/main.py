@@ -57,6 +57,7 @@ def get_initial_state():
         'withdraw': False,
         'confirm_withdrawal': False,
     }
+    run['device_key'] = None
     run['remote_server'] = None
     run['last_activity_timestamp'] = None
     run['wifi'] = {}
@@ -71,8 +72,11 @@ def get_initial_state():
 
 def main():
     logger.debug('starting')
-    # init runtime
+
     run = xbterminal.runtime = get_initial_state()
+
+    run['device_key'] = xbterminal.helpers.configs.get_device_key()
+    logger.info('device key {}'.format(run['device_key']))
 
     xbterminal.helpers.configs.load_local_state()
 

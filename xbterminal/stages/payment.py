@@ -29,7 +29,7 @@ class Payment(object):
         """
         payment_init_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_init']
         payload = {
-            'device_key': xbterminal.device_key,
+            'device_key': xbterminal.runtime['device_key'],
             'amount': float(fiat_amount),
             'bt_mac': bt_mac,
         }

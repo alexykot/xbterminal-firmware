@@ -25,10 +25,9 @@ def get_device_key():
 
 
 def load_remote_config():
-    xbterminal.device_key = get_device_key()
     remote_config_old_items = set(getattr(xbterminal, "remote_config", {}).items())
     config_url = xbterminal.runtime['remote_server'] + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
-        device_key=xbterminal.device_key)
+        device_key=xbterminal.runtime['device_key'])
     headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
     headers['Content-type'] = 'application/json'
     try:

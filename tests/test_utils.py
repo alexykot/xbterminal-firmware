@@ -49,6 +49,7 @@ class GetAddressTestCase(unittest.TestCase):
 
 
 @patch.dict('xbterminal.stages.withdrawal.xbterminal.runtime',
+            device_key='test',
             remote_server='https://xbterminal.io')
 class WithdrawalTestCase(unittest.TestCase):
 

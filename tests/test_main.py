@@ -32,6 +32,7 @@ class InitialStateTestCase(unittest.TestCase):
         self.assertFalse(state['screen_buttons']['pay'])
         self.assertFalse(state['screen_buttons']['withdraw'])
         self.assertFalse(state['screen_buttons']['confirm_withdrawal'])
+        self.assertIsNone(state['device_key'])
         self.assertIsNone(state['remote_server'])
         self.assertIsNone(state['last_activity_timestamp'])
         self.assertFalse(state['wifi']['connected'])
