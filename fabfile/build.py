@@ -90,9 +90,9 @@ def compile_and_package(working_dir):
         version = run('cat VERSION')
         timestamp = int(time.time())
 
-        main_name = 'main_{arch}_{pv}'.format(
+        main_name = 'main_{pv}_{arch}'.format(
             arch=arch, pv=version)
-        package_name = 'xbterminal-firmware_{arch}_{pv}'.format(
+        package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
             arch=arch, pv=version)
 
         puts(magenta('Nuitka {0}'.format(nuitka_version)))
