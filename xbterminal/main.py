@@ -55,6 +55,7 @@ def get_initial_state():
         'confirm_withdrawal': False,
     }
     run['device_key'] = None
+    run['local_config'] = {}
     run['remote_server'] = None
     run['remote_config'] = {}
     run['last_activity_timestamp'] = None
@@ -77,16 +78,16 @@ def main():
     run['device_key'] = xbterminal.helpers.configs.get_device_key()
     logger.info('device key {}'.format(run['device_key']))
 
-    xbterminal.helpers.configs.load_local_state()
+    run['local_config'] = xbterminal.helpers.configs.load_local_config()
 
-    if xbterminal.local_state.get('use_dev_remote_server'):
+    if run['local_config'].get('use_dev_remote_server'):
         run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['dev']
         logger.warning('!!! DEV SERVER OVERRRIDE ACTIVE')
     else:
         run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['main']
     logger.info('remote server: {}'.format(run['remote_server']))
 
-    if xbterminal.local_state.get('use_predefined_connection'):
+    if run['local_config'].get('use_predefined_connection'):
         run['init']['internet'] = True
         logger.debug('!!! CUSTOM INTERNET CONNECTION OVERRIDE ACTIVE')
 
@@ -163,7 +164,8 @@ def main():
 
 
 def gracefulExit(system_halt=False, system_reboot=False):
-    xbterminal.helpers.configs.save_local_state()
+    xbterminal.helpers.configs.save_local_config(
+        xbterminal.runtime['local_config'])
     logger.debug('application halted')
     if system_halt:
         logger.debug('system halt command sent')

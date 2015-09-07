@@ -5,8 +5,8 @@ from xbterminal.helpers.configs import (
     load_remote_config,
     save_remote_config_cache,
     load_remote_config_cache,
-    load_local_state,
-    save_local_state)
+    load_local_config,
+    save_local_config)
 from xbterminal.exceptions import ConfigLoadError
 
 
@@ -69,32 +69,30 @@ class RemoteConfigTestCase(unittest.TestCase):
 
 class LocalConfigTestCase(unittest.TestCase):
 
-    @patch('xbterminal.helpers.configs.xbterminal')
-    @patch('xbterminal.helpers.configs.save_local_state')
-    def test_load_config(self, save_state_mock, xbterminal_mock):
+    @patch('xbterminal.helpers.configs.os.path.exists')
+    @patch('xbterminal.helpers.configs.save_local_config')
+    def test_load_config(self, save_config_mock, exists_mock):
+        exists_mock.return_value = True
         open_mock = mock_open(read_data='{"ddd": 444}')
         with patch('xbterminal.helpers.configs.open', open_mock, create=True):
-            load_local_state()
+            local_config = load_local_config()
 
-        self.assertEqual(xbterminal_mock.local_state['ddd'], 444)
-        self.assertFalse(save_state_mock.called)
+        self.assertEqual(local_config['ddd'], 444)
+        self.assertFalse(save_config_mock.called)
 
-    @patch('xbterminal.helpers.configs.xbterminal')
-    @patch('xbterminal.helpers.configs.save_local_state')
-    def test_load_config_error(self, save_state_mock, xbterminal_mock):
-        open_mock = mock_open(read_data='')
-        with patch('xbterminal.helpers.configs.open', open_mock, create=True):
-            load_local_state()
+    @patch('xbterminal.helpers.configs.os.path.exists')
+    @patch('xbterminal.helpers.configs.save_local_config')
+    def test_load_config_error(self, save_config_mock, exists_mock):
+        exists_mock.return_value = False
+        local_config = load_local_config()
 
-        self.assertEqual(len(xbterminal_mock.local_state.keys()), 0)
-        self.assertTrue(save_state_mock.called)
+        self.assertEqual(len(local_config.keys()), 0)
+        self.assertTrue(save_config_mock.called)
 
-    @patch('xbterminal.helpers.configs.xbterminal')
-    def test_save_config(self, xbterminal_mock):
-        xbterminal_mock.local_state = {'eee': 555}
+    def test_save_config(self):
         open_mock = mock_open()
         with patch('xbterminal.helpers.configs.open', open_mock, create=True):
-            save_local_state()
+            save_local_config({'eee': 555})
 
         self.assertEqual(open_mock().write.call_args[0][0],
                          '{\n  "eee": 555\n}')

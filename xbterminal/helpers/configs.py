@@ -75,26 +75,34 @@ def load_remote_config_cache():
     return remote_config
 
 
-def load_local_state():
-    local_state_file_abs_path = xbterminal.defaults.STATE_FILE_PATH
+def load_local_config():
+    """
+    Local config params:
+        last_started: float
+        show_cursor: boolean
+        use_default_keypad_override: boolean
+        use_dev_remote_server: boolean
+        use_predefined_connection: boolean
+        wifi_ssid: string
+        wifi_pass: string
+    Returns:
+        local_config: dict
+    """
+    local_config_path = xbterminal.defaults.LOCAL_CONFIG_FILE_PATH
 
-    with open(local_state_file_abs_path, 'a') as state_file:
-        pass
-    with open(local_state_file_abs_path, 'rb') as state_file:
-        local_state_contents = state_file.read()
-        try:
-            xbterminal.local_state = json.loads(local_state_contents)
-        except ValueError:
-            xbterminal.local_state = {}
-            save_local_state()
-            logger.debug('local state load error, local state purged')
-        else:
-            logger.debug('local state loaded from {path}, {contents}'.format(
-                path=local_state_file_abs_path,
-                contents=local_state_contents))
+    if not os.path.exists(local_config_path):
+        local_config = {}
+        save_local_config(local_config)
+        logger.debug('created new local config')
+    else:
+        with open(local_config_path) as local_config_file:
+            local_config = json.loads(local_config_file.read())
+            logger.debug('local config loaded: {}'.format(local_config))
+    return local_config
 
 
-def save_local_state():
-    local_state_file_abs_path = xbterminal.defaults.STATE_FILE_PATH
-    with open(local_state_file_abs_path, 'wb') as state_file:
-        state_file.write(json.dumps(xbterminal.local_state, indent=2, sort_keys=True, separators=(',', ': ')))
+def save_local_config(local_config):
+    local_config_path = xbterminal.defaults.LOCAL_CONFIG_FILE_PATH
+    with open(local_config_path, 'w') as local_config_file:
+        local_config_file.write(json.dumps(
+            local_config, indent=2, sort_keys=True, separators=(',', ': ')))

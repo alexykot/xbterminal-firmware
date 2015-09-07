@@ -192,8 +192,8 @@ class GUI(QtGui.QMainWindow):
         """
         if self._application.setLanguage(language_code):
             self.ui.retranslateUi(self)
-            xbterminal.local_state['language'] = language_code
-            xbterminal.helpers.configs.save_local_state()
+            xbterminal.runtime['local_config']['language'] = language_code
+            xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
         self.ui.currency_lbl.setText(currency_prefix)
         self.ui.pwait_currency_lbl.setText(currency_prefix)
 
@@ -231,12 +231,12 @@ def initGUI():
     QtGui.QFontDatabase.addApplicationFont(os.path.join(
         defaults.UI_FONTS_PATH, 'univers-light-normal.ttf'))
 
-    if xbterminal.local_state.get('show_cursor'):
+    if xbterminal.runtime['local_config'].get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
     else:
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
 
-    language_code = xbterminal.local_state.get(
+    language_code = xbterminal.runtime['local_config'].get(
         'language',
         defaults.UI_DEFAULT_LANGUAGE)
     application.setLanguage(language_code)

@@ -29,32 +29,33 @@ def bootup(run, ui):
             run['wifi']['networks_list_selected_index'] = 0
             run['wifi']['networks_list_length'] = 0
             if (
-                'wifi_ssid' in xbterminal.local_state
-                and 'wifi_pass' in xbterminal.local_state
+                'wifi_ssid' in run['local_config']
+                and 'wifi_pass' in run['local_config']
             ):
                 # Connect to cached wifi
                 logger.debug(
                     'trying to connect to cached wifi,  '
                     'ssid "{wifi_ssid}" '
-                    'password "{wifi_pass}" '.format(wifi_ssid=xbterminal.local_state['wifi_ssid'],
-                                                     wifi_pass=xbterminal.local_state['wifi_pass']))
-                if isinstance(xbterminal.local_state['wifi_pass'], unicode):
-                    xbterminal.local_state['wifi_pass'] = unicodedata.\
-                        normalize('NFKD', xbterminal.local_state['wifi_pass']).\
+                    'password "{wifi_pass}" '.format(
+                        wifi_ssid=run['local_config']['wifi_ssid'],
+                        wifi_pass=run['local_config']['wifi_pass']))
+                if isinstance(run['local_config']['wifi_pass'], unicode):
+                    run['local_config']['wifi_pass'] = unicodedata.\
+                        normalize('NFKD', run['local_config']['wifi_pass']).\
                         encode('ascii', 'ignore')
-                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
-                                                                               xbterminal.local_state['wifi_pass'])
+                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(run['local_config']['wifi_ssid'],
+                                                                               run['local_config']['wifi_pass'])
                 if run['wifi']['connected']:
                     logger.debug('cached wifi connected')
                     run['init']['internet'] = True
                 else:
                     # Clear cache
-                    del xbterminal.local_state['wifi_ssid']
-                    del xbterminal.local_state['wifi_pass']
-                    xbterminal.helpers.configs.save_local_state()
+                    del run['local_config']['wifi_ssid']
+                    del run['local_config']['wifi_pass']
+                    xbterminal.helpers.configs.save_local_config(run['local_config'])
                     logger.debug('cached wifi connection failed, wifi setup needed')
                     return defaults.STAGES['wifi']['choose_ssid']
-            elif 'wifi_ssid' in xbterminal.local_state:
+            elif 'wifi_ssid' in run['local_config']:
                 # Enter passkey for cached wifi
                 return defaults.STAGES['wifi']['enter_passkey']
             else:
@@ -71,8 +72,8 @@ def bootup(run, ui):
         if time_delta < 60:  # 1 minute
             logger.info('clock synchronized')
             run['init']['clock_synchronized'] = True
-            xbterminal.local_state['last_started'] = time.time()
-            xbterminal.helpers.configs.save_local_state()
+            run['local_config']['last_started'] = time.time()
+            xbterminal.helpers.configs.save_local_config(run['local_config'])
             break
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
@@ -390,7 +391,7 @@ def choose_ssid(run, ui):
             ui.wifiListClear()
             for i, network in enumerate(networks_list):
                 ui.wifiListAddItem(network['ssid'])
-                if xbterminal.local_state.get('wifi_ssid') == network['ssid']:
+                if run['local_config'].get('wifi_ssid') == network['ssid']:
                     run['wifi']['networks_list_selected_index'] = i
             ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
 
@@ -407,8 +408,8 @@ def choose_ssid(run, ui):
             ui.wifiListSaveSelectedItem()
             while 'selected_ssid' not in run['wifi']:
                 time.sleep(0.1)
-            xbterminal.local_state['wifi_ssid'] = run['wifi'].pop('selected_ssid')
-            xbterminal.helpers.configs.save_local_state()
+            run['local_config'] = run['wifi'].pop('selected_ssid')
+            xbterminal.helpers.configs.save_local_config(run['local_config'])
             return defaults.STAGES['wifi']['enter_passkey']
 
         time.sleep(0.1)
@@ -416,8 +417,8 @@ def choose_ssid(run, ui):
 
 def enter_passkey(run, ui):
     ui.showScreen('enter_passkey')
-    ui.setText('ssid_entered_lbl', xbterminal.local_state['wifi_ssid'])
-    xbterminal.local_state['wifi_pass'] = ''
+    ui.setText('ssid_entered_lbl', run['local_config']['wifi_ssid'])
+    run['local_config']['wifi_pass'] = ''
     while True:
         if run['keypad'].last_key_pressed is not None:
             ui.toggleWifiWrongPasswordState(False)
@@ -426,14 +427,17 @@ def enter_passkey(run, ui):
                 ui.toggleWifiConnectingState(True)
                 logger.debug(
                     'trying to connect to wifi, '
-                    'ssid: "{ssid}", pass: "{passkey}" '.format(ssid=xbterminal.local_state['wifi_ssid'],
-                                                                passkey=xbterminal.local_state['wifi_pass']))
-                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(xbterminal.local_state['wifi_ssid'],
-                                                                               xbterminal.local_state['wifi_pass'])
+                    'ssid: "{ssid}", pass: "{passkey}" '.format(
+                        ssid=run['local_config']['wifi_ssid'],
+                        passkey=run['local_config']['wifi_pass']))
+                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(
+                    run['local_config']['wifi_ssid'],
+                    run['local_config']['wifi_pass'])
                 if run['wifi']['connected']:
                     run['init']['internet'] = True
-                    logger.debug('connected to wifi, ssid: {ssid}'.format(ssid=xbterminal.local_state['wifi_ssid']))
-                    xbterminal.helpers.configs.save_local_state()
+                    logger.debug('connected to wifi, ssid: {ssid}'.format(
+                        ssid=run['local_config']['wifi_ssid']))
+                    xbterminal.helpers.configs.save_local_config(run['local_config'])
                     return defaults.STAGES['wifi']['wifi_connected']
                 else:
                     logger.warning('wifi wrong passkey')
@@ -441,23 +445,24 @@ def enter_passkey(run, ui):
                     ui.toggleWifiWrongPasswordState(True)
                     run['keypad'].resetKey()
 
-            elif run['keypad'].checkIsCancelled(xbterminal.local_state['wifi_pass']):
-                del xbterminal.local_state['wifi_ssid']
-                del xbterminal.local_state['wifi_pass']
-                xbterminal.helpers.configs.save_local_state()
+            elif run['keypad'].checkIsCancelled(run['local_config']['wifi_pass']):
+                del run['local_config']['wifi_ssid']
+                del run['local_config']['wifi_pass']
+                xbterminal.helpers.configs.save_local_config(run['local_config'])
                 return defaults.STAGES['wifi']['choose_ssid']
 
             else:
-                xbterminal.local_state['wifi_pass'] = run['keypad'].createAlphaNumString(xbterminal.local_state['wifi_pass'])
+                run['local_config']['wifi_pass'] = run['keypad'].createAlphaNumString(
+                    run['local_config']['wifi_pass'])
                 char_selector_tupl = run['keypad'].getCharSelectorTupl()
                 if char_selector_tupl is not None:
                     char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(
                         char_selector_tupl,
-                        xbterminal.local_state['wifi_pass'][-1])
+                        run['local_config']['wifi_pass'][-1])
                 else:
                     char_select_str = ''
                 ui.setText('input_help_lbl', char_select_str)
-                ui.setText('password_input', xbterminal.local_state['wifi_pass'])
+                ui.setText('password_input', run['local_config']['wifi_pass'])
                 run['keypad'].resetKey()
         time.sleep(0.1)
 
