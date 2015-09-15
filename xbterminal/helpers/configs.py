@@ -6,7 +6,7 @@ import logging
 import pprint
 
 import xbterminal
-import xbterminal.defaults
+from xbterminal import defaults
 from xbterminal.exceptions import (
     ConfigLoadError,
     DeviceKeyMissingError)
@@ -15,20 +15,19 @@ logger = logging.getLogger(__name__)
 
 
 def get_device_key():
-    device_key_file_abs_path = xbterminal.defaults.DEVICE_KEY_FILE_PATH
-    if not os.path.exists(device_key_file_abs_path):
-        logger.critical("device key missing at path \"{device_key_path}\", exiting".format(
-            device_key_path=device_key_file_abs_path))
+    if not os.path.exists(defaults.DEVICE_KEY_FILE_PATH):
+        logger.critical('device key missing at path "{path}", exiting'.format(
+            path=defaults.DEVICE_KEY_FILE_PATH))
         raise DeviceKeyMissingError()
-    with open(device_key_file_abs_path, 'r') as device_key_file:
+    with open(defaults.DEVICE_KEY_FILE_PATH, 'r') as device_key_file:
         device_key = device_key_file.read().strip()
     return device_key
 
 
 def load_remote_config():
-    config_url = xbterminal.runtime['remote_server'] + xbterminal.defaults.REMOTE_API_ENDPOINTS['config'].format(
+    config_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['config'].format(
         device_key=xbterminal.runtime['device_key'])
-    headers = xbterminal.defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
+    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
     headers['Content-type'] = 'application/json'
     try:
         response = requests.get(url=config_url, headers=headers)
@@ -53,24 +52,19 @@ def load_remote_config():
 
 
 def save_remote_config_cache(remote_config):
-    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
-    with open(remote_config_cache_file_abs_path, 'wb') as cache_file:
+    with open(defaults.REMOTE_CONFIG_CACHE_FILE_PATH, 'wb') as cache_file:
         cache_file.write(json.dumps(remote_config))
 
 
 def load_remote_config_cache():
-    remote_config_cache_file_abs_path = xbterminal.defaults.REMOTE_CONFIG_CACHE_FILE_PATH
-
-    if not os.path.exists(remote_config_cache_file_abs_path):
-        logger.warning('remote config cache file not exists, cache load failed'.format(
-            cache_path=remote_config_cache_file_abs_path))
+    if not os.path.exists(defaults.REMOTE_CONFIG_CACHE_FILE_PATH):
+        logger.warning('remote config cache file not exists, cache load failed')
         raise IOError
 
-    with open(remote_config_cache_file_abs_path, 'rb') as cache_file:
+    with open(defaults.REMOTE_CONFIG_CACHE_FILE_PATH, 'rb') as cache_file:
         remote_config = json.loads(cache_file.read())
 
-    logger.debug('remote config loaded from cache'.format(
-        cache_path=remote_config_cache_file_abs_path))
+    logger.debug('remote config loaded from cache')
 
     return remote_config
 
@@ -87,24 +81,21 @@ def load_local_config():
     Returns:
         local_config: dict
     """
-    local_config_path = xbterminal.defaults.LOCAL_CONFIG_FILE_PATH
-
-    if not os.path.exists(local_config_path):
+    if not os.path.exists(defaults.LOCAL_CONFIG_FILE_PATH):
         local_config = {}
         save_local_config(local_config)
         logger.info('created new local config at {}'.format(
-            local_config_path))
+            defaults.LOCAL_CONFIG_FILE_PATH))
     else:
-        with open(local_config_path) as local_config_file:
+        with open(defaults.LOCAL_CONFIG_FILE_PATH) as local_config_file:
             local_config = json.loads(local_config_file.read())
             logger.info('local config loaded from {0}:\n{1}'.format(
-                local_config_path,
+                defaults.LOCAL_CONFIG_FILE_PATH,
                 pprint.pformat(local_config)))
     return local_config
 
 
 def save_local_config(local_config):
-    local_config_path = xbterminal.defaults.LOCAL_CONFIG_FILE_PATH
-    with open(local_config_path, 'w') as local_config_file:
+    with open(defaults.LOCAL_CONFIG_FILE_PATH, 'w') as local_config_file:
         local_config_file.write(json.dumps(
             local_config, indent=2, sort_keys=True, separators=(',', ': ')))
