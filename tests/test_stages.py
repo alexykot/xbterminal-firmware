@@ -30,10 +30,15 @@ class BootupStageTestCase(unittest.TestCase):
            'clock.get_internet_time')
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
            'configs.save_local_config')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'configs.get_device_key')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'configs.get_batch_number')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
     def test_bootup(self, qr_scanner_mock, nfc_server_mock, bt_server_mock,
+                    batch_number_mock, device_key_mock,
                     save_local_config_mock, get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
@@ -42,6 +47,8 @@ class BootupStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         get_time_mock.return_value = time.time()
+        device_key_mock.return_value = 'testkey'
+        batch_number_mock.return_value = 'bnumber'
         bt_server_mock.return_value = 'bt_server'
         nfc_server_mock.return_value = 'nfc_server'
         qr_scanner_mock.return_value = 'qr_scanner'
@@ -51,6 +58,8 @@ class BootupStageTestCase(unittest.TestCase):
         self.assertTrue(run['init']['clock_synchronized'])
         self.assertIn('last_started', run['local_config'])
         self.assertTrue(save_local_config_mock.called)
+        self.assertEqual(run['device_key'], 'testkey')
+        self.assertEqual(run['batch_number'], 'bnumber')
         self.assertEqual(run['bluetooth_server'], 'bt_server')
         self.assertEqual(run['nfc_server'], 'nfc_server')
         self.assertEqual(run['qr_scanner'], 'qr_scanner')

@@ -21,7 +21,15 @@ def get_device_key():
         raise DeviceKeyMissingError()
     with open(defaults.DEVICE_KEY_FILE_PATH, 'r') as device_key_file:
         device_key = device_key_file.read().strip()
+    logger.info('device key {}'.format(device_key))
     return device_key
+
+
+def get_batch_number():
+    with open(defaults.BATCH_NUMBER_FILE_PATH) as batch_number_file:
+        batch_number = batch_number_file.read().strip()
+    logger.info('batch number {}'.format(batch_number))
+    return batch_number
 
 
 def load_remote_config():

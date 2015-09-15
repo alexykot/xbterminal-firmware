@@ -56,6 +56,7 @@ PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 
 DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
+BATCH_NUMBER_FILE_PATH = os.path.join(RUNTIME_PATH, 'batch_number')
 LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')

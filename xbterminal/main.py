@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 def get_initial_state():
     return {
         'device_key': None,
+        'batch_number': None,
         'local_config': {},
         'remote_server': None,
         'remote_config': {},
@@ -79,7 +80,7 @@ def main():
         logger.warning('!!! DEV SERVER OVERRRIDE ACTIVE')
     else:
         run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['main']
-    logger.info('remote server: {}'.format(run['remote_server']))
+    logger.info('remote server {}'.format(run['remote_server']))
 
     main_window = xbterminal.gui.gui.initGUI()
 
