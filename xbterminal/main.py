@@ -72,9 +72,6 @@ def main():
 
     run = xbterminal.runtime = get_initial_state()
 
-    run['device_key'] = xbterminal.helpers.configs.get_device_key()
-    logger.info('device key {}'.format(run['device_key']))
-
     run['local_config'] = xbterminal.helpers.configs.load_local_config()
 
     if run['local_config'].get('use_dev_remote_server'):
@@ -101,16 +98,18 @@ def main():
         main_window.processEvents()
 
         # (Re)load remote config
-        if run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
+        if watcher.internet and \
+                run['device_key'] and \
+                run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             try:
                 run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:
-                # Do not raise error, wait for internet connection
-                watcher.set_error('remote_config', 'remote config load failed')
+                # No remote config available, stop
+                logger.exception(error)
+                break
             else:
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())
-                watcher.discard_error('remote_config')
                 main_window.retranslateUi(
                     run['remote_config']['MERCHANT_LANGUAGE'],
                     run['remote_config']['MERCHANT_CURRENCY_SIGN_PREFIX'])

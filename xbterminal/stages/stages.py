@@ -36,6 +36,10 @@ def bootup(run, ui):
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
+    # Read device key
+    run['device_key'] = xbterminal.helpers.configs.get_device_key()
+    logger.info('device key {}'.format(run['device_key']))
+
     # Wait for remote config
     while True:
         if run['init']['remote_config']:
