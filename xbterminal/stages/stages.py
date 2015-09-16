@@ -37,8 +37,8 @@ def bootup(run, ui):
         time.sleep(5)
 
     # Read device key and batch number
-    run['device_key'] = xbterminal.helpers.configs.get_device_key()
-    run['batch_number'] = xbterminal.helpers.configs.get_batch_number()
+    run['device_key'] = xbterminal.helpers.configs.read_device_key()
+    run['batch_number'] = xbterminal.helpers.configs.read_batch_number()
 
     # Wait for remote config
     while True:

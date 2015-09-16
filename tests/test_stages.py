@@ -34,9 +34,9 @@ class BootupStageTestCase(unittest.TestCase):
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
-           'configs.get_device_key')
+           'configs.read_device_key')
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
-           'configs.get_batch_number')
+           'configs.read_batch_number')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')

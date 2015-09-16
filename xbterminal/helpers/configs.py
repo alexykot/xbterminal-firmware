@@ -14,7 +14,7 @@ from xbterminal.exceptions import (
 logger = logging.getLogger(__name__)
 
 
-def get_device_key():
+def read_device_key():
     if not os.path.exists(defaults.DEVICE_KEY_FILE_PATH):
         logger.critical('device key missing at path "{path}", exiting'.format(
             path=defaults.DEVICE_KEY_FILE_PATH))
@@ -25,7 +25,7 @@ def get_device_key():
     return device_key
 
 
-def get_batch_number():
+def read_batch_number():
     with open(defaults.BATCH_NUMBER_FILE_PATH) as batch_number_file:
         batch_number = batch_number_file.read().strip()
     logger.info('batch number {}'.format(batch_number))
