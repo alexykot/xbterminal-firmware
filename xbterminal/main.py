@@ -112,8 +112,8 @@ def main():
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())
                 main_window.retranslateUi(
-                    run['remote_config']['MERCHANT_LANGUAGE'],
-                    run['remote_config']['MERCHANT_CURRENCY_SIGN_PREFIX'])
+                    run['remote_config']['language']['code'],
+                    run['remote_config']['currency']['prefix'])
 
         # Communicate with watcher
         watcher_errors = watcher.get_errors()

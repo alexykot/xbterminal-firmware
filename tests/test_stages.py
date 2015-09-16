@@ -10,8 +10,11 @@ from xbterminal.stages import stages
 patcher = patch.dict(
     'xbterminal.stages.amounts.xbterminal.runtime',
     remote_config={
-        'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
-        'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
+        'language': {
+            'code': 'en',
+            'thousands_split': ',',
+            'fractional_split': '.',
+        },
     })
 
 
@@ -43,7 +46,7 @@ class BootupStageTestCase(unittest.TestCase):
         run = {
             'init': {'remote_config': True},
             'local_config': {},
-            'remote_config': {'BITCOIN_NETWORK': 'mainnet'},
+            'remote_config': {'bitcoin_network': 'mainnet'},
         }
         ui = Mock()
         get_time_mock.return_value = time.time()

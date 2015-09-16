@@ -49,12 +49,11 @@ def load_remote_config():
             raise ConfigLoadError()
     else:
         # Compare configs
-        if set(xbterminal.runtime['remote_config'].items()) ^ set(remote_config.items()):
+        if cmp(xbterminal.runtime['remote_config'], remote_config):
             logger.info('remote config loaded, contents:\n{config_contents}'.format(
                 config_contents=pprint.pformat(remote_config)))
         else:
-            logger.debug('remote config loaded, unchanged'.format(
-                server_url=xbterminal.runtime['remote_server']))
+            logger.debug('remote config loaded, unchanged')
         save_remote_config_cache(remote_config)
         return remote_config
 

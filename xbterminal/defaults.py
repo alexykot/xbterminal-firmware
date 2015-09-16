@@ -107,7 +107,8 @@ REMOTE_SERVERS = {
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {
-    'config': '/api/devices/{device_key}/',
+    'registration': '/api/v2/devices/',
+    'config': '/api/v2/devices/{device_key}/',
     'receipt': '/rc/{receipt_key}/',
     'firmware_check': '/api/device/{device_key}/firmware/',
     'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}/',

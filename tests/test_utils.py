@@ -10,8 +10,11 @@ from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
 
 @patch.dict('xbterminal.stages.amounts.xbterminal.runtime',
             remote_config={
-                'OUTPUT_DEC_THOUSANDS_SPLIT': ',',
-                'OUTPUT_DEC_FRACTIONAL_SPLIT': '.',
+                'language': {
+                    'code': 'en',
+                    'thousands_split': ',',
+                    'fractional_split': '.',
+                },
             })
 class AmountsUtilsTestCase(unittest.TestCase):
 
