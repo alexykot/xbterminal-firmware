@@ -1,3 +1,4 @@
+import logging
 import requests
 
 import xbterminal
@@ -6,6 +7,8 @@ from xbterminal.defaults import (
     EXTERNAL_CALLS_TIMEOUT,
     EXTERNAL_CALLS_REQUEST_HEADERS)
 from xbterminal.helpers import crypto
+
+logger = logging.getLogger(__name__)
 
 
 def get_url(endpoint_name, **kwargs):
@@ -38,4 +41,7 @@ def send_request(method, url, data=None, headers=None, signed=False):
     session = requests.Session()
     response = session.send(prepared_req,
                             timeout=EXTERNAL_CALLS_TIMEOUT)
+    # Log errors
+    if response.status_code != 200:
+        logger.error(response.content)
     return response
