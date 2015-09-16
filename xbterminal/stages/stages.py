@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 import xbterminal
 from xbterminal import defaults
-from xbterminal.stages import amounts, payment, withdrawal
+from xbterminal.stages import activation, amounts, payment, withdrawal
 
 import xbterminal.helpers.bt
 import xbterminal.helpers.camera
@@ -42,8 +42,8 @@ def bootup(run, ui):
     run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
 
     # Read device key and batch number
-    run['device_key'] = xbterminal.helpers.configs.read_device_key()
-    run['batch_number'] = xbterminal.helpers.configs.read_batch_number()
+    run['device_key'] = activation.read_device_key()
+    run['batch_number'] = activation.read_batch_number()
 
     # Wait for remote config
     while True:

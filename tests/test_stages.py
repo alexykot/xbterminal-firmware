@@ -33,10 +33,10 @@ class BootupStageTestCase(unittest.TestCase):
            'clock.get_internet_time')
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
            'configs.save_local_config')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.'
-           'configs.read_device_key')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.'
-           'configs.read_batch_number')
+    @patch('xbterminal.stages.stages.xbterminal.stages.'
+           'activation.read_device_key')
+    @patch('xbterminal.stages.stages.xbterminal.stages.'
+           'activation.read_batch_number')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
