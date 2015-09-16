@@ -4,6 +4,7 @@ from decimal import Decimal
 
 STAGES = {
     'bootup': 'bootup',
+    'activate': 'activate',
     'wifi': {
         'choose_ssid': 'choose_ssid',
         'enter_passkey': 'enter_passkey',
@@ -31,18 +32,19 @@ STAGES = {
 
 SCREENS = {
     'load_indefinite': 0,
-    'choose_ssid': 1,
-    'enter_passkey': 2,
-    'wifi_connected': 3,
-    'idle': 4,
-    'enter_amount': 5,
-    'pay_wait': 6,
-    'pay_success': 7,
-    'pay_cancel': 8,
-    'withdraw_scan': 9,
-    'withdraw_confirm': 10,
-    'withdraw_success': 11,
-    'errors': 12,
+    'activation': 1,
+    'choose_ssid': 2,
+    'enter_passkey': 3,
+    'wifi_connected': 4,
+    'idle': 5,
+    'enter_amount': 6,
+    'pay_wait': 7,
+    'pay_success': 8,
+    'pay_cancel': 9,
+    'withdraw_scan': 10,
+    'withdraw_confirm': 11,
+    'withdraw_success': 12,
+    'errors': 13,
 }
 
 SCREEN_BRIGHTNESS = 40

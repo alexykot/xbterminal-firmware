@@ -57,6 +57,7 @@ def load_remote_config_cache():
 def load_local_config():
     """
     Local config params:
+        activation_code: string
         last_started: float
         show_cursor: boolean
         use_default_keypad_override: boolean

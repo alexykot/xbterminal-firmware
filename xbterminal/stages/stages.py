@@ -41,9 +41,18 @@ def bootup(run, ui):
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
     run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
 
-    # Read device key and batch number
-    run['device_key'] = activation.read_device_key()
-    run['batch_number'] = activation.read_batch_number()
+    # Check device key
+    try:
+        run['device_key'] = activation.read_device_key()
+    except xbterminal.exceptions.DeviceKeyMissingError:
+        try:
+            (run['device_key'],
+             run['local_config']['activation_code']) = activation.register_device()
+        except Exception as error:
+            # Registration error
+            logger.exception(error)
+            return defaults.STAGES['application_halt']
+        xbterminal.helpers.configs.save_local_config(run['local_config'])
 
     # Wait for remote config
     while True:
@@ -54,7 +63,20 @@ def bootup(run, ui):
     logger.info('working with {0}'.format(
         run['remote_config']['bitcoin_network']))
 
-    return defaults.STAGES['idle']
+    if run['remote_config']['status'] == 'activation':
+        return defaults.STAGES['activate']
+    else:
+        return defaults.STAGES['idle']
+
+
+def activate(run, ui):
+    ui.showScreen('activation')
+    ui.setText('activation_code_lbl',
+               run['local_config']['activation_code'])
+    while True:
+        if run['remote_config']['status'] == 'active':
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def idle(run, ui):

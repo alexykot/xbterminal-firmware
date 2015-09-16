@@ -26,7 +26,6 @@ logger = logging.getLogger(__name__)
 def get_initial_state():
     return {
         'device_key': None,
-        'batch_number': None,
         'local_config': {},
         'remote_server': None,
         'remote_config': {},
@@ -134,6 +133,8 @@ def main():
             gracefulExit(system_halt=True)
 
         # Manage stages
+        if run['CURRENT_STAGE'] == 'application_halt':
+            gracefulExit()
         if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(main_window.stageWorkerSlot)

@@ -5,6 +5,7 @@ import unittest
 
 from xbterminal import defaults
 from xbterminal.stages import stages
+from xbterminal.exceptions import DeviceKeyMissingError
 
 
 patcher = patch.dict(
@@ -35,23 +36,23 @@ class BootupStageTestCase(unittest.TestCase):
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.read_device_key')
-    @patch('xbterminal.stages.stages.xbterminal.stages.'
-           'activation.read_batch_number')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
     def test_bootup(self, qr_scanner_mock, nfc_server_mock, bt_server_mock,
-                    batch_number_mock, device_key_mock,
-                    save_local_config_mock, get_time_mock, sleep_mock):
+                    device_key_mock, save_local_config_mock,
+                    get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
             'local_config': {},
-            'remote_config': {'bitcoin_network': 'mainnet'},
+            'remote_config': {
+                'status': 'active',
+                'bitcoin_network': 'mainnet',
+            },
         }
         ui = Mock()
         get_time_mock.return_value = time.time()
         device_key_mock.return_value = 'testkey'
-        batch_number_mock.return_value = 'bnumber'
         bt_server_mock.return_value = 'bt_server'
         nfc_server_mock.return_value = 'nfc_server'
         qr_scanner_mock.return_value = 'qr_scanner'
@@ -62,10 +63,62 @@ class BootupStageTestCase(unittest.TestCase):
         self.assertIn('last_started', run['local_config'])
         self.assertTrue(save_local_config_mock.called)
         self.assertEqual(run['device_key'], 'testkey')
-        self.assertEqual(run['batch_number'], 'bnumber')
         self.assertEqual(run['bluetooth_server'], 'bt_server')
         self.assertEqual(run['nfc_server'], 'nfc_server')
         self.assertEqual(run['qr_scanner'], 'qr_scanner')
+        self.assertEqual(next_stage, defaults.STAGES['idle'])
+
+    @patch('xbterminal.stages.stages.time.sleep')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'clock.get_internet_time')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'configs.save_local_config')
+    @patch('xbterminal.stages.stages.xbterminal.stages.'
+           'activation.read_device_key')
+    @patch('xbterminal.stages.stages.xbterminal.stages.'
+           'activation.register_device')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
+    def test_regitration(self, qr_scanner_mock, nfc_server_mock,
+                         bt_server_mock,
+                         register_device_mock, device_key_mock,
+                         save_local_config_mock, get_time_mock, sleep_mock):
+        run = {
+            'init': {'remote_config': True},
+            'local_config': {},
+            'remote_config': {
+                'status': 'activation',
+                'bitcoin_network': 'mainnet',
+            },
+        }
+        ui = Mock()
+        get_time_mock.return_value = time.time()
+        device_key_mock.side_effect = DeviceKeyMissingError
+        register_device_mock.return_value = ('testKey', 'testCode')
+        bt_server_mock.return_value = 'bt_server'
+        nfc_server_mock.return_value = 'nfc_server'
+        qr_scanner_mock.return_value = 'qr_scanner'
+        next_stage = stages.bootup(run, ui)
+
+        self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
+        self.assertEqual(run['device_key'], 'testKey')
+        self.assertEqual(run['local_config']['activation_code'], 'testCode')
+        self.assertEqual(run['bluetooth_server'], 'bt_server')
+        self.assertEqual(run['nfc_server'], 'nfc_server')
+        self.assertEqual(run['qr_scanner'], 'qr_scanner')
+        self.assertEqual(next_stage, defaults.STAGES['activate'])
+
+
+class ActivateStageTestCase(unittest.TestCase):
+
+    def test_proceed(self):
+        run = {
+            'local_config': {'activation_code': 'testCode'},
+            'remote_config': {'status': 'active'},
+        }
+        ui = Mock()
+        next_stage = stages.activate(run, ui)
         self.assertEqual(next_stage, defaults.STAGES['idle'])
 
 
