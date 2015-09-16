@@ -35,7 +35,7 @@ class KeypadDriverBBB():
                'A': 'backspace',
                'D': 'enter',
                '00': '00',
-               '#BC': 'system_halt',
+               '#BC': 'application_halt',
                }
 
     KEYPAD = {17: 1,
@@ -134,7 +134,7 @@ class KeyboardDriver(object):
         QtCore.Qt.Key_Enter: 'enter',
         QtCore.Qt.Key_Return: 'enter',
         QtCore.Qt.Key_Alt: 'alt',
-        QtCore.Qt.Key_Escape: 'system_halt',
+        QtCore.Qt.Key_Escape: 'application_halt',
     }
 
     def getKey(self):

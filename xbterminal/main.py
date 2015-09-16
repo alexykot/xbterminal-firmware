@@ -4,7 +4,6 @@ import time
 import sys
 import os
 import logging.config
-import subprocess
 from collections import deque
 
 include_path = os.path.dirname(os.path.dirname(__file__))
@@ -128,13 +127,11 @@ def main():
             run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
 
         if run['keypad'].last_key_pressed == 'application_halt':
-            gracefulExit()
-        elif run['keypad'].last_key_pressed == 'system_halt':
-            gracefulExit(system_halt=True)
+            graceful_exit()
 
         # Manage stages
         if run['CURRENT_STAGE'] == 'application_halt':
-            gracefulExit()
+            graceful_exit()
         if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(main_window.stageWorkerSlot)
@@ -146,16 +143,10 @@ def main():
             run['keypad'].resetKey()
 
 
-def gracefulExit(system_halt=False, system_reboot=False):
+def graceful_exit():
     xbterminal.helpers.configs.save_local_config(
         xbterminal.runtime['local_config'])
-    logger.debug('application halted')
-    if system_halt:
-        logger.debug('system halt command sent')
-        subprocess.Popen(['halt', ])
-    if system_reboot:
-        logger.debug('system reboot command sent')
-        subprocess.Popen(['reboot', ])
+    logger.warning('application halted')
     sys.exit()
 
 
@@ -164,4 +155,4 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         logger.exception(error)
-    gracefulExit()
+    graceful_exit()

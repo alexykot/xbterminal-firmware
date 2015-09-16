@@ -27,7 +27,6 @@ STAGES = {
         'withdraw_success': 'withdraw_success',
     },
     'application_halt': 'application_halt',
-    'system_halt': 'system_halt',
 }
 
 SCREENS = {
