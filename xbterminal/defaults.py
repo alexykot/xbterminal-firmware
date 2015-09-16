@@ -54,14 +54,14 @@ except ImportError:
 
 PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 
-DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
 BATCH_NUMBER_FILE_PATH = os.path.join(RUNTIME_PATH, 'batch_number')
-LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
-QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
-LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
+DEVICE_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'device_key')
+LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_config')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
+LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
+QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 UI_FONTS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'fonts')
