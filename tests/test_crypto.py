@@ -14,16 +14,15 @@ from xbterminal.helpers import crypto
 class CryptoTestCase(unittest.TestCase):
 
     @patch('xbterminal.helpers.crypto.save_secret_key')
-    def test_generate_secret_key(self, save_key_mock):
-        public_key_pem = crypto.generate_secret_key()
-        self.assertTrue(save_key_mock.called)
-        self.assertIsNotNone(public_key_pem)
+    def test_generate_keypair(self, save_key_mock):
+        secret_key_pem, public_key_pem = crypto.generate_keypair()
+        self.assertTrue(isinstance(secret_key_pem, str))
+        self.assertTrue(isinstance(public_key_pem, str))
 
-    @patch('xbterminal.helpers.crypto.save_secret_key')
     @patch('xbterminal.helpers.crypto.read_secret_key')
-    def test_signing(self, read_key_mock, save_key_mock):
-        public_key_pem = crypto.generate_secret_key()
-        read_key_mock.return_value = save_key_mock.call_args[0][0]
+    def test_signing(self, read_key_mock):
+        secret_key_pem, public_key_pem = crypto.generate_keypair()
+        read_key_mock.return_value = secret_key_pem
 
         message = str({
             'device': '1A2B4C',

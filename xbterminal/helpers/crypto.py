@@ -18,7 +18,7 @@ def read_secret_key():
         return key_file.read()
 
 
-def generate_secret_key():
+def generate_keypair():
     """
     Saves secret key to file and returns public key
     """
@@ -31,13 +31,11 @@ def generate_secret_key():
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption())
 
-    save_secret_key(secret_pem)
-
     public_key = secret_key.public_key()
     public_pem = public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo)
-    return public_pem
+    return secret_pem, public_pem
 
 
 def create_signature(message):
@@ -56,5 +54,6 @@ def create_signature(message):
 
 
 if __name__ == '__main__':
-    public_pem = generate_secret_key()
+    secret_pem, public_pem = generate_keypair()
+    save_secret_key(secret_pem)
     print(public_pem)

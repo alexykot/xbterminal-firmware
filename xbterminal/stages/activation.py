@@ -4,6 +4,7 @@ import os
 import uuid
 
 from xbterminal import defaults
+from xbterminal.helpers import api, crypto
 from xbterminal.exceptions import DeviceKeyMissingError
 
 logger = logging.getLogger(__name__)
@@ -20,11 +21,13 @@ def read_device_key():
 
 def generate_device_key():
     device_key = hashlib.sha256(uuid.uuid4().bytes).hexdigest()
+    logger.info('generated device key {}'.format(device_key))
+    return device_key
+
+
+def save_device_key(device_key):
     with open(defaults.DEVICE_KEY_FILE_PATH, 'w') as device_key_file:
         device_key_file.write(device_key)
-    logger.info('generated device key {key}, saved to {path}'.format(
-        key=device_key, path=defaults.DEVICE_KEY_FILE_PATH))
-    return device_key
 
 
 def read_batch_number():
@@ -32,3 +35,26 @@ def read_batch_number():
         batch_number = batch_number_file.read().strip()
     logger.info('batch number {}'.format(batch_number))
     return batch_number
+
+
+def register_device():
+    # Prepare payload
+    batch_number = read_batch_number()
+    device_key = generate_device_key()
+    secret_key, public_key = crypto.generate_keypair()
+    data = {
+        'batch': batch_number,
+        'key': device_key,
+        'api_key': public_key,
+    }
+    # Send registration request
+    registration_url = api.get_url('registration')
+    response = api.send_request('post', registration_url, data)
+    data = response.json()
+    activation_code = data['activation_code']
+    logger.info('device registered, activation code {}'.format(
+        activation_code))
+    # Save keys
+    save_device_key(device_key)
+    crypto.save_secret_key(secret_key)
+    return device_key, activation_code
