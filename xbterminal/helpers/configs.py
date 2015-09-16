@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import os
-import requests
 import logging
 import pprint
 
@@ -10,6 +9,7 @@ from xbterminal import defaults
 from xbterminal.exceptions import (
     ConfigLoadError,
     DeviceKeyMissingError)
+from xbterminal.helpers import api
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +33,10 @@ def read_batch_number():
 
 
 def load_remote_config():
-    config_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['config'].format(
-        device_key=xbterminal.runtime['device_key'])
-    headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-    headers['Content-type'] = 'application/json'
+    config_url = api.get_url('config',
+                             device_key=xbterminal.runtime['device_key'])
     try:
-        response = requests.get(url=config_url, headers=headers)
+        response = api.send_request('get', config_url)
         response.raise_for_status()
         remote_config = response.json()
     except Exception as error:
