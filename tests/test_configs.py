@@ -2,12 +2,40 @@ import unittest
 from mock import patch, mock_open, Mock
 
 from xbterminal.helpers.configs import (
+    read_device_key,
+    generate_device_key,
     load_remote_config,
     save_remote_config_cache,
     load_remote_config_cache,
     load_local_config,
     save_local_config)
-from xbterminal.exceptions import ConfigLoadError
+from xbterminal.exceptions import ConfigLoadError, DeviceKeyMissingError
+
+
+class DeviceKeyTestCase(unittest.TestCase):
+
+    @patch('xbterminal.helpers.configs.os.path.exists')
+    def test_read_device_key(self, exists_mock):
+        exists_mock.return_value = True
+        open_mock = mock_open(read_data='testKey')
+        with patch('xbterminal.helpers.configs.open', open_mock, create=True):
+            device_key = read_device_key()
+
+        self.assertEqual(device_key, 'testKey')
+
+    @patch('xbterminal.helpers.configs.os.path.exists')
+    def test_read_device_key_error(self, exists_mock):
+        exists_mock.return_value = False
+        with self.assertRaises(DeviceKeyMissingError):
+            read_device_key()
+
+    def test_generate_device_key(self):
+        open_mock = mock_open()
+        with patch('xbterminal.helpers.configs.open', open_mock, create=True):
+            device_key = generate_device_key()
+
+        self.assertTrue(open_mock().write.called)
+        self.assertEqual(len(device_key), 64)
 
 
 @patch.dict('xbterminal.helpers.configs.xbterminal.runtime',

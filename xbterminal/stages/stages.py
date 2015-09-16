@@ -36,6 +36,11 @@ def bootup(run, ui):
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
+    # Initialize bluetooth and NFC servers
+    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
+    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
+    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
+
     # Read device key and batch number
     run['device_key'] = xbterminal.helpers.configs.read_device_key()
     run['batch_number'] = xbterminal.helpers.configs.read_batch_number()
@@ -48,11 +53,6 @@ def bootup(run, ui):
 
     logger.info('working with {0}'.format(
         run['remote_config']['bitcoin_network']))
-
-    # Initialize bluetooth and NFC servers
-    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
-    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
-    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
 
     return defaults.STAGES['idle']
 
