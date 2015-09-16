@@ -1,11 +1,13 @@
 from decimal import Decimal
 import unittest
 from mock import patch, Mock
+from tests import mocks
 
 from xbterminal import defaults
 from xbterminal.stages import amounts
 from xbterminal.stages.payment import Payment
 from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
+from xbterminal.helpers import api
 
 
 @patch.dict('xbterminal.stages.amounts.xbterminal.runtime',
@@ -39,6 +41,44 @@ class AmountsUtilsTestCase(unittest.TestCase):
         rate = Decimal('241.85').quantize(defaults.FIAT_DEC_PLACES)
         result = amounts.format_exchange_rate(rate)
         self.assertEqual(result, '0.242')
+
+
+@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+            remote_server='https://xbterminal.io')
+class ApiUtilsTestCase(unittest.TestCase):
+
+    def test_get_url(self):
+        url = api.get_url('config', device_key='test')
+        self.assertEqual(url, 'https://xbterminal.io/api/v2/devices/test/')
+
+    @patch('xbterminal.helpers.api.requests.Session')
+    def test_send_request(self, session_cls_mock):
+        session_mock = Mock()
+        session_cls_mock.return_value = session_mock
+
+        api.send_request('get', 'http://test_url.com')
+        self.assertTrue(session_mock.send.called)
+        request = session_mock.send.call_args[0][0]
+        self.assertEqual(request.url, 'http://test_url.com/')
+        self.assertEqual(request.headers['User-Agent'],
+                         defaults.EXTERNAL_CALLS_REQUEST_HEADERS['User-Agent'])
+        self.assertNotIn('X-Signature', request.headers)
+        self.assertEqual(session_mock.send.call_args[1]['timeout'],
+                         defaults.EXTERNAL_CALLS_TIMEOUT)
+
+    @patch('xbterminal.helpers.api.requests.Session')
+    @patch('xbterminal.helpers.crypto.read_secret_key',
+           new=mocks.read_secret_key_mock)
+    def test_send_request_signed(self, session_cls_mock):
+        session_mock = Mock()
+        session_cls_mock.return_value = session_mock
+
+        api.send_request('post', 'http://test_url.com',
+                         data={'aaa': 111}, signed=True)
+        self.assertTrue(session_mock.send.called)
+        request = session_mock.send.call_args[0][0]
+        self.assertEqual(request.url, 'http://test_url.com/')
+        self.assertIn('X-Signature', request.headers)
 
 
 class GetAddressTestCase(unittest.TestCase):
@@ -138,6 +178,8 @@ class PaymentTestCase(unittest.TestCase):
 class WithdrawalTestCase(unittest.TestCase):
 
     @patch('xbterminal.stages.withdrawal.requests.Session')
+    @patch('xbterminal.helpers.crypto.read_secret_key',
+           new=mocks.read_secret_key_mock)
     def test_create_order(self, session_cls_mock):
         response_mock = Mock(**{
             'json.return_value': {
@@ -158,6 +200,8 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
 
     @patch('xbterminal.stages.withdrawal.requests.Session')
+    @patch('xbterminal.helpers.crypto.read_secret_key',
+           new=mocks.read_secret_key_mock)
     def test_confirm_order(self, session_cls_mock):
         response_mock = Mock(**{'json.return_value': {}})
         session_mock = Mock(**{'send.return_value': response_mock})
