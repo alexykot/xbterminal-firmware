@@ -5,6 +5,7 @@ import requests
 
 import xbterminal
 from xbterminal import defaults
+from xbterminal.helpers import api
 
 logger = logging.getLogger(__name__)
 
@@ -27,14 +28,14 @@ class Payment(object):
         Returns:
             class instance or None
         """
-        payment_init_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_init']
+        payment_init_url = api.get_url('payment_init')
         payload = {
             'device_key': xbterminal.runtime['device_key'],
             'amount': float(fiat_amount),
             'bt_mac': bt_mac,
         }
         try:
-            response = requests.post(payment_init_url, data=payload)
+            response = api.send_request('post', payment_init_url, data=payload)
             response.raise_for_status()
             result = response.json()
         except (requests.exceptions.RequestException, ValueError) as error:
@@ -57,14 +58,16 @@ class Payment(object):
         Returns:
             payment_ack: pb2-encoded PaymentACK message
         """
-        payment_response_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_response']
-        headers = defaults.EXTERNAL_CALLS_REQUEST_HEADERS.copy()
-        headers['Content-Type'] = 'application/bitcoin-payment'
+        payment_response_url = api.get_url('payment_response',
+                                           payment_uid=self.uid)
+        headers = {'Content-Type': 'application/bitcoin-payment'}
         try:
-            response = requests.post(
-                url=payment_response_url.format(payment_uid=self.uid),
-                headers=headers,
-                data=message)
+            response = api.send_request(
+                'post',
+                url=payment_response_url,
+                data=message,
+                headers=headers)
+            response.raise_for_status()
         except requests.exceptions.RequestException as error:
             return None
         payment_ack = response.content
@@ -75,9 +78,10 @@ class Payment(object):
         Returns:
             receipt_url: url or None
         """
-        payment_check_url = xbterminal.runtime['remote_server'] + defaults.REMOTE_API_ENDPOINTS['payment_check']
+        payment_check_url = api.get_url('payment_check', payment_uid=self.uid)
         try:
-            response = requests.get(payment_check_url.format(payment_uid=self.uid))
+            response = api.send_request('get', payment_check_url)
+            response.raise_for_status()
             result = response.json()
         except (requests.exceptions.RequestException, ValueError) as error:
             return None

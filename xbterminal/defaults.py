@@ -4,6 +4,7 @@ from decimal import Decimal
 
 STAGES = {
     'bootup': 'bootup',
+    'activate': 'activate',
     'wifi': {
         'choose_ssid': 'choose_ssid',
         'enter_passkey': 'enter_passkey',
@@ -26,23 +27,23 @@ STAGES = {
         'withdraw_success': 'withdraw_success',
     },
     'application_halt': 'application_halt',
-    'system_halt': 'system_halt',
 }
 
 SCREENS = {
     'load_indefinite': 0,
-    'choose_ssid': 1,
-    'enter_passkey': 2,
-    'wifi_connected': 3,
-    'idle': 4,
-    'enter_amount': 5,
-    'pay_wait': 6,
-    'pay_success': 7,
-    'pay_cancel': 8,
-    'withdraw_scan': 9,
-    'withdraw_confirm': 10,
-    'withdraw_success': 11,
-    'errors': 12,
+    'activation': 1,
+    'choose_ssid': 2,
+    'enter_passkey': 3,
+    'wifi_connected': 4,
+    'idle': 5,
+    'enter_amount': 6,
+    'pay_wait': 7,
+    'pay_success': 8,
+    'pay_cancel': 9,
+    'withdraw_scan': 10,
+    'withdraw_confirm': 11,
+    'withdraw_success': 12,
+    'errors': 13,
 }
 
 SCREEN_BRIGHTNESS = 40
@@ -54,13 +55,14 @@ except ImportError:
 
 PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 
-DEVICE_KEY_FILE_PATH = os.path.join(PROJECT_LOCAL_PATH, 'device_key')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
-LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
-QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
-LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_state')
+BATCH_NUMBER_FILE_PATH = os.path.join(RUNTIME_PATH, 'batch_number')
+DEVICE_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'device_key')
+LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_config')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
+LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
+QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
 UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
 UI_FONTS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'fonts')
@@ -106,11 +108,9 @@ REMOTE_SERVERS = {
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {
-    'config': '/api/devices/{device_key}/',
+    'registration': '/api/v2/devices/',
+    'config': '/api/v2/devices/{device_key}/',
     'receipt': '/rc/{receipt_key}/',
-    'firmware_check': '/api/device/{device_key}/firmware/',
-    'firmware_download': '/api/device/{device_key}/firmware/{firmware_hash}/',
-    'firmware_updated': '/api/device/{device_key}/firmware_updated/',
     'payment_init': '/api/payments/init/',
     'payment_response': '/api/payments/{payment_uid}/response/',
     'payment_check': '/api/payments/{payment_uid}/check/',

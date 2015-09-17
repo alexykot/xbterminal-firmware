@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui.ui'
 #
-# Created: Mon Apr 27 14:29:13 2015
-#      by: PyQt4 UI code generator 4.11.3
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -44,6 +43,22 @@ class Ui_MainWindow(object):
         self.loader_lbl.setAlignment(QtCore.Qt.AlignCenter)
         self.loader_lbl.setObjectName(_fromUtf8("loader_lbl"))
         self.main_stackedWidget.addWidget(self.load_indefinite_scrn)
+        self.activation_scrn = QtGui.QWidget()
+        self.activation_scrn.setObjectName(_fromUtf8("activation_scrn"))
+        self.activation_code_lbl = QtGui.QLabel(self.activation_scrn)
+        self.activation_code_lbl.setGeometry(QtCore.QRect(60, 100, 361, 61))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Univers-Light-Normal"))
+        font.setPointSize(38)
+        font.setBold(False)
+        font.setWeight(50)
+        self.activation_code_lbl.setFont(font)
+        self.activation_code_lbl.setCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+        self.activation_code_lbl.setStyleSheet(_fromUtf8("background: none;\n"
+"color: #33363e;"))
+        self.activation_code_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        self.activation_code_lbl.setObjectName(_fromUtf8("activation_code_lbl"))
+        self.main_stackedWidget.addWidget(self.activation_scrn)
         self.choose_ssid_scrn = QtGui.QWidget()
         self.choose_ssid_scrn.setObjectName(_fromUtf8("choose_ssid_scrn"))
         self.wifi_lbl = QtGui.QLabel(self.choose_ssid_scrn)
@@ -673,6 +688,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Terminal", None))
+        self.activation_code_lbl.setText(_translate("MainWindow", "A1B2C3", None))
         self.wifi_lbl.setText(_translate("MainWindow", "please select WiFi network", None))
         self.skip_wifi_btn.setText(_translate("MainWindow", "skip WiFi setup", None))
         self.ssid_lbl.setText(_translate("MainWindow", "selected WiFi", None))

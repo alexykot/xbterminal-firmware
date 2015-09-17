@@ -4,7 +4,6 @@ import time
 import sys
 import os
 import logging.config
-import subprocess
 from collections import deque
 
 include_path = os.path.dirname(os.path.dirname(__file__))
@@ -72,9 +71,6 @@ def main():
 
     run = xbterminal.runtime = get_initial_state()
 
-    run['device_key'] = xbterminal.helpers.configs.get_device_key()
-    logger.info('device key {}'.format(run['device_key']))
-
     run['local_config'] = xbterminal.helpers.configs.load_local_config()
 
     if run['local_config'].get('use_dev_remote_server'):
@@ -82,7 +78,7 @@ def main():
         logger.warning('!!! DEV SERVER OVERRRIDE ACTIVE')
     else:
         run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['main']
-    logger.info('remote server: {}'.format(run['remote_server']))
+    logger.info('remote server {}'.format(run['remote_server']))
 
     main_window = xbterminal.gui.gui.initGUI()
 
@@ -101,19 +97,21 @@ def main():
         main_window.processEvents()
 
         # (Re)load remote config
-        if run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
+        if watcher.internet and \
+                run['device_key'] and \
+                run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             try:
                 run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
             except ConfigLoadError as error:
-                # Do not raise error, wait for internet connection
-                watcher.set_error('remote_config', 'remote config load failed')
+                # No remote config available, stop
+                logger.exception(error)
+                break
             else:
                 run['init']['remote_config'] = True
                 run['init']['remote_config_last_update'] = int(time.time())
-                watcher.discard_error('remote_config')
                 main_window.retranslateUi(
-                    run['remote_config']['MERCHANT_LANGUAGE'],
-                    run['remote_config']['MERCHANT_CURRENCY_SIGN_PREFIX'])
+                    run['remote_config']['language']['code'],
+                    run['remote_config']['currency']['prefix'])
 
         # Communicate with watcher
         watcher_errors = watcher.get_errors()
@@ -129,11 +127,11 @@ def main():
             run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
 
         if run['keypad'].last_key_pressed == 'application_halt':
-            gracefulExit()
-        elif run['keypad'].last_key_pressed == 'system_halt':
-            gracefulExit(system_halt=True)
+            graceful_exit()
 
         # Manage stages
+        if run['CURRENT_STAGE'] == 'application_halt':
+            graceful_exit()
         if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(main_window.stageWorkerSlot)
@@ -145,16 +143,10 @@ def main():
             run['keypad'].resetKey()
 
 
-def gracefulExit(system_halt=False, system_reboot=False):
+def graceful_exit():
     xbterminal.helpers.configs.save_local_config(
         xbterminal.runtime['local_config'])
-    logger.debug('application halted')
-    if system_halt:
-        logger.debug('system halt command sent')
-        subprocess.Popen(['halt', ])
-    if system_reboot:
-        logger.debug('system reboot command sent')
-        subprocess.Popen(['reboot', ])
+    logger.warning('application halted')
     sys.exit()
 
 
@@ -163,4 +155,4 @@ if __name__ == "__main__":
         main()
     except Exception as error:
         logger.exception(error)
-    gracefulExit()
+    graceful_exit()

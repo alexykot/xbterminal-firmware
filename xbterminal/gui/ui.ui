@@ -55,6 +55,39 @@
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="activation_scrn">
+    <widget class="QLabel" name="activation_code_lbl">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>100</y>
+       <width>361</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Univers-Light-Normal</family>
+       <pointsize>38</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>BlankCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>A1B2C3</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="choose_ssid_scrn">
     <widget class="QLabel" name="wifi_lbl">
      <property name="geometry">

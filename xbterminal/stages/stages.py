@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 import xbterminal
 from xbterminal import defaults
-from xbterminal.stages import amounts, payment, withdrawal
+from xbterminal.stages import activation, amounts, payment, withdrawal
 
 import xbterminal.helpers.bt
 import xbterminal.helpers.camera
@@ -36,6 +36,24 @@ def bootup(run, ui):
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
+    # Initialize bluetooth and NFC servers
+    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
+    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
+    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
+
+    # Check device key
+    try:
+        run['device_key'] = activation.read_device_key()
+    except xbterminal.exceptions.DeviceKeyMissingError:
+        try:
+            (run['device_key'],
+             run['local_config']['activation_code']) = activation.register_device()
+        except Exception as error:
+            # Registration error
+            logger.exception(error)
+            return defaults.STAGES['application_halt']
+        xbterminal.helpers.configs.save_local_config(run['local_config'])
+
     # Wait for remote config
     while True:
         if run['init']['remote_config']:
@@ -43,14 +61,22 @@ def bootup(run, ui):
         time.sleep(1)
 
     logger.info('working with {0}'.format(
-        run['remote_config']['BITCOIN_NETWORK']))
+        run['remote_config']['bitcoin_network']))
 
-    # Initialize bluetooth and NFC servers
-    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
-    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
-    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
+    if run['remote_config']['status'] == 'activation':
+        return defaults.STAGES['activate']
+    else:
+        return defaults.STAGES['idle']
 
-    return defaults.STAGES['idle']
+
+def activate(run, ui):
+    ui.showScreen('activation')
+    ui.setText('activation_code_lbl',
+               run['local_config']['activation_code'])
+    while True:
+        if run['remote_config']['status'] == 'active':
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def idle(run, ui):

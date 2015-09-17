@@ -12,15 +12,16 @@ from xbterminal.exceptions import ConfigLoadError
 
 @patch.dict('xbterminal.helpers.configs.xbterminal.runtime',
             device_key='test',
-            remote_server='https://xbterminal.io',
             remote_config={})
+@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+            remote_server='https://xbterminal.io')
 class RemoteConfigTestCase(unittest.TestCase):
 
-    @patch('xbterminal.helpers.configs.requests.get')
+    @patch('xbterminal.helpers.configs.api.send_request')
     @patch('xbterminal.helpers.configs.load_remote_config_cache')
     @patch('xbterminal.helpers.configs.save_remote_config_cache')
-    def test_load_config(self, save_cache_mock, load_cache_mock, get_url_mock):
-        get_url_mock.return_value = Mock(**{
+    def test_load_config(self, save_cache_mock, load_cache_mock, send_mock):
+        send_mock.return_value = Mock(**{
             'json.return_value': {'aaa': 111},
         })
         remote_config = load_remote_config()
@@ -29,22 +30,22 @@ class RemoteConfigTestCase(unittest.TestCase):
         self.assertTrue(save_cache_mock.called)
         self.assertEqual(save_cache_mock.call_args[0][0]['aaa'], 111)
 
-    @patch('xbterminal.helpers.configs.requests.get')
+    @patch('xbterminal.helpers.configs.api.send_request')
     @patch('xbterminal.helpers.configs.load_remote_config_cache')
     @patch('xbterminal.helpers.configs.save_remote_config_cache')
-    def test_cache(self, save_cache_mock, load_cache_mock, get_url_mock):
-        get_url_mock.side_effect = ValueError
+    def test_cache(self, save_cache_mock, load_cache_mock, send_mock):
+        send_mock.side_effect = ValueError
         load_cache_mock.return_value = {'aaa': 111}
         remote_config = load_remote_config()
         self.assertEqual(remote_config['aaa'], 111)
         self.assertTrue(load_cache_mock.called)
         self.assertFalse(save_cache_mock.called)
 
-    @patch('xbterminal.helpers.configs.requests.get')
+    @patch('xbterminal.helpers.configs.api.send_request')
     @patch('xbterminal.helpers.configs.load_remote_config_cache')
     @patch('xbterminal.helpers.configs.save_remote_config_cache')
-    def test_error(self, save_cache_mock, load_cache_mock, get_url_mock):
-        get_url_mock.side_effect = ValueError
+    def test_error(self, save_cache_mock, load_cache_mock, send_mock):
+        send_mock.side_effect = ValueError
         load_cache_mock.side_effect = IOError
         with self.assertRaises(ConfigLoadError):
             load_remote_config()
