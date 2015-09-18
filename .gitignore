@@ -1,14 +1,10 @@
 .idea/*
 *.pyc
-compiled/*
+__pycache__
 venv
-bitcoinj_server/*
 xbterminal/runtime/*
-xbterminal/device_key
-xbterminal/bitcoind_auth.py
 xbterminal/nuitka_fix.py
-xbterminal/main.so
-bitcoinj-server.tar.gz
+xbterminal/main
 fabfile/deploy.py
 .vagrant
 build

@@ -9,13 +9,14 @@
 
 ## Running VM
 
-Put these options in `xbterminal/runtime/local_state`:
+Specify batch number in `xbterminal/runtime/batch_number` file.
+
+Put these options in `xbterminal/runtime/local_config`:
 
 ```
 {
   "use_default_keypad_override": true,
   "use_dev_remote_server": true,
-  "use_predefined_connection": true,
   "show_cursor": true
 }
 ```
@@ -54,8 +55,8 @@ fab build.remote_compile
 
 This command outputs two files:
 
-* Binary executable `build/main_{arch}_{version}`
-* Installation package `build/xbterminal-firmware_{arch}_{version}.tar.gz`.
+* Binary executable `build/main_{version}_{arch}`
+* Installation package `build/xbterminal-firmware_{version}_{arch}.tar.gz`.
 
 ### QEMU VM
 
