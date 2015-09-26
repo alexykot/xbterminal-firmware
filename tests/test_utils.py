@@ -53,7 +53,8 @@ class ApiUtilsTestCase(unittest.TestCase):
 
     @patch('xbterminal.helpers.api.requests.Session')
     def test_send_request(self, session_cls_mock):
-        session_mock = Mock()
+        response_mock = Mock(status_code=200)
+        session_mock = Mock(**{'send.return_value': response_mock})
         session_cls_mock.return_value = session_mock
 
         api.send_request('get', 'http://test_url.com')
@@ -70,7 +71,8 @@ class ApiUtilsTestCase(unittest.TestCase):
     @patch('xbterminal.helpers.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_send_request_signed(self, session_cls_mock):
-        session_mock = Mock()
+        response_mock = Mock(status_code=200)
+        session_mock = Mock(**{'send.return_value': response_mock})
         session_cls_mock.return_value = session_mock
 
         api.send_request('post', 'http://test_url.com',

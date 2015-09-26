@@ -48,8 +48,8 @@ class RegistrationTestCase(unittest.TestCase):
     @patch('xbterminal.stages.activation.save_device_key')
     @patch('xbterminal.stages.activation.crypto.save_secret_key')
     @patch('xbterminal.stages.activation.api.send_request')
-    def test_register_devie(self, send_mock, secret_key_mock,
-                            device_key_mock, batch_number_mock):
+    def test_register_device(self, send_mock, secret_key_mock,
+                             device_key_mock, batch_number_mock):
         batch_number_mock.return_value = '0' * 32
         send_mock.return_value = Mock(**{
             'json.return_value': {'activation_code': 'testCode'},

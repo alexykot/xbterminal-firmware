@@ -10,6 +10,7 @@ sys.modules['nfc.snep'] = mock.Mock()
 sys.modules['nfc.llcp'] = mock.Mock()
 sys.modules['cv2'] = mock.Mock()
 sys.modules['zbar'] = mock.Mock()
+sys.modules['bluetooth'] = mock.Mock()
 
 logging.basicConfig(level=logging.ERROR)
 
