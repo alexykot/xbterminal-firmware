@@ -16,6 +16,14 @@ logging.basicConfig(level=logging.ERROR)
 
 loader = unittest.TestLoader()
 tests = loader.discover('.')
-
 testRunner = unittest.runner.TextTestRunner()
-testRunner.run(tests)
+
+
+def main():
+    result = testRunner.run(tests)
+    if result.errors or result.failures:
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
