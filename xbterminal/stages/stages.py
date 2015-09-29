@@ -41,18 +41,16 @@ def bootup(run, ui):
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
     run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
 
-    # Check device key
-    try:
-        run['device_key'] = activation.read_device_key()
-    except xbterminal.exceptions.DeviceKeyMissingError:
+    # Check registration
+    if not activation.is_registered():
         try:
-            (run['device_key'],
-             run['local_config']['activation_code']) = activation.register_device()
+            run['local_config']['activation_code'] = activation.register_device()
         except Exception as error:
             # Registration error
             logger.exception(error)
             return defaults.STAGES['application_halt']
         xbterminal.helpers.configs.save_local_config(run['local_config'])
+    run['init']['registration'] = True
 
     # Wait for remote config
     while True:

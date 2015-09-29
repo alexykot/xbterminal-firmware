@@ -2,12 +2,33 @@ import unittest
 from mock import patch, mock_open, Mock
 
 from xbterminal.helpers.configs import (
+    read_device_key,
+    read_batch_number,
     load_remote_config,
     save_remote_config_cache,
     load_remote_config_cache,
     load_local_config,
     save_local_config)
 from xbterminal.exceptions import ConfigLoadError
+
+
+class DeviceKeyTestCase(unittest.TestCase):
+
+    def test_read_device_key(self):
+        open_mock = mock_open(read_data='testKey')
+        with patch('xbterminal.helpers.configs.open',
+                   open_mock, create=True):
+            device_key = read_device_key()
+
+        self.assertEqual(device_key, 'testKey')
+
+    def test_read_batch_number(self):
+        open_mock = mock_open(read_data='testNumber')
+        with patch('xbterminal.helpers.configs.open',
+                   open_mock, create=True):
+            device_key = read_batch_number()
+
+        self.assertEqual(device_key, 'testNumber')
 
 
 @patch.dict('xbterminal.helpers.configs.xbterminal.runtime',

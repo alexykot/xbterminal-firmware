@@ -43,6 +43,7 @@ def get_initial_state():
         },
         'init': {
             'clock_synchronized': False,
+            'registration': False,
             'remote_config': False,
             'remote_config_last_update': 0,
         },
@@ -71,6 +72,7 @@ def main():
 
     run = xbterminal.runtime = get_initial_state()
 
+    run['device_key'] = xbterminal.helpers.configs.read_device_key()
     run['local_config'] = xbterminal.helpers.configs.load_local_config()
 
     if run['local_config'].get('use_dev_remote_server'):
@@ -98,7 +100,7 @@ def main():
 
         # (Re)load remote config
         if watcher.internet and \
-                run['device_key'] and \
+                run['init']['registration'] and \
                 run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             try:
                 run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
