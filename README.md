@@ -11,11 +11,12 @@
 
 Specify batch number in `xbterminal/runtime/batch_number` file.
 
+Write device key to `xbterminal/runtime/device_key` file.
+
 Put these options in `xbterminal/runtime/local_config`:
 
 ```
 {
-  "use_default_keypad_override": true,
   "use_dev_remote_server": true,
   "show_cursor": true
 }
