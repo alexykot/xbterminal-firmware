@@ -74,8 +74,11 @@ def load_local_config():
         activation_code: string
         last_started: float
         show_cursor: boolean
-        use_default_keypad_override: boolean
         use_dev_remote_server: boolean
+        use_keypad: boolean
+    Obsolete:
+        use_default_keypad_override: boolean
+        use_predefined_connection: boolean
         wifi_ssid: string
         wifi_pass: string
     Returns:
