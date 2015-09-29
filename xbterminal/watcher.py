@@ -60,7 +60,8 @@ class Watcher(threading.Thread):
     def check_system_state(self):
         # Check internet connection
         try:
-            requests.get(xbterminal.runtime['remote_server'],
+            # TODO: create API status endpoint
+            requests.get(xbterminal.runtime['remote_server'] + '/en/',
                          timeout=defaults.EXTERNAL_CALLS_TIMEOUT)
             self.internet = True
         except (requests.exceptions.RequestException, socket.timeout):
