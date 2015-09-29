@@ -3,7 +3,7 @@ ntplib==0.3.3
 psutil==3.1.1
 pyusb==1.0.0b1
 qrcode==5.1
-requests==2.3.0
+requests==2.4.3
 PyBluez==0.21
 protobuf==2.5.0
 wifi==0.3.4
