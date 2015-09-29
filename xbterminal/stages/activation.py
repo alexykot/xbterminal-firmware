@@ -1,6 +1,6 @@
 import logging
 
-from xbterminal.helpers import api, crypto, configs
+from xbterminal.helpers import api, crypto, configs, salt
 
 logger = logging.getLogger(__name__)
 
@@ -10,10 +10,12 @@ def register_device():
     batch_number = configs.read_batch_number()
     device_key = configs.read_device_key()
     secret_key, public_key = crypto.generate_keypair()
+    salt_fingerprint = salt.get_public_key_fingerprint()
     data = {
         'batch': batch_number,
         'key': device_key,
         'api_key': public_key,
+        'salt_fingerprint': salt_fingerprint,
     }
     # Send registration request
     registration_url = api.get_url('registration')
