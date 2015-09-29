@@ -97,7 +97,10 @@ LOG_CONFIG = {
         },
         'requests.packages.urllib3.connectionpool': {
             'level': 'WARNING',
-        }
+        },
+        'urllib3.connectionpool': {
+            'level': 'WARNING',
+        },
     },
 }
 
