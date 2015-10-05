@@ -225,7 +225,7 @@ def initGUI():
 
     # Load custom fonts
     QtGui.QFontDatabase.addApplicationFont(os.path.join(
-        defaults.UI_FONTS_PATH, 'univers-light-normal.ttf'))
+        defaults.UI_FONTS_PATH, 'OpenSans-Regular.ttf'))
 
     if xbterminal.runtime['local_config'].get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))

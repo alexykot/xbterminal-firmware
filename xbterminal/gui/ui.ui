@@ -12,7 +12,7 @@
   </property>
   <property name="font">
    <font>
-    <family>Univers-Light-Normal</family>
+    <family>Open Sans</family>
     <pointsize>12</pointsize>
    </font>
   </property>
@@ -67,7 +67,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>38</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -651,7 +651,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -680,7 +680,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -727,7 +727,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -754,7 +754,7 @@ color: #fff;
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>26</pointsize>
       </font>
      </property>
@@ -784,7 +784,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>38</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -812,7 +812,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -842,7 +842,7 @@ color: #b33a3a;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -871,7 +871,7 @@ padding-left: 10px;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -897,7 +897,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -923,7 +923,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -949,7 +949,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -975,7 +975,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1001,7 +1001,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1048,7 +1048,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1074,7 +1074,7 @@ color: #fff;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1102,7 +1102,7 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
       </font>
      </property>
      <property name="styleSheet">
@@ -1152,7 +1152,7 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1178,7 +1178,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1204,7 +1204,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
        <weight>50</weight>
        <italic>false</italic>
@@ -1233,7 +1233,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1256,7 +1256,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1282,7 +1282,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1308,7 +1308,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
        <italic>false</italic>
       </font>
@@ -1341,7 +1341,7 @@ QR CODE NOW</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>12</pointsize>
       </font>
      </property>
@@ -1367,7 +1367,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -1393,7 +1393,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1417,7 +1417,7 @@ color: #fff;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1443,7 +1443,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
        <weight>50</weight>
        <italic>false</italic>
@@ -1472,7 +1472,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1498,7 +1498,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -1526,7 +1526,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1549,7 +1549,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1577,7 +1577,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1603,7 +1603,7 @@ color: #fff;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1631,7 +1631,7 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
       </font>
      </property>
      <property name="styleSheet">
