@@ -1,5 +1,0 @@
-[program:main]
-command=xinit /opt/xbterminal/xbterminal/main.py
-
-[group:xbterminal]
-programs=main
