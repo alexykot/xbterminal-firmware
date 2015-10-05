@@ -199,10 +199,6 @@ class GUI(QtGui.QMainWindow):
 
     def showErrors(self, errors):
         translations = {
-            'remote config load failed': _translate(
-                'MainWindow', 'remote config load failed', None),
-            'wireless interface not found': _translate(
-                'MainWindow', 'wireless interface not found', None),
             'no internet': _translate(
                 'MainWindow', 'no internet', None),
             'internet disconnected': _translate(
