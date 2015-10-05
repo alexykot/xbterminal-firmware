@@ -241,17 +241,7 @@ def initGUI():
         defaults.UI_DEFAULT_LANGUAGE)
     application.setLanguage(language_code)
     main_window = GUI(application)
-    adjust_screen_brightness(defaults.SCREEN_BRIGHTNESS)
     return main_window
-
-
-def adjust_screen_brightness(value):
-    command = "echo {0} > /sys/class/backlight/backlight.11/brightness".\
-        format(value)
-    retcode = subprocess.call(command, shell=True)
-    if retcode != 0:
-        logger.warning('Failed to adjust '
-                       'screen brigtness (code {0})'.format(retcode))
 
 
 def formatCharSelectHelperHMTL(char_tupl, char_selected=None):
