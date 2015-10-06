@@ -137,7 +137,7 @@ NOW</source>
         <source>TOUCH NFC AGAIN
 OR SCAN QR CODE
 FOR RECEIPT</source>
-        <translation>прикоснитесь к NFC снова
+        <translation type="unfinished">прикоснитесь к NFC снова
 или отсканируйте QR код
 чтобы получить чек</translation>
     </message>
@@ -190,17 +190,17 @@ active</source>
     <message>
         <location filename="../ui.py" line="700"/>
         <source>PAY</source>
-        <translation type="unfinished">ОПЛАТИТЕ</translation>
+        <translation type="unfinished">ОПЛАТА</translation>
     </message>
     <message>
         <location filename="../ui.py" line="701"/>
         <source>WITHDRAW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ВЫВОД</translation>
     </message>
     <message>
         <location filename="../ui.py" line="702"/>
         <source>ENTER AMOUNT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ВВЕДИТЕ СУММУ</translation>
     </message>
     <message>
         <location filename="../ui.py" line="703"/>
@@ -210,12 +210,12 @@ active</source>
     <message>
         <location filename="../ui.py" line="706"/>
         <source>TOUCH NFC NOW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ПРИКОСНИТЕСЬ К NFC</translation>
     </message>
     <message>
         <location filename="../ui.py" line="713"/>
         <source>PAYMENT SUCCESSFUL</source>
-        <translation type="unfinished">ОПЛАТА ЗАВЕРШЕНА</translation>
+        <translation type="unfinished">ОПЛАТА ПРОШЛА УСПЕШНО</translation>
     </message>
     <message>
         <location filename="../ui.py" line="731"/>
@@ -231,12 +231,13 @@ active</source>
         <location filename="../ui.py" line="724"/>
         <source>SCAN YOUR BITCOIN ADDRESS
 QR CODE NOW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ОТСКАНИРУЙТЕ QR КОД
+С BITCOIN АДРЕСОМ</translation>
     </message>
     <message>
         <location filename="../ui.py" line="726"/>
         <source>YOUR ADDRESS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ВАШ АДРЕС</translation>
     </message>
     <message>
         <location filename="../ui.py" line="727"/>
@@ -246,12 +247,12 @@ QR CODE NOW</source>
     <message>
         <location filename="../ui.py" line="728"/>
         <source>CONFIRM AND SEND</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ОТПРАВИТЬ</translation>
     </message>
     <message>
         <location filename="../ui.py" line="735"/>
         <source>PAYOUT SUCCESSFUL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ОПЕРАЦИЯ ПРОШЛА УСПЕШНО</translation>
     </message>
 </context>
 </TS>
