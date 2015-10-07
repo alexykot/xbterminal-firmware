@@ -15,7 +15,8 @@ def flake8():
 @task
 def unit():
     with prefix('. venv/bin/activate'):
-        local('python tests/run.py')
+        local('coverage run tests/run.py')
+        local('coverage report')
 
 
 @task(default=True)
