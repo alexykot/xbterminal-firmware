@@ -40,6 +40,14 @@ vagrant ssh
 xinit /vagrant/xbterminal/main.py
 ```
 
+## Versioning
+
+To add a new version:
+
+1. Update [VERSION](VERSION) file.
+2. Commit changes.
+3. Set tag: `git tag -a v0.9.4` ([more info](https://git-scm.com/book/en/v2/Git-Basics-Tagging)).
+
 ## Compiling
 
 Requirements:
