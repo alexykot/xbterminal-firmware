@@ -9,6 +9,7 @@ class InitialStateTestCase(unittest.TestCase):
     def test_initial_state(self):
         state = get_initial_state()
         self.assertFalse(state['init']['clock_synchronized'])
+        self.assertFalse(state['init']['registration'])
         self.assertFalse(state['init']['remote_config'])
         self.assertEqual(state['init']['remote_config_last_update'], 0)
         self.assertEqual(state['CURRENT_STAGE'], defaults.STAGES['bootup'])

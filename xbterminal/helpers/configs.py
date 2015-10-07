@@ -12,6 +12,20 @@ from xbterminal.helpers import api
 logger = logging.getLogger(__name__)
 
 
+def read_device_key():
+    with open(defaults.DEVICE_KEY_FILE_PATH) as device_key_file:
+        device_key = device_key_file.read().strip()
+    logger.info('device key {}'.format(device_key))
+    return device_key
+
+
+def read_batch_number():
+    with open(defaults.BATCH_NUMBER_FILE_PATH) as batch_number_file:
+        batch_number = batch_number_file.read().strip()
+    logger.info('batch number {}'.format(batch_number))
+    return batch_number
+
+
 def load_remote_config():
     config_url = api.get_url('config',
                              device_key=xbterminal.runtime['device_key'])
@@ -60,8 +74,11 @@ def load_local_config():
         activation_code: string
         last_started: float
         show_cursor: boolean
-        use_default_keypad_override: boolean
         use_dev_remote_server: boolean
+        use_keypad: boolean
+    Obsolete:
+        use_default_keypad_override: boolean
+        use_predefined_connection: boolean
         wifi_ssid: string
         wifi_pass: string
     Returns:

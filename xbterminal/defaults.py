@@ -97,7 +97,10 @@ LOG_CONFIG = {
         },
         'requests.packages.urllib3.connectionpool': {
             'level': 'WARNING',
-        }
+        },
+        'urllib3.connectionpool': {
+            'level': 'WARNING',
+        },
     },
 }
 
@@ -118,7 +121,7 @@ REMOTE_API_ENDPOINTS = {
     'withdrawal_confirm': '/api/withdrawals/{uid}/confirm/',
     'withdrawal_check': '/api/withdrawals/{uid}/',
 }
-EXTERNAL_CALLS_TIMEOUT = 5
+EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds

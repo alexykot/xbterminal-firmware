@@ -5,7 +5,6 @@ import unittest
 
 from xbterminal import defaults
 from xbterminal.stages import stages
-from xbterminal.exceptions import DeviceKeyMissingError
 
 
 patcher = patch.dict(
@@ -35,12 +34,12 @@ class BootupStageTestCase(unittest.TestCase):
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
-           'activation.read_device_key')
+           'activation.is_registered')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
     def test_bootup(self, qr_scanner_mock, nfc_server_mock, bt_server_mock,
-                    device_key_mock, save_local_config_mock,
+                    is_registered_mock, save_local_config_mock,
                     get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
@@ -52,7 +51,7 @@ class BootupStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         get_time_mock.return_value = time.time()
-        device_key_mock.return_value = 'testkey'
+        is_registered_mock.return_value = True
         bt_server_mock.return_value = 'bt_server'
         nfc_server_mock.return_value = 'nfc_server'
         qr_scanner_mock.return_value = 'qr_scanner'
@@ -60,9 +59,9 @@ class BootupStageTestCase(unittest.TestCase):
 
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
         self.assertTrue(run['init']['clock_synchronized'])
+        self.assertTrue(run['init']['registration'])
         self.assertIn('last_started', run['local_config'])
         self.assertTrue(save_local_config_mock.called)
-        self.assertEqual(run['device_key'], 'testkey')
         self.assertEqual(run['bluetooth_server'], 'bt_server')
         self.assertEqual(run['nfc_server'], 'nfc_server')
         self.assertEqual(run['qr_scanner'], 'qr_scanner')
@@ -74,7 +73,7 @@ class BootupStageTestCase(unittest.TestCase):
     @patch('xbterminal.stages.stages.xbterminal.helpers.'
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
-           'activation.read_device_key')
+           'activation.is_registered')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.register_device')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
@@ -82,7 +81,7 @@ class BootupStageTestCase(unittest.TestCase):
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
     def test_regitration(self, qr_scanner_mock, nfc_server_mock,
                          bt_server_mock,
-                         register_device_mock, device_key_mock,
+                         register_device_mock, is_registered_mock,
                          save_local_config_mock, get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
@@ -94,16 +93,16 @@ class BootupStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         get_time_mock.return_value = time.time()
-        device_key_mock.side_effect = DeviceKeyMissingError
-        register_device_mock.return_value = ('testKey', 'testCode')
+        is_registered_mock.return_value = False
+        register_device_mock.return_value = 'testCode'
         bt_server_mock.return_value = 'bt_server'
         nfc_server_mock.return_value = 'nfc_server'
         qr_scanner_mock.return_value = 'qr_scanner'
         next_stage = stages.bootup(run, ui)
 
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
-        self.assertEqual(run['device_key'], 'testKey')
         self.assertEqual(run['local_config']['activation_code'], 'testCode')
+        self.assertTrue(run['init']['registration'])
         self.assertEqual(run['bluetooth_server'], 'bt_server')
         self.assertEqual(run['nfc_server'], 'nfc_server')
         self.assertEqual(run['qr_scanner'], 'qr_scanner')

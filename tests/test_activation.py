@@ -1,63 +1,37 @@
 import unittest
-from mock import patch, mock_open, Mock
+from mock import patch, Mock
 
-from xbterminal.stages.activation import (
-    read_device_key,
-    generate_device_key,
-    save_device_key,
-    register_device)
-from xbterminal.exceptions import DeviceKeyMissingError
-
-
-class DeviceKeyTestCase(unittest.TestCase):
-
-    @patch('xbterminal.stages.activation.os.path.exists')
-    def test_read_device_key(self, exists_mock):
-        exists_mock.return_value = True
-        open_mock = mock_open(read_data='testKey')
-        with patch('xbterminal.stages.activation.open',
-                   open_mock, create=True):
-            device_key = read_device_key()
-
-        self.assertEqual(device_key, 'testKey')
-
-    @patch('xbterminal.helpers.configs.os.path.exists')
-    def test_read_device_key_error(self, exists_mock):
-        exists_mock.return_value = False
-        with self.assertRaises(DeviceKeyMissingError):
-            read_device_key()
-
-    def test_save_device_key(self):
-        open_mock = mock_open()
-        with patch('xbterminal.stages.activation.open',
-                   open_mock, create=True):
-            save_device_key('testKey')
-
-        self.assertTrue(open_mock().write.called)
-
-    def test_generate_device_key(self):
-        device_key = generate_device_key()
-        self.assertEqual(len(device_key), 64)
+from xbterminal.stages.activation import register_device, is_registered
 
 
 @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
             remote_server='https://xbterminal.io')
 class RegistrationTestCase(unittest.TestCase):
 
-    @patch('xbterminal.stages.activation.read_batch_number')
-    @patch('xbterminal.stages.activation.save_device_key')
+    @patch('xbterminal.stages.activation.configs.read_device_key')
+    @patch('xbterminal.stages.activation.configs.read_batch_number')
+    @patch('xbterminal.stages.activation.salt.get_public_key_fingerprint')
     @patch('xbterminal.stages.activation.crypto.save_secret_key')
     @patch('xbterminal.stages.activation.api.send_request')
     def test_register_device(self, send_mock, secret_key_mock,
-                             device_key_mock, batch_number_mock):
-        batch_number_mock.return_value = '0' * 32
+                             salt_finger_mock,
+                             batch_number_mock, device_key_mock):
+        device_key_mock.return_value = device_key = '0' * 64
+        batch_number_mock.return_value = batch_number = '0' * 32
+        salt_finger_mock.return_value = salt_fingerprint = 'fingerprint'
         send_mock.return_value = Mock(**{
             'json.return_value': {'activation_code': 'testCode'},
         })
-        device_key, activation_code = register_device()
-        self.assertEqual(len(device_key), 64)
+        activation_code = register_device()
         self.assertEqual(activation_code, 'testCode')
         post_data = send_mock.call_args[0][2]
-        self.assertEqual(post_data['batch'], '0' * 32)
+        self.assertEqual(post_data['batch'], batch_number)
         self.assertEqual(post_data['key'], device_key)
+        self.assertEqual(post_data['salt_fingerprint'], salt_fingerprint)
         self.assertIn('api_key', post_data)
+
+    @patch('xbterminal.stages.activation.crypto.read_secret_key')
+    def test_is_registered(self, secret_key_mock):
+        self.assertTrue(is_registered())
+        secret_key_mock.side_effect = IOError
+        self.assertFalse(is_registered())
