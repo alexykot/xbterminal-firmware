@@ -199,10 +199,6 @@ class GUI(QtGui.QMainWindow):
 
     def showErrors(self, errors):
         translations = {
-            'remote config load failed': _translate(
-                'MainWindow', 'remote config load failed', None),
-            'wireless interface not found': _translate(
-                'MainWindow', 'wireless interface not found', None),
             'no internet': _translate(
                 'MainWindow', 'no internet', None),
             'internet disconnected': _translate(
@@ -229,7 +225,7 @@ def initGUI():
 
     # Load custom fonts
     QtGui.QFontDatabase.addApplicationFont(os.path.join(
-        defaults.UI_FONTS_PATH, 'univers-light-normal.ttf'))
+        defaults.UI_FONTS_PATH, 'OpenSans-Regular.ttf'))
 
     if xbterminal.runtime['local_config'].get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))

@@ -90,3 +90,16 @@ Wait until VM is ready, then start the compilation:
 fab build.qemu_compile
 ```
 
+## Translations
+
+[Qt Linguist](http://doc.qt.io/qt-4.8/linguist-manual.html) is required.
+
+Update translation files (*.ts):
+
+```
+fab build.ts
+```
+
+Then run Qt Linguist. All translation files can be opened in one window.
+
+After finishing translations, select **File > Release All** from the main menu.

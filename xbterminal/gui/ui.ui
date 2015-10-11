@@ -12,7 +12,7 @@
   </property>
   <property name="font">
    <font>
-    <family>Univers-Light-Normal</family>
+    <family>Open Sans</family>
     <pointsize>12</pointsize>
    </font>
   </property>
@@ -67,7 +67,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>38</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -651,7 +651,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -680,7 +680,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -727,7 +727,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -754,7 +754,7 @@ color: #fff;
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>26</pointsize>
       </font>
      </property>
@@ -784,7 +784,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>38</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -812,7 +812,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -842,7 +842,7 @@ color: #b33a3a;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -851,13 +851,16 @@ color: #b33a3a;</string>
      <property name="styleSheet">
       <string notr="true">background: #d34c0a;
 color: #fff;
-padding-left: 10px;</string>
+padding-right: 260px;</string>
      </property>
      <property name="text">
       <string>TOUCH NFC NOW</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLabel" name="pwait_currency_lbl">
@@ -871,7 +874,7 @@ padding-left: 10px;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -897,7 +900,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -923,7 +926,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -949,7 +952,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -975,7 +978,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1001,7 +1004,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1048,7 +1051,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1066,15 +1069,15 @@ color: #fff;</string>
     <widget class="QLabel" name="psuccess_tip_lbl">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>140</y>
-       <width>251</width>
-       <height>81</height>
+       <x>200</x>
+       <y>110</y>
+       <width>271</width>
+       <height>151</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1094,7 +1097,7 @@ FOR RECEIPT</string>
     <widget class="QLabel" name="psuccess_receipt_qr_img">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>30</x>
        <y>110</y>
        <width>151</width>
        <height>151</height>
@@ -1102,7 +1105,7 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
       </font>
      </property>
      <property name="styleSheet">
@@ -1152,7 +1155,7 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1178,7 +1181,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1204,7 +1207,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
        <weight>50</weight>
        <italic>false</italic>
@@ -1233,7 +1236,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1256,7 +1259,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1282,7 +1285,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1308,7 +1311,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
        <italic>false</italic>
       </font>
@@ -1341,7 +1344,7 @@ QR CODE NOW</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>12</pointsize>
       </font>
      </property>
@@ -1367,7 +1370,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
@@ -1393,7 +1396,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1417,7 +1420,7 @@ color: #fff;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1443,7 +1446,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
        <weight>50</weight>
        <italic>false</italic>
@@ -1472,7 +1475,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
       </font>
      </property>
@@ -1498,7 +1501,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>28</pointsize>
        <weight>50</weight>
        <bold>false</bold>
@@ -1526,7 +1529,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1549,7 +1552,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>13</pointsize>
       </font>
      </property>
@@ -1577,7 +1580,7 @@ color: #33363e;</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1595,15 +1598,15 @@ color: #fff;</string>
     <widget class="QLabel" name="wsuccess_tip_lbl">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>140</y>
-       <width>251</width>
-       <height>81</height>
+       <x>200</x>
+       <y>110</y>
+       <width>271</width>
+       <height>151</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
        <pointsize>17</pointsize>
       </font>
      </property>
@@ -1623,7 +1626,7 @@ FOR RECEIPT</string>
     <widget class="QLabel" name="wsuccess_receipt_qr_img">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>30</x>
        <y>110</y>
        <width>151</width>
        <height>151</height>
@@ -1631,7 +1634,7 @@ FOR RECEIPT</string>
      </property>
      <property name="font">
       <font>
-       <family>Univers-Light-Normal</family>
+       <family>Open Sans</family>
       </font>
      </property>
      <property name="styleSheet">
