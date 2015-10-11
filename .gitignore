@@ -7,4 +7,5 @@ xbterminal/nuitka_fix.py
 xbterminal/main
 fabfile/deploy.py
 .vagrant
+.coverage
 build
