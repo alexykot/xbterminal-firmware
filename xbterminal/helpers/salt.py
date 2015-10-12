@@ -17,7 +17,7 @@ def get_public_key_fingerprint():
     ]
     try:
         result = subprocess.check_output(command)
-    except subprocess.CalledProcessError as error:
+    except Exception as error:
         logger.exception(error)
         return
     data = json.loads(result)
