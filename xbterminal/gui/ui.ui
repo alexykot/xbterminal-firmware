@@ -60,7 +60,7 @@
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>100</y>
+       <y>150</y>
        <width>361</width>
        <height>61</height>
       </rect>
@@ -68,7 +68,7 @@
      <property name="font">
       <font>
        <family>Open Sans</family>
-       <pointsize>38</pointsize>
+       <pointsize>24</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
@@ -82,6 +82,39 @@ color: #33363e;</string>
      </property>
      <property name="text">
       <string>A1B2C3</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="activation_tip_lbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>461</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>BlankCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: none;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Please register at xbterminal.io
+and use this code to activate
+this module</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
