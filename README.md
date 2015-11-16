@@ -3,6 +3,8 @@
 ## Requirements
 
 * Python 2
+* PyQt
+* Fabric
 * VirtualBox
 * Oracle VirtualBox Extension Pack
 * Vagrant
@@ -20,6 +22,12 @@ Put these options in `xbterminal/runtime/local_config`:
   "use_dev_remote_server": true,
   "show_cursor": true
 }
+```
+
+Generate resource file:
+
+```
+fab build.res:default
 ```
 
 Create the VM and run it:

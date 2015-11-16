@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 import xbterminal
 import xbterminal.helpers
 from xbterminal.gui import ui as appui
+from xbterminal.gui import resources  # flake8: noqa
 from xbterminal import defaults
 
 try:
@@ -43,8 +44,11 @@ class Application(QtGui.QApplication):
         """
         Load additional fonts
         """
-        for file_name in os.listdir(defaults.UI_FONTS_PATH):
-            QtGui.QFontDatabase.addApplicationFont(file_name)
+        fonts_dir = QtCore.QDir(':/fonts')
+        font_files = [fonts_dir.filePath(fn)
+                      for fn in fonts_dir.entryList(QtCore.QDir.Files)]
+        for font_file in font_files:
+            QtGui.QFontDatabase.addApplicationFont(font_file)
 
     def loadTranslations(self):
         """
@@ -85,16 +89,10 @@ class GUI(QtGui.QMainWindow):
         self.ui.setupUi(self)
         # Set up images
         self.ui.main_stackedWidget.setStyleSheet(
-            'background-image: url({});'.format(os.path.join(
-                defaults.UI_IMAGES_PATH,
-                'bg.png')))
-        self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(os.path.join(
-            defaults.UI_IMAGES_PATH,
-            'bc_logo.png')))
+            'background-image: url(:/images/bg.png);')
+        self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(':/images/bc_logo.png'))
         # Loader
-        self.loader = QtGui.QMovie(os.path.join(
-            defaults.UI_IMAGES_PATH,
-            'loading.gif'))
+        self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Disable keyboard on amount input widget

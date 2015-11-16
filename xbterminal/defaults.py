@@ -64,8 +64,6 @@ SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
 LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
-UI_IMAGES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'images')
-UI_FONTS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'fonts')
 UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
 UI_DEFAULT_LANGUAGE = 'en'
 

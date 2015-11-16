@@ -5,6 +5,7 @@ venv
 xbterminal/runtime/*
 xbterminal/nuitka_fix.py
 xbterminal/main
+xbterminal/gui/resources.py
 fabfile/deploy.py
 .vagrant
 .coverage

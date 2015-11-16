@@ -24,6 +24,14 @@ def ui():
 
 
 @task
+def res(theme='default'):
+    with lcd('xbterminal/gui'):
+        local('pyrcc4 '
+              'themes/{theme}/resources.qrc '
+              '-o resources.py'.format(theme=theme))
+
+
+@task
 def ts():
     with lcd('xbterminal/gui'):
         local('pylupdate4 xbterminal.pro')

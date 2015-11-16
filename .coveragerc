@@ -1,3 +1,5 @@
 [run]
 source = xbterminal/
-omit = xbterminal/gui/ui.py
+omit =
+    xbterminal/gui/ui.py
+    xbterminal/gui/resources.py
