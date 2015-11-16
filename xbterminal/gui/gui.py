@@ -39,6 +39,13 @@ class Application(QtGui.QApplication):
         self.language = defaults.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
 
+    def loadFonts(self):
+        """
+        Load additional fonts
+        """
+        for file_name in os.listdir(defaults.UI_FONTS_PATH):
+            QtGui.QFontDatabase.addApplicationFont(file_name)
+
     def loadTranslations(self):
         """
         Load translations from files
@@ -223,9 +230,7 @@ def initGUI():
     """
     application = Application(sys.argv)
 
-    # Load custom fonts
-    QtGui.QFontDatabase.addApplicationFont(os.path.join(
-        defaults.UI_FONTS_PATH, 'OpenSans-Regular.ttf'))
+    application.loadFonts()
 
     if xbterminal.runtime['local_config'].get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
@@ -236,6 +241,7 @@ def initGUI():
         'language',
         defaults.UI_DEFAULT_LANGUAGE)
     application.setLanguage(language_code)
+
     main_window = GUI(application)
     return main_window
 
