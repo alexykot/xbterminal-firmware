@@ -45,10 +45,21 @@ class Application(QtGui.QApplication):
         Load additional fonts
         """
         fonts_dir = QtCore.QDir(':/fonts')
-        font_files = [fonts_dir.filePath(fn)
-                      for fn in fonts_dir.entryList(QtCore.QDir.Files)]
-        for font_file in font_files:
-            QtGui.QFontDatabase.addApplicationFont(font_file)
+        for font_file_name in fonts_dir.entryList(QtCore.QDir.Files):
+            QtGui.QFontDatabase.addApplicationFont(
+                fonts_dir.filePath(font_file_name))
+
+    def loadStyles(self):
+        """
+        Load additional styles
+        """
+        css_dir = QtCore.QDir(':/styles')
+        for css_file_name in css_dir.entryList(QtCore.QDir.Files):
+            css_file = QtCore.QFile(css_dir.filePath(css_file_name))
+            css_file.open(QtCore.QIODevice.ReadOnly)
+            css = QtCore.QVariant(css_file.readAll()).toString()
+            self.setStyleSheet(css)
+            css_file.close()
 
     def loadTranslations(self):
         """
@@ -239,6 +250,8 @@ def initGUI():
         'language',
         defaults.UI_DEFAULT_LANGUAGE)
     application.setLanguage(language_code)
+
+    application.loadStyles()
 
     main_window = GUI(application)
     return main_window
