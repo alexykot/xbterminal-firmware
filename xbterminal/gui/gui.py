@@ -98,10 +98,6 @@ class GUI(QtGui.QMainWindow):
         # Initialize UI
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
-        # Set up images
-        self.ui.main_stackedWidget.setStyleSheet(
-            'background-image: url(:/images/bg.png);')
-        self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(':/images/bc_logo.png'))
         # Loader
         self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)

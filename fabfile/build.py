@@ -18,13 +18,13 @@ def venv():
 
 
 @task
-def ui():
+def qt_ui():
     with lcd('xbterminal/gui'):
         local('pyuic4 ui.ui -o ui.py')
 
 
 @task
-def res(theme='default'):
+def qt_resources(theme='default'):
     with lcd('xbterminal/gui'):
         local('pyrcc4 '
               'themes/{theme}/resources.qrc '
@@ -32,9 +32,15 @@ def res(theme='default'):
 
 
 @task
-def ts():
+def qt_translations():
     with lcd('xbterminal/gui'):
         local('pylupdate4 xbterminal.pro')
+
+
+@task(default=True)
+def qt(theme='default'):
+    qt_ui()
+    qt_resources(theme=theme)
 
 
 @task
@@ -103,11 +109,6 @@ def compile_and_package(working_dir):
         package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
             arch=arch, pv=version)
 
-        # Build project
-        run('pyrcc4 '
-            'xbterminal/gui/themes/default/resources.qrc '
-            '-o xbterminal/gui/resources.py')
-
         # Run compilation
         puts(magenta('Nuitka {0}'.format(nuitka_version)))
         puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
@@ -145,6 +146,9 @@ def compile_and_package(working_dir):
 
 @task
 def qemu_compile(working_dir='/srv/xbterminal'):
+    # Build
+    qt()
+
     with settings(host_string='root@127.0.0.1:32522',
                   password='root',
                   disable_known_hosts=True):
@@ -172,6 +176,9 @@ def qemu_compile(working_dir='/srv/xbterminal'):
 
 @task
 def remote_compile(working_dir='xbterminal', target_dir='/srv/xbterminal'):
+    # Build
+    qt()
+
     if not exists(working_dir):
         run('mkdir -p {}'.format(working_dir))
 
