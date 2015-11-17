@@ -103,11 +103,15 @@ def compile_and_package(working_dir):
         package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
             arch=arch, pv=version)
 
+        # Build project
+        run('pyrcc4 '
+            'xbterminal/gui/themes/default/resources.qrc '
+            '-o xbterminal/gui/resources.py')
+
+        # Run compilation
         puts(magenta('Nuitka {0}'.format(nuitka_version)))
         puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
                      version, timestamp, arch)))
-
-        # Run compilation
         run('chmod +x tools/compile.sh')
         run('nice -n -10 tools/compile.sh')
 
@@ -120,8 +124,6 @@ def compile_and_package(working_dir):
         run('mkdir -p build/pkg/xbterminal/runtime')
         run('cp LICENSE build/pkg/')
         run('cp build/main.exe build/pkg/xbterminal/main')
-        run('cp -r xbterminal/gui/fonts build/pkg/xbterminal/gui/')
-        run('cp -r xbterminal/gui/images build/pkg/xbterminal/gui/')
         run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
 
         # Create tarball
@@ -152,11 +154,12 @@ def qemu_compile(working_dir='/srv/xbterminal'):
             with shell_env(DEBIAN_FRONTEND='noninteractive'):
                 run('apt-get update --quiet')
                 run('apt-get install --yes --quiet '
-                    'git python-dev python-pip')
+                    'git python-dev python-pip pyqt4-dev-tools')
             run('pip install --quiet Nuitka==0.5.13.4')
             run('mkdir -p {}'.format(working_dir))
 
         # Copy current sources to VM
+        run('rm -rf {}/*'.format(working_dir))
         put('xbterminal', working_dir)
         put('tools', working_dir)
         put('VERSION', working_dir)
@@ -175,9 +178,11 @@ def remote_compile(working_dir='xbterminal', target_dir='/srv/xbterminal'):
     # Copy current sources to remote machine
     rsync_project(local_dir='xbterminal',
                   remote_dir=working_dir,
-                  exclude=['*.pyc', '__pycache__', 'runtime'])
+                  exclude=['*.pyc', '__pycache__', 'runtime'],
+                  delete=True)
     rsync_project(local_dir='tools',
-                  remote_dir=working_dir)
+                  remote_dir=working_dir,
+                  delete=True)
     put('VERSION', working_dir)
     put('LICENSE', working_dir)
 
