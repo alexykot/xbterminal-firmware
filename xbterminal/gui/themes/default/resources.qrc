@@ -1,0 +1,13 @@
+<RCC>
+  <qresource>
+    <file>images/loading.gif</file>
+    <file>images/bg.png</file>
+    <file>images/bc_logo.png</file>
+  </qresource>
+  <qresource>
+    <file>fonts/OpenSans-Regular.ttf</file>
+  </qresource>
+  <qresource>
+    <file>styles/main.qss</file>
+  </qresource>
+</RCC>

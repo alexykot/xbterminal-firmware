@@ -6,7 +6,7 @@ def flake8():
     with prefix('. venv/bin/activate'):
         local('flake8 --max-line-length=110 fabfile')
         local('flake8 --max-line-length=125 '
-              '--exclude xbterminal/gui/ui.py '
+              '--exclude xbterminal/gui/ui.py,xbterminal/gui/resources.py '
               '--ignore=E301,F841 '
               'xbterminal')
         local('flake8 --ignore=E402 tests')

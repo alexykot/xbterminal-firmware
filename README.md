@@ -3,6 +3,8 @@
 ## Requirements
 
 * Python 2
+* pyqt4-dev-tools
+* Fabric
 * VirtualBox
 * Oracle VirtualBox Extension Pack
 * Vagrant
@@ -20,6 +22,12 @@ Put these options in `xbterminal/runtime/local_config`:
   "use_dev_remote_server": true,
   "show_cursor": true
 }
+```
+
+Generate ui and resource modules:
+
+```
+fab build
 ```
 
 Create the VM and run it:
@@ -97,7 +105,7 @@ fab build.qemu_compile
 Update translation files (*.ts):
 
 ```
-fab build.ts
+fab build.qt_translations
 ```
 
 Then run Qt Linguist. All translation files can be opened in one window.

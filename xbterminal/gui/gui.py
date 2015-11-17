@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 import xbterminal
 import xbterminal.helpers
 from xbterminal.gui import ui as appui
+from xbterminal.gui import resources  # flake8: noqa
 from xbterminal import defaults
 
 try:
@@ -38,6 +39,27 @@ class Application(QtGui.QApplication):
         self._translators = {}
         self.language = defaults.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
+
+    def loadFonts(self):
+        """
+        Load additional fonts
+        """
+        fonts_dir = QtCore.QDir(':/fonts')
+        for font_file_name in fonts_dir.entryList(QtCore.QDir.Files):
+            QtGui.QFontDatabase.addApplicationFont(
+                fonts_dir.filePath(font_file_name))
+
+    def loadStyles(self):
+        """
+        Load additional styles
+        """
+        css_dir = QtCore.QDir(':/styles')
+        for css_file_name in css_dir.entryList(QtCore.QDir.Files):
+            css_file = QtCore.QFile(css_dir.filePath(css_file_name))
+            css_file.open(QtCore.QIODevice.ReadOnly)
+            css = QtCore.QVariant(css_file.readAll()).toString()
+            self.setStyleSheet(css)
+            css_file.close()
 
     def loadTranslations(self):
         """
@@ -76,18 +98,8 @@ class GUI(QtGui.QMainWindow):
         # Initialize UI
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
-        # Set up images
-        self.ui.main_stackedWidget.setStyleSheet(
-            'background-image: url({});'.format(os.path.join(
-                defaults.UI_IMAGES_PATH,
-                'bg.png')))
-        self.ui.bc_logo_image.setPixmap(QtGui.QPixmap(os.path.join(
-            defaults.UI_IMAGES_PATH,
-            'bc_logo.png')))
         # Loader
-        self.loader = QtGui.QMovie(os.path.join(
-            defaults.UI_IMAGES_PATH,
-            'loading.gif'))
+        self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Disable keyboard on amount input widget
@@ -223,9 +235,7 @@ def initGUI():
     """
     application = Application(sys.argv)
 
-    # Load custom fonts
-    QtGui.QFontDatabase.addApplicationFont(os.path.join(
-        defaults.UI_FONTS_PATH, 'OpenSans-Regular.ttf'))
+    application.loadFonts()
 
     if xbterminal.runtime['local_config'].get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
@@ -236,6 +246,9 @@ def initGUI():
         'language',
         defaults.UI_DEFAULT_LANGUAGE)
     application.setLanguage(language_code)
+
+    application.loadStyles()
+
     main_window = GUI(application)
     return main_window
 
