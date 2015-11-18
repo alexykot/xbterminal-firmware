@@ -123,13 +123,13 @@ def compile_and_package(working_dir):
         run('rm -rf build/{pn}/'.format(pn=package_name))
 
         # Collect files
+        run('mkdir -p build/pkg/xbterminal/runtime')
         run('mkdir -p build/pkg/xbterminal/gui/themes')
         run('mkdir -p build/pkg/xbterminal/gui/ts')
-        run('mkdir -p build/pkg/xbterminal/runtime')
         run('cp LICENSE build/pkg/')
         run('cp build/main.exe build/pkg/xbterminal/main')
-        run('cp -r xbterminal/gui/themes/*.py build/pkg/xbterminal/gui/themes/')
-        run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
+        run('cp build/themes/*.so build/pkg/xbterminal/gui/themes/')
+        run('cp xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
 
         # Create tarball
         run('mv build/pkg build/{pn}'.format(pn=package_name))

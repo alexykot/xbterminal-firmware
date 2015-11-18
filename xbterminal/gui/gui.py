@@ -45,9 +45,9 @@ class Application(QtGui.QApplication):
         theme = xbterminal.runtime['local_config'].get(
             'theme',
             defaults.UI_DEFAULT_THEME)
-        imp.load_source(
-            'resources',
-            os.path.join(defaults.UI_THEMES_PATH, theme + '.py'))
+        file, pathname, description = imp.find_module(
+            theme, [defaults.UI_THEMES_PATH])
+        imp.load_module('resources', file, pathname, description)
 
     def loadFonts(self):
         """

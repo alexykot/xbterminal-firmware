@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Compile application
 nuitka \
     --python-version=2.7 \
     --clang \
@@ -24,3 +25,16 @@ nuitka \
     --show-progress \
     --show-modules \
     xbterminal/main.py
+
+# Compile themes
+for THEME_MODULE in $(find xbterminal/gui/themes/*.py)
+do
+    nuitka \
+        --python-version=2.7 \
+        --clang \
+        --recurse-none \
+        --output-dir=build/themes \
+        --show-progress \
+        --module \
+        $THEME_MODULE
+done
