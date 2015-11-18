@@ -24,11 +24,13 @@ def qt_ui():
 
 
 @task
-def qt_resources(theme='default'):
-    with lcd('xbterminal/gui'):
-        local('pyrcc4 '
-              'themes/{theme}/resources.qrc '
-              '-o resources.py'.format(theme=theme))
+def qt_resources():
+    with lcd('xbterminal/gui/themes'):
+        themes = local('find * -maxdepth 0 -type d', capture=True)
+        for theme in themes.splitlines():
+            local('pyrcc4 '
+                  '{theme}/resources.qrc '
+                  '-o {theme}.py'.format(theme=theme))
 
 
 @task
@@ -38,9 +40,9 @@ def qt_translations():
 
 
 @task(default=True)
-def qt(theme='default'):
+def qt():
     qt_ui()
-    qt_resources(theme=theme)
+    qt_resources()
 
 
 @task
@@ -121,10 +123,12 @@ def compile_and_package(working_dir):
         run('rm -rf build/{pn}/'.format(pn=package_name))
 
         # Collect files
+        run('mkdir -p build/pkg/xbterminal/gui/themes')
         run('mkdir -p build/pkg/xbterminal/gui/ts')
         run('mkdir -p build/pkg/xbterminal/runtime')
         run('cp LICENSE build/pkg/')
         run('cp build/main.exe build/pkg/xbterminal/main')
+        run('cp -r xbterminal/gui/themes/*.py build/pkg/xbterminal/gui/themes/')
         run('cp -r xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
 
         # Create tarball

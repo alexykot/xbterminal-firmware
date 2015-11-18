@@ -6,7 +6,7 @@ xbterminal/runtime/*
 xbterminal/nuitka_fix.py
 xbterminal/main
 xbterminal/gui/ui.py
-xbterminal/gui/resources.py
+xbterminal/gui/themes/*.py
 fabfile/deploy.py
 .vagrant
 .coverage

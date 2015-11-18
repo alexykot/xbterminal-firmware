@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 import functools
+import imp
 
 from PyQt4 import QtGui, QtCore
 
@@ -14,7 +15,6 @@ logger = logging.getLogger(__name__)
 import xbterminal
 import xbterminal.helpers
 from xbterminal.gui import ui as appui
-from xbterminal.gui import resources  # flake8: noqa
 from xbterminal import defaults
 
 try:
@@ -36,9 +36,18 @@ class Application(QtGui.QApplication):
 
     def __init__(self, *args, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
+        self.initResources()
         self._translators = {}
         self.language = defaults.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
+
+    def initResources(self):
+        theme = xbterminal.runtime['local_config'].get(
+            'theme',
+            defaults.UI_DEFAULT_THEME)
+        imp.load_source(
+            'resources',
+            os.path.join(defaults.UI_THEMES_PATH, theme + '.py'))
 
     def loadFonts(self):
         """
