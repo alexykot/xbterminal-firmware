@@ -3,7 +3,7 @@ import mock
 import sys
 import unittest
 
-sys.modules['PyQt4'] = mock.Mock()
+sys.modules['PyQt4'] = mock.Mock(**{'QtGui.QApplication': object})
 sys.modules['dbus'] = mock.Mock()
 sys.modules['nfc'] = mock.Mock()
 sys.modules['nfc.snep'] = mock.Mock()
