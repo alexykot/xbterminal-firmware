@@ -111,25 +111,16 @@ def compile_and_package(working_dir):
         package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
             arch=arch, pv=version)
 
+        # Remove package dir
+        run('rm -rf build/pkg/')
+        run('rm -rf build/{pn}/'.format(pn=package_name))
+
         # Run compilation
         puts(magenta('Nuitka {0}'.format(nuitka_version)))
         puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
                      version, timestamp, arch)))
         run('chmod +x tools/compile.sh')
         run('nice -n -10 tools/compile.sh')
-
-        # Remove package dir
-        run('rm -rf build/pkg/')
-        run('rm -rf build/{pn}/'.format(pn=package_name))
-
-        # Collect files
-        run('mkdir -p build/pkg/xbterminal/runtime')
-        run('mkdir -p build/pkg/xbterminal/gui/themes')
-        run('mkdir -p build/pkg/xbterminal/gui/ts')
-        run('cp LICENSE build/pkg/')
-        run('cp build/main.exe build/pkg/xbterminal/main')
-        run('cp build/themes/*.so build/pkg/xbterminal/gui/themes/')
-        run('cp xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/')
 
         # Create tarball
         run('mv build/pkg build/{pn}'.format(pn=package_name))
@@ -163,7 +154,7 @@ def qemu_compile(working_dir='/srv/xbterminal'):
                 run('apt-get update --quiet')
                 run('apt-get install --yes --quiet '
                     'git python-dev python-pip pyqt4-dev-tools')
-            run('pip install --quiet Nuitka==0.5.13.4')
+            run('pip install --quiet Nuitka==0.5.16')
             run('mkdir -p {}'.format(working_dir))
 
         # Copy current sources to VM
