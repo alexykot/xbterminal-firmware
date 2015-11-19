@@ -47,7 +47,7 @@ class Application(QtGui.QApplication):
             defaults.UI_DEFAULT_THEME)
         file, pathname, description = imp.find_module(
             theme, [defaults.UI_THEMES_PATH])
-        imp.load_module('resources', file, pathname, description)
+        imp.load_module(theme, file, pathname, description)
 
     def loadFonts(self):
         """
