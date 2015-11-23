@@ -2,4 +2,4 @@
 source = xbterminal/
 omit =
     xbterminal/gui/ui.py
-    xbterminal/gui/resources.py
+    xbterminal/gui/themes/*.py

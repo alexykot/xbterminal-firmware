@@ -66,6 +66,8 @@ QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
 UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
 UI_DEFAULT_LANGUAGE = 'en'
+UI_THEMES_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'themes')
+UI_DEFAULT_THEME = 'default'
 
 LOG_CONFIG = {
     'version': 1,
