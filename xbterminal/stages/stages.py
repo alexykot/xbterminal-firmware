@@ -61,10 +61,10 @@ def bootup(run, ui):
     logger.info('working with {0}'.format(
         run['remote_config']['bitcoin_network']))
 
-    if run['remote_config']['status'] == 'activation':
-        return defaults.STAGES['activate']
-    else:
+    if run['remote_config']['status'] == 'active':
         return defaults.STAGES['idle']
+    else:
+        return defaults.STAGES['activate']
 
 
 def activate(run, ui):

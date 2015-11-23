@@ -31,6 +31,7 @@ def register_device():
 
 def is_registered():
     try:
+        # Registered devices must have the secret key
         crypto.read_secret_key()
     except IOError:
         return False
