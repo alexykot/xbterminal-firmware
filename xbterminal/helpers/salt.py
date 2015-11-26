@@ -15,11 +15,7 @@ def get_public_key_fingerprint():
         '--out', 'json',
         'key.finger',
     ]
-    try:
-        result = subprocess.check_output(command)
-    except Exception as error:
-        logger.exception(error)
-        return
+    result = subprocess.check_output(command)
     data = json.loads(result)
     fingerprint = data['local']
     logger.info('salt public key fingerprint {}'.format(fingerprint))

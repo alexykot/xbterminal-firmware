@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Set options for uvcvideo kernel module
 echo "options uvcvideo nodrop=1 timeout=5000 quirks=0x80" > /etc/modprobe.d/uvcvideo.conf
 
