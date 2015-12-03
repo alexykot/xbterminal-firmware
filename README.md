@@ -11,9 +11,13 @@
 
 ## Running VM
 
-Specify batch number in `xbterminal/runtime/batch_number` file.
+Generate ui and resource modules:
 
-Write device key to `xbterminal/runtime/device_key` file.
+```
+fab build
+```
+
+Specify batch number in `xbterminal/runtime/batch_number` file.
 
 Put these options in `xbterminal/runtime/local_config`:
 
@@ -22,12 +26,6 @@ Put these options in `xbterminal/runtime/local_config`:
   "use_dev_remote_server": true,
   "show_cursor": true
 }
-```
-
-Generate ui and resource modules:
-
-```
-fab build
 ```
 
 Create the VM and run it:
@@ -42,11 +40,22 @@ Attach a webcam to the running VM ([more info](http://www.virtualbox.org/manual/
 VBoxManage controlvm "XBTerminal" webcam attach /dev/video0
 ```
 
-Start the main process:
+Login to the VM:
 
 ```
 vagrant ssh
-xinit /vagrant/xbterminal/main.py
+```
+
+Get new device key:
+
+```
+cp /etc/salt/minion_id /vagrant/xbterminal/runtime/device_key
+```
+
+Start the application and activate device at http://stage.xbterminal.com:
+
+```
+sudo xinit /vagrant/xbterminal/main.py
 ```
 
 ## Versioning

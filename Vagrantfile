@@ -1,8 +1,6 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "debian/jessie64"
   config.vm.hostname = "xbterminal-vm"
-  config.ssh.username = "vagrant"
-  config.ssh.password = "vagrant"
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "XBTerminal"
