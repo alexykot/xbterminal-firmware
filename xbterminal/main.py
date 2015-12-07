@@ -31,6 +31,7 @@ def get_initial_state():
         'last_activity_timestamp': None,
         'keypad': None,
         'keyboard_events': deque(maxlen=1),  # Only for keyboard driver
+        'host_system': None,
         'bluetooth_server': None,
         'nfc_server': None,
         'qr_scanner': None,

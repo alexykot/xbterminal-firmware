@@ -12,6 +12,7 @@ import xbterminal.helpers.bt
 import xbterminal.helpers.camera
 import xbterminal.helpers.clock
 import xbterminal.helpers.configs
+import xbterminal.helpers.host
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.wireless
@@ -37,6 +38,7 @@ def bootup(run, ui):
         time.sleep(5)
 
     # Initialize bluetooth and NFC servers
+    run['host_system'] = xbterminal.helpers.host.HostSystem()
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
     run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
@@ -99,6 +101,11 @@ def idle(run, ui):
                         run['payment']['fiat_amount'],
                         run['keypad'].last_key_pressed)
                 return defaults.STAGES['payment']['pay_amount']
+        # Communicate with the host system
+        payout = run['host_system'].get_payout()
+        if payout:
+            run['withdrawal']['fiat_amount'] = payout
+            return defaults.STAGES['withdrawal']['withdraw_loading1']
         time.sleep(0.1)
 
 
@@ -184,6 +191,7 @@ def pay_wait(run, ui):
         run['payment']['receipt_url'] = run['payment']['order'].check()
         if run['payment']['receipt_url'] is not None:
             logger.debug('payment received, receipt: {}'.format(run['payment']['receipt_url']))
+            run['host_system'].add_credit(run['payment']['fiat_amount'])
 
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
