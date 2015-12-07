@@ -35,11 +35,13 @@ class BootupStageTestCase(unittest.TestCase):
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.is_registered')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.host.HostSystem')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
     def test_bootup(self, qr_scanner_mock, nfc_server_mock, bt_server_mock,
-                    is_registered_mock, save_local_config_mock,
+                    host_system_mock, is_registered_mock,
+                    save_local_config_mock,
                     get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
@@ -52,6 +54,7 @@ class BootupStageTestCase(unittest.TestCase):
         ui = Mock()
         get_time_mock.return_value = time.time()
         is_registered_mock.return_value = True
+        host_system_mock.return_value = 'host_system'
         bt_server_mock.return_value = 'bt_server'
         nfc_server_mock.return_value = 'nfc_server'
         qr_scanner_mock.return_value = 'qr_scanner'
@@ -62,6 +65,7 @@ class BootupStageTestCase(unittest.TestCase):
         self.assertTrue(run['init']['registration'])
         self.assertIn('last_started', run['local_config'])
         self.assertTrue(save_local_config_mock.called)
+        self.assertEqual(run['host_system'], 'host_system')
         self.assertEqual(run['bluetooth_server'], 'bt_server')
         self.assertEqual(run['nfc_server'], 'nfc_server')
         self.assertEqual(run['qr_scanner'], 'qr_scanner')
@@ -76,13 +80,14 @@ class BootupStageTestCase(unittest.TestCase):
            'activation.is_registered')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.register_device')
+    @patch('xbterminal.stages.stages.xbterminal.helpers.host.HostSystem')
     @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
     @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
-    def test_regitration(self, qr_scanner_mock, nfc_server_mock,
-                         bt_server_mock,
-                         register_device_mock, is_registered_mock,
-                         save_local_config_mock, get_time_mock, sleep_mock):
+    def test_registration(self, qr_scanner_mock, nfc_server_mock,
+                          bt_server_mock, host_system_mock,
+                          register_device_mock, is_registered_mock,
+                          save_local_config_mock, get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
             'local_config': {},
@@ -95,6 +100,7 @@ class BootupStageTestCase(unittest.TestCase):
         get_time_mock.return_value = time.time()
         is_registered_mock.return_value = False
         register_device_mock.return_value = 'testCode'
+        host_system_mock.return_value = 'host_system'
         bt_server_mock.return_value = 'bt_server'
         nfc_server_mock.return_value = 'nfc_server'
         qr_scanner_mock.return_value = 'qr_scanner'
@@ -103,6 +109,7 @@ class BootupStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
         self.assertEqual(run['local_config']['activation_code'], 'testCode')
         self.assertTrue(run['init']['registration'])
+        self.assertEqual(run['host_system'], 'host_system')
         self.assertEqual(run['bluetooth_server'], 'bt_server')
         self.assertEqual(run['nfc_server'], 'nfc_server')
         self.assertEqual(run['qr_scanner'], 'qr_scanner')
@@ -158,6 +165,21 @@ class IdleStageTestCase(unittest.TestCase):
                          defaults.STAGES['payment']['pay_amount'])
         self.assertEqual(run['payment']['fiat_amount'], Decimal('0.01'))
 
+    def test_host_system_payout(self):
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {'pay': False, 'withdraw': False},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.15'),
+            }),
+            'withdrawal': {},
+        }
+        ui = Mock()
+        next_stage = stages.idle(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_loading1'])
+        self.assertEqual(run['withdrawal']['fiat_amount'], Decimal('0.15'))
+
 
 class PayAmountStageTestCase(unittest.TestCase):
 
@@ -179,6 +201,79 @@ class PayAmountStageTestCase(unittest.TestCase):
         next_stage = stages.pay_amount(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_loading'])
+
+
+class PayWaitStageTestCase(unittest.TestCase):
+
+    def test_return(self):
+        order_mock = Mock(**{
+            'btc_amount': Decimal(0),
+            'exchange_rate': Decimal(0),
+            'payment_uri': 'test',
+        })
+        host_system_mock = Mock()
+        bluetooth_server_mock = Mock()
+        nfc_server_mock = Mock(**{'is_active.return_value': False})
+        run = {
+            'keypad': Mock(last_key_pressed='backspace'),
+            'host_system': host_system_mock,
+            'bluetooth_server': bluetooth_server_mock,
+            'nfc_server': nfc_server_mock,
+            'payment': {
+                'fiat_amount': Decimal('1.00'),
+                'order': order_mock,
+                'qr_image_path': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_wait(run, ui)
+        self.assertTrue(bluetooth_server_mock.start.called)
+        self.assertTrue(bluetooth_server_mock.stop.called)
+        self.assertFalse(host_system_mock.add_credit.called)
+        self.assertFalse(nfc_server_mock.start.called)
+        self.assertTrue(nfc_server_mock.stop.called)
+        self.assertEqual(run['payment']['fiat_amount'], Decimal('1.00'))
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_amount'])
+
+    def test_success(self):
+        order_mock = Mock(**{
+            'btc_amount': Decimal(0),
+            'exchange_rate': Decimal(0),
+            'payment_uri': 'test',
+            'check.return_value': 'test',
+        })
+        host_system_mock = Mock()
+        bluetooth_server_mock = Mock()
+        nfc_server_mock = Mock(**{'is_active.return_value': False})
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'host_system': host_system_mock,
+            'bluetooth_server': bluetooth_server_mock,
+            'nfc_server': nfc_server_mock,
+            'payment': {
+                'fiat_amount': Decimal('1.00'),
+                'order': order_mock,
+                'qr_image_path': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_wait(run, ui)
+        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
+                         'pay_wait')
+        self.assertEqual(ui.showScreen.call_args_list[1][0][0],
+                         'load_indefinite')
+        self.assertTrue(bluetooth_server_mock.start.called)
+        self.assertTrue(bluetooth_server_mock.stop.called)
+        self.assertTrue(host_system_mock.add_credit.called)
+        self.assertEqual(host_system_mock.add_credit.call_args[0][0],
+                         Decimal('1.00'))
+        self.assertTrue(nfc_server_mock.start.called)
+        self.assertTrue(nfc_server_mock.stop.called)
+        self.assertEqual(run['payment']['receipt_url'], 'test')
+        self.assertIsNone(run['payment']['order'])
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_success'])
 
 
 class WithdrawAmountStageTestCase(unittest.TestCase):

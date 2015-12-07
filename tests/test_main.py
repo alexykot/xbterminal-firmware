@@ -33,6 +33,7 @@ class InitialStateTestCase(unittest.TestCase):
         self.assertIsNone(state['last_activity_timestamp'])
         self.assertIsNone(state['keypad'])
         self.assertEqual(len(state['keyboard_events']), 0)
+        self.assertIsNone(state['host_system'])
         self.assertIsNone(state['bluetooth_server'])
         self.assertIsNone(state['nfc_server'])
         self.assertIsNone(state['qr_scanner'])
