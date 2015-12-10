@@ -1,6 +1,12 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "debian/jessie64"
-  config.vm.hostname = "xbterminal-vm"
+  config.vm.box_version = "8.2.2"
+  config.vm.hostname = "xbt-vm"
+
+  # Force vboxsf (debian/jessie64 uses rsync by default)
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  config.vbguest.auto_update = true  # Requires vagrant-vbguest plugin
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "XBTerminal"

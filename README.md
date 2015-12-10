@@ -8,6 +8,7 @@
 * VirtualBox
 * Oracle VirtualBox Extension Pack
 * Vagrant
+* vagrant-vbguest plugin
 
 ## Running VM
 
