@@ -34,9 +34,6 @@
    <property name="cursor">
     <cursorShape>BlankCursor</cursorShape>
    </property>
-   <property name="styleSheet">
-    <string notr="true">background-image: url(:/images/bg.png);</string>
-   </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
@@ -739,10 +736,6 @@ color: #33363e;</string>
        <width>107</width>
        <height>107</height>
       </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-qproperty-pixmap: url(':/images/bc_logo.png');</string>
      </property>
      <property name="text">
       <string/>

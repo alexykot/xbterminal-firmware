@@ -1,1 +1,7 @@
+#main_stackedWidget {
+    background-image: url(:/images/bg.png);
+}
 
+#bc_logo_image {
+    qproperty-pixmap: url(':/images/bc_logo.png');
+}
