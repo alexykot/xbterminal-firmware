@@ -1,0 +1,9 @@
+<RCC>
+  <qresource>
+    <file>images/loading.gif</file>
+    <file>images/xbterminal.png</file>
+  </qresource>
+  <qresource>
+    <file>styles/main.qss</file>
+  </qresource>
+</RCC>
