@@ -46,7 +46,7 @@ def qt():
 
 
 @task
-def qemu_start(arch='armhf'):
+def qemu_start(arch='armhf', vmopts=''):
     """
     Images found here https://people.debian.org/~aurel32/qemu/
     Accepts:
@@ -79,7 +79,8 @@ def qemu_start(arch='armhf'):
                 '-hda debian_wheezy_armel_standard.qcow2 '
                 '-append "root=/dev/sda1" '
                 '-redir tcp:32522::22 '
-                '-daemonize')
+                '-daemonize '
+                '{}'.format(vmopts) )
         elif arch == 'armhf':
             local(
                 'qemu-system-arm '
@@ -91,7 +92,8 @@ def qemu_start(arch='armhf'):
                 '-drive if=sd,file=debian_wheezy_armhf_standard.qcow2 '
                 '-append "root=/dev/mmcblk0p2" '
                 '-redir tcp:32522::22 '
-                '-daemonize')
+                '-daemonize '
+                '{}'.format(vmopts) )
 
 
 def compile_and_package(working_dir):
