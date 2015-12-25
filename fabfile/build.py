@@ -80,7 +80,7 @@ def qemu_start(arch='armhf', vmopts=''):
                 '-append "root=/dev/sda1" '
                 '-redir tcp:32522::22 '
                 '-daemonize '
-                '{}'.format(vmopts) )
+                '{}'.format(vmopts))
         elif arch == 'armhf':
             local(
                 'qemu-system-arm '
@@ -93,7 +93,7 @@ def qemu_start(arch='armhf', vmopts=''):
                 '-append "root=/dev/mmcblk0p2" '
                 '-redir tcp:32522::22 '
                 '-daemonize '
-                '{}'.format(vmopts) )
+                '{}'.format(vmopts))
 
 
 def compile_and_package(working_dir):
