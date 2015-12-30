@@ -72,6 +72,8 @@ def load_local_config():
     """
     Local config params:
         activation_code: string
+        language: string
+        theme: string
         last_started: float
         show_cursor: boolean
         use_dev_remote_server: boolean
