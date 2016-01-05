@@ -38,7 +38,8 @@ def bootup(run, ui):
         time.sleep(5)
 
     # Initialize bluetooth and NFC servers
-    run['host_system'] = xbterminal.helpers.host.HostSystem()
+    run['host_system'] = xbterminal.helpers.host.HostSystem(
+        disable=run['local_config'].get('disable_cctalk', False))
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
     run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
