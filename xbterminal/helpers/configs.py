@@ -78,6 +78,7 @@ def load_local_config():
         show_cursor: boolean
         use_dev_remote_server: boolean
         use_keypad: boolean
+        disable_cctalk: boolean
     Obsolete:
         use_default_keypad_override: boolean
         use_predefined_connection: boolean
