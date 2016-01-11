@@ -59,7 +59,7 @@ class Payment(object):
             payment_ack: pb2-encoded PaymentACK message
         """
         payment_response_url = api.get_url('payment_response',
-                                           payment_uid=self.uid)
+                                           uid=self.uid)
         headers = {'Content-Type': 'application/bitcoin-payment'}
         try:
             response = api.send_request(
@@ -78,7 +78,7 @@ class Payment(object):
         Returns:
             receipt_url: url or None
         """
-        payment_check_url = api.get_url('payment_check', payment_uid=self.uid)
+        payment_check_url = api.get_url('payment_check', uid=self.uid)
         try:
             response = api.send_request('get', payment_check_url)
             response.raise_for_status()
