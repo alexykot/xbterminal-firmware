@@ -164,7 +164,6 @@ class PaymentTestCase(unittest.TestCase):
         send_mock.return_value = Mock(**{
             'json.return_value': {
                 'paid': 1,
-                'receipt_url': 'test_url',
             },
         })
 
@@ -172,7 +171,7 @@ class PaymentTestCase(unittest.TestCase):
                         'bitcoin:uri', None)
         result = order.check()
         self.assertTrue(send_mock.called)
-        self.assertEqual(result, 'test_url')
+        self.assertEqual(result, 'https://xbterminal.io/rc/test_uid/')
 
 
 @patch.dict('xbterminal.stages.withdrawal.xbterminal.runtime',
