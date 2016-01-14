@@ -5,6 +5,7 @@ import unittest
 
 from xbterminal import defaults
 from xbterminal.stages import stages
+from xbterminal.exceptions import ServerError
 
 
 patcher = patch.dict(
@@ -233,6 +234,21 @@ class PayLoadingStageTestCase(unittest.TestCase):
         self.assertIsNotNone(run['payment']['order'])
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_wait'])
+
+    @patch('xbterminal.stages.payment.Payment.create_order')
+    def test_server_error(self, create_order_mock):
+        create_order_mock.side_effect = ServerError
+        run = {
+            'payment': {
+                'fiat_amount': Decimal('1.00'),
+            },
+            'bluetooth_server': Mock(mac_address='00:00:00:00:00:00'),
+        }
+        ui = Mock()
+        next_stage = stages.pay_loading(run, ui)
+        self.assertEqual(run['payment']['fiat_amount'], Decimal(0))
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
 
 
 class PayWaitStageTestCase(unittest.TestCase):

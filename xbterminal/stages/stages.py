@@ -17,6 +17,7 @@ import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.wireless
 import xbterminal.gui.gui
+from xbterminal.exceptions import NetworkError, ServerError
 
 
 def bootup(run, ui):
@@ -144,18 +145,23 @@ def pay_loading(run, ui):
         return defaults.STAGES['payment']['pay_amount']
 
     while True:
-        run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
-                                                               run['bluetooth_server'].mac_address)
-        if run['payment']['order'] is not None:
+        try:
+            run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
+                                                                   run['bluetooth_server'].mac_address)
+        except NetworkError:
+            logger.warning('network error, retry in 5 seconds')
+            time.sleep(5)
+            continue
+        except ServerError:
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        else:
             # Payment parameters loaded
             # Prepare QR image
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
                                          run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_wait']
-        else:
-            # Network error
-            time.sleep(1)
 
 
 def pay_wait(run, ui):

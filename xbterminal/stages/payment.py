@@ -33,11 +33,8 @@ class Payment(object):
             'amount': float(fiat_amount),
             'bt_mac': bt_mac,
         }
-        try:
-            response = api.send_request('post', payment_init_url, data=payload)
-            result = response.json()
-        except Exception as error:
-            return None
+        response = api.send_request('post', payment_init_url, data=payload)
+        result = response.json()
         # Parse result
         instance = cls(
             result['payment_uid'],
