@@ -340,6 +340,7 @@ def withdraw_loading2(run, ui):
     while True:
         run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
         if run['withdrawal']['receipt_url'] is not None:
+            logger.debug('withdrawal finished, receipt: {}'.format(run['withdrawal']['receipt_url']))
             run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
                                          run['withdrawal']['qr_image_path'])

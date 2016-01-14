@@ -114,12 +114,12 @@ REMOTE_API_ENDPOINTS = {
     'registration': '/api/v2/devices/',
     'config': '/api/v2/devices/{device_key}/',
     'receipt': '/rc/{receipt_key}/',
-    'payment_init': '/api/payments/init/',
-    'payment_response': '/api/payments/{payment_uid}/response/',
-    'payment_check': '/api/payments/{payment_uid}/check/',
-    'withdrawal_init': '/api/withdrawals/',
-    'withdrawal_confirm': '/api/withdrawals/{uid}/confirm/',
-    'withdrawal_check': '/api/withdrawals/{uid}/',
+    'payment_init': '/api/v2/payments/',
+    'payment_response': '/api/v2/payments/{uid}/response/',
+    'payment_check': '/api/v2/payments/{uid}/',
+    'withdrawal_init': '/api/v2/withdrawals/',
+    'withdrawal_confirm': '/api/v2/withdrawals/{uid}/confirm/',
+    'withdrawal_check': '/api/v2/withdrawals/{uid}/',
 }
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
