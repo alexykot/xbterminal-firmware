@@ -36,10 +36,8 @@ class Withdrawal(object):
         }
         try:
             response = api.send_request('post', url, payload, signed=True)
-            response.raise_for_status()
             result = response.json()
         except Exception as error:
-            logger.exception(error)
             return None
         # Parse result
         instance = cls(result['uid'],
@@ -57,10 +55,8 @@ class Withdrawal(object):
         payload = {'address': customer_address}
         try:
             response = api.send_request('post', url, payload, signed=True)
-            response.raise_for_status()
             result = response.json()
         except Exception as error:
-            logger.exception(error)
             return None
         logger.info('confirmed withdrawal order {0}'.format(self.uid))
 
@@ -72,10 +68,8 @@ class Withdrawal(object):
         url = api.get_url('withdrawal_check', uid=self.uid)
         try:
             response = api.send_request('get', url)
-            response.raise_for_status()
             result = response.json()
         except Exception as error:
-            logger.exception(error)
             return None
         if result['status'] == 'completed':
             return api.get_url('receipt', receipt_key=self.uid)

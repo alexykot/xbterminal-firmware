@@ -8,6 +8,7 @@ from xbterminal.stages import amounts
 from xbterminal.stages.payment import Payment
 from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
 from xbterminal.helpers import api
+from xbterminal.exceptions import NetworkError, ServerError
 
 
 @patch.dict('xbterminal.stages.amounts.xbterminal.runtime',
@@ -81,6 +82,23 @@ class ApiUtilsTestCase(unittest.TestCase):
         request = session_mock.send.call_args[0][0]
         self.assertEqual(request.url, 'http://test_url.com/')
         self.assertIn('X-Signature', request.headers)
+
+    @patch('xbterminal.helpers.api.requests.Session')
+    def test_send_request_network_error(self, session_cls_mock):
+        session_mock = Mock(**{'send.side_effect': IOError})
+        session_cls_mock.return_value = session_mock
+
+        with self.assertRaises(NetworkError):
+            api.send_request('get', 'http://test_url.com')
+
+    @patch('xbterminal.helpers.api.requests.Session')
+    def test_send_request_server_error(self, session_cls_mock):
+        response_mock = Mock(status_code=500)
+        session_mock = Mock(**{'send.return_value': response_mock})
+        session_cls_mock.return_value = session_mock
+
+        with self.assertRaises(ServerError):
+            api.send_request('get', 'http://test_url.com')
 
 
 class GetAddressTestCase(unittest.TestCase):

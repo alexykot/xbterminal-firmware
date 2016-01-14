@@ -35,10 +35,8 @@ class Payment(object):
         }
         try:
             response = api.send_request('post', payment_init_url, data=payload)
-            response.raise_for_status()
             result = response.json()
         except Exception as error:
-            logger.exception(error)
             return None
         # Parse result
         instance = cls(
@@ -66,9 +64,7 @@ class Payment(object):
                 url=payment_response_url,
                 data=message,
                 headers=headers)
-            response.raise_for_status()
         except Exception as error:
-            logger.exception(error)
             return None
         payment_ack = response.content
         return payment_ack
@@ -81,10 +77,8 @@ class Payment(object):
         payment_check_url = api.get_url('payment_check', uid=self.uid)
         try:
             response = api.send_request('get', payment_check_url)
-            response.raise_for_status()
             result = response.json()
         except Exception as error:
-            logger.exception(error)
             return None
         if result['paid'] == 1:
             return api.get_url('receipt', receipt_key=self.uid)
