@@ -69,8 +69,8 @@ class Keypad():
             # Select character
             char_tuple = _buttons_to_chars[self._getkey_value]
             if (
-                self._getkey_value != self._alphanum_char_prev
-                or self._cycle_index == len(char_tuple) - 1
+                self._getkey_value != self._alphanum_char_prev or
+                self._cycle_index == len(char_tuple) - 1
             ):
                 # Start new cycle
                 self._cycle_index = 0

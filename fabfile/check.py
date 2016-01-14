@@ -7,7 +7,7 @@ def flake8():
         local('flake8 --max-line-length=110 fabfile')
         local('flake8 --max-line-length=125 '
               '--exclude xbterminal/gui/ui.py,xbterminal/gui/themes/*.py '
-              '--ignore=E301,F841 '
+              '--ignore=E301,E402,F841 '
               'xbterminal')
         local('flake8 --ignore=E402 tests')
 

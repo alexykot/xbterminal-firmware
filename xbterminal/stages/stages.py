@@ -116,8 +116,8 @@ def pay_amount(run, ui):
     ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
     while True:
         if (
-            run['keypad'].last_key_pressed in range(10) + ['00']
-            or run['keypad'].last_key_pressed == 'backspace'
+            run['keypad'].last_key_pressed in range(10) + ['00'] or
+            run['keypad'].last_key_pressed == 'backspace'
         ):
             if run['keypad'].last_key_pressed == 'backspace' and run['payment']['fiat_amount'] == 0:
                 return defaults.STAGES['idle']
@@ -248,8 +248,8 @@ def withdraw_amount(run, ui):
     ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
     while True:
         if (
-            run['keypad'].last_key_pressed in range(10) + ['00']
-            or run['keypad'].last_key_pressed == 'backspace'
+            run['keypad'].last_key_pressed in range(10) + ['00'] or
+            run['keypad'].last_key_pressed == 'backspace'
         ):
             if run['keypad'].last_key_pressed == 'backspace' and run['withdrawal']['fiat_amount'] == 0:
                 _clear_withdrawal_runtime(run, ui)
