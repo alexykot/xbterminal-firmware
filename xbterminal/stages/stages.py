@@ -17,7 +17,6 @@ import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.wireless
 import xbterminal.gui.gui
-import xbterminal.exceptions
 
 
 def bootup(run, ui):
