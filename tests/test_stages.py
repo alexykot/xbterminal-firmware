@@ -203,6 +203,38 @@ class PayAmountStageTestCase(unittest.TestCase):
                          defaults.STAGES['payment']['pay_loading'])
 
 
+class PayLoadingStageTestCase(unittest.TestCase):
+
+    def test_no_amount(self):
+        run = {
+            'payment': {
+                'fiat_amount': None,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_loading(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_amount'])
+
+    @patch('xbterminal.stages.payment.Payment.create_order')
+    def test_proceed(self, create_order_mock):
+        create_order_mock.return_value = Mock(payment_uri='test')
+        run = {
+            'payment': {
+                'fiat_amount': Decimal('1.00'),
+            },
+            'bluetooth_server': Mock(mac_address='00:00:00:00:00:00'),
+        }
+        ui = Mock()
+        next_stage = stages.pay_loading(run, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0],
+                         'load_indefinite')
+        self.assertIsNotNone(run['payment']['qr_image_path'])
+        self.assertIsNotNone(run['payment']['order'])
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_wait'])
+
+
 class PayWaitStageTestCase(unittest.TestCase):
 
     def test_return(self):
