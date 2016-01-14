@@ -361,6 +361,20 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
                          defaults.STAGES['withdrawal']['withdraw_scan'])
         self.assertEqual(run['withdrawal']['order'], 'test_order')
 
+    @patch('xbterminal.stages.withdrawal.Withdrawal.create_order')
+    def test_server_error(self, create_order_mock):
+        run = {
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+            },
+        }
+        ui = Mock()
+        create_order_mock.side_effect = ServerError
+        next_stage = stages.withdraw_loading1(run, ui)
+        self.assertIsNone(run['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
+
 
 class WithdrawScanStageTestCase(unittest.TestCase):
 

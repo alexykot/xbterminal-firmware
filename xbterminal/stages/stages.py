@@ -280,14 +280,18 @@ def withdraw_loading1(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['fiat_amount'] > 0
     while True:
-        run['withdrawal']['order'] = withdrawal.Withdrawal.create_order(
-            run['withdrawal']['fiat_amount'])
-        # TODO: loading timeout
-        if run['withdrawal']['order'] is not None:
-            return defaults.STAGES['withdrawal']['withdraw_scan']
+        try:
+            run['withdrawal']['order'] = withdrawal.Withdrawal.create_order(
+                run['withdrawal']['fiat_amount'])
+        except NetworkError:
+            logger.warning('network error, retry in 5 seconds')
+            time.sleep(5)
+            continue
+        except ServerError:
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
         else:
-            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['withdrawal']['withdraw_amount']
+            return defaults.STAGES['withdrawal']['withdraw_scan']
 
 
 def withdraw_scan(run, ui):

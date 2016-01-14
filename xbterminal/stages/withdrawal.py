@@ -34,11 +34,8 @@ class Withdrawal(object):
             'device': xbterminal.runtime['device_key'],
             'amount': str(fiat_amount),
         }
-        try:
-            response = api.send_request('post', url, payload, signed=True)
-            result = response.json()
-        except Exception as error:
-            return None
+        response = api.send_request('post', url, payload, signed=True)
+        result = response.json()
         # Parse result
         instance = cls(result['uid'],
                        Decimal(result['btc_amount']),
