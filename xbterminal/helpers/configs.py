@@ -71,14 +71,14 @@ def load_remote_config_cache():
 def load_local_config():
     """
     Local config params:
-        activation_code: string
-        language: string
-        theme: string
-        last_started: float
-        show_cursor: boolean
-        use_dev_remote_server: boolean
-        use_keypad: boolean
-        disable_cctalk: boolean
+        activation_code: string (default: None)
+        language: string (default: 'en')
+        theme: string (default: 'default')
+        last_started: float (default: None)
+        show_cursor: boolean (default: False)
+        use_dev_remote_server: boolean (default: False)
+        use_keypad: boolean (default: False)
+        disable_cctalk: boolean (default: False)
     Obsolete:
         use_default_keypad_override: boolean
         use_predefined_connection: boolean
