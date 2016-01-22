@@ -171,7 +171,7 @@ class PaymentTestCase(unittest.TestCase):
                         'bitcoin:uri', None)
         result = order.check()
         self.assertTrue(send_mock.called)
-        self.assertEqual(result, 'https://xbterminal.io/rc/test_uid/')
+        self.assertEqual(result, 'https://xbterminal.io/prc/test_uid/')
 
 
 @patch.dict('xbterminal.stages.withdrawal.xbterminal.runtime',
@@ -223,4 +223,4 @@ class WithdrawalTestCase(unittest.TestCase):
             'json.return_value': {'status': 'completed'},
         })
         result = order.check()
-        self.assertIsNotNone(result)
+        self.assertEqual(result, 'https://xbterminal.io/wrc/test_uid/')
