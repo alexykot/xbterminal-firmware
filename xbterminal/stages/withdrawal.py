@@ -78,4 +78,4 @@ class Withdrawal(object):
             logger.exception(error)
             return None
         if result['status'] == 'completed':
-            return api.get_url('receipt', receipt_key=self.uid)
+            return api.get_url('withdrawal_receipt', uid=self.uid)

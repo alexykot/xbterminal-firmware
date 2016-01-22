@@ -87,4 +87,4 @@ class Payment(object):
             logger.exception(error)
             return None
         if result['paid'] == 1:
-            return api.get_url('receipt', receipt_key=self.uid)
+            return api.get_url('payment_receipt', uid=self.uid)

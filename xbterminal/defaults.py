@@ -113,13 +113,14 @@ REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 REMOTE_API_ENDPOINTS = {
     'registration': '/api/v2/devices/',
     'config': '/api/v2/devices/{device_key}/',
-    'receipt': '/rc/{receipt_key}/',
     'payment_init': '/api/v2/payments/',
     'payment_response': '/api/v2/payments/{uid}/response/',
     'payment_check': '/api/v2/payments/{uid}/',
+    'payment_receipt': '/prc/{uid}/',
     'withdrawal_init': '/api/v2/withdrawals/',
     'withdrawal_confirm': '/api/v2/withdrawals/{uid}/confirm/',
     'withdrawal_check': '/api/v2/withdrawals/{uid}/',
+    'withdrawal_receipt': '/wrc/{uid}/',
 }
 EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
