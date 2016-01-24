@@ -5,6 +5,7 @@ import unittest
 
 from xbterminal import defaults
 from xbterminal.stages import stages
+from xbterminal.exceptions import ServerError
 
 
 patcher = patch.dict(
@@ -203,6 +204,53 @@ class PayAmountStageTestCase(unittest.TestCase):
                          defaults.STAGES['payment']['pay_loading'])
 
 
+class PayLoadingStageTestCase(unittest.TestCase):
+
+    def test_no_amount(self):
+        run = {
+            'payment': {
+                'fiat_amount': None,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_loading(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_amount'])
+
+    @patch('xbterminal.stages.payment.Payment.create_order')
+    def test_proceed(self, create_order_mock):
+        create_order_mock.return_value = Mock(payment_uri='test')
+        run = {
+            'payment': {
+                'fiat_amount': Decimal('1.00'),
+            },
+            'bluetooth_server': Mock(mac_address='00:00:00:00:00:00'),
+        }
+        ui = Mock()
+        next_stage = stages.pay_loading(run, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0],
+                         'load_indefinite')
+        self.assertIsNotNone(run['payment']['qr_image_path'])
+        self.assertIsNotNone(run['payment']['order'])
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_wait'])
+
+    @patch('xbterminal.stages.payment.Payment.create_order')
+    def test_server_error(self, create_order_mock):
+        create_order_mock.side_effect = ServerError
+        run = {
+            'payment': {
+                'fiat_amount': Decimal('1.00'),
+            },
+            'bluetooth_server': Mock(mac_address='00:00:00:00:00:00'),
+        }
+        ui = Mock()
+        next_stage = stages.pay_loading(run, ui)
+        self.assertEqual(run['payment']['fiat_amount'], Decimal(0))
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
+
+
 class PayWaitStageTestCase(unittest.TestCase):
 
     def test_return(self):
@@ -312,6 +360,20 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_scan'])
         self.assertEqual(run['withdrawal']['order'], 'test_order')
+
+    @patch('xbterminal.stages.withdrawal.Withdrawal.create_order')
+    def test_server_error(self, create_order_mock):
+        run = {
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+            },
+        }
+        ui = Mock()
+        create_order_mock.side_effect = ServerError
+        next_stage = stages.withdraw_loading1(run, ui)
+        self.assertIsNone(run['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
 
 
 class WithdrawScanStageTestCase(unittest.TestCase):

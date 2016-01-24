@@ -12,7 +12,7 @@ sys.modules['cv2'] = mock.Mock()
 sys.modules['zbar'] = mock.Mock()
 sys.modules['bluetooth'] = mock.Mock()
 
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.CRITICAL)
 
 loader = unittest.TestLoader()
 tests = loader.discover('.')

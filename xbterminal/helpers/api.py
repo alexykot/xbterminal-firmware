@@ -7,6 +7,7 @@ from xbterminal.defaults import (
     EXTERNAL_CALLS_TIMEOUT,
     EXTERNAL_CALLS_REQUEST_HEADERS)
 from xbterminal.helpers import crypto
+from xbterminal.exceptions import NetworkError, ServerError
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +38,18 @@ def send_request(method, url, data=None, headers=None, signed=False):
     if signed:
         signature = crypto.create_signature(prepared_req.body)
         prepared_req.headers['X-Signature'] = signature
+
     # Send
     session = requests.Session()
-    response = session.send(prepared_req,
-                            timeout=EXTERNAL_CALLS_TIMEOUT)
-    # Log errors
+    try:
+        response = session.send(prepared_req,
+                                timeout=EXTERNAL_CALLS_TIMEOUT)
+    except Exception as error:
+        logger.exception(error)
+        raise NetworkError
+
     if response.status_code != 200:
         logger.error(response.content)
+        raise ServerError
+
     return response

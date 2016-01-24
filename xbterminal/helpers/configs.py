@@ -31,7 +31,6 @@ def load_remote_config():
                              device_key=xbterminal.runtime['device_key'])
     try:
         response = api.send_request('get', config_url)
-        response.raise_for_status()
         remote_config = response.json()
     except Exception as error:
         logger.warning("no remote configs available, trying local cache")

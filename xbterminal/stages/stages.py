@@ -17,7 +17,7 @@ import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
 import xbterminal.helpers.wireless
 import xbterminal.gui.gui
-import xbterminal.exceptions
+from xbterminal.exceptions import NetworkError, ServerError
 
 
 def bootup(run, ui):
@@ -145,18 +145,23 @@ def pay_loading(run, ui):
         return defaults.STAGES['payment']['pay_amount']
 
     while True:
-        run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
-                                                               run['bluetooth_server'].mac_address)
-        if run['payment']['order'] is not None:
+        try:
+            run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
+                                                                   run['bluetooth_server'].mac_address)
+        except NetworkError:
+            logger.warning('network error, retry in 5 seconds')
+            time.sleep(5)
+            continue
+        except ServerError:
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        else:
             # Payment parameters loaded
             # Prepare QR image
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
                                          run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_wait']
-        else:
-            # Network error
-            time.sleep(1)
 
 
 def pay_wait(run, ui):
@@ -275,14 +280,18 @@ def withdraw_loading1(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['fiat_amount'] > 0
     while True:
-        run['withdrawal']['order'] = withdrawal.Withdrawal.create_order(
-            run['withdrawal']['fiat_amount'])
-        # TODO: loading timeout
-        if run['withdrawal']['order'] is not None:
-            return defaults.STAGES['withdrawal']['withdraw_scan']
+        try:
+            run['withdrawal']['order'] = withdrawal.Withdrawal.create_order(
+                run['withdrawal']['fiat_amount'])
+        except NetworkError:
+            logger.warning('network error, retry in 5 seconds')
+            time.sleep(5)
+            continue
+        except ServerError:
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
         else:
-            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['withdrawal']['withdraw_amount']
+            return defaults.STAGES['withdrawal']['withdraw_scan']
 
 
 def withdraw_scan(run, ui):
