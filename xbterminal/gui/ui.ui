@@ -846,6 +846,237 @@ color: #33363e;</string>
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="pay_amount">
+    <widget class="QLabel" name="pamount_desc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>13</x>
+       <y>30</y>
+       <width>461</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Payment amount</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pamount_opt1_btn">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>120</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>24</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>£1</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pamount_opt2_btn">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>120</y>
+       <width>121</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>24</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>£2.5</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pamount_opt3_btn">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>120</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>24</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>£10</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pamount_opt4_btn">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>199</y>
+       <width>121</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>OTHER</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="pay_confirm">
+    <widget class="QLabel" name="pconfirm_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>70</y>
+       <width>181</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>38</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>£0.00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pconfirm_decr_btn">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>80</y>
+       <width>91</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>-0.05</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pconfirm_incr_btn">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>80</y>
+       <width>94</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>+0.05</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pconfirm_confirm_btn">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>180</y>
+       <width>181</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+border: none;
+color: #fff;</string>
+     </property>
+     <property name="text">
+      <string>CONFIRM</string>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="enter_amount_scrn">
     <widget class="QLabel" name="amount_lbl">
      <property name="geometry">

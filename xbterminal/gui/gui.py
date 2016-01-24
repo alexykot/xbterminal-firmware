@@ -122,6 +122,20 @@ class GUI(QtGui.QMainWindow):
             functools.partial(self.buttonPressEvent, 'withdraw'))
         self.ui.skip_wifi_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'skip_wifi'))
+        self.ui.pamount_opt1_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt1'))
+        self.ui.pamount_opt2_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt2'))
+        self.ui.pamount_opt3_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt3'))
+        self.ui.pamount_opt4_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt4'))
+        self.ui.pconfirm_decr_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_decr'))
+        self.ui.pconfirm_incr_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_incr'))
+        self.ui.pconfirm_confirm_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'confirm_payment'))
         self.ui.wconfirm_confirm_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'confirm_withdrawal'))
         # Hide notices
