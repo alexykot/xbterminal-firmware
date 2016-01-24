@@ -154,7 +154,7 @@ def pay_amount(run, ui):
 def pay_confirm(run, ui):
     ui.showScreen('pay_confirm')
     assert run['payment']['fiat_amount'] >= 0
-    ui.setText('pconfirm_amount_lbl', amounts.format_amount(run['payment']['fiat_amount']))
+    ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
     while True:
         if run['screen_buttons']['payment_decr'] or \
                 run['keypad'].last_key_pressed == 1:
@@ -163,13 +163,13 @@ def pay_confirm(run, ui):
             run['payment']['fiat_amount'] -= Decimal('0.05')
             if run['payment']['fiat_amount'] < 0:
                 run['payment']['fiat_amount'] = Decimal('0.00')
-            ui.setText('pconfirm_amount_lbl', amounts.format_amount(run['payment']['fiat_amount']))
+            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
         if run['screen_buttons']['payment_incr'] or \
                 run['keypad'].last_key_pressed == 2:
             run['screen_buttons']['payment_incr'] = False
             run['keypad'].resetKey()
             run['payment']['fiat_amount'] += Decimal('0.05')
-            ui.setText('pconfirm_amount_lbl', amounts.format_amount(run['payment']['fiat_amount']))
+            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
         if run['screen_buttons']['confirm_payment'] or \
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['confirm_payment'] = False

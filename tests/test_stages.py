@@ -16,6 +16,9 @@ patcher = patch.dict(
             'thousands_split': ',',
             'fractional_split': '.',
         },
+        'currency': {
+            'prefix': u'\xa3',
+        },
     })
 
 
@@ -361,6 +364,9 @@ class PayConfirmStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.pay_confirm(run, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0], 'pay_confirm')
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.50')
+        self.assertEqual(ui.setText.call_args_list[1][0][1], u'\xa30.45')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_loading'])
         self.assertEqual(run['payment']['fiat_amount'], Decimal('0.45'))

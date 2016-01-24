@@ -18,6 +18,9 @@ from xbterminal.exceptions import NetworkError, ServerError
                     'thousands_split': ',',
                     'fractional_split': '.',
                 },
+                'currency': {
+                    'prefix': '$',
+                },
             })
 class AmountsUtilsTestCase(unittest.TestCase):
 
@@ -32,6 +35,11 @@ class AmountsUtilsTestCase(unittest.TestCase):
         amount = Decimal('1215.75').quantize(defaults.FIAT_DEC_PLACES)
         result = amounts.format_amount(amount, 2)
         self.assertEqual(result, '1,215.75')
+
+    def test_form_amount_cur(self):
+        amount = Decimal('3513.00').quantize(defaults.FIAT_DEC_PLACES)
+        result = amounts.format_amount_cur(amount)
+        self.assertEqual(result, u'$3,513.00')
 
     def test_format_btc_amount(self):
         amount = Decimal('1.5751').quantize(defaults.FIAT_DEC_PLACES)
