@@ -114,9 +114,11 @@ class GUI(QtGui.QMainWindow):
         # Disable keyboard on amount input widget
         self.ui.amount_input.keyPressEvent = lambda event: event.ignore()
         # Set up buttons
-        self.ui.pay_btn.clicked.connect(
+        self.ui.idle_begin_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'begin'))
+        self.ui.sel_pay_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'pay'))
-        self.ui.withdraw_btn.clicked.connect(
+        self.ui.sel_withdraw_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'withdraw'))
         self.ui.skip_wifi_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'skip_wifi'))
@@ -215,6 +217,7 @@ class GUI(QtGui.QMainWindow):
             self.ui.retranslateUi(self)
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
+        self.ui.sel_currency_lbl.setText(currency_prefix)
         self.ui.currency_lbl.setText(currency_prefix)
         self.ui.pwait_currency_lbl.setText(currency_prefix)
 

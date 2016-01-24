@@ -83,30 +83,43 @@ def activate(run, ui):
 def idle(run, ui):
     ui.showScreen('idle')
     while True:
+        if run['screen_buttons']['begin']:
+            run['screen_buttons']['begin'] = False
+            run['payment']['fiat_amount'] = Decimal(0)
+            return defaults.STAGES['payment']['pay_amount']
+        if run['keypad'].last_key_pressed == 'enter':
+            run['payment']['fiat_amount'] = Decimal(0)
+            return defaults.STAGES['payment']['pay_amount']
+        elif run['keypad'].last_key_pressed == 'alt':
+            # Secret key to show selection screen
+            run['withdrawal']['fiat_amount'] = Decimal('0.25')  # Hardcoded amount
+            return defaults.STAGES['selection']
+        # Communicate with the host system
+        payout = run['host_system'].get_payout()
+        if payout:
+            run['withdrawal']['fiat_amount'] = payout
+            return defaults.STAGES['selection']
+        time.sleep(0.1)
+
+
+def selection(run, ui):
+    ui.showScreen('selection')
+    assert run['withdrawal']['fiat_amount'] > 0
+    ui.setText('sel_amount_lbl',
+               amounts.format_amount(run['withdrawal']['fiat_amount']))
+    while True:
         if run['screen_buttons']['pay']:
             run['screen_buttons']['pay'] = False
             run['payment']['fiat_amount'] = Decimal(0)
             return defaults.STAGES['payment']['pay_amount']
         if run['screen_buttons']['withdraw']:
             run['screen_buttons']['withdraw'] = False
-            run['withdrawal']['fiat_amount'] = Decimal(0)
             return defaults.STAGES['withdrawal']['withdraw_amount']
-        if run['keypad'].last_key_pressed is not None:
-            if run['keypad'].last_key_pressed == 'alt':
-                run['withdrawal']['fiat_amount'] = Decimal(0)
-                return defaults.STAGES['withdrawal']['withdraw_amount']
-            else:
-                run['payment']['fiat_amount'] = Decimal(0)
-                if run['keypad'].last_key_pressed in range(10) + ['00']:
-                    run['payment']['fiat_amount'] = amounts.process_key_input(
-                        run['payment']['fiat_amount'],
-                        run['keypad'].last_key_pressed)
-                return defaults.STAGES['payment']['pay_amount']
-        # Communicate with the host system
-        payout = run['host_system'].get_payout()
-        if payout:
-            run['withdrawal']['fiat_amount'] = payout
-            return defaults.STAGES['withdrawal']['withdraw_loading1']
+        if run['keypad'].last_key_pressed == 'enter':
+            run['payment']['fiat_amount'] = Decimal(0)
+            return defaults.STAGES['payment']['pay_amount']
+        elif run['keypad'].last_key_pressed == 'alt':
+            return defaults.STAGES['withdrawal']['withdraw_amount']
         time.sleep(0.1)
 
 

@@ -2,7 +2,7 @@
     background-color: #E6EEFA;
 }
 
-#bc_logo_image {
+#idle_bc_logo_image {
     qproperty-pixmap: url(':/images/xbterminal.png');
     qproperty-geometry: rect(130 110 210 34);
 }

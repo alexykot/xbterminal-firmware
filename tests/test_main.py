@@ -23,6 +23,7 @@ class InitialStateTestCase(unittest.TestCase):
         self.assertIsNone(state['withdrawal']['receipt_url'])
         self.assertIsNone(state['withdrawal']['qr_image_path'])
         self.assertFalse(state['screen_buttons']['skip_wifi'])
+        self.assertFalse(state['screen_buttons']['begin'])
         self.assertFalse(state['screen_buttons']['pay'])
         self.assertFalse(state['screen_buttons']['withdraw'])
         self.assertFalse(state['screen_buttons']['confirm_withdrawal'])

@@ -38,6 +38,7 @@ def get_initial_state():
         'screen_buttons': {
             # Button states
             'skip_wifi': False,
+            'begin': False,
             'pay': False,
             'withdraw': False,
             'confirm_withdrawal': False,
