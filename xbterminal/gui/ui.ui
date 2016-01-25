@@ -850,22 +850,25 @@ color: #33363e;</string>
     <widget class="QLabel" name="pamount_desc_lbl">
      <property name="geometry">
       <rect>
-       <x>13</x>
-       <y>30</y>
-       <width>461</width>
-       <height>61</height>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>13</pointsize>
+       <family>Open Sans</family>
+       <pointsize>17</pointsize>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #33363e;</string>
+      <string notr="true">background: #d34c0a;
+color: #fff;
+</string>
      </property>
      <property name="text">
-      <string>Payment amount</string>
+      <string>PAYMENT AMOUNT</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
