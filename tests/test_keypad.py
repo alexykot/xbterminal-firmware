@@ -4,8 +4,6 @@ from mock import patch, Mock
 from xbterminal.keypad.keypad import Keypad
 
 
-@patch.dict('xbterminal.keypad.keypad.xbterminal.runtime',
-            local_config={})
 class KeyPadTestCase(unittest.TestCase):
 
     def test_init(self):

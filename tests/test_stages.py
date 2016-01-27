@@ -407,28 +407,6 @@ class PayConfirmStageTestCase(unittest.TestCase):
                          defaults.STAGES['payment']['pay_amount'])
 
 
-class PayAmountOldStageTestCase(unittest.TestCase):
-
-    def test_return(self):
-        run = {
-            'keypad': Mock(last_key_pressed='backspace'),
-            'payment': {'fiat_amount': Decimal(0)},
-        }
-        ui = Mock()
-        next_stage = stages.pay_amount_old(run, ui)
-        self.assertEqual(next_stage, defaults.STAGES['idle'])
-
-    def test_proceed(self):
-        run = {
-            'keypad': Mock(last_key_pressed='enter'),
-            'payment': {'fiat_amount': Decimal('1.00')},
-        }
-        ui = Mock()
-        next_stage = stages.pay_amount_old(run, ui)
-        self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_loading'])
-
-
 class PayLoadingStageTestCase(unittest.TestCase):
 
     def test_no_amount(self):
@@ -547,29 +525,6 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertIsNone(run['payment']['order'])
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_success'])
-
-
-class WithdrawAmountOldStageTestCase(unittest.TestCase):
-
-    def test_return(self):
-        run = {
-            'keypad': Mock(last_key_pressed='backspace'),
-            'withdrawal': {'fiat_amount': Decimal(0)},
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_amount_old(run, ui)
-        self.assertEqual(next_stage, defaults.STAGES['idle'])
-        self.assertIsNone(run['withdrawal']['fiat_amount'])
-
-    def test_proceed(self):
-        run = {
-            'keypad': Mock(last_key_pressed='enter'),
-            'withdrawal': {'fiat_amount': Decimal('1.00')},
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_amount_old(run, ui)
-        self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_loading1'])
 
 
 class WithdrawLoading1StageTestCase(unittest.TestCase):

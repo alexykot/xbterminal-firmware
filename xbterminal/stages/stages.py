@@ -15,7 +15,6 @@ import xbterminal.helpers.configs
 import xbterminal.helpers.host
 import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
-import xbterminal.helpers.wireless
 import xbterminal.gui.gui
 from xbterminal.exceptions import NetworkError, ServerError
 
@@ -184,34 +183,6 @@ def pay_confirm(run, ui):
         time.sleep(0.1)
 
 
-def pay_amount_old(run, ui):
-    ui.showScreen('enter_amount')
-    assert run['payment']['fiat_amount'] is not None
-    ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
-    while True:
-        if (
-            run['keypad'].last_key_pressed in range(10) + ['00'] or
-            run['keypad'].last_key_pressed == 'backspace'
-        ):
-            if run['keypad'].last_key_pressed == 'backspace' and run['payment']['fiat_amount'] == 0:
-                return defaults.STAGES['idle']
-            ui.toggleAmountErrorState(False)
-            run['payment']['fiat_amount'] = amounts.process_key_input(
-                run['payment']['fiat_amount'],
-                run['keypad'].last_key_pressed)
-            ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
-        elif run['keypad'].last_key_pressed == 'enter':
-            if run['payment']['fiat_amount'] > 0:
-                return defaults.STAGES['payment']['pay_loading']
-            else:
-                ui.toggleAmountErrorState(True)
-        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            _clear_payment_runtime(run, ui)
-            return defaults.STAGES['idle']
-        run['keypad'].resetKey()
-        time.sleep(0.1)
-
-
 def pay_loading(run, ui):
     ui.showScreen('load_indefinite')
 
@@ -321,35 +292,6 @@ def pay_cancel(run, ui):
         time.sleep(0.1)
 
 
-def withdraw_amount_old(run, ui):
-    ui.showScreen('enter_amount')
-    assert run['withdrawal']['fiat_amount'] is not None
-    ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    while True:
-        if (
-            run['keypad'].last_key_pressed in range(10) + ['00'] or
-            run['keypad'].last_key_pressed == 'backspace'
-        ):
-            if run['keypad'].last_key_pressed == 'backspace' and run['withdrawal']['fiat_amount'] == 0:
-                _clear_withdrawal_runtime(run, ui)
-                return defaults.STAGES['idle']
-            ui.toggleAmountErrorState(False)
-            run['withdrawal']['fiat_amount'] = amounts.process_key_input(
-                run['withdrawal']['fiat_amount'],
-                run['keypad'].last_key_pressed)
-            ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
-        elif run['keypad'].last_key_pressed == 'enter':
-            if run['withdrawal']['fiat_amount'] > 0:
-                return defaults.STAGES['withdrawal']['withdraw_loading1']
-            else:
-                ui.toggleAmountErrorState(True)
-        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            _clear_withdrawal_runtime(run, ui)
-            return defaults.STAGES['idle']
-        run['keypad'].resetKey()
-        time.sleep(0.1)
-
-
 def withdraw_loading1(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['fiat_amount'] > 0
@@ -448,111 +390,12 @@ def withdraw_success(run, ui):
         time.sleep(0.1)
 
 
-def choose_ssid(run, ui):
-    ui.showScreen('choose_ssid')
-    while True:
-        if run['screen_buttons']['skip_wifi']:
-            logger.warning('wifi setup cancelled, hoping for preconfigured wired connection')
-            run['screen_buttons']['skip_wifi'] = False
-            run['init']['internet'] = True
-            return defaults.STAGES['bootup']
-
-        if run['wifi']['networks_last_listed_timestamp'] + 30 < time.time():
-            networks_list = xbterminal.helpers.wireless.discover_networks()
-            run['wifi']['networks_last_listed_timestamp'] = time.time()
-            run['wifi']['networks_list_length'] = len(networks_list)
-            run['wifi']['networks_list_selected_index'] = 0
-            ui.wifiListClear()
-            for i, network in enumerate(networks_list):
-                ui.wifiListAddItem(network['ssid'])
-                if run['local_config'].get('wifi_ssid') == network['ssid']:
-                    run['wifi']['networks_list_selected_index'] = i
-            ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
-
-        if run['keypad'].last_key_pressed == 8:
-            run['wifi']['networks_list_selected_index'] = min(run['wifi']['networks_list_selected_index'] + 1,
-                                                              run['wifi']['networks_list_length'] - 1)
-            ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
-            run['keypad'].resetKey()
-        elif run['keypad'].last_key_pressed == 2:
-            run['wifi']['networks_list_selected_index'] = max(run['wifi']['networks_list_selected_index'] - 1, 0)
-            ui.wifiListSelectItem(run['wifi']['networks_list_selected_index'])
-            run['keypad'].resetKey()
-        elif run['keypad'].last_key_pressed == 'enter':
-            ui.wifiListSaveSelectedItem()
-            while 'selected_ssid' not in run['wifi']:
-                time.sleep(0.1)
-            run['local_config'] = run['wifi'].pop('selected_ssid')
-            xbterminal.helpers.configs.save_local_config(run['local_config'])
-            return defaults.STAGES['wifi']['enter_passkey']
-
-        time.sleep(0.1)
-
-
-def enter_passkey(run, ui):
-    ui.showScreen('enter_passkey')
-    ui.setText('ssid_entered_lbl', run['local_config']['wifi_ssid'])
-    run['local_config']['wifi_pass'] = ''
-    while True:
-        if run['keypad'].last_key_pressed is not None:
-            ui.toggleWifiWrongPasswordState(False)
-
-            if run['keypad'].checkIsDone():
-                ui.toggleWifiConnectingState(True)
-                logger.debug(
-                    'trying to connect to wifi, '
-                    'ssid: "{ssid}", pass: "{passkey}" '.format(
-                        ssid=run['local_config']['wifi_ssid'],
-                        passkey=run['local_config']['wifi_pass']))
-                run['wifi']['connected'] = xbterminal.helpers.wireless.connect(
-                    run['local_config']['wifi_ssid'],
-                    run['local_config']['wifi_pass'])
-                if run['wifi']['connected']:
-                    run['init']['internet'] = True
-                    logger.debug('connected to wifi, ssid: {ssid}'.format(
-                        ssid=run['local_config']['wifi_ssid']))
-                    xbterminal.helpers.configs.save_local_config(run['local_config'])
-                    return defaults.STAGES['wifi']['wifi_connected']
-                else:
-                    logger.warning('wifi wrong passkey')
-                    ui.toggleWifiConnectingState(False)
-                    ui.toggleWifiWrongPasswordState(True)
-                    run['keypad'].resetKey()
-
-            elif run['keypad'].checkIsCancelled(run['local_config']['wifi_pass']):
-                del run['local_config']['wifi_ssid']
-                del run['local_config']['wifi_pass']
-                xbterminal.helpers.configs.save_local_config(run['local_config'])
-                return defaults.STAGES['wifi']['choose_ssid']
-
-            else:
-                run['local_config']['wifi_pass'] = run['keypad'].createAlphaNumString(
-                    run['local_config']['wifi_pass'])
-                char_selector_tupl = run['keypad'].getCharSelectorTupl()
-                if char_selector_tupl is not None:
-                    char_select_str = xbterminal.gui.gui.formatCharSelectHelperHMTL(
-                        char_selector_tupl,
-                        run['local_config']['wifi_pass'][-1])
-                else:
-                    char_select_str = ''
-                ui.setText('input_help_lbl', char_select_str)
-                ui.setText('password_input', run['local_config']['wifi_pass'])
-                run['keypad'].resetKey()
-        time.sleep(0.1)
-
-
-def wifi_connected(run, ui):
-    ui.showScreen('wifi_connected')
-    time.sleep(3)
-    return defaults.STAGES['bootup']
-
-
 def _clear_payment_runtime(run, ui, clear_amounts=True):
-    ui.showScreen('load_indefinite')
     logger.debug('clearing payment runtime')
+    ui.showScreen('load_indefinite')
+
     if clear_amounts:
         run['payment']['fiat_amount'] = Decimal(0)
-        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
 
     run['payment']['order'] = None
 
@@ -572,7 +415,6 @@ def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
 
     if clear_amounts:
         run['withdrawal']['fiat_amount'] = None
-        ui.setText('amount_input', amounts.format_amount(Decimal(0)))
 
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None

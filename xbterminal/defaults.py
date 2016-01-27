@@ -5,24 +5,17 @@ from decimal import Decimal
 STAGES = {
     'bootup': 'bootup',
     'activate': 'activate',
-    'wifi': {
-        'choose_ssid': 'choose_ssid',
-        'enter_passkey': 'enter_passkey',
-        'wifi_connected': 'wifi_connected',
-    },
     'idle': 'idle',
     'selection': 'selection',
     'payment': {
         'pay_amount': 'pay_amount',
         'pay_confirm': 'pay_confirm',
-        'pay_amount_old': 'pay_amount_old',
         'pay_loading': 'pay_loading',
         'pay_wait': 'pay_wait',
         'pay_success': 'pay_success',
         'pay_cancel': 'pay_cancel',
     },
     'withdrawal': {
-        'withdraw_amount_old': 'withdraw_amount_old',
         'withdraw_loading1': 'withdraw_loading1',
         'withdraw_scan': 'withdraw_scan',
         'withdraw_confirm': 'withdraw_confirm',
@@ -35,21 +28,17 @@ STAGES = {
 SCREENS = {
     'load_indefinite': 0,
     'activation': 1,
-    'choose_ssid': 2,
-    'enter_passkey': 3,
-    'wifi_connected': 4,
-    'idle': 5,
-    'selection': 6,
-    'pay_amount': 7,
-    'pay_confirm': 8,
-    'enter_amount': 9,
-    'pay_wait': 10,
-    'pay_success': 11,
-    'pay_cancel': 12,
-    'withdraw_scan': 13,
-    'withdraw_confirm': 14,
-    'withdraw_success': 15,
-    'errors': 16,
+    'idle': 2,
+    'selection': 3,
+    'pay_amount': 4,
+    'pay_confirm': 5,
+    'pay_wait': 6,
+    'pay_success': 7,
+    'pay_cancel': 8,
+    'withdraw_scan': 9,
+    'withdraw_confirm': 10,
+    'withdraw_success': 11,
+    'errors': 12,
 }
 
 SCREEN_BRIGHTNESS = 40
@@ -135,15 +124,11 @@ TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
 TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60  # if transaction cancelled - how long to show "cancelled" message in seconds
 
 OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
-OUTPUT_TOTAL_PLACES = 7  # total decimal places to show on screen
 
 EXCHANGE_RATE_DEC_PLACES = 3  # fractional decimal places for exchange rate to show on screen
 
 BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 2
 
-SATOSHI_FACTOR = Decimal(100000000)  # satoshis per BTC
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES = Decimal('0.00000000')
-BTC_DEFAULT_FEE = Decimal('0.00010000')  # typical transaction expected to be less than 1024 bytes
-BTC_MIN_OUTPUT = Decimal('0.00005460')  # minimal tx output
