@@ -136,7 +136,7 @@ class IdleStageTestCase(unittest.TestCase):
 
     def test_begin_button(self):
         run = {
-            'screen_buttons': {'begin': True},
+            'screen_buttons': {'idle_begin_btn': True},
         }
         ui = Mock()
         next_stage = stages.idle(run, ui)
@@ -150,7 +150,7 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='enter')
         run = {
             'keypad': keypad,
-            'screen_buttons': {'begin': False},
+            'screen_buttons': {'idle_begin_btn': False},
         }
         ui = Mock()
         next_stage = stages.idle(run, ui)
@@ -161,7 +161,7 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='alt')
         run = {
             'keypad': keypad,
-            'screen_buttons': {'begin': False},
+            'screen_buttons': {'idle_begin_btn': False},
             'withdrawal': {},
         }
         ui = Mock()
@@ -173,7 +173,7 @@ class IdleStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         run = {
             'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {'begin': False},
+            'screen_buttons': {'idle_begin_btn': False},
             'host_system': Mock(**{
                 'get_payout.return_value': Decimal('0.15'),
             }),
@@ -190,7 +190,7 @@ class SelectionStageTestCase(unittest.TestCase):
 
     def test_pay_button(self):
         run = {
-            'screen_buttons': {'pay': True, 'withdraw': False},
+            'screen_buttons': {'sel_pay_btn': True, 'sel_withdraw_btn': False},
             'withdrawal': {'fiat_amount': Decimal('0.5')},
         }
         ui = Mock()
@@ -204,7 +204,7 @@ class SelectionStageTestCase(unittest.TestCase):
 
     def test_withdraw_button(self):
         run = {
-            'screen_buttons': {'pay': False, 'withdraw': True},
+            'screen_buttons': {'sel_pay_btn': False, 'sel_withdraw_btn': True},
             'withdrawal': {'fiat_amount': Decimal('0.5')},
         }
         ui = Mock()
@@ -219,7 +219,10 @@ class SelectionStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='enter')
         run = {
             'keypad': keypad,
-            'screen_buttons': {'pay': False, 'withdraw': False},
+            'screen_buttons': {
+                'sel_pay_btn': False,
+                'sel_withdraw_btn': False,
+            },
             'withdrawal': {'fiat_amount': Decimal('0.5')},
         }
         ui = Mock()
@@ -233,7 +236,10 @@ class SelectionStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='alt')
         run = {
             'keypad': keypad,
-            'screen_buttons': {'pay': False, 'withdraw': False},
+            'screen_buttons': {
+                'sel_pay_btn': False,
+                'sel_withdraw_btn': False,
+            },
             'withdrawal': {'fiat_amount': Decimal('0.5')},
         }
         ui = Mock()
@@ -246,7 +252,10 @@ class SelectionStageTestCase(unittest.TestCase):
 
     def test_assertion_error(self):
         run = {
-            'screen_buttons': {'pay': False, 'withdraw': False},
+            'screen_buttons': {
+                'sel_pay_btn': False,
+                'sel_withdraw_btn': False,
+            },
             'withdrawal': {'fiat_amount': Decimal(0)},
         }
         ui = Mock()
@@ -260,10 +269,10 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'payment_opt1': True,
-                'payment_opt2': False,
-                'payment_opt3': False,
-                'payment_opt4': False,
+                'pamount_opt1_btn': True,
+                'pamount_opt2_btn': False,
+                'pamount_opt3_btn': False,
+                'pamount_opt4_btn': False,
             },
             'payment': {},
         }
@@ -280,10 +289,10 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'payment_opt1': False,
-                'payment_opt2': True,
-                'payment_opt3': False,
-                'payment_opt4': False,
+                'pamount_opt1_btn': False,
+                'pamount_opt2_btn': True,
+                'pamount_opt3_btn': False,
+                'pamount_opt4_btn': False,
             },
             'payment': {},
         }
@@ -299,10 +308,10 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'payment_opt1': False,
-                'payment_opt2': False,
-                'payment_opt3': True,
-                'payment_opt4': False,
+                'pamount_opt1_btn': False,
+                'pamount_opt2_btn': False,
+                'pamount_opt3_btn': True,
+                'pamount_opt4_btn': False,
             },
             'payment': {},
         }
@@ -318,10 +327,10 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'payment_opt1': False,
-                'payment_opt2': False,
-                'payment_opt3': False,
-                'payment_opt4': True,
+                'pamount_opt1_btn': False,
+                'pamount_opt2_btn': False,
+                'pamount_opt3_btn': False,
+                'pamount_opt4_btn': True,
             },
             'payment': {},
         }
@@ -337,10 +346,10 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed='backspace'),
             'screen_buttons': {
-                'payment_opt1': False,
-                'payment_opt2': False,
-                'payment_opt3': False,
-                'payment_opt4': False,
+                'pamount_opt1_btn': False,
+                'pamount_opt2_btn': False,
+                'pamount_opt3_btn': False,
+                'pamount_opt4_btn': False,
             },
             'payment': {},
         }
@@ -356,9 +365,9 @@ class PayConfirmStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'payment_decr': True,
-                'payment_incr': False,
-                'confirm_payment': True,
+                'pconfirm_decr_btn': True,
+                'pconfirm_incr_btn': False,
+                'pconfirm_confirm_btn': True,
             },
             'payment': {'fiat_amount': Decimal('0.50')},
         }
@@ -377,9 +386,9 @@ class PayConfirmStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'payment_decr': False,
-                'payment_incr': True,
-                'confirm_payment': True,
+                'pconfirm_decr_btn': False,
+                'pconfirm_incr_btn': True,
+                'pconfirm_confirm_btn': True,
             },
             'payment': {'fiat_amount': Decimal('0.50')},
         }
@@ -395,9 +404,9 @@ class PayConfirmStageTestCase(unittest.TestCase):
         run = {
             'keypad': Mock(last_key_pressed='backspace'),
             'screen_buttons': {
-                'payment_decr': False,
-                'payment_incr': False,
-                'confirm_payment': False,
+                'pconfirm_decr_btn': False,
+                'pconfirm_incr_btn': False,
+                'pconfirm_confirm_btn': False,
             },
             'payment': {'fiat_amount': Decimal('0.00')},
         }
@@ -601,7 +610,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
             'keypad': Mock(last_key_pressed='backspace'),
-            'screen_buttons': {'confirm_withdrawal': False},
+            'screen_buttons': {'wconfirm_confirm_btn': False},
             'withdrawal': {
                 'fiat_amount': Decimal(0),
                 'order': order_mock,
@@ -620,7 +629,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
             'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {'confirm_withdrawal': True},
+            'screen_buttons': {'wconfirm_confirm_btn': True},
             'withdrawal': {
                 'fiat_amount': Decimal(0),
                 'order': order_mock,

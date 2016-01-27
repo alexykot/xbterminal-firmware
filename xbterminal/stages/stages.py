@@ -82,8 +82,8 @@ def activate(run, ui):
 def idle(run, ui):
     ui.showScreen('idle')
     while True:
-        if run['screen_buttons']['begin']:
-            run['screen_buttons']['begin'] = False
+        if run['screen_buttons']['idle_begin_btn']:
+            run['screen_buttons']['idle_begin_btn'] = False
             return defaults.STAGES['payment']['pay_amount']
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['payment']['pay_amount']
@@ -105,11 +105,11 @@ def selection(run, ui):
     ui.setText('sel_amount_lbl',
                amounts.format_amount(run['withdrawal']['fiat_amount']))
     while True:
-        if run['screen_buttons']['pay']:
-            run['screen_buttons']['pay'] = False
+        if run['screen_buttons']['sel_pay_btn']:
+            run['screen_buttons']['sel_pay_btn'] = False
             return defaults.STAGES['payment']['pay_amount']
-        if run['screen_buttons']['withdraw']:
-            run['screen_buttons']['withdraw'] = False
+        if run['screen_buttons']['sel_withdraw_btn']:
+            run['screen_buttons']['sel_withdraw_btn'] = False
             return defaults.STAGES['withdrawal']['withdraw_loading1']
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['payment']['pay_amount']
@@ -128,24 +128,24 @@ def pay_amount(run, ui):
     for button, amount in options.items():
         ui.setText(button, amounts.format_amount_cur(amount))
     while True:
-        if run['screen_buttons']['payment_opt1'] or \
+        if run['screen_buttons']['pamount_opt1_btn'] or \
                 run['keypad'].last_key_pressed == 1:
-            run['screen_buttons']['payment_opt1'] = False
+            run['screen_buttons']['pamount_opt1_btn'] = False
             run['payment']['fiat_amount'] = options['pamount_opt1_btn']
             return defaults.STAGES['payment']['pay_confirm']
-        elif run['screen_buttons']['payment_opt2'] or \
+        elif run['screen_buttons']['pamount_opt2_btn'] or \
                 run['keypad'].last_key_pressed == 2:
-            run['screen_buttons']['payment_opt2'] = False
+            run['screen_buttons']['pamount_opt2_btn'] = False
             run['payment']['fiat_amount'] = options['pamount_opt2_btn']
             return defaults.STAGES['payment']['pay_confirm']
-        elif run['screen_buttons']['payment_opt3'] or \
+        elif run['screen_buttons']['pamount_opt3_btn'] or \
                 run['keypad'].last_key_pressed == 3:
-            run['screen_buttons']['payment_opt3'] = False
+            run['screen_buttons']['pamount_opt3_btn'] = False
             run['payment']['fiat_amount'] = options['pamount_opt3_btn']
             return defaults.STAGES['payment']['pay_confirm']
-        elif run['screen_buttons']['payment_opt4'] or \
+        elif run['screen_buttons']['pamount_opt4_btn'] or \
                 run['keypad'].last_key_pressed == 4:
-            run['screen_buttons']['payment_opt4'] = False
+            run['screen_buttons']['pamount_opt4_btn'] = False
             run['payment']['fiat_amount'] = Decimal('0.00')
             return defaults.STAGES['payment']['pay_confirm']
         if run['keypad'].last_key_pressed == 'backspace':
@@ -162,23 +162,23 @@ def pay_confirm(run, ui):
     assert run['payment']['fiat_amount'] >= 0
     ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
     while True:
-        if run['screen_buttons']['payment_decr'] or \
+        if run['screen_buttons']['pconfirm_decr_btn'] or \
                 run['keypad'].last_key_pressed == 1:
-            run['screen_buttons']['payment_decr'] = False
+            run['screen_buttons']['pconfirm_decr_btn'] = False
             run['keypad'].resetKey()
             run['payment']['fiat_amount'] -= Decimal('0.05')
             if run['payment']['fiat_amount'] < 0:
                 run['payment']['fiat_amount'] = Decimal('0.00')
             ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
-        if run['screen_buttons']['payment_incr'] or \
+        if run['screen_buttons']['pconfirm_incr_btn'] or \
                 run['keypad'].last_key_pressed == 2:
-            run['screen_buttons']['payment_incr'] = False
+            run['screen_buttons']['pconfirm_incr_btn'] = False
             run['keypad'].resetKey()
             run['payment']['fiat_amount'] += Decimal('0.05')
             ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
-        if run['screen_buttons']['confirm_payment'] or \
+        if run['screen_buttons']['pconfirm_confirm_btn'] or \
                 run['keypad'].last_key_pressed == 'enter':
-            run['screen_buttons']['confirm_payment'] = False
+            run['screen_buttons']['pconfirm_confirm_btn'] = False
             if run['payment']['fiat_amount'] > 0:
                 return defaults.STAGES['payment']['pay_loading']
         if run['keypad'].last_key_pressed == 'backspace':
@@ -351,8 +351,8 @@ def withdraw_confirm(run, ui):
     ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
     ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
     while True:
-        if run['screen_buttons']['confirm_withdrawal']:
-            run['screen_buttons']['confirm_withdrawal'] = False
+        if run['screen_buttons']['wconfirm_confirm_btn']:
+            run['screen_buttons']['wconfirm_confirm_btn'] = False
             return defaults.STAGES['withdrawal']['withdraw_loading2']
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['withdrawal']['withdraw_loading2']

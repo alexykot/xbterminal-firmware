@@ -35,21 +35,8 @@ def get_initial_state():
         'bluetooth_server': None,
         'nfc_server': None,
         'qr_scanner': None,
-        'screen_buttons': {
-            # Button states
-            'skip_wifi': False,
-            'begin': False,
-            'pay': False,
-            'withdraw': False,
-            'payment_opt1': False,
-            'payment_opt2': False,
-            'payment_opt3': False,
-            'payment_opt4': False,
-            'payment_decr': False,
-            'payment_incr': False,
-            'confirm_payment': False,
-            'confirm_withdrawal': False,
-        },
+        'screen_buttons': {button_name: False for button_name
+                           in xbterminal.gui.gui.GUI.BUTTONS},
         'init': {
             'clock_synchronized': False,
             'registration': False,

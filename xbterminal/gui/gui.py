@@ -101,6 +101,20 @@ class Application(QtGui.QApplication):
 
 class GUI(QtGui.QMainWindow):
 
+    BUTTONS = [
+        'idle_begin_btn',
+        'sel_pay_btn',
+        'sel_withdraw_btn',
+        'pamount_opt1_btn',
+        'pamount_opt2_btn',
+        'pamount_opt3_btn',
+        'pamount_opt4_btn',
+        'pconfirm_decr_btn',
+        'pconfirm_incr_btn',
+        'pconfirm_confirm_btn',
+        'wconfirm_confirm_btn',
+    ]
+
     def __init__(self, application):
         super(GUI, self).__init__()
         self._application = application
@@ -112,28 +126,11 @@ class GUI(QtGui.QMainWindow):
         self.ui.loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Set up buttons
-        self.ui.idle_begin_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'begin'))
-        self.ui.sel_pay_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'pay'))
-        self.ui.sel_withdraw_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'withdraw'))
-        self.ui.pamount_opt1_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt1'))
-        self.ui.pamount_opt2_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt2'))
-        self.ui.pamount_opt3_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt3'))
-        self.ui.pamount_opt4_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt4'))
-        self.ui.pconfirm_decr_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_decr'))
-        self.ui.pconfirm_incr_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_incr'))
-        self.ui.pconfirm_confirm_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'confirm_payment'))
-        self.ui.wconfirm_confirm_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'confirm_withdrawal'))
+        for button_name in self.BUTTONS:
+            button = getattr(self.ui, button_name)
+            button.clicked.connect(
+                functools.partial(self.buttonPressEvent, button_name))
+        # Show window
         self._saved_screen = self.currentScreen()
         self.show()
 
