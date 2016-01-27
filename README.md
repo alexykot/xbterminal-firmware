@@ -98,7 +98,7 @@ This command downloads necessary files and starts QEMU in daemonized mode.
 * Root password: **root**
 * User account: **user**
 * User password: **user**
-* SSH port: **32522** (*@localhost*).
+* SSH port: **32522** (*at localhost*).
 
 More info can be found here: https://people.debian.org/~aurel32/qemu/armhf/README.txt
 
@@ -106,6 +106,16 @@ Wait until VM is ready, then start the compilation:
 
 ```
 fab build.qemu_compile
+```
+
+## GUI
+
+**QtDesigner** is required.
+
+After editing UI file (*.ui), recompile it:
+
+```
+fab build.qt_ui
 ```
 
 ## Translations
