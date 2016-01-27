@@ -83,34 +83,108 @@ def activate(run, ui):
 def idle(run, ui):
     ui.showScreen('idle')
     while True:
-        if run['screen_buttons']['pay']:
-            run['screen_buttons']['pay'] = False
-            run['payment']['fiat_amount'] = Decimal(0)
+        if run['screen_buttons']['begin']:
+            run['screen_buttons']['begin'] = False
             return defaults.STAGES['payment']['pay_amount']
-        if run['screen_buttons']['withdraw']:
-            run['screen_buttons']['withdraw'] = False
-            run['withdrawal']['fiat_amount'] = Decimal(0)
-            return defaults.STAGES['withdrawal']['withdraw_amount']
-        if run['keypad'].last_key_pressed is not None:
-            if run['keypad'].last_key_pressed == 'alt':
-                run['withdrawal']['fiat_amount'] = Decimal(0)
-                return defaults.STAGES['withdrawal']['withdraw_amount']
-            else:
-                run['payment']['fiat_amount'] = Decimal(0)
-                if run['keypad'].last_key_pressed in range(10) + ['00']:
-                    run['payment']['fiat_amount'] = amounts.process_key_input(
-                        run['payment']['fiat_amount'],
-                        run['keypad'].last_key_pressed)
-                return defaults.STAGES['payment']['pay_amount']
+        if run['keypad'].last_key_pressed == 'enter':
+            return defaults.STAGES['payment']['pay_amount']
+        elif run['keypad'].last_key_pressed == 'alt':
+            # Secret key to show selection screen
+            run['withdrawal']['fiat_amount'] = Decimal('0.25')  # Hardcoded amount
+            return defaults.STAGES['selection']
         # Communicate with the host system
         payout = run['host_system'].get_payout()
         if payout:
             run['withdrawal']['fiat_amount'] = payout
+            return defaults.STAGES['selection']
+        time.sleep(0.1)
+
+
+def selection(run, ui):
+    ui.showScreen('selection')
+    assert run['withdrawal']['fiat_amount'] > 0
+    ui.setText('sel_amount_lbl',
+               amounts.format_amount(run['withdrawal']['fiat_amount']))
+    while True:
+        if run['screen_buttons']['pay']:
+            run['screen_buttons']['pay'] = False
+            return defaults.STAGES['payment']['pay_amount']
+        if run['screen_buttons']['withdraw']:
+            run['screen_buttons']['withdraw'] = False
+            return defaults.STAGES['withdrawal']['withdraw_loading1']
+        if run['keypad'].last_key_pressed == 'enter':
+            return defaults.STAGES['payment']['pay_amount']
+        elif run['keypad'].last_key_pressed == 'alt':
             return defaults.STAGES['withdrawal']['withdraw_loading1']
         time.sleep(0.1)
 
 
 def pay_amount(run, ui):
+    ui.showScreen('pay_amount')
+    while True:
+        if run['screen_buttons']['payment_opt1'] or \
+                run['keypad'].last_key_pressed == 1:
+            run['screen_buttons']['payment_opt1'] = False
+            run['payment']['fiat_amount'] = Decimal('1.00')
+            return defaults.STAGES['payment']['pay_confirm']
+        elif run['screen_buttons']['payment_opt2'] or \
+                run['keypad'].last_key_pressed == 2:
+            run['screen_buttons']['payment_opt2'] = False
+            run['payment']['fiat_amount'] = Decimal('2.50')
+            return defaults.STAGES['payment']['pay_confirm']
+        elif run['screen_buttons']['payment_opt3'] or \
+                run['keypad'].last_key_pressed == 3:
+            run['screen_buttons']['payment_opt3'] = False
+            run['payment']['fiat_amount'] = Decimal('10.00')
+            return defaults.STAGES['payment']['pay_confirm']
+        elif run['screen_buttons']['payment_opt4'] or \
+                run['keypad'].last_key_pressed == 4:
+            run['screen_buttons']['payment_opt4'] = False
+            run['payment']['fiat_amount'] = Decimal('0.00')
+            return defaults.STAGES['payment']['pay_confirm']
+        if run['keypad'].last_key_pressed == 'backspace':
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def pay_confirm(run, ui):
+    ui.showScreen('pay_confirm')
+    assert run['payment']['fiat_amount'] >= 0
+    ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+    while True:
+        if run['screen_buttons']['payment_decr'] or \
+                run['keypad'].last_key_pressed == 1:
+            run['screen_buttons']['payment_decr'] = False
+            run['keypad'].resetKey()
+            run['payment']['fiat_amount'] -= Decimal('0.05')
+            if run['payment']['fiat_amount'] < 0:
+                run['payment']['fiat_amount'] = Decimal('0.00')
+            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+        if run['screen_buttons']['payment_incr'] or \
+                run['keypad'].last_key_pressed == 2:
+            run['screen_buttons']['payment_incr'] = False
+            run['keypad'].resetKey()
+            run['payment']['fiat_amount'] += Decimal('0.05')
+            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+        if run['screen_buttons']['confirm_payment'] or \
+                run['keypad'].last_key_pressed == 'enter':
+            run['screen_buttons']['confirm_payment'] = False
+            if run['payment']['fiat_amount'] > 0:
+                return defaults.STAGES['payment']['pay_loading']
+        if run['keypad'].last_key_pressed == 'backspace':
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['payment']['pay_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def pay_amount_old(run, ui):
     ui.showScreen('enter_amount')
     assert run['payment']['fiat_amount'] is not None
     ui.setText('amount_input', amounts.format_amount(run['payment']['fiat_amount']))
@@ -247,7 +321,7 @@ def pay_cancel(run, ui):
         time.sleep(0.1)
 
 
-def withdraw_amount(run, ui):
+def withdraw_amount_old(run, ui):
     ui.showScreen('enter_amount')
     assert run['withdrawal']['fiat_amount'] is not None
     ui.setText('amount_input', amounts.format_amount(run['withdrawal']['fiat_amount']))
@@ -311,8 +385,8 @@ def withdraw_scan(run, ui):
             return defaults.STAGES['withdrawal']['withdraw_confirm']
         if run['keypad'].last_key_pressed == 'backspace':
             run['qr_scanner'].stop()
-            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['withdrawal']['withdraw_amount']
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             run['qr_scanner'].stop()
             _clear_withdrawal_runtime(run, ui)
@@ -334,8 +408,8 @@ def withdraw_confirm(run, ui):
         if run['keypad'].last_key_pressed == 'enter':
             return defaults.STAGES['withdrawal']['withdraw_loading2']
         elif run['keypad'].last_key_pressed == 'backspace':
-            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['withdrawal']['withdraw_amount']
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
@@ -355,8 +429,8 @@ def withdraw_loading2(run, ui):
                                          run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_success']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            _clear_withdrawal_runtime(run, ui, clear_amounts=False)
-            return defaults.STAGES['withdrawal']['withdraw_amount']
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
         time.sleep(0.5)
 
 

@@ -114,12 +114,28 @@ class GUI(QtGui.QMainWindow):
         # Disable keyboard on amount input widget
         self.ui.amount_input.keyPressEvent = lambda event: event.ignore()
         # Set up buttons
-        self.ui.pay_btn.clicked.connect(
+        self.ui.idle_begin_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'begin'))
+        self.ui.sel_pay_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'pay'))
-        self.ui.withdraw_btn.clicked.connect(
+        self.ui.sel_withdraw_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'withdraw'))
         self.ui.skip_wifi_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'skip_wifi'))
+        self.ui.pamount_opt1_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt1'))
+        self.ui.pamount_opt2_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt2'))
+        self.ui.pamount_opt3_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt3'))
+        self.ui.pamount_opt4_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_opt4'))
+        self.ui.pconfirm_decr_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_decr'))
+        self.ui.pconfirm_incr_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'payment_incr'))
+        self.ui.pconfirm_confirm_btn.clicked.connect(
+            functools.partial(self.buttonPressEvent, 'confirm_payment'))
         self.ui.wconfirm_confirm_btn.clicked.connect(
             functools.partial(self.buttonPressEvent, 'confirm_withdrawal'))
         # Hide notices
@@ -215,6 +231,7 @@ class GUI(QtGui.QMainWindow):
             self.ui.retranslateUi(self)
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
+        self.ui.sel_currency_lbl.setText(currency_prefix)
         self.ui.currency_lbl.setText(currency_prefix)
         self.ui.pwait_currency_lbl.setText(currency_prefix)
 
