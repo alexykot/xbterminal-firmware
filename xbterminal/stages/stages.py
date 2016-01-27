@@ -120,21 +120,28 @@ def selection(run, ui):
 
 def pay_amount(run, ui):
     ui.showScreen('pay_amount')
+    options = {
+        'pamount_opt1_btn': Decimal('1.00'),
+        'pamount_opt2_btn': Decimal('2.50'),
+        'pamount_opt3_btn': Decimal('10.00'),
+    }
+    for button, amount in options.items():
+        ui.setText(button, amounts.format_amount_cur(amount))
     while True:
         if run['screen_buttons']['payment_opt1'] or \
                 run['keypad'].last_key_pressed == 1:
             run['screen_buttons']['payment_opt1'] = False
-            run['payment']['fiat_amount'] = Decimal('1.00')
+            run['payment']['fiat_amount'] = options['pamount_opt1_btn']
             return defaults.STAGES['payment']['pay_confirm']
         elif run['screen_buttons']['payment_opt2'] or \
                 run['keypad'].last_key_pressed == 2:
             run['screen_buttons']['payment_opt2'] = False
-            run['payment']['fiat_amount'] = Decimal('2.50')
+            run['payment']['fiat_amount'] = options['pamount_opt2_btn']
             return defaults.STAGES['payment']['pay_confirm']
         elif run['screen_buttons']['payment_opt3'] or \
                 run['keypad'].last_key_pressed == 3:
             run['screen_buttons']['payment_opt3'] = False
-            run['payment']['fiat_amount'] = Decimal('10.00')
+            run['payment']['fiat_amount'] = options['pamount_opt3_btn']
             return defaults.STAGES['payment']['pay_confirm']
         elif run['screen_buttons']['payment_opt4'] or \
                 run['keypad'].last_key_pressed == 4:
