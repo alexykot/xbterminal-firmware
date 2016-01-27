@@ -1,3 +1,5 @@
+from mock import MagicMock
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
@@ -13,3 +15,13 @@ def read_secret_key_mock():
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption())
     return secret_pem
+
+
+class QApplication(MagicMock):
+
+    pass
+
+
+class QMainWindow(MagicMock):
+
+    show = MagicMock()
