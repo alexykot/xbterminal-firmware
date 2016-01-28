@@ -457,7 +457,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.pay_loading(run, ui)
-        self.assertEqual(run['payment']['fiat_amount'], Decimal(0))
+        self.assertIsNone(run['payment']['fiat_amount'])
         self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
 
@@ -485,6 +485,8 @@ class PayInfoStageTestCase(unittest.TestCase):
         next_stage = stages.pay_info(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
+        self.assertIsNone(run['payment']['fiat_amount'])
+        self.assertIsNone(run['payment']['order'])
         self.assertFalse(any(state for state
                              in run['screen_buttons'].values()))
 
@@ -548,7 +550,8 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertFalse(host_system_mock.add_credit.called)
         self.assertFalse(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
-        self.assertEqual(run['payment']['fiat_amount'], 0)
+        self.assertIsNone(run['payment']['fiat_amount'])
+        self.assertIsNone(run['payment']['order'])
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
@@ -618,7 +621,7 @@ class PaySuccessStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args_list[1][0][0],
                          'load_indefinite')
         self.assertIsNone(run['payment']['order'])
-        self.assertEqual(run['payment']['fiat_amount'], 0)
+        self.assertIsNone(run['payment']['fiat_amount'])
         self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
         self.assertFalse(any(state for state
@@ -673,7 +676,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
         self.assertTrue(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
         self.assertIsNone(run['payment']['order'])
-        self.assertEqual(run['payment']['fiat_amount'], 0)
+        self.assertIsNone(run['payment']['fiat_amount'])
         self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
         self.assertFalse(any(state for state

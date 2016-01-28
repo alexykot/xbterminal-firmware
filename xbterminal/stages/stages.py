@@ -334,7 +334,7 @@ def pay_cancel(run, ui):
     ui.showScreen('pay_cancel')
     while True:
         if run['keypad'].last_key_pressed is not None:
-            _clear_payment_runtime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             return defaults.STAGES['idle']
@@ -468,14 +468,14 @@ def withdraw_receipt(run, ui):
         time.sleep(0.1)
 
 
-def _clear_payment_runtime(run, ui, clear_amounts=True):
+def _clear_payment_runtime(run, ui):
     logger.debug('clearing payment runtime')
     ui.showScreen('load_indefinite')
 
-    if clear_amounts:
-        run['payment']['fiat_amount'] = Decimal(0)
-
+    run['payment']['fiat_amount'] = None
     run['payment']['order'] = None
+    run['payment']['receipt_url'] = None
+    run['payment']['qr_image_path'] = None
 
     ui.setText('pinfo_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
@@ -489,13 +489,11 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
     ui.setImage('preceipt_receipt_qr_img', None)
 
 
-def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
+def _clear_withdrawal_runtime(run, ui):
     logger.debug('clearing withdrawal runtime')
     ui.showScreen('load_indefinite')
 
-    if clear_amounts:
-        run['withdrawal']['fiat_amount'] = None
-
+    run['withdrawal']['fiat_amount'] = None
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None
     run['withdrawal']['receipt_url'] = None
