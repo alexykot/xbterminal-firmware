@@ -1363,10 +1363,10 @@ color: #33363e;</string>
     <widget class="QLabel" name="wscan_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>140</y>
-       <width>141</width>
-       <height>41</height>
+       <x>200</x>
+       <y>110</y>
+       <width>241</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
@@ -1380,72 +1380,17 @@ color: #33363e;</string>
 color: #33363e;</string>
      </property>
      <property name="text">
-      <string>30.05</string>
+      <string>m฿30.05561</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_btc_lbl">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>140</y>
-       <width>71</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>28</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>m฿</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_currency_lbl">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>140</y>
-       <width>51</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>28</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>£</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="wscan_xrate_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>200</y>
+       <x>230</x>
+       <y>170</y>
        <width>141</width>
        <height>21</height>
       </rect>
@@ -1461,14 +1406,14 @@ color: #33363e;</string>
 color: #33363e;</string>
      </property>
      <property name="text">
-      <string>0.845</string>
+      <string>1 BTC = £212.12</string>
      </property>
     </widget>
     <widget class="QLabel" name="wscan_xrate_lbl">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>200</y>
+       <x>60</x>
+       <y>170</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -1493,10 +1438,10 @@ color: #33363e;</string>
     <widget class="QLabel" name="wscan_fiat_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>140</y>
-       <width>151</width>
-       <height>41</height>
+       <x>30</x>
+       <y>110</y>
+       <width>171</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
@@ -1510,10 +1455,10 @@ color: #33363e;</string>
 color: #33363e;</string>
      </property>
      <property name="text">
-      <string>100.00</string>
+      <string>£10.00</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="wscan_tip_lbl">
@@ -1545,6 +1490,32 @@ QR CODE NOW</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="wscan_goback_btn">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>210</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>GO BACK</string>
      </property>
     </widget>
    </widget>

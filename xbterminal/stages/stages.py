@@ -372,9 +372,9 @@ def withdraw_loading1(run, ui):
 def withdraw_scan(run, ui):
     ui.showScreen('withdraw_scan')
     assert run['withdrawal']['order'] is not None
-    ui.setText('wscan_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
-    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
+    ui.setText('wscan_fiat_amount_lbl', amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
+    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount, prefix=True))
+    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate_pretty(run['withdrawal']['order'].exchange_rate))
     run['qr_scanner'].start()
     while True:
         address = withdrawal.get_bitcoin_address(
@@ -384,10 +384,12 @@ def withdraw_scan(run, ui):
             run['qr_scanner'].stop()
             run['withdrawal']['address'] = address
             return defaults.STAGES['withdrawal']['withdraw_confirm']
-        if run['keypad'].last_key_pressed == 'backspace':
+        if run['screen_buttons']['wscan_goback_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wscan_goback_btn'] = False
             run['qr_scanner'].stop()
-            _clear_withdrawal_runtime(run, ui)
-            return defaults.STAGES['idle']
+            _clear_withdrawal_runtime(run, ui, clear_amount=False)
+            return defaults.STAGES['selection']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             run['qr_scanner'].stop()
             _clear_withdrawal_runtime(run, ui)
@@ -499,11 +501,12 @@ def _clear_payment_runtime(run, ui):
     ui.setImage('preceipt_receipt_qr_img', None)
 
 
-def _clear_withdrawal_runtime(run, ui):
+def _clear_withdrawal_runtime(run, ui, clear_amount=True):
     logger.debug('clearing withdrawal runtime')
     ui.showScreen('load_indefinite')
 
-    run['withdrawal']['fiat_amount'] = None
+    if clear_amount:
+        run['withdrawal']['fiat_amount'] = None
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None
     run['withdrawal']['receipt_url'] = None

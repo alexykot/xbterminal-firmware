@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 from mock import patch, Mock
 import time
@@ -734,7 +735,10 @@ class WithdrawScanStageTestCase(unittest.TestCase):
     def test_return(self):
         order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
         run = {
-            'keypad': Mock(last_key_pressed='backspace'),
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wscan_goback_btn': True,
+            },
             'qr_scanner': Mock(**{'get_data.return_value': None}),
             'withdrawal': {
                 'fiat_amount': Decimal(0),
@@ -744,22 +748,33 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_scan(run, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         defaults.STAGES['selection'])
         self.assertIsNone(run['withdrawal']['order'])
-        self.assertIsNone(run['withdrawal']['fiat_amount'])
+        self.assertIsNotNone(run['withdrawal']['fiat_amount'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
 
     def test_proceed(self):
-        order_mock = Mock(btc_amount=Decimal(0), exchange_rate=Decimal(0))
+        order_mock = Mock(btc_amount=Decimal('0.22354655'),
+                          exchange_rate=Decimal('155.434'))
         run = {
             'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wscan_goback_btn': False,
+            },
             'qr_scanner': Mock(**{'get_data.return_value': self.address}),
             'withdrawal': {
-                'fiat_amount': Decimal(0),
+                'fiat_amount': Decimal('1.12'),
                 'order': order_mock,
             },
         }
         ui = Mock()
         next_stage = stages.withdraw_scan(run, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_scan')
+        self.assertEqual(ui.setText.call_args_list[0][0][1],
+                         u'£1.12')
+        self.assertEqual(ui.setText.call_args_list[2][0][1],
+                         u'1 BTC = £155.43')
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_confirm'])
         self.assertIsNotNone(run['withdrawal']['address'])
