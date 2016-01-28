@@ -119,6 +119,9 @@ class GUI(QtGui.QMainWindow):
         'psuccess_yes_btn',
         'preceipt_goback_btn',
         'wconfirm_confirm_btn',
+        'wsuccess_no_btn',
+        'wsuccess_yes_btn',
+        'wreceipt_goback_btn',
     ]
 
     def __init__(self, application):

@@ -415,9 +415,6 @@ def withdraw_loading2(run, ui):
         run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
         if run['withdrawal']['receipt_url'] is not None:
             logger.debug('withdrawal finished, receipt: {}'.format(run['withdrawal']['receipt_url']))
-            run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
-            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
-                                         run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_success']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui)
@@ -427,13 +424,45 @@ def withdraw_loading2(run, ui):
 
 def withdraw_success(run, ui):
     ui.showScreen('withdraw_success')
-    assert run['withdrawal']['qr_image_path'] is not None
-    ui.setImage('wsuccess_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    assert run['withdrawal']['receipt_url']
+    ui.setText('wsuccess_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount))
     while True:
-        if run['keypad'].last_key_pressed in ['backspace', 'enter']:
+        if run['screen_buttons']['wsuccess_yes_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
+            run['screen_buttons']['wsuccess_yes_btn'] = False
+            run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
+            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
+                                         run['withdrawal']['qr_image_path'])
+            return defaults.STAGES['withdrawal']['withdraw_receipt']
+        if run['screen_buttons']['wsuccess_no_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wsuccess_no_btn'] = False
             _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def withdraw_receipt(run, ui):
+    ui.showScreen('withdraw_receipt')
+    assert run['withdrawal']['receipt_url']
+    assert run['withdrawal']['qr_image_path'] is not None
+    ui.setImage('wreceipt_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    while True:
+        if not run['nfc_server'].is_active():
+            run['nfc_server'].start(run['withdrawal']['receipt_url'])
+            time.sleep(0.5)
+        if run['screen_buttons']['wreceipt_goback_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wreceipt_goback_btn'] = False
+            run['nfc_server'].stop()
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            run['nfc_server'].stop()
             _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
         time.sleep(0.1)
@@ -484,4 +513,4 @@ def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
                amounts.format_btc_amount(Decimal(0)))
     ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate(Decimal(0)))
-    ui.setImage('wsuccess_receipt_qr_img', None)
+    ui.setImage('wreceipt_receipt_qr_img', None)

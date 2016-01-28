@@ -806,20 +806,89 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_success'])
         self.assertEqual(run['withdrawal']['receipt_url'], 'test_url')
-        self.assertIsNotNone(run['withdrawal']['qr_image_path'])
 
 
 class WithdrawSuccessStageTestCase(unittest.TestCase):
 
-    def test_return(self):
+    def test_no(self):
+        order_mock = Mock(btc_amount=Decimal('0.12345678'))
         run = {
-            'keypad': Mock(last_key_pressed='enter'),
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wsuccess_no_btn': True,
+                'wsuccess_yes_btn': False,
+            },
             'withdrawal': {
-                'qr_image_path': '/path/to/image',
+                'fiat_amount': Decimal('1.00'),
+                'order': order_mock,
+                'receipt_url': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_success(run, ui)
+        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
+                         'withdraw_success')
+        self.assertEqual(ui.showScreen.call_args_list[1][0][0],
+                         'load_indefinite')
+        self.assertIsNone(run['withdrawal']['order'])
+        self.assertIsNone(run['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
+
+    def test_yes(self):
+        order_mock = Mock(btc_amount=Decimal('0.12345678'))
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wsuccess_no_btn': False,
+                'wsuccess_yes_btn': True,
+            },
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+                'order': order_mock,
+                'receipt_url': 'test',
             },
         }
         ui = Mock()
         next_stage = stages.withdraw_success(run, ui)
         self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_receipt'])
+        self.assertIsNotNone(run['withdrawal']['qr_image_path'])
+        self.assertIsNotNone(run['withdrawal']['order'])
+        self.assertIsNotNone(run['withdrawal']['receipt_url'])
+        self.assertFalse(any(state for state
+                         in run['screen_buttons'].values()))
+
+
+class WithdrawReceiptStageTestCase(unittest.TestCase):
+
+    def test_goback(self):
+        nfc_server_mock = Mock(**{'is_active.return_value': False})
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'nfc_server': nfc_server_mock,
+            'screen_buttons': {
+                'wreceipt_goback_btn': True,
+            },
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+                'receipt_url': 'test',
+                'qr_image_path': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_receipt(run, ui)
+        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
+                         'withdraw_receipt')
+        self.assertEqual(ui.showScreen.call_args_list[1][0][0],
+                         'load_indefinite')
+        self.assertTrue(nfc_server_mock.start.called)
+        self.assertTrue(nfc_server_mock.stop.called)
+        self.assertIsNone(run['withdrawal']['order'])
+        self.assertIsNone(run['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
-        self.assertIsNone(run['withdrawal']['qr_image_path'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
