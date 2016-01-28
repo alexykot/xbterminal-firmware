@@ -126,7 +126,7 @@ def pay_amount(run, ui):
         'pamount_opt3_btn': Decimal('10.00'),
     }
     for button, amount in options.items():
-        ui.setText(button, amounts.format_amount_cur(amount))
+        ui.setText(button, amounts.format_fiat_amount_pretty(amount, prefix=True))
     while True:
         if run['screen_buttons']['pamount_opt1_btn'] or \
                 run['keypad'].last_key_pressed == 1:
@@ -160,7 +160,7 @@ def pay_amount(run, ui):
 def pay_confirm(run, ui):
     ui.showScreen('pay_confirm')
     assert run['payment']['fiat_amount'] >= 0
-    ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+    ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
     while True:
         if run['screen_buttons']['pconfirm_decr_btn'] or \
                 run['keypad'].last_key_pressed == 1:
@@ -169,13 +169,13 @@ def pay_confirm(run, ui):
             run['payment']['fiat_amount'] -= Decimal('0.05')
             if run['payment']['fiat_amount'] < 0:
                 run['payment']['fiat_amount'] = Decimal('0.00')
-            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+            ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
         if run['screen_buttons']['pconfirm_incr_btn'] or \
                 run['keypad'].last_key_pressed == 2:
             run['screen_buttons']['pconfirm_incr_btn'] = False
             run['keypad'].resetKey()
             run['payment']['fiat_amount'] += Decimal('0.05')
-            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+            ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount']), prefix=True)
         if run['screen_buttons']['pconfirm_confirm_btn'] or \
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['pconfirm_confirm_btn'] = False
