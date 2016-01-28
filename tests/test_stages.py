@@ -376,14 +376,15 @@ class PayConfirmStageTestCase(unittest.TestCase):
                 'pconfirm_decr_btn': True,
                 'pconfirm_incr_btn': False,
                 'pconfirm_confirm_btn': True,
+                'pconfirm_goback_btn': False,
             },
             'payment': {'fiat_amount': Decimal('0.50')},
         }
         ui = Mock()
         next_stage = stages.pay_confirm(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_confirm')
-        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.50')
-        self.assertEqual(ui.setText.call_args_list[1][0][1], u'\xa30.45')
+        self.assertEqual(ui.setText.call_args_list[1][0][1], u'\xa30.50')
+        self.assertEqual(ui.setText.call_args_list[2][0][1], u'\xa30.45')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_loading'])
         self.assertEqual(run['payment']['fiat_amount'], Decimal('0.45'))
@@ -397,6 +398,7 @@ class PayConfirmStageTestCase(unittest.TestCase):
                 'pconfirm_decr_btn': False,
                 'pconfirm_incr_btn': True,
                 'pconfirm_confirm_btn': True,
+                'pconfirm_goback_btn': False,
             },
             'payment': {'fiat_amount': Decimal('0.50')},
         }
@@ -410,18 +412,22 @@ class PayConfirmStageTestCase(unittest.TestCase):
 
     def test_return(self):
         run = {
-            'keypad': Mock(last_key_pressed='backspace'),
+            'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'pconfirm_decr_btn': False,
                 'pconfirm_incr_btn': False,
                 'pconfirm_confirm_btn': False,
+                'pconfirm_goback_btn': True,
             },
             'payment': {'fiat_amount': Decimal('0.00')},
         }
         ui = Mock()
         next_stage = stages.pay_confirm(run, ui)
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.00')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
 
 
 class PayLoadingStageTestCase(unittest.TestCase):
