@@ -101,6 +101,20 @@ class Application(QtGui.QApplication):
 
 class GUI(QtGui.QMainWindow):
 
+    BUTTONS = [
+        'idle_begin_btn',
+        'sel_pay_btn',
+        'sel_withdraw_btn',
+        'pamount_opt1_btn',
+        'pamount_opt2_btn',
+        'pamount_opt3_btn',
+        'pamount_opt4_btn',
+        'pconfirm_decr_btn',
+        'pconfirm_incr_btn',
+        'pconfirm_confirm_btn',
+        'wconfirm_confirm_btn',
+    ]
+
     def __init__(self, application):
         super(GUI, self).__init__()
         self._application = application
@@ -111,37 +125,12 @@ class GUI(QtGui.QMainWindow):
         self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
         self.loader.start()
-        # Disable keyboard on amount input widget
-        self.ui.amount_input.keyPressEvent = lambda event: event.ignore()
         # Set up buttons
-        self.ui.idle_begin_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'begin'))
-        self.ui.sel_pay_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'pay'))
-        self.ui.sel_withdraw_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'withdraw'))
-        self.ui.skip_wifi_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'skip_wifi'))
-        self.ui.pamount_opt1_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt1'))
-        self.ui.pamount_opt2_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt2'))
-        self.ui.pamount_opt3_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt3'))
-        self.ui.pamount_opt4_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_opt4'))
-        self.ui.pconfirm_decr_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_decr'))
-        self.ui.pconfirm_incr_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'payment_incr'))
-        self.ui.pconfirm_confirm_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'confirm_payment'))
-        self.ui.wconfirm_confirm_btn.clicked.connect(
-            functools.partial(self.buttonPressEvent, 'confirm_withdrawal'))
-        # Hide notices
-        self.ui.wrong_passwd_lbl.hide()
-        self.ui.error_text_lbl.hide()
-        self.ui.connecting_lbl.hide()
+        for button_name in self.BUTTONS:
+            button = getattr(self.ui, button_name)
+            button.clicked.connect(
+                functools.partial(self.buttonPressEvent, button_name))
+        # Show window
         self._saved_screen = self.currentScreen()
         self.show()
 
@@ -159,43 +148,6 @@ class GUI(QtGui.QMainWindow):
         logger.debug('button "{0}" pressed'.format(button_name))
         xbterminal.runtime['last_activity_timestamp'] = time.time()
         xbterminal.runtime['screen_buttons'][button_name] = True
-
-    def toggleWifiConnectingState(self, show):
-        if show:
-            self.ui.connecting_lbl.show()
-            self.ui.password_input.setEnabled(False)
-            self.ui.password_input.setStyleSheet('background: #BBBBBB')
-        else:
-            self.ui.connecting_lbl.hide()
-            self.ui.password_input.setEnabled(True)
-            self.ui.password_input.setStyleSheet('background: #FFFFFF')
-
-    def toggleWifiWrongPasswordState(self, show):
-        if show:
-            self.ui.wrong_passwd_lbl.show()
-            self.ui.password_input.setStyleSheet('background: #B33A3A')
-        else:
-            self.ui.wrong_passwd_lbl.hide()
-            self.ui.password_input.setStyleSheet('background: #FFFFFF')
-
-    def wifiListAddItem(self, ssid):
-        self.ui.wifi_listWidget.addItem(ssid)
-
-    def wifiListSelectItem(self, index):
-        self.ui.wifi_listWidget.setCurrentRow(index)
-
-    def wifiListSaveSelectedItem(self):
-        ssid = self.ui.wifi_listWidget.currentItem().text()
-        xbterminal.runtime['wifi']['selected_ssid'] = str(ssid)
-
-    def wifiListClear(self):
-        self.ui.wifi_listWidget.clear()
-
-    def toggleAmountErrorState(self, show):
-        if show:
-            self.ui.error_text_lbl.show()
-        else:
-            self.ui.error_text_lbl.hide()
 
     def currentScreen(self):
         screen_index = self.ui.main_stackedWidget.currentIndex()
@@ -232,8 +184,9 @@ class GUI(QtGui.QMainWindow):
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
         self.ui.sel_currency_lbl.setText(currency_prefix)
-        self.ui.currency_lbl.setText(currency_prefix)
         self.ui.pwait_currency_lbl.setText(currency_prefix)
+        self.ui.wscan_currency_lbl.setText(currency_prefix)
+        self.ui.wconfirm_currency_lbl.setText(currency_prefix)
 
     def showErrors(self, errors):
         translations = {
@@ -277,18 +230,6 @@ def initGUI():
 
     main_window = GUI(application)
     return main_window
-
-
-def formatCharSelectHelperHMTL(char_tupl, char_selected=None):
-    char_list = []
-    selected_char_html = '<span style="color: #333333; font-size: x-large; font-weight: bold;">{char}</span>'
-    for index, char in enumerate(char_tupl):
-        if char_selected == char:
-            char_list.append(selected_char_html.format(char=char))
-        else:
-            char_list.append(str(char))
-    result_html = "<html><head/><body><p>{chars}</p></body></html>"
-    return result_html.format(chars=' '.join(char_list))
 
 
 def wake_up_screen():

@@ -24,13 +24,6 @@ from xbterminal.exceptions import NetworkError, ServerError
             })
 class AmountsUtilsTestCase(unittest.TestCase):
 
-    def test_process_key_input(self):
-        amount = Decimal(0)
-        keys = [1, 5, 6, 'backspace', 7, '00']
-        for key in keys:
-            amount = amounts.process_key_input(amount, key)
-        self.assertEqual(amount, Decimal('157.00'))
-
     def test_format_amount(self):
         amount = Decimal('1215.75').quantize(defaults.FIAT_DEC_PLACES)
         result = amounts.format_amount(amount, 2)
