@@ -114,6 +114,7 @@ class GUI(QtGui.QMainWindow):
         'pconfirm_confirm_btn',
         'pinfo_pay_btn',
         'pinfo_cancel_btn',
+        'pwait_cancel_btn',
         'wconfirm_confirm_btn',
     ]
 
@@ -186,7 +187,6 @@ class GUI(QtGui.QMainWindow):
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
         self.ui.sel_currency_lbl.setText(currency_prefix)
-        self.ui.pwait_currency_lbl.setText(currency_prefix)
         self.ui.wscan_currency_lbl.setText(currency_prefix)
         self.ui.wconfirm_currency_lbl.setText(currency_prefix)
 

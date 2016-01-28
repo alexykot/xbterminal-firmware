@@ -242,12 +242,8 @@ def pay_info(run, ui):
 
 def pay_wait(run, ui):
     ui.showScreen('pay_wait')
-    ui.setText('pwait_fiat_amount_lbl',
-               amounts.format_amount(run['payment']['fiat_amount']))
     ui.setText('pwait_btc_amount_lbl',
-               amounts.format_btc_amount(run['payment']['order'].btc_amount))
-    ui.setText('pwait_xrate_amount_lbl',
-               amounts.format_exchange_rate(run['payment']['order'].exchange_rate))
+               amounts.format_btc_amount_pretty(run['payment']['order'].btc_amount, prefix=True))
     ui.setImage('pwait_qr_img', run['payment']['qr_image_path'])
     logger.info(
         'local payment requested, '
@@ -260,8 +256,10 @@ def pay_wait(run, ui):
     logger.info('payment uri: {}'.format(run['payment']['order'].payment_uri))
     run['bluetooth_server'].start(run['payment']['order'])
     while True:
-        if run['keypad'].last_key_pressed == 'backspace':
-            _clear_payment_runtime(run, ui, clear_amounts=False)
+        if run['screen_buttons']['pwait_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pwait_cancel_btn'] = False
+            _clear_payment_runtime(run, ui)
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_amount']
@@ -436,12 +434,8 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
                amounts.format_btc_amount_pretty(Decimal(0)))
     ui.setText('pinfo_xrate_amount_lbl',
                amounts.format_exchange_rate_pretty(Decimal(0)))
-    ui.setText('pwait_fiat_amount_lbl',
-               amounts.format_amount(Decimal(0)))
     ui.setText('pwait_btc_amount_lbl',
-               amounts.format_btc_amount(Decimal(0)))
-    ui.setText('pwait_xrate_amount_lbl',
-               amounts.format_exchange_rate(Decimal(0)))
+               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
     ui.setImage('pwait_qr_img', None)
     ui.setImage('psuccess_receipt_qr_img', None)
 

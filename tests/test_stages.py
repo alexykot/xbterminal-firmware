@@ -528,7 +528,10 @@ class PayWaitStageTestCase(unittest.TestCase):
         bluetooth_server_mock = Mock()
         nfc_server_mock = Mock(**{'is_active.return_value': False})
         run = {
-            'keypad': Mock(last_key_pressed='backspace'),
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'pwait_cancel_btn': True,
+            },
             'host_system': host_system_mock,
             'bluetooth_server': bluetooth_server_mock,
             'nfc_server': nfc_server_mock,
@@ -545,9 +548,11 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertFalse(host_system_mock.add_credit.called)
         self.assertFalse(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
-        self.assertEqual(run['payment']['fiat_amount'], Decimal('1.00'))
+        self.assertEqual(run['payment']['fiat_amount'], 0)
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
 
     def test_success(self):
         order_mock = Mock(**{
@@ -561,6 +566,9 @@ class PayWaitStageTestCase(unittest.TestCase):
         nfc_server_mock = Mock(**{'is_active.return_value': False})
         run = {
             'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'pwait_cancel_btn': False,
+            },
             'host_system': host_system_mock,
             'bluetooth_server': bluetooth_server_mock,
             'nfc_server': nfc_server_mock,
