@@ -122,6 +122,7 @@ class GUI(QtGui.QMainWindow):
         'preceipt_goback_btn',
         'wscan_goback_btn',
         'wconfirm_confirm_btn',
+        'wconfirm_cancel_btn',
         'wsuccess_no_btn',
         'wsuccess_yes_btn',
         'wreceipt_goback_btn',
@@ -196,7 +197,6 @@ class GUI(QtGui.QMainWindow):
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
         self.ui.sel_currency_lbl.setText(currency_prefix)
-        self.ui.wconfirm_currency_lbl.setText(currency_prefix)
 
     def showErrors(self, errors):
         translations = {

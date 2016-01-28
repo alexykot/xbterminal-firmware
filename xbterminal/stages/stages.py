@@ -401,16 +401,20 @@ def withdraw_confirm(run, ui):
     ui.showScreen('withdraw_confirm')
     assert run['withdrawal']['address'] is not None
     ui.setText('wconfirm_address_lbl', run['withdrawal']['address'])
-    ui.setText('wconfirm_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
-    ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
+    ui.setText('wconfirm_fiat_amount_lbl',
+               amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
+    ui.setText('wconfirm_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount, prefix=True))
+    ui.setText('wconfirm_xrate_amount_lbl',
+               amounts.format_exchange_rate_pretty(run['withdrawal']['order'].exchange_rate))
     while True:
-        if run['screen_buttons']['wconfirm_confirm_btn']:
+        if run['screen_buttons']['wconfirm_confirm_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['wconfirm_confirm_btn'] = False
             return defaults.STAGES['withdrawal']['withdraw_loading2']
-        if run['keypad'].last_key_pressed == 'enter':
-            return defaults.STAGES['withdrawal']['withdraw_loading2']
-        elif run['keypad'].last_key_pressed == 'backspace':
+        elif run['screen_buttons']['wconfirm_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wconfirm_cancel_btn'] = False
             _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
