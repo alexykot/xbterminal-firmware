@@ -301,7 +301,7 @@ color: #33363e;</string>
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>480</width>
+       <width>350</width>
        <height>90</height>
       </rect>
      </property>
@@ -317,7 +317,7 @@ color: #fff;
 </string>
      </property>
      <property name="text">
-      <string>PAYMENT AMOUNT</string>
+      <string>TOP UP YOUR CREDIT</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -327,7 +327,7 @@ color: #fff;
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>120</y>
+       <y>130</y>
        <width>111</width>
        <height>51</height>
       </rect>
@@ -339,11 +339,9 @@ color: #fff;
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: #fff;
-border-width: 1px;
-border-style: solid;
-border-color: #d4d4d4;
-color: #33363e;</string>
+      <string notr="true">background: #d34c0a;
+border: none;
+color: #fff;</string>
      </property>
      <property name="text">
       <string>£1</string>
@@ -353,7 +351,7 @@ color: #33363e;</string>
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>120</y>
+       <y>130</y>
        <width>121</width>
        <height>51</height>
       </rect>
@@ -365,11 +363,9 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: #fff;
-border-width: 1px;
-border-style: solid;
-border-color: #d4d4d4;
-color: #33363e;</string>
+      <string notr="true">background: #d34c0a;
+border: none;
+color: #fff;</string>
      </property>
      <property name="text">
       <string>£2.5</string>
@@ -379,7 +375,7 @@ color: #33363e;</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>120</y>
+       <y>130</y>
        <width>111</width>
        <height>51</height>
       </rect>
@@ -391,11 +387,9 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: #fff;
-border-width: 1px;
-border-style: solid;
-border-color: #d4d4d4;
-color: #33363e;</string>
+      <string notr="true">background: #d34c0a;
+border: none;
+color: #fff;</string>
      </property>
      <property name="text">
       <string>£10</string>
@@ -404,8 +398,59 @@ color: #33363e;</string>
     <widget class="QPushButton" name="pamount_opt4_btn">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>199</y>
+       <x>230</x>
+       <y>210</y>
+       <width>191</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>OTHER AMOUNT</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pamount_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>0</y>
+       <width>130</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+color: #fff;
+</string>
+     </property>
+     <property name="text">
+      <string>£1.25</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pamount_cancel_btn">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>210</y>
        <width>121</width>
        <height>51</height>
       </rect>
@@ -423,7 +468,31 @@ border-color: #d4d4d4;
 color: #33363e;</string>
      </property>
      <property name="text">
-      <string>OTHER</string>
+      <string>CANCEL</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pamount_add_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>100</y>
+       <width>480</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Select the amount you wish to add to your credit</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

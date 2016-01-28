@@ -120,6 +120,9 @@ def selection(run, ui):
 
 def pay_amount(run, ui):
     ui.showScreen('pay_amount')
+    # TODO: show current credit in pamount_amount_lbl
+    ui.setText('pamount_amount_lbl',
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     options = {
         'pamount_opt1_btn': Decimal('1.00'),
         'pamount_opt2_btn': Decimal('2.50'),
@@ -148,7 +151,9 @@ def pay_amount(run, ui):
             run['screen_buttons']['pamount_opt4_btn'] = False
             run['payment']['fiat_amount'] = Decimal('0.00')
             return defaults.STAGES['payment']['pay_confirm']
-        if run['keypad'].last_key_pressed == 'backspace':
+        elif run['screen_buttons']['pamount_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pamount_cancel_btn'] = False
             _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -175,7 +180,7 @@ def pay_confirm(run, ui):
             run['screen_buttons']['pconfirm_incr_btn'] = False
             run['keypad'].resetKey()
             run['payment']['fiat_amount'] += Decimal('0.05')
-            ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount']), prefix=True)
+            ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
         if run['screen_buttons']['pconfirm_confirm_btn'] or \
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['pconfirm_confirm_btn'] = False

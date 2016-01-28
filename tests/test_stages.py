@@ -273,12 +273,14 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_opt2_btn': False,
                 'pamount_opt3_btn': False,
                 'pamount_opt4_btn': False,
+                'pamount_cancel_btn': False,
             },
             'payment': {},
         }
         ui = Mock()
         next_stage = stages.pay_amount(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_amount')
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.00')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_confirm'])
         self.assertFalse(any(state for state
@@ -293,6 +295,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_opt2_btn': True,
                 'pamount_opt3_btn': False,
                 'pamount_opt4_btn': False,
+                'pamount_cancel_btn': False,
             },
             'payment': {},
         }
@@ -312,6 +315,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_opt2_btn': False,
                 'pamount_opt3_btn': True,
                 'pamount_opt4_btn': False,
+                'pamount_cancel_btn': False,
             },
             'payment': {},
         }
@@ -331,6 +335,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_opt2_btn': False,
                 'pamount_opt3_btn': False,
                 'pamount_opt4_btn': True,
+                'pamount_cancel_btn': False,
             },
             'payment': {},
         }
@@ -344,12 +349,13 @@ class PaymentAmountStageTestCase(unittest.TestCase):
 
     def test_return(self):
         run = {
-            'keypad': Mock(last_key_pressed='backspace'),
+            'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'pamount_opt1_btn': False,
                 'pamount_opt2_btn': False,
                 'pamount_opt3_btn': False,
                 'pamount_opt4_btn': False,
+                'pamount_cancel_btn': True,
             },
             'payment': {},
         }
@@ -357,6 +363,8 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         next_stage = stages.pay_amount(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
 
 
 class PayConfirmStageTestCase(unittest.TestCase):

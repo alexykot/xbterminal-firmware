@@ -109,6 +109,7 @@ class GUI(QtGui.QMainWindow):
         'pamount_opt2_btn',
         'pamount_opt3_btn',
         'pamount_opt4_btn',
+        'pamount_cancel_btn',
         'pconfirm_decr_btn',
         'pconfirm_incr_btn',
         'pconfirm_confirm_btn',
