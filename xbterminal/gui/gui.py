@@ -115,6 +115,9 @@ class GUI(QtGui.QMainWindow):
         'pinfo_pay_btn',
         'pinfo_cancel_btn',
         'pwait_cancel_btn',
+        'psuccess_no_btn',
+        'psuccess_yes_btn',
+        'preceipt_goback_btn',
         'wconfirm_confirm_btn',
     ]
 

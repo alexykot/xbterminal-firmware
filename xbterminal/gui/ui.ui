@@ -858,7 +858,7 @@ color: #33363e;</string>
     </widget>
    </widget>
    <widget class="QWidget" name="pay_success_scrn">
-    <widget class="QLabel" name="psuccess_success_lbl">
+    <widget class="QLabel" name="psuccess_desc_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -884,13 +884,164 @@ color: #fff;</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="psuccess_tip_lbl">
+    <widget class="QPushButton" name="psuccess_no_btn">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>90</x>
+       <y>200</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>NO</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="psuccess_yes_btn">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>200</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>YES</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="psuccess_btc1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
        <y>110</y>
-       <width>271</width>
-       <height>151</height>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>for amount</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="psuccess_btc_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>110</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>345.12345</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="psuccess_btc2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>110</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>mbits</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="psuccess_receipt_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>150</y>
+       <width>480</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Would you like a receipt?</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="pay_receipt_scrn">
+    <widget class="QLabel" name="preceipt_desc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
@@ -900,19 +1051,43 @@ color: #fff;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
+      <string notr="true">background: #d34c0a;
+color: #fff;</string>
      </property>
      <property name="text">
-      <string>TOUCH NFC AGAIN
-OR SCAN QR CODE
-FOR RECEIPT</string>
+      <string>PAYMENT RECEIPT</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="psuccess_receipt_qr_img">
+    <widget class="QLabel" name="preceipt_scan_lbl">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>100</y>
+       <width>271</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Scan QR code or
+touch NFC for a receipt</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="preceipt_receipt_qr_img">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -934,6 +1109,58 @@ FOR RECEIPT</string>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="preceipt_tap_lbl">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>150</y>
+       <width>271</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Tap around the camera
+below the screen</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="preceipt_goback_btn">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>210</y>
+       <width>131</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>GO BACK</string>
      </property>
     </widget>
    </widget>

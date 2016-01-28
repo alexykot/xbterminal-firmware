@@ -14,6 +14,7 @@ STAGES = {
         'pay_info': 'pay_info',
         'pay_wait': 'pay_wait',
         'pay_success': 'pay_success',
+        'pay_receipt': 'pay_receipt',
         'pay_cancel': 'pay_cancel',
     },
     'withdrawal': {
@@ -36,11 +37,12 @@ SCREENS = {
     'pay_info': 6,
     'pay_wait': 7,
     'pay_success': 8,
-    'pay_cancel': 9,
-    'withdraw_scan': 10,
-    'withdraw_confirm': 11,
-    'withdraw_success': 12,
-    'errors': 13,
+    'pay_receipt': 9,
+    'pay_cancel': 10,
+    'withdraw_scan': 11,
+    'withdraw_confirm': 12,
+    'withdraw_success': 13,
+    'errors': 14,
 }
 
 SCREEN_BRIGHTNESS = 40
