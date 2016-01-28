@@ -442,10 +442,9 @@ class PayLoadingStageTestCase(unittest.TestCase):
         next_stage = stages.pay_loading(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'load_indefinite')
-        self.assertIsNotNone(run['payment']['qr_image_path'])
         self.assertIsNotNone(run['payment']['order'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_wait'])
+                         defaults.STAGES['payment']['pay_info'])
 
     @patch('xbterminal.stages.payment.Payment.create_order')
     def test_server_error(self, create_order_mock):
@@ -461,6 +460,60 @@ class PayLoadingStageTestCase(unittest.TestCase):
         self.assertEqual(run['payment']['fiat_amount'], Decimal(0))
         self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
+
+
+class PayInfoStageTestCase(unittest.TestCase):
+
+    def test_cancel(self):
+        order_mock = Mock(**{
+            'btc_amount': Decimal('0.123'),
+            'exchange_rate': Decimal('234.55'),
+            'payment_uri': 'test',
+        })
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'pinfo_cancel_btn': True,
+                'pinfo_pay_btn': False,
+            },
+            'payment': {
+                'fiat_amount': Decimal('1.03'),
+                'order': order_mock,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_info(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_amount'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
+
+    def test_pay(self):
+        order_mock = Mock(**{
+            'btc_amount': Decimal(0),
+            'exchange_rate': Decimal(0),
+            'payment_uri': 'test',
+        })
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'pinfo_cancel_btn': False,
+                'pinfo_pay_btn': True,
+            },
+            'payment': {
+                'fiat_amount': Decimal('1.03'),
+                'order': order_mock,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_info(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['payment']['pay_wait'])
+        self.assertEqual(ui.showScreen.call_args[0][0], 'pay_info')
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa31.03')
+        self.assertIsNotNone(run['payment']['qr_image_path'])
+        self.assertFalse(any(state for state
+                             in run['screen_buttons'].values()))
 
 
 class PayWaitStageTestCase(unittest.TestCase):

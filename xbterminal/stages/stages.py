@@ -209,11 +209,35 @@ def pay_loading(run, ui):
             return defaults.STAGES['idle']
         else:
             # Payment parameters loaded
+            return defaults.STAGES['payment']['pay_info']
+
+
+def pay_info(run, ui):
+    ui.showScreen('pay_info')
+    ui.setText('pinfo_fiat_amount_lbl',
+               amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
+    ui.setText('pinfo_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['payment']['order'].btc_amount))
+    ui.setText('pinfo_xrate_amount_lbl',
+               amounts.format_exchange_rate_pretty(run['payment']['order'].exchange_rate))
+    while True:
+        if run['screen_buttons']['pinfo_pay_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
+            run['screen_buttons']['pinfo_pay_btn'] = False
             # Prepare QR image
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
                                          run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_wait']
+        if run['screen_buttons']['pinfo_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pinfo_cancel_btn'] = False
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['payment']['pay_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def pay_wait(run, ui):
@@ -406,6 +430,12 @@ def _clear_payment_runtime(run, ui, clear_amounts=True):
 
     run['payment']['order'] = None
 
+    ui.setText('pinfo_fiat_amount_lbl',
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
+    ui.setText('pinfo_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(Decimal(0)))
+    ui.setText('pinfo_xrate_amount_lbl',
+               amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setText('pwait_fiat_amount_lbl',
                amounts.format_amount(Decimal(0)))
     ui.setText('pwait_btc_amount_lbl',

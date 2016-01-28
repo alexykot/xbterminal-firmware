@@ -295,7 +295,7 @@ color: #33363e;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="pay_amount">
+   <widget class="QWidget" name="pay_amount_scrn">
     <widget class="QLabel" name="pamount_desc_lbl">
      <property name="geometry">
       <rect>
@@ -427,7 +427,7 @@ color: #33363e;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="pay_confirm">
+   <widget class="QWidget" name="pay_confirm_scrn">
     <widget class="QLabel" name="pconfirm_amount_lbl">
      <property name="geometry">
       <rect>
@@ -526,6 +526,228 @@ color: #fff;</string>
      </property>
      <property name="text">
       <string>CONFIRM</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="pay_info_scrn">
+    <widget class="QPushButton" name="pinfo_cancel_btn">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>200</y>
+       <width>151</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #fff;
+border-width: 1px;
+border-style: solid;
+border-color: #d4d4d4;
+color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>CANCEL</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pinfo_pay_btn">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>200</y>
+       <width>221</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+border: none;
+color: #fff;</string>
+     </property>
+     <property name="text">
+      <string>PAY WITH BITCOINS</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_desc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>350</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+color: #fff;
+</string>
+     </property>
+     <property name="text">
+      <string>TOTAL AMOUNT TO PAY</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_btc1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>110</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>send exactly</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_btc_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>110</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>10.00000</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_btc2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>110</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>mbits</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_xrate_lbl">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>150</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>exchange rate</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_xrate_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>150</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>1 BTC = £1.25</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pinfo_fiat_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>0</y>
+       <width>130</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+color: #fff;
+</string>
+     </property>
+     <property name="text">
+      <string>£1.25</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>

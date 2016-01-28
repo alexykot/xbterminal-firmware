@@ -112,6 +112,8 @@ class GUI(QtGui.QMainWindow):
         'pconfirm_decr_btn',
         'pconfirm_incr_btn',
         'pconfirm_confirm_btn',
+        'pinfo_pay_btn',
+        'pinfo_cancel_btn',
         'wconfirm_confirm_btn',
     ]
 
