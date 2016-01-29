@@ -185,7 +185,7 @@
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>TOUCH TO BEGIN</string>
+      <string>Touch to begin</string>
      </property>
     </widget>
     <widget class="QLabel" name="idle_bc_logo_image">
@@ -222,7 +222,7 @@
       </font>
      </property>
      <property name="text">
-      <string>WITHDRAW</string>
+      <string>Withdraw</string>
      </property>
     </widget>
     <widget class="QPushButton" name="sel_pay_btn">
@@ -241,7 +241,7 @@
       </font>
      </property>
      <property name="text">
-      <string>TOP UP</string>
+      <string>Top up</string>
      </property>
     </widget>
     <widget class="QLabel" name="sel_amount_lbl">
@@ -305,7 +305,7 @@
       </font>
      </property>
      <property name="text">
-      <string>TOP UP YOUR CREDIT</string>
+      <string>Top up your credit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -383,7 +383,7 @@
       </font>
      </property>
      <property name="text">
-      <string>OTHER AMOUNT</string>
+      <string>Other amount</string>
      </property>
     </widget>
     <widget class="QLabel" name="pamount_credit_lbl">
@@ -422,7 +422,7 @@
       </font>
      </property>
      <property name="text">
-      <string>CANCEL</string>
+      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QLabel" name="pamount_add_lbl">
@@ -523,7 +523,7 @@
       </font>
      </property>
      <property name="text">
-      <string>CONFIRM</string>
+      <string>Confirm</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pconfirm_goback_btn">
@@ -541,7 +541,7 @@
       </font>
      </property>
      <property name="text">
-      <string>GO BACK</string>
+      <string>Go back</string>
      </property>
     </widget>
     <widget class="QLabel" name="pconfirm_desc_lbl">
@@ -560,7 +560,7 @@
       </font>
      </property>
      <property name="text">
-      <string>TOP UP YOUR CREDIT</string>
+      <string>Top up your credit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -626,7 +626,7 @@
       </font>
      </property>
      <property name="text">
-      <string>CANCEL</string>
+      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pinfo_pay_btn">
@@ -645,7 +645,7 @@
       </font>
      </property>
      <property name="text">
-      <string>PAY WITH BITCOINS</string>
+      <string>Pay with bitcoins</string>
      </property>
     </widget>
     <widget class="QLabel" name="pinfo_desc_lbl">
@@ -663,7 +663,7 @@
       </font>
      </property>
      <property name="text">
-      <string>TOTAL AMOUNT TO PAY</string>
+      <string>Total amount to pay</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -813,8 +813,8 @@
       </font>
      </property>
      <property name="text">
-      <string>SCAN QR CODE OR
-TOUCH WITH NFC</string>
+      <string>Scan QR code or
+touch with NFC</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -885,7 +885,7 @@ TOUCH WITH NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>CANCEL</string>
+      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QLabel" name="pwait_desc_empty_lbl">
@@ -935,7 +935,7 @@ TOUCH WITH NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>PAYMENT SUCCESSFUL</string>
+      <string>Payment successful</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -957,7 +957,7 @@ TOUCH WITH NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>NO</string>
+      <string>No</string>
      </property>
     </widget>
     <widget class="QPushButton" name="psuccess_yes_btn">
@@ -976,7 +976,7 @@ TOUCH WITH NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>YES</string>
+      <string>Yes</string>
      </property>
     </widget>
     <widget class="QLabel" name="psuccess_btc1_lbl">
@@ -1082,7 +1082,7 @@ TOUCH WITH NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>PAYMENT RECEIPT</string>
+      <string>Payment receipt</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1171,7 +1171,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>GO BACK</string>
+      <string>Go back</string>
      </property>
     </widget>
    </widget>
@@ -1283,7 +1283,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>WITHDRAW CREDIT</string>
+      <string>Withdraw credit</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -1308,7 +1308,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>GO BACK</string>
+      <string>Go back</string>
      </property>
     </widget>
     <widget class="QLabel" name="wscan_num1_lbl">
@@ -1503,7 +1503,7 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>CONFIRM AND SEND</string>
+      <string>Confirm and send</string>
      </property>
     </widget>
     <widget class="QLabel" name="wconfirm_fiat_amount_lbl">
@@ -1607,7 +1607,7 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>CANCEL</string>
+      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QLabel" name="wconfirm_desc_lbl">
@@ -1627,7 +1627,7 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>WITHDRAW AMOUNT</string>
+      <string>Withdraw amount</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -1676,7 +1676,7 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>WITHDRAWAL SUCCESSFUL</string>
+      <string>Withdrawal successful</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1698,7 +1698,7 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>YES</string>
+      <string>Yes</string>
      </property>
     </widget>
     <widget class="QLabel" name="wsuccess_btc_amount_lbl">
@@ -1758,7 +1758,7 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>NO</string>
+      <string>No</string>
      </property>
     </widget>
     <widget class="QLabel" name="wsuccess_receipt_lbl">
@@ -1824,7 +1824,7 @@ touch NFC for a receipt</string>
       </font>
      </property>
      <property name="text">
-      <string>GO BACK</string>
+      <string>Go back</string>
      </property>
     </widget>
     <widget class="QLabel" name="wreceipt_tap_lbl">
@@ -1866,7 +1866,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>WITHDRAWAL RECEIPT</string>
+      <string>Withdrawal receipt</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

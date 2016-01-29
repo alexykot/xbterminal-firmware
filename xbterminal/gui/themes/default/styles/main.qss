@@ -8,6 +8,7 @@ QPushButton {
     border-style: solid;
     border-color: #d4d4d4;
     color: #33363e;
+    text-transform: uppercase;
 }
 
 #main_stackedWidget {
@@ -34,6 +35,7 @@ QPushButton {
 #wreceipt_desc_lbl {
     background-color: #d34c0a;
     color: #fff;
+    text-transform: uppercase;
 }
 
 #pamount_opt1_btn,
