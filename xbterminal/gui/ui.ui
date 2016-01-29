@@ -1443,26 +1443,26 @@ camera on this device</string>
     </widget>
    </widget>
    <widget class="QWidget" name="withdraw_confirm_scrn">
-    <widget class="QLabel" name="wconfirm_withdraw_lbl">
+    <widget class="QLabel" name="wconfirm_btc1_lbl">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>90</y>
-       <width>131</width>
-       <height>41</height>
+       <x>50</x>
+       <y>100</y>
+       <width>141</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Open Sans</family>
-       <pointsize>20</pointsize>
+       <pointsize>16</pointsize>
       </font>
      </property>
      <property name="text">
       <string>withdraw</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="wconfirm_address_lbl">
@@ -1509,42 +1509,42 @@ camera on this device</string>
     <widget class="QLabel" name="wconfirm_fiat_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>90</y>
-       <width>111</width>
-       <height>41</height>
+       <x>350</x>
+       <y>0</y>
+       <width>130</width>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Open Sans</family>
-       <pointsize>20</pointsize>
+       <pointsize>17</pointsize>
       </font>
      </property>
      <property name="text">
       <string>£10.00</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="wconfirm_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>90</y>
-       <width>181</width>
-       <height>41</height>
+       <x>190</x>
+       <y>100</y>
+       <width>121</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Open Sans</family>
-       <pointsize>20</pointsize>
+       <pointsize>16</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>m฿30.05012</string>
+      <string>30.05012</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1615,7 +1615,7 @@ camera on this device</string>
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>480</width>
+       <width>350</width>
        <height>90</height>
       </rect>
      </property>
@@ -1634,6 +1634,28 @@ camera on this device</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wconfirm_btc2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>100</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>mbits</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>

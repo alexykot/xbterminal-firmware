@@ -406,7 +406,7 @@ def withdraw_confirm(run, ui):
     ui.setText('wconfirm_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
     ui.setText('wconfirm_btc_amount_lbl',
-               amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount, prefix=True))
+               amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount))
     ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate_pretty(run['withdrawal']['order'].exchange_rate))
     while True:
