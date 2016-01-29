@@ -1363,21 +1363,20 @@ color: #33363e;</string>
     <widget class="QLabel" name="wscan_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>110</y>
-       <width>241</width>
-       <height>51</height>
+       <x>160</x>
+       <y>140</y>
+       <width>151</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Open Sans</family>
-       <pointsize>28</pointsize>
+       <pointsize>16</pointsize>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>m฿30.05561</string>
@@ -1389,9 +1388,9 @@ color: #33363e;</string>
     <widget class="QLabel" name="wscan_xrate_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>170</y>
-       <width>141</width>
+       <x>160</x>
+       <y>180</y>
+       <width>151</width>
        <height>21</height>
       </rect>
      </property>
@@ -1402,46 +1401,22 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>1 BTC = £212.12</string>
      </property>
-    </widget>
-    <widget class="QLabel" name="wscan_xrate_lbl">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>170</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
-     </property>
-     <property name="text">
-      <string>exchange rate</string>
-     </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="wscan_fiat_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>110</y>
-       <width>171</width>
-       <height>51</height>
+       <x>160</x>
+       <y>100</y>
+       <width>151</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -1451,8 +1426,7 @@ color: #33363e;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: none;
-color: #33363e;</string>
+      <string notr="true">color: #33363e;</string>
      </property>
      <property name="text">
       <string>£10.00</string>
@@ -1461,7 +1435,7 @@ color: #33363e;</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="wscan_tip_lbl">
+    <widget class="QLabel" name="wscan_desc_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1482,8 +1456,7 @@ color: #33363e;</string>
 color: #fff;</string>
      </property>
      <property name="text">
-      <string>SCAN YOUR BITCOIN ADDRESS
-QR CODE NOW</string>
+      <string>WITHDRAW CREDIT</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -1516,6 +1489,161 @@ color: #33363e;</string>
      </property>
      <property name="text">
       <string>GO BACK</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_num1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>95</y>
+       <width>30</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+border-radius: 15px;
+color: #fff;</string>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_display1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>130</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Display QR code
+on phone</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_num2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>95</y>
+       <width>30</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #d34c0a;
+border-radius: 15px;
+color: #fff;</string>
+     </property>
+     <property name="text">
+      <string>2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_scan1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>130</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Scan QR code</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_display2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>180</y>
+       <width>171</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Find your
+bitcoin address code
+and display</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_scan2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>160</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #33363e;</string>
+     </property>
+     <property name="text">
+      <string>Hold your phone to the
+camera on this device</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>
