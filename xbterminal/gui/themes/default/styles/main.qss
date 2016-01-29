@@ -2,45 +2,7 @@
     background-image: url(:/images/bg.png);
 }
 
-#activation_code_lbl
-#activation_tip_lbl,
-#sel_amount_lbl,
-#sel_desc_lbl,
-#pamount_add_lbl,
-#pconfirm_amount_lbl,
-#pconfirm_incrdecr_lbl,
-#pinfo_btc1_lbl,
-#pinfo_btc2_lbl,
-#pinfo_btc_amount_lbl,
-#pinfo_xrate_amount_lbl,
-#pinfo_xrate_lbl,
-#pwait_btc_amount_lbl,
-#psuccess_btc1_lbl,
-#psuccess_btc2_lbl,
-#psuccess_btc_amount_lbl,
-#psuccess_receipt_lbl,
-#preceipt_scan_lbl,
-#preceipt_tap_lbl,
-#pcancel_lbl,
-#wscan_btc_amount_lbl,
-#wscan_display1_lbl,
-#wscan_display2_lbl,
-#wscan_fiat_amount_lbl,
-#wscan_scan1_lbl,
-#wscan_scan2_lbl,
-#wscan_xrate_amount_lbl,
-#wconfirm_address_lbl,
-#wconfirm_btc_amount_lbl,
-#wconfirm_fiat_amount_lbl,
-#wconfirm_withdraw_lbl,
-#wconfirm_xrate_amount_lbl,
-#wconfirm_xrate_lbl,
-#wsuccess_btc1_lbl,
-#wsuccess_btc2_lbl,
-#wsuccess_btc_amount_lbl,
-#wsuccess_receipt_lbl,
-#wreceipt_scan_lbl,
-#wreceipt_tap_lbl {
+QLabel {
     color: #33363e;
 }
 
@@ -48,24 +10,7 @@
     qproperty-pixmap: url(':/images/bc_logo.png');
 }
 
-#idle_begin_btn,
-#sel_pay_btn,
-#sel_withdraw_btn,
-#pamount_cancel_btn,
-#pamount_opt4_btn,
-#pconfirm_decr_btn,
-#pconfirm_incr_btn,
-#pconfirm_goback_btn,
-#pinfo_cancel_btn,
-#pwait_cancel_btn,
-#psuccess_no_btn,
-#psuccess_yes_btn,
-#preceipt_goback_btn,
-#wscan_goback_btn,
-#wconfirm_cancel_btn,
-#wsuccess_no_btn,
-#wsuccess_yes_btn,
-#wreceipt_goback_btn {
+QPushButton {
     background-color: #ffffff;
     border-width: 1px;
     border-style: solid;
