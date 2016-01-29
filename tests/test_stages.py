@@ -197,7 +197,7 @@ class SelectionStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.selection(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'selection')
-        self.assertEqual(ui.setText.call_args[0][1], '0.50')
+        self.assertEqual(ui.setText.call_args[0][1], u'£0.50')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state

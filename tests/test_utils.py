@@ -25,21 +25,6 @@ from xbterminal.exceptions import NetworkError, ServerError
             })
 class AmountsUtilsTestCase(unittest.TestCase):
 
-    def test_format_amount(self):
-        amount = Decimal('1215.75').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_amount(amount, 2)
-        self.assertEqual(result, '1,215.75')
-
-    def test_format_btc_amount(self):
-        amount = Decimal('1.5751').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_btc_amount(amount)
-        self.assertEqual(result, '1,575.10000')
-
-    def test_format_exchange_rate(self):
-        rate = Decimal('241.85').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_exchange_rate(rate)
-        self.assertEqual(result, '0.242')
-
     def test_format_fiat_amount_pretty(self):
         amount = Decimal('3513.00').quantize(defaults.FIAT_DEC_PLACES)
         result = amounts.format_fiat_amount_pretty(amount)

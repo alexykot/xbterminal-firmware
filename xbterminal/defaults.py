@@ -131,8 +131,6 @@ TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60  # if transaction cancelled - how lon
 
 OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 
-EXCHANGE_RATE_DEC_PLACES = 3  # fractional decimal places for exchange rate to show on screen
-
 BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 5
 

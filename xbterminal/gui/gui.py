@@ -196,7 +196,6 @@ class GUI(QtGui.QMainWindow):
             self.ui.retranslateUi(self)
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
-        self.ui.sel_currency_lbl.setText(currency_prefix)
 
     def showErrors(self, errors):
         translations = {

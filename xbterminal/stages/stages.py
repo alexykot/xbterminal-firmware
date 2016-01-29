@@ -103,7 +103,7 @@ def selection(run, ui):
     ui.showScreen('selection')
     assert run['withdrawal']['fiat_amount'] > 0
     ui.setText('sel_amount_lbl',
-               amounts.format_amount(run['withdrawal']['fiat_amount']))
+               amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
     while True:
         if run['screen_buttons']['sel_pay_btn']:
             run['screen_buttons']['sel_pay_btn'] = False
@@ -517,15 +517,15 @@ def _clear_withdrawal_runtime(run, ui, clear_amount=True):
     run['withdrawal']['qr_image_path'] = None
 
     ui.setText('wscan_fiat_amount_lbl',
-               amounts.format_amount(Decimal(0)))
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wscan_btc_amount_lbl',
-               amounts.format_btc_amount(Decimal(0)))
+               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wscan_xrate_amount_lbl',
-               amounts.format_exchange_rate(Decimal(0)))
+               amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setText('wconfirm_fiat_amount_lbl',
-               amounts.format_amount(Decimal(0)))
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wconfirm_btc_amount_lbl',
-               amounts.format_btc_amount(Decimal(0)))
+               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wconfirm_xrate_amount_lbl',
-               amounts.format_exchange_rate(Decimal(0)))
+               amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setImage('wreceipt_receipt_qr_img', None)
