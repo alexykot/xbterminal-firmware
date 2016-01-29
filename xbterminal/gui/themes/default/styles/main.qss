@@ -1,13 +1,5 @@
-#main_stackedWidget {
-    background-image: url(:/images/bg.png);
-}
-
 QLabel {
     color: #33363e;
-}
-
-#idle_bc_logo_image {
-    qproperty-pixmap: url(':/images/bc_logo.png');
 }
 
 QPushButton {
@@ -16,6 +8,14 @@ QPushButton {
     border-style: solid;
     border-color: #d4d4d4;
     color: #33363e;
+}
+
+#main_stackedWidget {
+    background-image: url(:/images/bg.png);
+}
+
+#idle_bc_logo_image {
+    qproperty-pixmap: url(':/images/bc_logo.png');
 }
 
 #pamount_credit_lbl,

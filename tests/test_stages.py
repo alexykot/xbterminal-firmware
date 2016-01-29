@@ -127,9 +127,15 @@ class ActivateStageTestCase(unittest.TestCase):
         run = {
             'local_config': {'activation_code': 'testCode'},
             'remote_config': {'status': 'active'},
+            'remote_server': 'https://xbterminal.io',
         }
         ui = Mock()
         next_stage = stages.activate(run, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0], 'activation')
+        self.assertEqual(ui.setText.call_args_list[0][0][1],
+                         'xbterminal.io')
+        self.assertEqual(ui.setText.call_args_list[1][0][1],
+                         'testCode')
         self.assertEqual(next_stage, defaults.STAGES['idle'])
 
 

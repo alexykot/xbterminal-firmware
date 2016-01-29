@@ -71,6 +71,8 @@ def bootup(run, ui):
 
 def activate(run, ui):
     ui.showScreen('activation')
+    ui.setText('activation_server_lbl',
+               run['remote_server'].split('//')[1])
     ui.setText('activation_code_lbl',
                run['local_config']['activation_code'])
     while True:

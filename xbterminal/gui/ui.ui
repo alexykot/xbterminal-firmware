@@ -59,9 +59,9 @@
     <widget class="QLabel" name="activation_code_lbl">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>150</y>
-       <width>361</width>
+       <x>0</x>
+       <y>180</y>
+       <width>480</width>
        <height>61</height>
       </rect>
      </property>
@@ -83,13 +83,13 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="activation_tip_lbl">
+    <widget class="QLabel" name="activation_register_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>461</width>
-       <height>91</height>
+       <x>0</x>
+       <y>30</y>
+       <width>480</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
@@ -104,9 +104,61 @@
       <cursorShape>BlankCursor</cursorShape>
      </property>
      <property name="text">
-      <string>Please register at xbterminal.io
-and use this code to activate
-this module</string>
+      <string>Please register at</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="activation_server_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>80</y>
+       <width>480</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>BlankCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>xbterminal.io</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="activation_activate_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>140</y>
+       <width>480</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>BlankCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Use this code to activate this module</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
