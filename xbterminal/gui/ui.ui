@@ -281,10 +281,62 @@
       </font>
      </property>
      <property name="text">
-      <string>credit available</string>
+      <string>current credit available</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sel_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sel_icon2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sel_icon3_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sel_icon4_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -446,6 +498,19 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="pamount_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="pay_confirm_scrn">
     <widget class="QLabel" name="pconfirm_amount_lbl">
@@ -510,9 +575,9 @@
     <widget class="QPushButton" name="pconfirm_confirm_btn">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>260</x>
        <y>210</y>
-       <width>181</width>
+       <width>151</width>
        <height>51</height>
       </rect>
      </property>
@@ -531,7 +596,7 @@
       <rect>
        <x>70</x>
        <y>210</y>
-       <width>121</width>
+       <width>151</width>
        <height>51</height>
       </rect>
      </property>
@@ -606,6 +671,19 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pconfirm_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -793,6 +871,19 @@
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="pinfo_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="pay_wait_scrn">
     <widget class="QLabel" name="pwait_desc_lbl">
@@ -912,11 +1003,39 @@ touch with NFC</string>
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QLabel" name="pwait_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_icon2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
     <zorder>pwait_btc_amount_lbl</zorder>
     <zorder>pwait_cancel_btn</zorder>
     <zorder>pwait_desc_lbl</zorder>
     <zorder>pwait_desc_empty_lbl</zorder>
     <zorder>pwait_qr_img</zorder>
+    <zorder>pwait_icon1_lbl</zorder>
+    <zorder>pwait_icon2_lbl</zorder>
    </widget>
    <widget class="QWidget" name="pay_success_scrn">
     <widget class="QLabel" name="psuccess_desc_lbl">
@@ -1064,6 +1183,19 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="psuccess_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="pay_receipt_scrn">
     <widget class="QLabel" name="preceipt_desc_lbl">
@@ -1172,6 +1304,19 @@ below the screen</string>
      </property>
      <property name="text">
       <string>Go back</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="preceipt_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -1441,6 +1586,45 @@ camera on this device</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="wscan_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_icon2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wscan_icon3_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="withdraw_confirm_scrn">
     <widget class="QLabel" name="wconfirm_btc1_lbl">
@@ -1658,6 +1842,19 @@ camera on this device</string>
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="wconfirm_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="withdraw_success_scrn">
     <widget class="QLabel" name="wsuccess_btc1_lbl">
@@ -1805,6 +2002,19 @@ camera on this device</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="wsuccess_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="withdraw_receipt_scrn">
     <widget class="QLabel" name="wreceipt_scan_lbl">
@@ -1913,6 +2123,19 @@ below the screen</string>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wreceipt_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>

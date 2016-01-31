@@ -1,0 +1,393 @@
+QLabel {
+    color: #ffffff;
+    font-family: 'Lato';
+}
+
+QPushButton {
+    background-color: transparent;
+    border-width: 12px 12px 16px 10px;
+    border-image: url(:/images/btn-orange.png) 12 14 16 10 repeat;
+    color: #321c03;
+    font-family: 'Lato';
+    text-transform: uppercase;
+}
+
+#main_stackedWidget {
+    background-color: #333333;
+}
+
+#pamount_cancel_btn,
+#pconfirm_goback_btn,
+#pinfo_cancel_btn,
+#pwait_cancel_btn,
+#wscan_goback_btn,
+#wconfirm_cancel_btn {
+    border-width: 12px 12px 16px 10px;
+    border-image: url(:/images/btn-grey.png) 12 14 16 10 repeat;
+    color: #CCCCCC;
+}
+
+#activation_server_lbl {
+    color: #8fb1d4;
+}
+
+#idle_begin_btn {
+    border: none;
+    border-image: none;
+    background-color: #000000;
+    background-image: url(:/images/screen-idle.png);
+    background-repeat: no-repeat;
+    color: rgba(0, 0, 0, 0);
+    qproperty-geometry: rect(0 0 480 272);
+}
+
+#sel_amount_lbl {
+    font-size: 30pt;
+    qproperty-geometry: rect(40 40 440 61);
+}
+
+#sel_icon1_lbl {
+    background-image: url(:/images/coin-icon.png);
+    qproperty-geometry: rect(160 56 34 30);
+}
+
+#sel_desc_lbl {
+    font-family: 'Lato Light';
+    font-size: 12pt;
+    qproperty-geometry: rect(0 100 480 41);
+    text-transform: uppercase;
+}
+
+#sel_icon2_lbl {
+    background-image: url(:/images/skinny-up-arrow.png);
+    qproperty-geometry: rect(228 100 20 7);
+}
+
+#sel_pay_btn {
+    qproperty-geometry: rect(40 170 190 80);
+    padding-left: 40px;
+}
+
+#sel_icon3_lbl {
+    background-image: url(:/images/send-icon.png);
+    qproperty-geometry: rect(75 197 27 24);
+}
+
+#sel_withdraw_btn {
+    qproperty-geometry: rect(250 170 190 80);
+    padding-left: 30px;
+}
+
+#sel_icon4_lbl {
+    background-image: url(:/images/send-icon.png);
+    qproperty-geometry: rect(265 197 27 24);
+}
+
+#pamount_desc_lbl,
+#pconfirm_desc_lbl,
+#pinfo_desc_lbl,
+#psuccess_desc_lbl,
+#preceipt_desc_lbl,
+#wscan_desc_lbl,
+#wconfirm_desc_lbl,
+#wsuccess_desc_lbl,
+#wreceipt_desc_lbl {
+    font-size: 20pt;
+}
+
+#pamount_icon1_lbl,
+#pconfirm_icon1_lbl,
+#wscan_icon1_lbl {
+    background-image: url(:/images/coin-icon-small.png);
+    qproperty-geometry: rect(330 35 23 20);
+}
+
+#pamount_credit_lbl,
+#pconfirm_credit_lbl,
+#wscan_fiat_amount_lbl {
+    qproperty-geometry: rect(350 0 130 90);
+    padding-left: 10px;
+    font-size: 17pt;
+}
+
+#pamount_add_lbl,
+#pconfirm_incrdecr_lbl {
+    qproperty-geometry: rect(0 70 480 21);
+}
+
+#pamount_opt1_btn {
+    qproperty-geometry: rect(20 120 130 70);
+}
+#pamount_opt2_btn {
+    qproperty-geometry: rect(180 120 130 70);
+}
+#pamount_opt3_btn {
+    qproperty-geometry: rect(340 120 130 70);
+}
+#pamount_opt4_btn {
+    qproperty-geometry: rect(220 200 210 60);
+}
+#pamount_cancel_btn {
+    qproperty-geometry: rect(60 200 120 60);
+}
+
+#pconfirm_amount_lbl {
+    font-size: 32pt;
+    qproperty-geometry: rect(150 110 180 70);
+}
+
+#pconfirm_decr_btn {
+    qproperty-geometry: rect(40 120 90 60);
+}
+#pconfirm_incr_btn {
+    qproperty-geometry: rect(350 120 90 60);
+}
+#pconfirm_goback_btn {
+    qproperty-geometry: rect(70 200 150 60);
+}
+#pconfirm_confirm_btn {
+    qproperty-geometry: rect(260 200 150 60);
+}
+
+#pinfo_desc_lbl {
+    qproperty-geometry: rect(0 0 480 90);
+}
+
+#pinfo_fiat_amount_lbl {
+    font-size: 20pt;
+    qproperty-geometry: rect(200 40 130 90);
+}
+
+#pinfo_btc1_lbl,
+#pinfo_btc2_lbl {
+    color: #edbfbf;
+}
+
+#pinfo_btc_amount_lbl {
+    color: #f4cc50;
+    font-size: 20pt;
+    qproperty-geometry: rect(220 107 100 30);
+}
+
+#pinfo_xrate_lbl {
+    color: #CCCCCC;
+}
+
+#pinfo_icon1_lbl {
+    background-image: url(:/images/send-icon.png);
+    qproperty-geometry: rect(213 217 27 24);
+}
+
+#pinfo_cancel_btn {
+    qproperty-geometry: rect(20 200 150 60);
+}
+
+#pinfo_pay_btn {
+    qproperty-geometry: rect(200 200 260 60);
+    padding-left: 35px;
+}
+
+#pwait_qr_img {
+    qproperty-geometry: rect(10 10 250 250);
+}
+
+#pwait_btc_amount_lbl {
+    color: #f4cc50;
+    font-size: 24pt;
+    qproperty-geometry: rect(260 7 220 50);
+}
+
+#pwait_desc_lbl {
+    qproperty-geometry: rect(260 40 220 90);
+}
+
+#pwait_icon1_lbl {
+    background-image: url(:/images/touch-nfc-icon.png);
+    qproperty-geometry: rect(325 125 88 56);
+}
+
+#pwait_icon2_lbl {
+    background-image: url(:/images/orange-arrow-right.png);
+    qproperty-geometry: rect(270 65 8 16);
+}
+
+#pwait_cancel_btn {
+    qproperty-geometry: rect(295 200 150 60);
+}
+
+#psuccess_desc_lbl,
+#wsuccess_desc_lbl {
+    qproperty-geometry: rect(0 40 480 50);
+    padding-right: 30px;
+}
+
+#psuccess_icon1_lbl {
+    background-image: url(:/images/little-green-tick.png);
+    qproperty-geometry: rect(350 55 23 20);
+}
+
+#psuccess_btc1_lbl,
+#psuccess_btc2_lbl,
+#wsuccess_btc1_lbl,
+#wsuccess_btc2_lbl {
+    color: #8fb1d4;
+}
+
+#psuccess_btc_amount_lbl,
+#wsuccess_btc_amount_lbl {
+    color: #f4cc50;
+    font-size: 20pt;
+    qproperty-geometry: rect(210 107 110 30);
+}
+
+#psuccess_no_btn,
+#wsuccess_no_btn {
+    qproperty-geometry: rect(90 200 110 60);
+}
+
+#psuccess_yes_btn,
+#wsuccess_yes_btn {
+    qproperty-geometry: rect(280 200 110 60);
+}
+
+#preceipt_desc_lbl,
+#wreceipt_desc_lbl {
+    qproperty-geometry: rect(0 0 480 50);
+}
+
+#preceipt_receipt_qr_img,
+#wreceipt_receipt_qr_img {
+    qproperty-geometry: rect(30 100 150 150);
+}
+
+#preceipt_scan_lbl,
+#wreceipt_scan_lbl {
+    qproperty-geometry: rect(0 40 480 50);
+}
+
+#preceipt_icon1_lbl,
+#wreceipt_icon1_lbl {
+    background-image: url(:/images/touch-nfc-icon.png);
+    qproperty-geometry: rect(290 92 88 56);
+}
+
+#preceipt_goback_btn,
+#wreceipt_goback_btn {
+    qproperty-geometry: rect(270 200 130 60);
+}
+
+#wscan_desc_lbl {
+    qproperty-geometry: rect(0 0 350 90);
+}
+
+#wscan_fiat_amount_lbl {
+    qproperty-alignment: 'AlignLeft | AlignVCenter';
+}
+
+#wscan_btc_amount_lbl {
+    color: #f4cc50;
+    qproperty-geometry: rect(160 110 150 30);
+}
+
+#wscan_xrate_amount_lbl {
+    qproperty-geometry: rect(160 140 150 20);
+}
+
+#wscan_num1_lbl,
+#wscan_num2_lbl {
+    background-color: #f85a5a;
+    border-radius: 15px;
+    color: #ffffff;
+}
+
+#wscan_num1_lbl {
+    qproperty-geometry: rect(70 70 30 30);
+}
+
+#wscan_num2_lbl {
+    qproperty-geometry: rect(380 70 30 30);
+}
+
+#wscan_display1_lbl {
+    qproperty-geometry: rect(0 100 170 50);
+}
+
+#wscan_display2_lbl {
+    color: #8fb1d4;
+    qproperty-geometry: rect(0 140 170 60);
+}
+
+#wscan_icon2_lbl {
+    background-image: url(:/images/phone-qr-icon.png);
+    qproperty-geometry: rect(70 200 32 56);
+}
+
+#wscan_scan1_lbl {
+    qproperty-geometry: rect(310 110 170 30);
+}
+
+#wscan_scan2_lbl {
+    color: #8fb1d4;
+    qproperty-geometry: rect(310 140 170 50);
+}
+
+#wscan_icon3_lbl {
+    background-image: url(:/images/scan-phone-icon.png);
+    qproperty-geometry: rect(325 190 140 69);
+}
+
+#wscan_goback_btn {
+    qproperty-geometry: rect(170 200 130 60);
+}
+
+#wconfirm_desc_lbl {
+    qproperty-geometry: rect(0 0 480 90);
+}
+
+#wconfirm_fiat_amount_lbl {
+    font-size: 20pt;
+    qproperty-geometry: rect(0 35 480 90);
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+}
+
+#wconfirm_btc1_lbl,
+#wconfirm_btc2_lbl {
+    color: #edbfbf;
+}
+
+#wconfirm_btc_amount_lbl {
+    color: #f4cc50;
+    font-size: 20pt;
+    qproperty-geometry: rect(190 97 120 30);
+}
+
+#wconfirm_address_lbl {
+    color: #8fb1d4;
+}
+
+#wconfirm_xrate_lbl {
+    color: #CCCCCC;
+}
+
+#wconfirm_icon1_lbl {
+    background-image: url(:/images/send-icon.png);
+    qproperty-geometry: rect(180 217 27 24);
+}
+
+#wconfirm_cancel_btn {
+    qproperty-geometry: rect(20 200 130 60);
+}
+
+#wconfirm_confirm_btn {
+    qproperty-geometry: rect(170 200 290 60);
+    padding-left: 35px;
+}
+
+#wsuccess_icon1_lbl {
+    background-image: url(:/images/little-green-tick.png);
+    qproperty-geometry: rect(370 55 23 20);
+}
+
+#errors_lbl {
+    color: #990000;
+}

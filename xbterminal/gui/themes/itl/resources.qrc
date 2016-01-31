@@ -1,0 +1,26 @@
+<RCC>
+  <qresource>
+    <file>images/btn-orange.png</file>
+    <file>images/btn-grey.png</file>
+    <file>images/screen-idle.png</file>
+    <file>images/loading.gif</file>
+    <file>images/coin-icon.png</file>
+    <file>images/coin-icon-small.png</file>
+    <file>images/skinny-up-arrow.png</file>
+    <file>images/send-icon.png</file>
+    <file>images/touch-nfc-icon.png</file>
+    <file>images/orange-arrow-right.png</file>
+    <file>images/little-green-tick.png</file>
+    <file>images/red-cross.png</file>
+    <file>images/scan-phone-icon.png</file>
+    <file>images/phone-qr-icon.png</file>
+    <file>images/xbterminal-logo.png</file>
+  </qresource>
+  <qresource>
+    <file>fonts/Lato-Medium.ttf</file>
+    <file>fonts/Lato-Light.ttf</file>
+  </qresource>
+  <qresource>
+    <file>styles/main.qss</file>
+  </qresource>
+</RCC>
