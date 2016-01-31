@@ -854,14 +854,6 @@ touch with NFC</string>
        <height>250</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-      </font>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
      <property name="text">
       <string/>
      </property>
