@@ -11,8 +11,10 @@ STAGES = {
         'pay_amount': 'pay_amount',
         'pay_confirm': 'pay_confirm',
         'pay_loading': 'pay_loading',
+        'pay_info': 'pay_info',
         'pay_wait': 'pay_wait',
         'pay_success': 'pay_success',
+        'pay_receipt': 'pay_receipt',
         'pay_cancel': 'pay_cancel',
     },
     'withdrawal': {
@@ -21,6 +23,7 @@ STAGES = {
         'withdraw_confirm': 'withdraw_confirm',
         'withdraw_loading2': 'withdraw_loading2',
         'withdraw_success': 'withdraw_success',
+        'withdraw_receipt': 'withdraw_receipt',
     },
     'application_halt': 'application_halt',
 }
@@ -32,13 +35,16 @@ SCREENS = {
     'selection': 3,
     'pay_amount': 4,
     'pay_confirm': 5,
-    'pay_wait': 6,
-    'pay_success': 7,
-    'pay_cancel': 8,
-    'withdraw_scan': 9,
-    'withdraw_confirm': 10,
-    'withdraw_success': 11,
-    'errors': 12,
+    'pay_info': 6,
+    'pay_wait': 7,
+    'pay_success': 8,
+    'pay_receipt': 9,
+    'pay_cancel': 10,
+    'withdraw_scan': 11,
+    'withdraw_confirm': 12,
+    'withdraw_success': 13,
+    'withdraw_receipt': 14,
+    'errors': 15,
 }
 
 SCREEN_BRIGHTNESS = 40
@@ -125,10 +131,8 @@ TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60  # if transaction cancelled - how lon
 
 OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 
-EXCHANGE_RATE_DEC_PLACES = 3  # fractional decimal places for exchange rate to show on screen
-
 BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
-BITCOIN_OUTPUT_DEC_PLACES = 2
+BITCOIN_OUTPUT_DEC_PLACES = 5
 
 FIAT_DEC_PLACES = Decimal('0.00000000')
 BTC_DEC_PLACES = Decimal('0.00000000')

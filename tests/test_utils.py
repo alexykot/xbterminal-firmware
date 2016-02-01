@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 import unittest
 from mock import patch, Mock
@@ -24,25 +25,29 @@ from xbterminal.exceptions import NetworkError, ServerError
             })
 class AmountsUtilsTestCase(unittest.TestCase):
 
-    def test_format_amount(self):
-        amount = Decimal('1215.75').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_amount(amount, 2)
-        self.assertEqual(result, '1,215.75')
-
-    def test_form_amount_cur(self):
+    def test_format_fiat_amount_pretty(self):
         amount = Decimal('3513.00').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_amount_cur(amount)
+        result = amounts.format_fiat_amount_pretty(amount)
+        self.assertEqual(result, u'3,513.00')
+        result = amounts.format_fiat_amount_pretty(amount, prefix=True)
         self.assertEqual(result, u'$3,513.00')
 
-    def test_format_btc_amount(self):
-        amount = Decimal('1.5751').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_btc_amount(amount)
-        self.assertEqual(result, '1,575.10')
+    def test_format_btc_amount_pretty(self):
+        amount = Decimal('0.21231923').quantize(defaults.BTC_DEC_PLACES)
+        result = amounts.format_btc_amount_pretty(amount)
+        self.assertIn(u'212.31<span style="font-size: small;">923</span>',
+                      result)
+        result = amounts.format_btc_amount_pretty(amount, frac2_size='12px')
+        self.assertIn(u'212.31<span style="font-size: 12px;">923</span>',
+                      result)
+        result = amounts.format_btc_amount_pretty(amount, prefix=True)
+        self.assertIn(u'm฿212.31<span style="font-size: small;">923</span>',
+                      result)
 
-    def test_format_exchange_rate(self):
-        rate = Decimal('241.85').quantize(defaults.FIAT_DEC_PLACES)
-        result = amounts.format_exchange_rate(rate)
-        self.assertEqual(result, '0.242')
+    def test_format_exchange_rate_pretty(self):
+        amount = Decimal('241.8').quantize(defaults.FIAT_DEC_PLACES)
+        result = amounts.format_exchange_rate_pretty(amount)
+        self.assertEqual(result, u'1 BTC = $241.80')
 
 
 @patch.dict('xbterminal.helpers.api.xbterminal.runtime',

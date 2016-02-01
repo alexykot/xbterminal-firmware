@@ -71,6 +71,8 @@ def bootup(run, ui):
 
 def activate(run, ui):
     ui.showScreen('activation')
+    ui.setText('activation_server_lbl',
+               run['remote_server'].split('//')[1])
     ui.setText('activation_code_lbl',
                run['local_config']['activation_code'])
     while True:
@@ -103,7 +105,7 @@ def selection(run, ui):
     ui.showScreen('selection')
     assert run['withdrawal']['fiat_amount'] > 0
     ui.setText('sel_amount_lbl',
-               amounts.format_amount(run['withdrawal']['fiat_amount']))
+               amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
     while True:
         if run['screen_buttons']['sel_pay_btn']:
             run['screen_buttons']['sel_pay_btn'] = False
@@ -120,13 +122,16 @@ def selection(run, ui):
 
 def pay_amount(run, ui):
     ui.showScreen('pay_amount')
+    # TODO: show current credit in pamount_credit_lbl
+    ui.setText('pamount_credit_lbl',
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     options = {
         'pamount_opt1_btn': Decimal('1.00'),
         'pamount_opt2_btn': Decimal('2.50'),
         'pamount_opt3_btn': Decimal('10.00'),
     }
     for button, amount in options.items():
-        ui.setText(button, amounts.format_amount_cur(amount))
+        ui.setText(button, amounts.format_fiat_amount_pretty(amount, prefix=True))
     while True:
         if run['screen_buttons']['pamount_opt1_btn'] or \
                 run['keypad'].last_key_pressed == 1:
@@ -148,7 +153,9 @@ def pay_amount(run, ui):
             run['screen_buttons']['pamount_opt4_btn'] = False
             run['payment']['fiat_amount'] = Decimal('0.00')
             return defaults.STAGES['payment']['pay_confirm']
-        if run['keypad'].last_key_pressed == 'backspace':
+        elif run['screen_buttons']['pamount_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pamount_cancel_btn'] = False
             _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -160,7 +167,10 @@ def pay_amount(run, ui):
 def pay_confirm(run, ui):
     ui.showScreen('pay_confirm')
     assert run['payment']['fiat_amount'] >= 0
-    ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+    # TODO: show current credit in pconfirm_credit_lbl
+    ui.setText('pconfirm_credit_lbl',
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
+    ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
     while True:
         if run['screen_buttons']['pconfirm_decr_btn'] or \
                 run['keypad'].last_key_pressed == 1:
@@ -169,19 +179,21 @@ def pay_confirm(run, ui):
             run['payment']['fiat_amount'] -= Decimal('0.05')
             if run['payment']['fiat_amount'] < 0:
                 run['payment']['fiat_amount'] = Decimal('0.00')
-            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+            ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
         if run['screen_buttons']['pconfirm_incr_btn'] or \
                 run['keypad'].last_key_pressed == 2:
             run['screen_buttons']['pconfirm_incr_btn'] = False
             run['keypad'].resetKey()
             run['payment']['fiat_amount'] += Decimal('0.05')
-            ui.setText('pconfirm_amount_lbl', amounts.format_amount_cur(run['payment']['fiat_amount']))
+            ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
         if run['screen_buttons']['pconfirm_confirm_btn'] or \
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['pconfirm_confirm_btn'] = False
             if run['payment']['fiat_amount'] > 0:
                 return defaults.STAGES['payment']['pay_loading']
-        if run['keypad'].last_key_pressed == 'backspace':
+        if run['screen_buttons']['pconfirm_goback_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pconfirm_goback_btn'] = False
             _clear_payment_runtime(run, ui)
             return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -209,21 +221,41 @@ def pay_loading(run, ui):
             return defaults.STAGES['idle']
         else:
             # Payment parameters loaded
+            return defaults.STAGES['payment']['pay_info']
+
+
+def pay_info(run, ui):
+    ui.showScreen('pay_info')
+    ui.setText('pinfo_fiat_amount_lbl',
+               amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
+    ui.setText('pinfo_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['payment']['order'].btc_amount))
+    ui.setText('pinfo_xrate_amount_lbl',
+               amounts.format_exchange_rate_pretty(run['payment']['order'].exchange_rate))
+    while True:
+        if run['screen_buttons']['pinfo_pay_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
+            run['screen_buttons']['pinfo_pay_btn'] = False
             # Prepare QR image
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
                                          run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_wait']
+        if run['screen_buttons']['pinfo_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pinfo_cancel_btn'] = False
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['payment']['pay_amount']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
 
 
 def pay_wait(run, ui):
     ui.showScreen('pay_wait')
-    ui.setText('pwait_fiat_amount_lbl',
-               amounts.format_amount(run['payment']['fiat_amount']))
     ui.setText('pwait_btc_amount_lbl',
-               amounts.format_btc_amount(run['payment']['order'].btc_amount))
-    ui.setText('pwait_xrate_amount_lbl',
-               amounts.format_exchange_rate(run['payment']['order'].exchange_rate))
+               amounts.format_btc_amount_pretty(run['payment']['order'].btc_amount, prefix=True))
     ui.setImage('pwait_qr_img', run['payment']['qr_image_path'])
     logger.info(
         'local payment requested, '
@@ -236,8 +268,10 @@ def pay_wait(run, ui):
     logger.info('payment uri: {}'.format(run['payment']['order'].payment_uri))
     run['bluetooth_server'].start(run['payment']['order'])
     while True:
-        if run['keypad'].last_key_pressed == 'backspace':
-            _clear_payment_runtime(run, ui, clear_amounts=False)
+        if run['screen_buttons']['pwait_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['pwait_cancel_btn'] = False
+            _clear_payment_runtime(run, ui)
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_amount']
@@ -250,12 +284,6 @@ def pay_wait(run, ui):
         if run['payment']['receipt_url'] is not None:
             logger.debug('payment received, receipt: {}'.format(run['payment']['receipt_url']))
             run['host_system'].add_credit(run['payment']['fiat_amount'])
-
-            run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
-            xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
-                                         run['payment']['qr_image_path'])
-
-            _clear_payment_runtime(run, ui)
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_success']
@@ -270,20 +298,46 @@ def pay_wait(run, ui):
 
 
 def pay_success(run, ui):
+    assert run['payment']['receipt_url']
     ui.showScreen('pay_success')
-    ui.setImage('psuccess_receipt_qr_img', run['payment']['qr_image_path'])
+    ui.setText('psuccess_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['payment']['order'].btc_amount))
+    while True:
+        if run['screen_buttons']['psuccess_yes_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
+            run['screen_buttons']['psuccess_yes_btn'] = False
+            run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
+            xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
+                                         run['payment']['qr_image_path'])
+            return defaults.STAGES['payment']['pay_receipt']
+        if run['screen_buttons']['psuccess_no_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['psuccess_no_btn'] = False
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            _clear_payment_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def pay_receipt(run, ui):
+    assert run['payment']['receipt_url']
+    ui.showScreen('pay_receipt')
+    ui.setImage('preceipt_receipt_qr_img', run['payment']['qr_image_path'])
     while True:
         if not run['nfc_server'].is_active():
             run['nfc_server'].start(run['payment']['receipt_url'])
             time.sleep(0.5)
-        if run['keypad'].last_key_pressed == 'enter':
+        if run['screen_buttons']['preceipt_goback_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['preceipt_goback_btn'] = False
             run['nfc_server'].stop()
-            return defaults.STAGES['payment']['pay_amount']
-        elif run['keypad'].last_key_pressed == 'backspace':
-            run['nfc_server'].stop()
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             run['nfc_server'].stop()
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
@@ -292,7 +346,7 @@ def pay_cancel(run, ui):
     ui.showScreen('pay_cancel')
     while True:
         if run['keypad'].last_key_pressed is not None:
-            _clear_payment_runtime(run, ui, clear_amounts=False)
+            _clear_payment_runtime(run, ui)
             return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             return defaults.STAGES['idle']
@@ -320,9 +374,9 @@ def withdraw_loading1(run, ui):
 def withdraw_scan(run, ui):
     ui.showScreen('withdraw_scan')
     assert run['withdrawal']['order'] is not None
-    ui.setText('wscan_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
-    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
+    ui.setText('wscan_fiat_amount_lbl', amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
+    ui.setText('wscan_btc_amount_lbl', amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount, prefix=True))
+    ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate_pretty(run['withdrawal']['order'].exchange_rate))
     run['qr_scanner'].start()
     while True:
         address = withdrawal.get_bitcoin_address(
@@ -332,10 +386,12 @@ def withdraw_scan(run, ui):
             run['qr_scanner'].stop()
             run['withdrawal']['address'] = address
             return defaults.STAGES['withdrawal']['withdraw_confirm']
-        if run['keypad'].last_key_pressed == 'backspace':
+        if run['screen_buttons']['wscan_goback_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wscan_goback_btn'] = False
             run['qr_scanner'].stop()
-            _clear_withdrawal_runtime(run, ui)
-            return defaults.STAGES['idle']
+            _clear_withdrawal_runtime(run, ui, clear_amount=False)
+            return defaults.STAGES['selection']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             run['qr_scanner'].stop()
             _clear_withdrawal_runtime(run, ui)
@@ -347,16 +403,20 @@ def withdraw_confirm(run, ui):
     ui.showScreen('withdraw_confirm')
     assert run['withdrawal']['address'] is not None
     ui.setText('wconfirm_address_lbl', run['withdrawal']['address'])
-    ui.setText('wconfirm_fiat_amount_lbl', amounts.format_amount(run['withdrawal']['fiat_amount']))
-    ui.setText('wconfirm_btc_amount_lbl', amounts.format_btc_amount(run['withdrawal']['order'].btc_amount))
-    ui.setText('wconfirm_xrate_amount_lbl', amounts.format_exchange_rate(run['withdrawal']['order'].exchange_rate))
+    ui.setText('wconfirm_fiat_amount_lbl',
+               amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
+    ui.setText('wconfirm_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount))
+    ui.setText('wconfirm_xrate_amount_lbl',
+               amounts.format_exchange_rate_pretty(run['withdrawal']['order'].exchange_rate))
     while True:
-        if run['screen_buttons']['wconfirm_confirm_btn']:
+        if run['screen_buttons']['wconfirm_confirm_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['wconfirm_confirm_btn'] = False
             return defaults.STAGES['withdrawal']['withdraw_loading2']
-        if run['keypad'].last_key_pressed == 'enter':
-            return defaults.STAGES['withdrawal']['withdraw_loading2']
-        elif run['keypad'].last_key_pressed == 'backspace':
+        elif run['screen_buttons']['wconfirm_cancel_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wconfirm_cancel_btn'] = False
             _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -373,9 +433,6 @@ def withdraw_loading2(run, ui):
         run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
         if run['withdrawal']['receipt_url'] is not None:
             logger.debug('withdrawal finished, receipt: {}'.format(run['withdrawal']['receipt_url']))
-            run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
-            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
-                                         run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_success']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui)
@@ -385,10 +442,20 @@ def withdraw_loading2(run, ui):
 
 def withdraw_success(run, ui):
     ui.showScreen('withdraw_success')
-    assert run['withdrawal']['qr_image_path'] is not None
-    ui.setImage('wsuccess_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    assert run['withdrawal']['receipt_url']
+    ui.setText('wsuccess_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(run['withdrawal']['order'].btc_amount))
     while True:
-        if run['keypad'].last_key_pressed in ['backspace', 'enter']:
+        if run['screen_buttons']['wsuccess_yes_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
+            run['screen_buttons']['wsuccess_yes_btn'] = False
+            run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
+            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
+                                         run['withdrawal']['qr_image_path'])
+            return defaults.STAGES['withdrawal']['withdraw_receipt']
+        if run['screen_buttons']['wsuccess_no_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wsuccess_no_btn'] = False
             _clear_withdrawal_runtime(run, ui)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
@@ -397,47 +464,70 @@ def withdraw_success(run, ui):
         time.sleep(0.1)
 
 
-def _clear_payment_runtime(run, ui, clear_amounts=True):
+def withdraw_receipt(run, ui):
+    ui.showScreen('withdraw_receipt')
+    assert run['withdrawal']['receipt_url']
+    assert run['withdrawal']['qr_image_path'] is not None
+    ui.setImage('wreceipt_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    while True:
+        if not run['nfc_server'].is_active():
+            run['nfc_server'].start(run['withdrawal']['receipt_url'])
+            time.sleep(0.5)
+        if run['screen_buttons']['wreceipt_goback_btn'] or \
+                run['keypad'].last_key_pressed == 'backspace':
+            run['screen_buttons']['wreceipt_goback_btn'] = False
+            run['nfc_server'].stop()
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            run['nfc_server'].stop()
+            _clear_withdrawal_runtime(run, ui)
+            return defaults.STAGES['idle']
+        time.sleep(0.1)
+
+
+def _clear_payment_runtime(run, ui):
     logger.debug('clearing payment runtime')
     ui.showScreen('load_indefinite')
 
-    if clear_amounts:
-        run['payment']['fiat_amount'] = Decimal(0)
-
+    run['payment']['fiat_amount'] = None
     run['payment']['order'] = None
+    run['payment']['receipt_url'] = None
+    run['payment']['qr_image_path'] = None
 
-    ui.setText('pwait_fiat_amount_lbl',
-               amounts.format_amount(Decimal(0)))
+    ui.setText('pinfo_fiat_amount_lbl',
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
+    ui.setText('pinfo_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(Decimal(0)))
+    ui.setText('pinfo_xrate_amount_lbl',
+               amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setText('pwait_btc_amount_lbl',
-               amounts.format_btc_amount(Decimal(0)))
-    ui.setText('pwait_xrate_amount_lbl',
-               amounts.format_exchange_rate(Decimal(0)))
+               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
     ui.setImage('pwait_qr_img', None)
-    ui.setImage('psuccess_receipt_qr_img', None)
+    ui.setImage('preceipt_receipt_qr_img', None)
 
 
-def _clear_withdrawal_runtime(run, ui, clear_amounts=True):
+def _clear_withdrawal_runtime(run, ui, clear_amount=True):
     logger.debug('clearing withdrawal runtime')
     ui.showScreen('load_indefinite')
 
-    if clear_amounts:
+    if clear_amount:
         run['withdrawal']['fiat_amount'] = None
-
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None
     run['withdrawal']['receipt_url'] = None
     run['withdrawal']['qr_image_path'] = None
 
     ui.setText('wscan_fiat_amount_lbl',
-               amounts.format_amount(Decimal(0)))
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wscan_btc_amount_lbl',
-               amounts.format_btc_amount(Decimal(0)))
+               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wscan_xrate_amount_lbl',
-               amounts.format_exchange_rate(Decimal(0)))
+               amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setText('wconfirm_fiat_amount_lbl',
-               amounts.format_amount(Decimal(0)))
+               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wconfirm_btc_amount_lbl',
-               amounts.format_btc_amount(Decimal(0)))
+               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wconfirm_xrate_amount_lbl',
-               amounts.format_exchange_rate(Decimal(0)))
-    ui.setImage('wsuccess_receipt_qr_img', None)
+               amounts.format_exchange_rate_pretty(Decimal(0)))
+    ui.setImage('wreceipt_receipt_qr_img', None)

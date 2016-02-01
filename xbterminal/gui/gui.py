@@ -109,10 +109,23 @@ class GUI(QtGui.QMainWindow):
         'pamount_opt2_btn',
         'pamount_opt3_btn',
         'pamount_opt4_btn',
+        'pamount_cancel_btn',
         'pconfirm_decr_btn',
         'pconfirm_incr_btn',
         'pconfirm_confirm_btn',
+        'pconfirm_goback_btn',
+        'pinfo_pay_btn',
+        'pinfo_cancel_btn',
+        'pwait_cancel_btn',
+        'psuccess_no_btn',
+        'psuccess_yes_btn',
+        'preceipt_goback_btn',
+        'wscan_goback_btn',
         'wconfirm_confirm_btn',
+        'wconfirm_cancel_btn',
+        'wsuccess_no_btn',
+        'wsuccess_yes_btn',
+        'wreceipt_goback_btn',
     ]
 
     def __init__(self, application):
@@ -183,10 +196,6 @@ class GUI(QtGui.QMainWindow):
             self.ui.retranslateUi(self)
             xbterminal.runtime['local_config']['language'] = language_code
             xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
-        self.ui.sel_currency_lbl.setText(currency_prefix)
-        self.ui.pwait_currency_lbl.setText(currency_prefix)
-        self.ui.wscan_currency_lbl.setText(currency_prefix)
-        self.ui.wconfirm_currency_lbl.setText(currency_prefix)
 
     def showErrors(self, errors):
         translations = {
