@@ -9,6 +9,7 @@ QPushButton {
     border-image: url(:/images/btn-orange.png) 12 14 16 10 repeat;
     color: #321c03;
     font-family: 'Lato';
+    outline: none;
     text-transform: uppercase;
 }
 

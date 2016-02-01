@@ -8,6 +8,7 @@ QPushButton {
     border-style: solid;
     border-color: #d4d4d4;
     color: #33363e;
+    outline: none;
     text-transform: uppercase;
 }
 
