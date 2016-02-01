@@ -28,6 +28,21 @@ QPushButton {
     color: #CCCCCC;
 }
 
+#pamount_opt1_btn,
+#pamount_opt2_btn,
+#pamount_opt3_btn,
+#pamount_opt4_btn,
+#pamount_cancel_btn,
+#pconfirm_decr_btn,
+#pconfirm_incr_btn,
+#pconfirm_goback_btn,
+#pconfirm_confirm_btn {
+    border: none;
+    border-image: none;
+    padding-top: -8px;
+    padding-left: -4px;
+}
+
 #activation_server_lbl {
     color: #8fb1d4;
 }
@@ -117,19 +132,24 @@ QPushButton {
 }
 
 #pamount_opt1_btn {
-    qproperty-geometry: rect(20 120 130 70);
+    background-image: url(:/images/pill-orange-btn-1.png);
+    qproperty-geometry: rect(20 100 131 84);
 }
 #pamount_opt2_btn {
-    qproperty-geometry: rect(180 120 130 70);
+    background-image: url(:/images/pill-orange-btn-1.png);
+    qproperty-geometry: rect(180 100 131 84);
 }
 #pamount_opt3_btn {
-    qproperty-geometry: rect(340 120 130 70);
+    background-image: url(:/images/pill-orange-btn-1.png);
+    qproperty-geometry: rect(340 100 131 84);
 }
 #pamount_opt4_btn {
-    qproperty-geometry: rect(220 200 210 60);
+    background-image: url(:/images/pill-orange-btn-2.png);
+    qproperty-geometry: rect(210 193 240 67);
 }
 #pamount_cancel_btn {
-    qproperty-geometry: rect(60 200 120 60);
+    background-image: url(:/images/pill-grey-btn-1.png);
+    qproperty-geometry: rect(35 193 155 67);
 }
 
 #pconfirm_amount_lbl {
@@ -144,25 +164,23 @@ QPushButton {
     background-image: url(:/images/orange-down-arrow-small.png);
     qproperty-geometry: rect(168 73 20 15);
 }
-#pconfirm_decr_btn,
-#pconfirm_incr_btn {
-    border: none;
-    border-image: none;
-    qproperty-text: '';
-}
 #pconfirm_decr_btn {
     background-image: url(:/images/round-orange-down-btn.png);
     qproperty-geometry: rect(90 115 68 69);
+    qproperty-text: '';
 }
 #pconfirm_incr_btn {
     background-image: url(:/images/round-orange-up-btn.png);
     qproperty-geometry: rect(320 115 68 69);
+    qproperty-text: '';
 }
 #pconfirm_goback_btn {
-    qproperty-geometry: rect(70 200 150 60);
+    background-image: url(:/images/pill-grey-btn-2.png);
+    qproperty-geometry: rect(70 200 166 57);
 }
 #pconfirm_confirm_btn {
-    qproperty-geometry: rect(260 200 150 60);
+    background-image: url(:/images/pill-orange-btn-3.png);
+    qproperty-geometry: rect(260 200 166 57);
 }
 
 #pinfo_desc_lbl {

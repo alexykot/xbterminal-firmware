@@ -18,8 +18,13 @@
     <file>images/xbterminal-logo.png</file>
     <file>images/orange-down-arrow-small.png</file>
     <file>images/orange-up-arrow-small.png</file>
-    <file>images/round-orange-down-btn.png</file>
     <file>images/round-orange-up-btn.png</file>
+    <file>images/round-orange-down-btn.png</file>
+    <file>images/pill-orange-btn-1.png</file>
+    <file>images/pill-orange-btn-2.png</file>
+    <file>images/pill-orange-btn-3.png</file>
+    <file>images/pill-grey-btn-1.png</file>
+    <file>images/pill-grey-btn-2.png</file>
   </qresource>
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>
