@@ -53,7 +53,7 @@ QPushButton {
 }
 
 #main_stackedWidget {
-    background-color: #333333;
+    background-image: url(:/images/background.png);
 }
 
 #activation_server_lbl {
