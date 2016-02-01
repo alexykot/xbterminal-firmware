@@ -936,30 +936,6 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="pwait_qr_img">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>10</y>
-       <width>250</width>
-       <height>250</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-      </font>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pwait_cancel_btn">
      <property name="geometry">
       <rect>
@@ -1000,6 +976,22 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
      <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_qr_img">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>10</y>
+       <width>250</width>
+       <height>250</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
