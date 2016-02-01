@@ -80,8 +80,8 @@ QPushButton {
 }
 
 #sel_icon4_lbl {
-    background-image: url(:/images/send-icon.png);
-    qproperty-geometry: rect(265 197 27 24);
+    background-image: url(:/images/withdraw-icon.png);
+    qproperty-geometry: rect(265 196 29 25);
 }
 
 #pamount_desc_lbl,
@@ -386,8 +386,8 @@ QPushButton {
 }
 
 #wconfirm_icon1_lbl {
-    background-image: url(:/images/send-icon.png);
-    qproperty-geometry: rect(180 217 27 24);
+    background-image: url(:/images/withdraw-icon.png);
+    qproperty-geometry: rect(180 216 29 25);
 }
 
 #wconfirm_cancel_btn {
