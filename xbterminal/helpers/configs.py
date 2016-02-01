@@ -76,8 +76,9 @@ def load_local_config():
         last_started: float (default: None)
         show_cursor: boolean (default: False)
         use_dev_remote_server: boolean (default: False)
-        disable_cctalk: boolean (default: False)
+        use_cctalk_mock: boolean (default: True)
     Obsolete:
+        disable_cctalk: boolean
         use_default_keypad_override: boolean
         use_keypad: boolean
         use_predefined_connection: boolean

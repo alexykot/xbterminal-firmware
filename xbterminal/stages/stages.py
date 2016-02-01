@@ -38,7 +38,7 @@ def bootup(run, ui):
 
     # Initialize bluetooth and NFC servers
     run['host_system'] = xbterminal.helpers.host.HostSystem(
-        disable=run['local_config'].get('disable_cctalk', False))
+        use_mock=run['local_config'].get('use_cctalk_mock', True))
     run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
     run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
     run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
@@ -84,47 +84,39 @@ def activate(run, ui):
 def idle(run, ui):
     ui.showScreen('idle')
     while True:
-        if run['screen_buttons']['idle_begin_btn']:
+        if run['screen_buttons']['idle_begin_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['idle_begin_btn'] = False
             return defaults.STAGES['payment']['pay_amount']
-        if run['keypad'].last_key_pressed == 'enter':
-            return defaults.STAGES['payment']['pay_amount']
-        elif run['keypad'].last_key_pressed == 'alt':
-            # Secret key to show selection screen
-            run['withdrawal']['fiat_amount'] = Decimal('0.25')  # Hardcoded amount
-            return defaults.STAGES['selection']
         # Communicate with the host system
-        payout = run['host_system'].get_payout()
-        if payout:
-            run['withdrawal']['fiat_amount'] = payout
+        if run['host_system'].get_payout():
             return defaults.STAGES['selection']
         time.sleep(0.1)
 
 
 def selection(run, ui):
     ui.showScreen('selection')
-    assert run['withdrawal']['fiat_amount'] > 0
+    current_credit = run['host_system'].get_payout()
     ui.setText('sel_amount_lbl',
-               amounts.format_fiat_amount_pretty(run['withdrawal']['fiat_amount'], prefix=True))
+               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     while True:
-        if run['screen_buttons']['sel_pay_btn']:
+        if run['screen_buttons']['sel_pay_btn'] or \
+                run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['sel_pay_btn'] = False
             return defaults.STAGES['payment']['pay_amount']
-        if run['screen_buttons']['sel_withdraw_btn']:
+        if run['screen_buttons']['sel_withdraw_btn'] or \
+                run['keypad'].last_key_pressed == 'alt':
             run['screen_buttons']['sel_withdraw_btn'] = False
-            return defaults.STAGES['withdrawal']['withdraw_loading1']
-        if run['keypad'].last_key_pressed == 'enter':
-            return defaults.STAGES['payment']['pay_amount']
-        elif run['keypad'].last_key_pressed == 'alt':
+            run['withdrawal']['fiat_amount'] = current_credit
             return defaults.STAGES['withdrawal']['withdraw_loading1']
         time.sleep(0.1)
 
 
 def pay_amount(run, ui):
     ui.showScreen('pay_amount')
-    # TODO: show current credit in pamount_credit_lbl
+    current_credit = run['host_system'].get_payout()
     ui.setText('pamount_credit_lbl',
-               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
+               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     options = {
         'pamount_opt1_btn': Decimal('1.00'),
         'pamount_opt2_btn': Decimal('2.50'),
@@ -167,9 +159,9 @@ def pay_amount(run, ui):
 def pay_confirm(run, ui):
     ui.showScreen('pay_confirm')
     assert run['payment']['fiat_amount'] >= 0
-    # TODO: show current credit in pconfirm_credit_lbl
+    current_credit = run['host_system'].get_payout()
     ui.setText('pconfirm_credit_lbl',
-               amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
+               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     ui.setText('pconfirm_amount_lbl', amounts.format_fiat_amount_pretty(run['payment']['fiat_amount'], prefix=True))
     while True:
         if run['screen_buttons']['pconfirm_decr_btn'] or \
@@ -433,6 +425,7 @@ def withdraw_loading2(run, ui):
         run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
         if run['withdrawal']['receipt_url'] is not None:
             logger.debug('withdrawal finished, receipt: {}'.format(run['withdrawal']['receipt_url']))
+            run['host_system'].withdraw(run['withdrawal']['fiat_amount'])
             return defaults.STAGES['withdrawal']['withdraw_success']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui)
