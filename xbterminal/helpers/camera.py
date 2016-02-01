@@ -39,21 +39,31 @@ class OpenCVBackend(object):
 
 class FsWebCamBackend(object):
 
-    device = '/dev/video0'
-
     def __init__(self):
         self.image_path = os.path.join(RUNTIME_PATH, 'camera.jpg')
+        self.device = None
+        for idx in range(5):
+            path = '/dev/video{}'.format(idx)
+            if self._check_device(path):
+                self.device = path
+                logger.info('camera found at {}'.format(self.device))
+                break
 
-    def is_available(self):
+    def _check_device(self, path):
         try:
             output = subprocess.check_output(
-                ['fswebcam', '--device', self.device],
+                ['fswebcam', '--device', path],
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as error:
-            logger.exception(error)
             return False
         else:
             return 'Captured frame' in output
+
+    def is_available(self):
+        if self.device:
+            return self._check_device(self.device)
+        else:
+            return False
 
     def get_image(self):
         """
