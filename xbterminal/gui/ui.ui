@@ -667,13 +667,26 @@
       </font>
      </property>
      <property name="text">
-      <string>Use + and - buttons to increase/decrease</string>
+      <string>Use   +   and   -   buttons to increase/decrease</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="pconfirm_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pconfirm_icon2_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>

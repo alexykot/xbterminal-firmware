@@ -134,14 +134,29 @@ QPushButton {
 
 #pconfirm_amount_lbl {
     font-size: 32pt;
-    qproperty-geometry: rect(150 110 180 70);
+    qproperty-geometry: rect(145 110 180 70);
 }
-
+#pconfirm_icon1_lbl {
+    background-image: url(:/images/orange-up-arrow-small.png);
+    qproperty-geometry: rect(107 73 20 15);
+}
+#pconfirm_icon2_lbl {
+    background-image: url(:/images/orange-down-arrow-small.png);
+    qproperty-geometry: rect(168 73 20 15);
+}
+#pconfirm_decr_btn,
+#pconfirm_incr_btn {
+    border: none;
+    border-image: none;
+    qproperty-text: '';
+}
 #pconfirm_decr_btn {
-    qproperty-geometry: rect(40 120 90 60);
+    background-image: url(:/images/round-orange-down-btn.png);
+    qproperty-geometry: rect(90 115 68 69);
 }
 #pconfirm_incr_btn {
-    qproperty-geometry: rect(350 120 90 60);
+    background-image: url(:/images/round-orange-up-btn.png);
+    qproperty-geometry: rect(320 115 68 69);
 }
 #pconfirm_goback_btn {
     qproperty-geometry: rect(70 200 150 60);
