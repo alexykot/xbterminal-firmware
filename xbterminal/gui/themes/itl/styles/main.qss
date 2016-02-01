@@ -13,10 +13,6 @@ QPushButton {
     text-transform: uppercase;
 }
 
-#main_stackedWidget {
-    background-color: #333333;
-}
-
 #pamount_cancel_btn,
 #pconfirm_goback_btn,
 #pinfo_cancel_btn,
@@ -41,6 +37,23 @@ QPushButton {
     border-image: none;
     padding-top: -8px;
     padding-left: -4px;
+}
+
+#pamount_desc_lbl,
+#pconfirm_desc_lbl,
+#pinfo_desc_lbl,
+#psuccess_desc_lbl,
+#preceipt_desc_lbl,
+#wscan_desc_lbl,
+#wconfirm_desc_lbl,
+#wsuccess_desc_lbl,
+#wreceipt_desc_lbl {
+    font-family: 'Lato Light';
+    font-size: 28pt;
+}
+
+#main_stackedWidget {
+    background-color: #333333;
 }
 
 #activation_server_lbl {
@@ -101,28 +114,21 @@ QPushButton {
 
 #pamount_desc_lbl,
 #pconfirm_desc_lbl,
-#pinfo_desc_lbl,
-#psuccess_desc_lbl,
-#preceipt_desc_lbl,
-#wscan_desc_lbl,
-#wconfirm_desc_lbl,
-#wsuccess_desc_lbl,
-#wreceipt_desc_lbl {
-    font-size: 20pt;
+#wscan_desc_lbl {
+    qproperty-geometry: rect(0 0 350 70);
 }
 
 #pamount_icon1_lbl,
 #pconfirm_icon1_lbl,
 #wscan_icon1_lbl {
     background-image: url(:/images/coin-icon-small.png);
-    qproperty-geometry: rect(330 35 23 20);
+    qproperty-geometry: rect(350 28 23 20);
 }
 
 #pamount_credit_lbl,
 #pconfirm_credit_lbl,
 #wscan_fiat_amount_lbl {
-    qproperty-geometry: rect(350 0 130 90);
-    padding-left: 10px;
+    qproperty-geometry: rect(380 0 100 78);
     font-size: 17pt;
 }
 
@@ -156,11 +162,11 @@ QPushButton {
     font-size: 32pt;
     qproperty-geometry: rect(145 110 180 70);
 }
-#pconfirm_icon1_lbl {
+#pconfirm_icon2_lbl {
     background-image: url(:/images/orange-up-arrow-small.png);
     qproperty-geometry: rect(107 73 20 15);
 }
-#pconfirm_icon2_lbl {
+#pconfirm_icon3_lbl {
     background-image: url(:/images/orange-down-arrow-small.png);
     qproperty-geometry: rect(168 73 20 15);
 }
@@ -184,7 +190,7 @@ QPushButton {
 }
 
 #pinfo_desc_lbl {
-    qproperty-geometry: rect(0 0 480 90);
+    qproperty-geometry: rect(0 0 480 70);
 }
 
 #pinfo_fiat_amount_lbl {
@@ -257,7 +263,7 @@ QPushButton {
 
 #psuccess_icon1_lbl {
     background-image: url(:/images/little-green-tick.png);
-    qproperty-geometry: rect(350 55 23 20);
+    qproperty-geometry: rect(390 57 23 20);
 }
 
 #psuccess_btc1_lbl,
@@ -308,10 +314,6 @@ QPushButton {
 #preceipt_goback_btn,
 #wreceipt_goback_btn {
     qproperty-geometry: rect(270 200 130 60);
-}
-
-#wscan_desc_lbl {
-    qproperty-geometry: rect(0 0 350 90);
 }
 
 #wscan_fiat_amount_lbl {
@@ -375,7 +377,7 @@ QPushButton {
 }
 
 #wconfirm_desc_lbl {
-    qproperty-geometry: rect(0 0 480 90);
+    qproperty-geometry: rect(0 0 480 70);
 }
 
 #wconfirm_fiat_amount_lbl {
@@ -419,7 +421,7 @@ QPushButton {
 
 #wsuccess_icon1_lbl {
     background-image: url(:/images/little-green-tick.png);
-    qproperty-geometry: rect(370 55 23 20);
+    qproperty-geometry: rect(415 57 23 20);
 }
 
 #errors_lbl {
