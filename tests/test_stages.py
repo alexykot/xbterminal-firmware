@@ -164,19 +164,6 @@ class IdleStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
 
-    def test_alt_key_input(self):
-        keypad = Mock(last_key_pressed='alt')
-        run = {
-            'keypad': keypad,
-            'screen_buttons': {'idle_begin_btn': False},
-            'withdrawal': {},
-        }
-        ui = Mock()
-        next_stage = stages.idle(run, ui)
-        self.assertEqual(next_stage,
-                         defaults.STAGES['selection'])
-        self.assertEqual(run['withdrawal']['fiat_amount'], Decimal('0.25'))
-
     def test_host_system_payout(self):
         run = {
             'keypad': Mock(last_key_pressed=None),
@@ -184,26 +171,27 @@ class IdleStageTestCase(unittest.TestCase):
             'host_system': Mock(**{
                 'get_payout.return_value': Decimal('0.15'),
             }),
-            'withdrawal': {},
         }
         ui = Mock()
         next_stage = stages.idle(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['selection'])
-        self.assertEqual(run['withdrawal']['fiat_amount'], Decimal('0.15'))
 
 
 class SelectionStageTestCase(unittest.TestCase):
 
     def test_pay_button(self):
         run = {
+            'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {'sel_pay_btn': True, 'sel_withdraw_btn': False},
-            'withdrawal': {'fiat_amount': Decimal('0.5')},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.15'),
+            }),
         }
         ui = Mock()
         next_stage = stages.selection(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'selection')
-        self.assertEqual(ui.setText.call_args[0][1], u'£0.50')
+        self.assertEqual(ui.setText.call_args[0][1], u'£0.15')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
@@ -211,8 +199,12 @@ class SelectionStageTestCase(unittest.TestCase):
 
     def test_withdraw_button(self):
         run = {
+            'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {'sel_pay_btn': False, 'sel_withdraw_btn': True},
-            'withdrawal': {'fiat_amount': Decimal('0.5')},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.50'),
+            }),
+            'withdrawal': {},
         }
         ui = Mock()
         next_stage = stages.selection(run, ui)
@@ -221,53 +213,6 @@ class SelectionStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in run['screen_buttons'].values()))
         self.assertEqual(run['withdrawal']['fiat_amount'], Decimal('0.5'))
-
-    def test_enter_key_input(self):
-        keypad = Mock(last_key_pressed='enter')
-        run = {
-            'keypad': keypad,
-            'screen_buttons': {
-                'sel_pay_btn': False,
-                'sel_withdraw_btn': False,
-            },
-            'withdrawal': {'fiat_amount': Decimal('0.5')},
-        }
-        ui = Mock()
-        next_stage = stages.selection(run, ui)
-        self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
-        self.assertFalse(any(state for state
-                             in run['screen_buttons'].values()))
-
-    def test_alt_key_input(self):
-        keypad = Mock(last_key_pressed='alt')
-        run = {
-            'keypad': keypad,
-            'screen_buttons': {
-                'sel_pay_btn': False,
-                'sel_withdraw_btn': False,
-            },
-            'withdrawal': {'fiat_amount': Decimal('0.5')},
-        }
-        ui = Mock()
-        next_stage = stages.selection(run, ui)
-        self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_loading1'])
-        self.assertFalse(any(state for state
-                             in run['screen_buttons'].values()))
-        self.assertEqual(run['withdrawal']['fiat_amount'], Decimal('0.5'))
-
-    def test_assertion_error(self):
-        run = {
-            'screen_buttons': {
-                'sel_pay_btn': False,
-                'sel_withdraw_btn': False,
-            },
-            'withdrawal': {'fiat_amount': Decimal(0)},
-        }
-        ui = Mock()
-        with self.assertRaises(AssertionError):
-            stages.selection(run, ui)
 
 
 class PaymentAmountStageTestCase(unittest.TestCase):
@@ -283,11 +228,14 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_cancel_btn': False,
             },
             'payment': {},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_amount(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_amount')
-        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.00')
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.33')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_confirm'])
         self.assertFalse(any(state for state
@@ -305,6 +253,9 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_cancel_btn': False,
             },
             'payment': {},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_amount(run, ui)
@@ -325,6 +276,9 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_cancel_btn': False,
             },
             'payment': {},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_amount(run, ui)
@@ -345,6 +299,9 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_cancel_btn': False,
             },
             'payment': {},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_amount(run, ui)
@@ -365,6 +322,9 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                 'pamount_cancel_btn': True,
             },
             'payment': {},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_amount(run, ui)
@@ -386,10 +346,14 @@ class PayConfirmStageTestCase(unittest.TestCase):
                 'pconfirm_goback_btn': False,
             },
             'payment': {'fiat_amount': Decimal('0.50')},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_confirm(run, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_confirm')
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.33')
         self.assertEqual(ui.setText.call_args_list[1][0][1], u'\xa30.50')
         self.assertEqual(ui.setText.call_args_list[2][0][1], u'\xa30.45')
         self.assertEqual(next_stage,
@@ -408,6 +372,9 @@ class PayConfirmStageTestCase(unittest.TestCase):
                 'pconfirm_goback_btn': False,
             },
             'payment': {'fiat_amount': Decimal('0.50')},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.50'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_confirm(run, ui)
@@ -427,10 +394,13 @@ class PayConfirmStageTestCase(unittest.TestCase):
                 'pconfirm_goback_btn': True,
             },
             'payment': {'fiat_amount': Decimal('0.00')},
+            'host_system': Mock(**{
+                'get_payout.return_value': Decimal('0.33'),
+            }),
         }
         ui = Mock()
         next_stage = stages.pay_confirm(run, ui)
-        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.00')
+        self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.33')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
@@ -850,15 +820,19 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             'exchange_rate': Decimal(0),
             'check.return_value': 'test_url',
         })
+        host_system_mock = Mock()
         run = {
             'withdrawal': {
+                'fiat_amount': Decimal('0.50'),
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
                 'order': order_mock,
             },
+            'host_system': host_system_mock,
         }
         ui = Mock()
         next_stage = stages.withdraw_loading2(run, ui)
         self.assertTrue(order_mock.confirm.called)
+        self.assertTrue(host_system_mock.withdraw.called)
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_success'])
         self.assertEqual(run['withdrawal']['receipt_url'], 'test_url')
