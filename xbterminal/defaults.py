@@ -120,6 +120,7 @@ REMOTE_API_ENDPOINTS = {
     'payment_receipt': '/prc/{uid}/',
     'withdrawal_init': '/api/v2/withdrawals/',
     'withdrawal_confirm': '/api/v2/withdrawals/{uid}/confirm/',
+    'withdrawal_cancel': '/api/v2/withdrawals/{uid}/cancel/',
     'withdrawal_check': '/api/v2/withdrawals/{uid}/',
     'withdrawal_receipt': '/wrc/{uid}/',
 }

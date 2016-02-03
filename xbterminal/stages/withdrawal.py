@@ -57,6 +57,14 @@ class Withdrawal(object):
             return None
         logger.info('confirmed withdrawal order {0}'.format(self.uid))
 
+    def cancel(self):
+        url = api.get_url('withdrawal_cancel', uid=self.uid)
+        try:
+            api.send_request('post', url, signed=True)
+        except Exception as error:
+            return None
+        logger.info('cancelled withdrawal order {0}'.format(self.uid))
+
     def check(self):
         """
         Returns:

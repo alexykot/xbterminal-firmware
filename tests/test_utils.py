@@ -90,6 +90,20 @@ class ApiUtilsTestCase(unittest.TestCase):
         self.assertIn('X-Signature', request.headers)
 
     @patch('xbterminal.helpers.api.requests.Session')
+    @patch('xbterminal.helpers.crypto.read_secret_key',
+           new=mocks.read_secret_key_mock)
+    def test_send_request_signed_no_body(self, session_cls_mock):
+        response_mock = Mock(status_code=204)
+        session_mock = Mock(**{'send.return_value': response_mock})
+        session_cls_mock.return_value = session_mock
+
+        api.send_request('post', 'http://test_url.com', signed=True)
+        self.assertTrue(session_mock.send.called)
+        request = session_mock.send.call_args[0][0]
+        self.assertEqual(request.url, 'http://test_url.com/')
+        self.assertIn('X-Signature', request.headers)
+
+    @patch('xbterminal.helpers.api.requests.Session')
     def test_send_request_network_error(self, session_cls_mock):
         session_mock = Mock(**{'send.side_effect': IOError})
         session_cls_mock.return_value = session_mock
@@ -231,6 +245,17 @@ class WithdrawalTestCase(unittest.TestCase):
 
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
         order.confirm('1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE')
+        self.assertTrue(send_mock.called)
+        self.assertTrue(send_mock.call_args[1]['signed'])
+
+    @patch('xbterminal.stages.withdrawal.api.send_request')
+    @patch('xbterminal.helpers.crypto.read_secret_key',
+           new=mocks.read_secret_key_mock)
+    def test_cancel_order(self, send_mock):
+        send_mock.return_value = Mock()
+
+        order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
+        order.cancel()
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
 

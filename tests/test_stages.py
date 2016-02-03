@@ -725,6 +725,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_scan(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['selection'])
+        self.assertTrue(order_mock.cancel.called)
         self.assertIsNone(run['withdrawal']['order'])
         self.assertIsNotNone(run['withdrawal']['fiat_amount'])
         self.assertFalse(any(state for state
@@ -776,6 +777,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_confirm(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['idle'])
+        self.assertTrue(order_mock.cancel.called)
         self.assertIsNone(run['withdrawal']['order'])
         self.assertIsNone(run['withdrawal']['address'])
         self.assertIsNone(run['withdrawal']['fiat_amount'])
