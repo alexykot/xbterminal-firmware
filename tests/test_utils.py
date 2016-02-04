@@ -236,6 +236,7 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.uid, 'test_uid')
         self.assertEqual(order.btc_amount, Decimal('0.25'))
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
+        self.assertFalse(order.confirmed)
 
     @patch('xbterminal.stages.withdrawal.api.send_request')
     @patch('xbterminal.helpers.crypto.read_secret_key',
@@ -247,6 +248,7 @@ class WithdrawalTestCase(unittest.TestCase):
         order.confirm('1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE')
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
+        self.assertTrue(order.confirmed)
 
     @patch('xbterminal.stages.withdrawal.api.send_request')
     @patch('xbterminal.helpers.crypto.read_secret_key',

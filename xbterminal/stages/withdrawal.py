@@ -20,6 +20,7 @@ class Withdrawal(object):
         self.uid = uid
         self.btc_amount = btc_amount
         self.exchange_rate = exchange_rate
+        self.confirmed = False
 
     @classmethod
     def create_order(cls, fiat_amount):
@@ -50,11 +51,8 @@ class Withdrawal(object):
         """
         url = api.get_url('withdrawal_confirm', uid=self.uid)
         payload = {'address': customer_address}
-        try:
-            response = api.send_request('post', url, payload, signed=True)
-            result = response.json()
-        except Exception as error:
-            return None
+        api.send_request('post', url, payload, signed=True)
+        self.confirmed = True
         logger.info('confirmed withdrawal order {0}'.format(self.uid))
 
     def cancel(self):

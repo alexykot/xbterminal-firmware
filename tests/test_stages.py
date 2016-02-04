@@ -821,6 +821,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
             'check.return_value': 'test_url',
+            'confirmed': False,
         })
         host_system_mock = Mock()
         run = {
@@ -838,6 +839,24 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_success'])
         self.assertEqual(run['withdrawal']['receipt_url'], 'test_url')
+
+    def test_server_error(self):
+        order_mock = Mock(**{
+            'confirm.side_effect': ServerError,
+            'confirmed': False,
+        })
+        run = {
+            'withdrawal': {
+                'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+                'order': order_mock,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading2(run, ui)
+        self.assertTrue(order_mock.confirm.called)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['idle'])
+        self.assertIsNone(run['withdrawal']['address'])
 
 
 class WithdrawSuccessStageTestCase(unittest.TestCase):
