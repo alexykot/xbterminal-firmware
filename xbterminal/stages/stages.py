@@ -382,7 +382,7 @@ def withdraw_scan(run, ui):
                 run['keypad'].last_key_pressed == 'backspace':
             run['screen_buttons']['wscan_goback_btn'] = False
             run['qr_scanner'].stop()
-            _clear_withdrawal_runtime(run, ui, clear_amount=False)
+            _clear_withdrawal_runtime(run, ui, clear_amount=False, cancel_order=True)
             return defaults.STAGES['selection']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             run['qr_scanner'].stop()
@@ -409,7 +409,7 @@ def withdraw_confirm(run, ui):
         elif run['screen_buttons']['wconfirm_cancel_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
             run['screen_buttons']['wconfirm_cancel_btn'] = False
-            _clear_withdrawal_runtime(run, ui)
+            _clear_withdrawal_runtime(run, ui, cancel_order=True)
             return defaults.STAGES['idle']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(run, ui)
@@ -500,12 +500,16 @@ def _clear_payment_runtime(run, ui):
     ui.setImage('preceipt_receipt_qr_img', None)
 
 
-def _clear_withdrawal_runtime(run, ui, clear_amount=True):
+def _clear_withdrawal_runtime(run, ui, clear_amount=True, cancel_order=False):
     logger.debug('clearing withdrawal runtime')
     ui.showScreen('load_indefinite')
 
+    if cancel_order:
+        run['withdrawal']['order'].cancel()
+
     if clear_amount:
         run['withdrawal']['fiat_amount'] = None
+
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None
     run['withdrawal']['receipt_url'] = None

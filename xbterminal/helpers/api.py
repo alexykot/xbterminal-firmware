@@ -11,6 +11,8 @@ from xbterminal.exceptions import NetworkError, ServerError
 
 logger = logging.getLogger(__name__)
 
+VALID_STATUS_CODES = [200, 204]
+
 
 def get_url(endpoint_name, **kwargs):
     url = (xbterminal.runtime['remote_server'] +
@@ -36,7 +38,7 @@ def send_request(method, url, data=None, headers=None, signed=False):
                            headers=headers)
     prepared_req = req.prepare()
     if signed:
-        signature = crypto.create_signature(prepared_req.body)
+        signature = crypto.create_signature(prepared_req.body or '')
         prepared_req.headers['X-Signature'] = signature
 
     # Send
@@ -48,7 +50,7 @@ def send_request(method, url, data=None, headers=None, signed=False):
         logger.exception(error)
         raise NetworkError
 
-    if response.status_code != 200:
+    if response.status_code not in VALID_STATUS_CODES:
         logger.error(response.content)
         raise ServerError
 
