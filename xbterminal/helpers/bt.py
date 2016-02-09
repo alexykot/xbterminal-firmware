@@ -186,10 +186,14 @@ class PaymentResponseWorker(BluetoothWorker):
         value, pos = protobuf_decoder._DecodeVarint(data, 0)
         payment_message = data[pos:]
         payment_ack = self.payment.send(payment_message)
-        response = (protobuf_encoder._VarintBytes(len(payment_ack)) +
-                    payment_ack)
-        logger.debug("{0} - sending PaymentACK".format(self.service_name))
-        self.client_sock.send(response)
+        if payment_ack:
+            response = (protobuf_encoder._VarintBytes(len(payment_ack)) +
+                        payment_ack)
+            logger.debug('{0} - sending PaymentACK'.format(self.service_name))
+            self.client_sock.send(response)
+        else:
+            logger.error('{0} - failed to send Payment to server'.format(
+                self.service_name))
 
 
 class BluetoothServer(object):

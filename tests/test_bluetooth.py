@@ -151,3 +151,21 @@ class BluetoothWorkerTestCase(unittest.TestCase):
         self.assertTrue(bt_worker.client_sock.send.called)
         self.assertEqual(bt_worker.client_sock.send.call_args[0][0],
                          '\x03\n\x85\x02')
+
+    @patch('xbterminal.helpers.bt.bluetooth.BluetoothSocket')
+    @patch('xbterminal.helpers.bt.dbus.SystemBus')
+    @patch('xbterminal.helpers.bt.dbus.Interface')
+    def test_payment_response_error(self, interface_cls_mock,
+                                    system_bus_cls_mock,
+                                    bt_socket_cls_mock):
+        bt_socket_cls_mock.return_value = Mock(**{
+            'getsockname.return_value': ('00:00:00:00:00:00', 1),
+        })
+        payment_mock = Mock(**{
+            'send.return_value': None,
+        })
+        bt_worker = PaymentResponseWorker('hci0', payment_mock)
+        bt_worker.client_sock = Mock()
+        message = binascii.unhexlify('850212')
+        bt_worker.handle_data(message)
+        self.assertFalse(bt_worker.client_sock.send.called)

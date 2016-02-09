@@ -420,8 +420,17 @@ def withdraw_confirm(run, ui):
 def withdraw_loading2(run, ui):
     ui.showScreen('load_indefinite')
     assert run['withdrawal']['address'] is not None
-    run['withdrawal']['order'].confirm(run['withdrawal']['address'])
     while True:
+        if not run['withdrawal']['order'].confirmed:
+            try:
+                run['withdrawal']['order'].confirm(run['withdrawal']['address'])
+            except NetworkError:
+                logger.warning('network error, retry in 5 seconds')
+                time.sleep(5)
+                continue
+            except ServerError:
+                _clear_withdrawal_runtime(run, ui)
+                return defaults.STAGES['idle']
         run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
         if run['withdrawal']['receipt_url'] is not None:
             logger.debug('withdrawal finished, receipt: {}'.format(run['withdrawal']['receipt_url']))
