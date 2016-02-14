@@ -8,7 +8,6 @@
 * VirtualBox
 * Oracle VirtualBox Extension Pack
 * Vagrant
-* vagrant-vbguest plugin
 
 ## Running VM
 
@@ -38,7 +37,7 @@ vagrant up
 Attach a webcam to the running VM ([more info](http://www.virtualbox.org/manual/ch09.html#idp99569632)):
 
 ```
-VBoxManage controlvm "XBTerminal" webcam attach /dev/video0
+VBoxManage controlvm "XBTerminal Device" webcam attach /dev/video0
 ```
 
 Login to the VM:
