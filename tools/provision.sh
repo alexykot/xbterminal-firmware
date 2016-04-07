@@ -24,5 +24,5 @@ rm -rf 0.10.0 nfcpy-0.10.0.tar.gz
 # Install salt and generate device key
 apt-get install --yes salt-minion
 echo "master: sam.xbthq.co.uk" > /etc/salt/minion.d/master.conf
-cat /etc/machine-id | sha256sum | cut -d" " -f1 > /etc/salt/minion_id
+sha256sum /etc/machine-id | cut -d" " -f1 > /etc/salt/minion_id
 systemctl restart salt-minion
