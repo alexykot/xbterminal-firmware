@@ -24,7 +24,7 @@ Put these options in `xbterminal/runtime/local_config`:
 
 ```
 {
-  "use_dev_remote_server": true,
+  "remote_server": "stage",
   "show_cursor": true
 }
 ```
