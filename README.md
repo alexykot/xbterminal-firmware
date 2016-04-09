@@ -4,6 +4,7 @@
 
 * Python 2
 * pyqt4-dev-tools
+* libbluetooth-dev
 * Fabric
 * VirtualBox
 * Oracle VirtualBox Extension Pack
