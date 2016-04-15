@@ -106,8 +106,9 @@ LOG_CONFIG = {
 }
 
 REMOTE_SERVERS = {
-    'main': 'https://xbterminal.io',
-    'dev': 'http://stage.xbterminal.com',
+    'prod': 'https://xbterminal.io',
+    'stage': 'http://stage.xbterminal.com',
+    'dev': 'http://dev.xbterminal.com:8083',
 }
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 

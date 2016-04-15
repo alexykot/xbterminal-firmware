@@ -71,11 +71,8 @@ def main():
     run['device_key'] = xbterminal.helpers.configs.read_device_key()
     run['local_config'] = xbterminal.helpers.configs.load_local_config()
 
-    if run['local_config'].get('use_dev_remote_server'):
-        run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['dev']
-        logger.warning('!!! DEV SERVER OVERRRIDE ACTIVE')
-    else:
-        run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS['main']
+    remote_server_name = run['local_config'].get('remote_server', 'prod')
+    run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS[remote_server_name]
     logger.info('remote server {}'.format(run['remote_server']))
 
     main_window = xbterminal.gui.gui.initGUI()

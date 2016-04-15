@@ -74,12 +74,13 @@ def load_local_config():
         language: string (default: 'en')
         theme: string (default: 'default')
         last_started: float (default: None)
+        remote_server: string (default: 'prod')
         show_cursor: boolean (default: False)
-        use_dev_remote_server: boolean (default: False)
         use_cctalk_mock: boolean (default: True)
     Obsolete:
         disable_cctalk: boolean
         use_default_keypad_override: boolean
+        use_dev_remote_server: boolean
         use_keypad: boolean
         use_predefined_connection: boolean
         wifi_ssid: string
