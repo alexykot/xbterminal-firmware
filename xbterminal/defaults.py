@@ -116,6 +116,7 @@ REMOTE_API_ENDPOINTS = {
     'registration': '/api/v2/devices/',
     'config': '/api/v2/devices/{device_key}/',
     'payment_init': '/api/v2/payments/',
+    'payment_cancel': '/api/v2/payments/{uid}/cancel/',
     'payment_response': '/api/v2/payments/{uid}/response/',
     'payment_check': '/api/v2/payments/{uid}/',
     'payment_receipt': '/prc/{uid}/',

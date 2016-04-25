@@ -45,6 +45,14 @@ class Payment(object):
         logger.info("created payment order {0}".format(instance.uid))
         return instance
 
+    def cancel(self):
+        url = api.get_url('payment_cancel', uid=self.uid)
+        try:
+            api.send_request('post', url)
+        except Exception as error:
+            return None
+        logger.info('cancelled payment order {0}'.format(self.uid))
+
     def send(self, message):
         """
         Accepts:
