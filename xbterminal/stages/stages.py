@@ -236,10 +236,10 @@ def pay_info(run, ui):
         if run['screen_buttons']['pinfo_cancel_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
             run['screen_buttons']['pinfo_cancel_btn'] = False
-            _clear_payment_runtime(run, ui)
+            _clear_payment_runtime(run, ui, cancel_order=True)
             return defaults.STAGES['payment']['pay_amount']
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            _clear_payment_runtime(run, ui)
+            _clear_payment_runtime(run, ui, cancel_order=True)
             return defaults.STAGES['idle']
         time.sleep(0.1)
 
@@ -263,7 +263,7 @@ def pay_wait(run, ui):
         if run['screen_buttons']['pwait_cancel_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
             run['screen_buttons']['pwait_cancel_btn'] = False
-            _clear_payment_runtime(run, ui)
+            _clear_payment_runtime(run, ui, cancel_order=True)
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_amount']
@@ -281,7 +281,7 @@ def pay_wait(run, ui):
             return defaults.STAGES['payment']['pay_success']
 
         if run['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            _clear_payment_runtime(run, ui)
+            _clear_payment_runtime(run, ui, cancel_order=True)
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_cancel']
@@ -488,9 +488,12 @@ def withdraw_receipt(run, ui):
         time.sleep(0.1)
 
 
-def _clear_payment_runtime(run, ui):
+def _clear_payment_runtime(run, ui, cancel_order=False):
     logger.debug('clearing payment runtime')
     ui.showScreen('load_indefinite')
+
+    if cancel_order:
+        run['payment']['order'].cancel()
 
     run['payment']['fiat_amount'] = None
     run['payment']['order'] = None

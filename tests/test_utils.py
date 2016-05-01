@@ -169,6 +169,23 @@ class PaymentTestCase(unittest.TestCase):
         self.assertIsNone(order.request)
 
     @patch('xbterminal.stages.payment.api.send_request')
+    def test_cancel(self, send_mock):
+        order = Payment('test_uid', Decimal('0.25'), Decimal(200),
+                        'test_uri', None)
+        result = order.cancel()
+        self.assertTrue(send_mock.called)
+        self.assertIsNone(result)
+
+    @patch('xbterminal.stages.payment.api.send_request')
+    def test_cancel_error(self, send_mock):
+        send_mock.side_effect = ValueError
+        order = Payment('test_uid', Decimal('0.25'), Decimal(200),
+                        'test_uri', None)
+        result = order.cancel()
+        self.assertTrue(send_mock.called)
+        self.assertIsNone(result)
+
+    @patch('xbterminal.stages.payment.api.send_request')
     def test_send(self, send_mock):
         send_mock.return_value = Mock(content='ack')
 

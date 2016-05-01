@@ -476,6 +476,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         next_stage = stages.pay_info(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_amount'])
+        self.assertTrue(order_mock.cancel.called)
         self.assertIsNone(run['payment']['fiat_amount'])
         self.assertIsNone(run['payment']['order'])
         self.assertFalse(any(state for state
@@ -511,7 +512,7 @@ class PayInfoStageTestCase(unittest.TestCase):
 
 class PayWaitStageTestCase(unittest.TestCase):
 
-    def test_return(self):
+    def test_cancel(self):
         order_mock = Mock(**{
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
@@ -541,6 +542,8 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertFalse(host_system_mock.add_credit.called)
         self.assertFalse(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
+
+        self.assertTrue(order_mock.cancel.called)
         self.assertIsNone(run['payment']['fiat_amount'])
         self.assertIsNone(run['payment']['order'])
         self.assertEqual(next_stage,
