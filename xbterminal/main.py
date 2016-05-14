@@ -1,10 +1,12 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
+
 import time
 import sys
 import os
 import logging.config
 from collections import deque
+import signal
 
 include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
@@ -136,6 +138,12 @@ def main():
                 run['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None
             run['keypad'].resetKey()
+
+
+def sighup_handler(*args):
+    xbterminal.runtime['local_config'] = xbterminal.helpers.configs.load_local_config()
+
+signal.signal(signal.SIGHUP, sighup_handler)
 
 
 def graceful_exit():
