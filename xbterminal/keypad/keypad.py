@@ -3,7 +3,6 @@ import logging
 import time
 
 from xbterminal.keypad import drivers
-from xbterminal.gui.gui import wake_up_screen
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +10,6 @@ logger = logging.getLogger(__name__)
 class Keypad():
 
     _getkey_delay = 0.2
-    _screensaver_delay = 300
 
     def __init__(self):
         self.driver = drivers.KeyboardDriver()
@@ -29,8 +27,6 @@ class Keypad():
             if key is not None:
                 logger.debug('keypress {0}'.format(key))
                 self._getkey_value = key
-                if current_timestamp - self._getkey_timestamp > self._screensaver_delay:
-                    wake_up_screen()
                 self._getkey_timestamp = current_timestamp
 
     def resetKey(self):

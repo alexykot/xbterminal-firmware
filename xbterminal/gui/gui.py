@@ -2,7 +2,6 @@
 import logging
 import os
 import re
-import subprocess
 import sys
 import time
 import functools
@@ -239,17 +238,3 @@ def initGUI():
 
     main_window = GUI(application)
     return main_window
-
-
-def wake_up_screen():
-    """
-    Deactivate screen saver if it is active
-    """
-    display = subprocess.check_output("echo $DISPLAY", shell=True)
-    display = display.strip('\n')
-    if display:
-        logger.debug("waking up screen")
-        subprocess.call(["xset", "-display", display, "-dpms"])
-        subprocess.call(["xset", "-display", display, "+dpms"])
-    else:
-        logger.error("unable to get X server display name")
