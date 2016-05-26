@@ -29,7 +29,7 @@ class Payment(object):
         """
         payment_init_url = api.get_url('payment_init')
         payload = {
-            'device_key': xbterminal.runtime['device_key'],
+            'device': xbterminal.runtime['device_key'],
             'amount': float(fiat_amount),
             'bt_mac': bt_mac,
         }
