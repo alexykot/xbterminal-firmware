@@ -719,6 +719,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
                 'wscan_goback_btn': True,
             },
             'qr_scanner': Mock(**{'get_data.return_value': None}),
+            'local_config': {},
             'withdrawal': {
                 'fiat_amount': Decimal(0),
                 'order': order_mock,
@@ -743,6 +744,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
                 'wscan_goback_btn': False,
             },
             'qr_scanner': Mock(**{'get_data.return_value': self.address}),
+            'local_config': {},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
                 'order': order_mock,
@@ -758,6 +760,27 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_confirm'])
         self.assertIsNotNone(run['withdrawal']['address'])
+
+    def test_default_address(self):
+        order_mock = Mock(btc_amount=Decimal('0.22354655'),
+                          exchange_rate=Decimal('155.434'))
+        run = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wscan_goback_btn': False,
+            },
+            'qr_scanner': Mock(**{'get_data.return_value': None}),
+            'local_config': {'default_withdrawal_address': self.address},
+            'withdrawal': {
+                'fiat_amount': Decimal('1.12'),
+                'order': order_mock,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_scan(run, ui)
+        self.assertEqual(next_stage,
+                         defaults.STAGES['withdrawal']['withdraw_confirm'])
+        self.assertEqual(run['withdrawal']['address'], self.address)
 
 
 class WithdrawConfirmStageTestCase(unittest.TestCase):

@@ -77,6 +77,7 @@ def load_local_config():
         remote_server: string (default: 'prod')
         show_cursor: boolean (default: False)
         use_cctalk_mock: boolean (default: True)
+        default_withdrawal_address: string (default: None)
     Obsolete:
         disable_cctalk: boolean
         use_default_keypad_override: boolean
