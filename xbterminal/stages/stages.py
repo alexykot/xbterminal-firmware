@@ -371,8 +371,9 @@ def withdraw_scan(run, ui):
     ui.setText('wscan_xrate_amount_lbl', amounts.format_exchange_rate_pretty(run['withdrawal']['order'].exchange_rate))
     run['qr_scanner'].start()
     while True:
+        default_address = run['local_config'].get('default_withdrawal_address')
         address = withdrawal.get_bitcoin_address(
-            run['qr_scanner'].get_data() or '')
+            run['qr_scanner'].get_data() or '') or default_address
         if address:
             logger.debug('address scanned: {0}'.format(address))
             run['qr_scanner'].stop()
