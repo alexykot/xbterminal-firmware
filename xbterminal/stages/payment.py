@@ -37,7 +37,7 @@ class Payment(object):
         result = response.json()
         # Parse result
         instance = cls(
-            result['payment_uid'],
+            result['uid'],
             Decimal(result['btc_amount']).quantize(defaults.BTC_DEC_PLACES),
             Decimal(result['exchange_rate']).quantize(defaults.BTC_DEC_PLACES),
             result['payment_uri'],
@@ -85,5 +85,5 @@ class Payment(object):
             result = response.json()
         except Exception as error:
             return None
-        if result['paid'] == 1:
+        if result['status'] in ['notified', 'confirmed']:
             return api.get_url('payment_receipt', uid=self.uid)
