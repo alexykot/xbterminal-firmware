@@ -211,7 +211,7 @@ class PaymentTestCase(unittest.TestCase):
                         'bitcoin:uri', None)
         result = order.check()
         self.assertTrue(send_mock.called)
-        self.assertIsNone(result)
+        self.assertEqual(result, 'new')
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_check_notified(self, send_mock):
@@ -225,7 +225,7 @@ class PaymentTestCase(unittest.TestCase):
                         'bitcoin:uri', None)
         result = order.check()
         self.assertTrue(send_mock.called)
-        self.assertEqual(result, 'https://xbterminal.io/prc/test_uid/')
+        self.assertEqual(result, 'notified')
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_check_error(self, send_mock):
@@ -313,13 +313,13 @@ class WithdrawalTestCase(unittest.TestCase):
             'json.return_value': {'status': 'sent'},
         })
         result = order.check()
-        self.assertIsNone(result)
+        self.assertEqual(result, 'sent')
 
         send_mock.return_value = Mock(**{
             'json.return_value': {'status': 'completed'},
         })
         result = order.check()
-        self.assertEqual(result, 'https://xbterminal.io/wrc/test_uid/')
+        self.assertEqual(result, 'completed')
 
     @patch('xbterminal.stages.withdrawal.api.send_request')
     def test_check_order_error(self, send_mock):

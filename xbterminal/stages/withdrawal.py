@@ -69,7 +69,7 @@ class Withdrawal(object):
     def check(self):
         """
         Returns:
-            receipt_url or None
+            status: withdrawal status or None in case of error
         """
         url = api.get_url('withdrawal_check', uid=self.uid)
         try:
@@ -77,8 +77,8 @@ class Withdrawal(object):
             result = response.json()
         except Exception as error:
             return None
-        if result['status'] == 'completed':
-            return self.receipt_url
+        else:
+            return result['status']
 
     @property
     def receipt_url(self):

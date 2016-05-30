@@ -80,7 +80,7 @@ class Payment(object):
     def check(self):
         """
         Returns:
-            receipt_url: url or None
+            status: payment status or None is case of error
         """
         payment_check_url = api.get_url('payment_check', uid=self.uid)
         try:
@@ -88,8 +88,8 @@ class Payment(object):
             result = response.json()
         except Exception as error:
             return None
-        if result['status'] in ['notified', 'confirmed']:
-            return self.receipt_url
+        else:
+            return result['status']
 
     @property
     def receipt_url(self):

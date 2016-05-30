@@ -273,8 +273,8 @@ def pay_wait(run, ui):
             run['nfc_server'].start(run['payment']['order'].payment_uri)
             time.sleep(0.5)
 
-        run['payment']['receipt_url'] = run['payment']['order'].check()
-        if run['payment']['receipt_url'] is not None:
+        if run['payment']['order'].check() in ['notified', 'confirmed']:
+            run['payment']['receipt_url'] = run['payment']['order'].receipt_url
             logger.debug('payment received, receipt: {}'.format(run['payment']['receipt_url']))
             run['host_system'].add_credit(run['payment']['fiat_amount'])
             run['nfc_server'].stop()
@@ -434,8 +434,8 @@ def withdraw_loading2(run, ui):
             except ServerError:
                 _clear_withdrawal_runtime(run, ui)
                 return defaults.STAGES['idle']
-        run['withdrawal']['receipt_url'] = run['withdrawal']['order'].check()
-        if run['withdrawal']['receipt_url'] is not None:
+        if run['withdrawal']['order'].check() == 'completed':
+            run['withdrawal']['receipt_url'] = run['withdrawal']['order'].receipt_url
             logger.debug('withdrawal finished, receipt: {}'.format(run['withdrawal']['receipt_url']))
             run['host_system'].withdraw(run['withdrawal']['fiat_amount'])
             return defaults.STAGES['withdrawal']['withdraw_success']

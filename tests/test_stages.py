@@ -560,7 +560,8 @@ class PayWaitStageTestCase(unittest.TestCase):
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
             'payment_uri': 'test',
-            'check.return_value': 'test',
+            'check.return_value': 'notified',
+            'receipt_url': 'test_url',
         })
         host_system_mock = Mock()
         bluetooth_server_mock = Mock()
@@ -590,7 +591,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                          Decimal('1.00'))
         self.assertTrue(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
-        self.assertEqual(run['payment']['receipt_url'], 'test')
+        self.assertEqual(run['payment']['receipt_url'], 'test_url')
         self.assertIsNotNone(run['payment']['order'])
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_success'])
@@ -853,7 +854,8 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         order_mock = Mock(**{
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
-            'check.return_value': 'test_url',
+            'check.return_value': 'completed',
+            'receipt_url': 'test_url',
             'confirmed': False,
         })
         host_system_mock = Mock()
