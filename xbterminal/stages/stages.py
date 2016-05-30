@@ -202,7 +202,8 @@ def pay_loading(run, ui):
 
     while True:
         try:
-            run['payment']['order'] = payment.Payment.create_order(run['payment']['fiat_amount'],
+            run['payment']['order'] = payment.Payment.create_order(run['device_key'],
+                                                                   run['payment']['fiat_amount'],
                                                                    run['bluetooth_server'].mac_address)
         except NetworkError:
             logger.warning('network error, retry in 5 seconds')
@@ -351,6 +352,7 @@ def withdraw_loading1(run, ui):
     while True:
         try:
             run['withdrawal']['order'] = withdrawal.Withdrawal.create_order(
+                run['device_key'],
                 run['withdrawal']['fiat_amount'])
         except NetworkError:
             logger.warning('network error, retry in 5 seconds')

@@ -2,7 +2,6 @@ from decimal import Decimal
 import logging
 import re
 
-import xbterminal
 from xbterminal.helpers import api
 
 logger = logging.getLogger(__name__)
@@ -23,16 +22,17 @@ class Withdrawal(object):
         self.confirmed = False
 
     @classmethod
-    def create_order(cls, fiat_amount):
+    def create_order(cls, device_key, fiat_amount):
         """
         Accepts:
+            device_key: device key, string
             fiat_amount: amount to withdraw (Decimal)
         Returns:
             class instance or None
         """
         url = api.get_url('withdrawal_init')
         payload = {
-            'device': xbterminal.runtime['device_key'],
+            'device': device_key,
             'amount': str(fiat_amount),
         }
         response = api.send_request('post', url, payload, signed=True)
