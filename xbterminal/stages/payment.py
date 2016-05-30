@@ -50,8 +50,11 @@ class Payment(object):
         try:
             api.send_request('post', url)
         except Exception as error:
-            return None
-        logger.info('cancelled payment order {0}'.format(self.uid))
+            logger.exception(error)
+            return False
+        else:
+            logger.info('cancelled payment order {0}'.format(self.uid))
+            return True
 
     def send(self, message):
         """

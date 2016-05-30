@@ -173,7 +173,7 @@ class PaymentTestCase(unittest.TestCase):
                         'test_uri', None)
         result = order.cancel()
         self.assertTrue(send_mock.called)
-        self.assertIsNone(result)
+        self.assertTrue(result)
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_cancel_error(self, send_mock):
@@ -182,7 +182,7 @@ class PaymentTestCase(unittest.TestCase):
                         'test_uri', None)
         result = order.cancel()
         self.assertTrue(send_mock.called)
-        self.assertIsNone(result)
+        self.assertFalse(result)
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_send(self, send_mock):
@@ -200,7 +200,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertEqual(result, 'ack')
 
     @patch('xbterminal.stages.payment.api.send_request')
-    def test_check_unpaid(self, send_mock):
+    def test_check_new(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
                 'status': 'new',
@@ -214,7 +214,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch('xbterminal.stages.payment.api.send_request')
-    def test_check_paid(self, send_mock):
+    def test_check_notified(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
                 'status': 'notified',
@@ -290,7 +290,8 @@ class WithdrawalTestCase(unittest.TestCase):
         send_mock.return_value = Mock()
 
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
-        order.cancel()
+        result = order.cancel()
+        self.assertTrue(result)
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
 
@@ -301,7 +302,8 @@ class WithdrawalTestCase(unittest.TestCase):
         send_mock.side_effect = NetworkError
 
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
-        order.cancel()
+        result = order.cancel()
+        self.assertFalse(result)
         self.assertTrue(send_mock.called)
 
     @patch('xbterminal.stages.withdrawal.api.send_request')
