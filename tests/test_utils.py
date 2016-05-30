@@ -237,6 +237,12 @@ class PaymentTestCase(unittest.TestCase):
         self.assertIsNone(result)
         self.assertTrue(send_mock.called)
 
+    def test_receipt_url(self):
+        order = Payment('test_uid', Decimal('0.25'), Decimal('200'),
+                        'bitcoin:uri', None)
+        self.assertEqual(order.receipt_url,
+                         'https://xbterminal.io/prc/test_uid/')
+
 
 @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
             remote_server='https://xbterminal.io')
@@ -320,3 +326,8 @@ class WithdrawalTestCase(unittest.TestCase):
         result = order.check()
         self.assertIsNone(result)
         self.assertTrue(send_mock.called)
+
+    def test_receipt_url(self):
+        order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
+        self.assertEqual(order.receipt_url,
+                         'https://xbterminal.io/wrc/test_uid/')

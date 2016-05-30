@@ -75,4 +75,8 @@ class Withdrawal(object):
         except Exception as error:
             return None
         if result['status'] == 'completed':
-            return api.get_url('withdrawal_receipt', uid=self.uid)
+            return self.receipt_url
+
+    @property
+    def receipt_url(self):
+        return api.get_url('withdrawal_receipt', uid=self.uid)

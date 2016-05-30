@@ -86,4 +86,8 @@ class Payment(object):
         except Exception as error:
             return None
         if result['status'] in ['notified', 'confirmed']:
-            return api.get_url('payment_receipt', uid=self.uid)
+            return self.receipt_url
+
+    @property
+    def receipt_url(self):
+        return api.get_url('payment_receipt', uid=self.uid)
