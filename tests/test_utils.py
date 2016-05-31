@@ -147,7 +147,7 @@ class PaymentTestCase(unittest.TestCase):
     def test_create_order(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
-                'payment_uid': 'test_uid',
+                'uid': 'test_uid',
                 'btc_amount': '0.25',
                 'exchange_rate': '200.0',
                 'payment_uri': 'bitcoin:test',
@@ -158,7 +158,7 @@ class PaymentTestCase(unittest.TestCase):
         order = Payment.create_order(Decimal('1.00'), mac_addr)
         self.assertTrue(send_mock.called)
         data = send_mock.call_args[1]['data']
-        self.assertEqual(data['device_key'], 'paymentTestKey')
+        self.assertEqual(data['device'], 'paymentTestKey')
         self.assertEqual(data['amount'], 1.0)
         self.assertEqual(data['bt_mac'], mac_addr)
 
@@ -204,7 +204,7 @@ class PaymentTestCase(unittest.TestCase):
     def test_check_unpaid(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
-                'paid': '0',
+                'status': 'new',
             },
         })
 
@@ -218,7 +218,7 @@ class PaymentTestCase(unittest.TestCase):
     def test_check_paid(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
-                'paid': 1,
+                'status': 'notified',
             },
         })
 
