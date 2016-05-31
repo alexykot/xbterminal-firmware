@@ -80,7 +80,7 @@ class Payment(object):
     def check(self):
         """
         Returns:
-            status: payment status or None is case of error
+            status: payment status or None in case of error
         """
         payment_check_url = api.get_url('payment_check', uid=self.uid)
         try:
