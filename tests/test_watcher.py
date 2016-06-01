@@ -16,17 +16,20 @@ class WatcherTestCase(unittest.TestCase):
     @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
                 remote_server='http://xbterminal.io')
     @patch('xbterminal.watcher.api.send_request')
-    def test_check_system_state(self, send_mock):
+    def test_check_connection(self, send_mock):
         watcher = Watcher()
         self.assertIsNone(watcher.internet)
         send_mock.side_effect = [Exception, None, Exception]
-        watcher.check_system_state()
+        result_1 = watcher.check_connection()
+        self.assertFalse(result_1)
         self.assertFalse(watcher.internet)
         self.assertEqual(watcher.errors['internet'], 'no internet')
-        watcher.check_system_state()
+        result_2 = watcher.check_connection()
+        self.assertTrue(result_2)
         self.assertTrue(watcher.internet)
         self.assertEqual(watcher.errors, {})
-        watcher.check_system_state()
+        result_3 = watcher.check_connection()
+        self.assertFalse(result_3)
         self.assertFalse(watcher.internet)
         self.assertEqual(watcher.errors['internet'],
                          'internet disconnected')

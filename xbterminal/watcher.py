@@ -54,13 +54,13 @@ class Watcher(threading.Thread):
             self.errors.pop("internet", None)
         self._internet = internet_connected
 
-    def check_system_state(self):
-        # Check internet connection
+    def check_connection(self):
         try:
             api.send_request('get', api.get_url('ping'))
             self.internet = True
         except Exception:
             self.internet = False
+        return self.internet
 
     def log_system_stats(self):
         logger = logging.getLogger("system_monitor")
@@ -98,7 +98,7 @@ class Watcher(threading.Thread):
     def run(self):
         logger.info("watcher started")
         while True:
-            self.check_system_state()
+            self.check_connection()
             if time.time() - self.system_stats_timestamp > 60:
                 self.log_system_stats()
             time.sleep(self.period)
