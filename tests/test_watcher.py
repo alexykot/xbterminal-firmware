@@ -1,6 +1,5 @@
 import unittest
 from mock import patch, Mock
-from requests.exceptions import RequestException
 
 from xbterminal.watcher import Watcher
 
@@ -14,13 +13,13 @@ class WatcherTestCase(unittest.TestCase):
         self.assertIsNone(watcher.internet)
         self.assertEqual(watcher.errors, {})
 
-    @patch.dict('xbterminal.watcher.xbterminal.runtime',
+    @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
                 remote_server='http://xbterminal.io')
-    @patch('xbterminal.watcher.requests.get')
-    def test_check_system_state(self, get_mock):
+    @patch('xbterminal.watcher.api.send_request')
+    def test_check_system_state(self, send_mock):
         watcher = Watcher()
         self.assertIsNone(watcher.internet)
-        get_mock.side_effect = [RequestException, None, RequestException]
+        send_mock.side_effect = [Exception, None, Exception]
         watcher.check_system_state()
         self.assertFalse(watcher.internet)
         self.assertEqual(watcher.errors['internet'], 'no internet')

@@ -113,6 +113,7 @@ REMOTE_SERVERS = {
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 REMOTE_API_ENDPOINTS = {
+    'ping': '/api/v2/ping/',
     'registration': '/api/v2/devices/',
     'config': '/api/v2/devices/{device_key}/',
     'payment_init': '/api/v2/payments/',

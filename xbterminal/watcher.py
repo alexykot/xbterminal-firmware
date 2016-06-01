@@ -1,14 +1,11 @@
 import logging
-import socket
 import threading
 import time
 
-import requests
 import psutil
 import usb.core
 
-import xbterminal
-from xbterminal import defaults
+from xbterminal.helpers import api
 
 logger = logging.getLogger(__name__)
 
@@ -60,11 +57,9 @@ class Watcher(threading.Thread):
     def check_system_state(self):
         # Check internet connection
         try:
-            # TODO: create API status endpoint
-            requests.get(xbterminal.runtime['remote_server'] + '/en/',
-                         timeout=defaults.EXTERNAL_CALLS_TIMEOUT)
+            api.send_request('get', api.get_url('ping'))
             self.internet = True
-        except (requests.exceptions.RequestException, socket.timeout):
+        except Exception:
             self.internet = False
 
     def log_system_stats(self):
