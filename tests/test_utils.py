@@ -137,8 +137,6 @@ class GetAddressTestCase(unittest.TestCase):
         self.assertEqual(result, self.address)
 
 
-@patch.dict('xbterminal.stages.payment.xbterminal.runtime',
-            device_key='paymentTestKey')
 @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
             remote_server='https://xbterminal.io')
 class PaymentTestCase(unittest.TestCase):
@@ -155,11 +153,12 @@ class PaymentTestCase(unittest.TestCase):
         })
         mac_addr = '01:23:45:67:89:00'
 
-        order = Payment.create_order(Decimal('1.00'), mac_addr)
+        order = Payment.create_order(
+            'paymentTestKey', Decimal('1.00'), mac_addr)
         self.assertTrue(send_mock.called)
         data = send_mock.call_args[1]['data']
         self.assertEqual(data['device'], 'paymentTestKey')
-        self.assertEqual(data['amount'], 1.0)
+        self.assertEqual(data['amount'], '1.00')
         self.assertEqual(data['bt_mac'], mac_addr)
 
         self.assertEqual(order.uid, 'test_uid')
@@ -174,7 +173,7 @@ class PaymentTestCase(unittest.TestCase):
                         'test_uri', None)
         result = order.cancel()
         self.assertTrue(send_mock.called)
-        self.assertIsNone(result)
+        self.assertTrue(result)
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_cancel_error(self, send_mock):
@@ -183,7 +182,7 @@ class PaymentTestCase(unittest.TestCase):
                         'test_uri', None)
         result = order.cancel()
         self.assertTrue(send_mock.called)
-        self.assertIsNone(result)
+        self.assertFalse(result)
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_send(self, send_mock):
@@ -201,7 +200,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertEqual(result, 'ack')
 
     @patch('xbterminal.stages.payment.api.send_request')
-    def test_check_unpaid(self, send_mock):
+    def test_check_new(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
                 'status': 'new',
@@ -212,10 +211,10 @@ class PaymentTestCase(unittest.TestCase):
                         'bitcoin:uri', None)
         result = order.check()
         self.assertTrue(send_mock.called)
-        self.assertIsNone(result)
+        self.assertEqual(result, 'new')
 
     @patch('xbterminal.stages.payment.api.send_request')
-    def test_check_paid(self, send_mock):
+    def test_check_notified(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
                 'status': 'notified',
@@ -226,7 +225,7 @@ class PaymentTestCase(unittest.TestCase):
                         'bitcoin:uri', None)
         result = order.check()
         self.assertTrue(send_mock.called)
-        self.assertEqual(result, 'https://xbterminal.io/prc/test_uid/')
+        self.assertEqual(result, 'notified')
 
     @patch('xbterminal.stages.payment.api.send_request')
     def test_check_error(self, send_mock):
@@ -238,9 +237,13 @@ class PaymentTestCase(unittest.TestCase):
         self.assertIsNone(result)
         self.assertTrue(send_mock.called)
 
+    def test_receipt_url(self):
+        order = Payment('test_uid', Decimal('0.25'), Decimal('200'),
+                        'bitcoin:uri', None)
+        self.assertEqual(order.receipt_url,
+                         'https://xbterminal.io/prc/test_uid/')
 
-@patch.dict('xbterminal.stages.withdrawal.xbterminal.runtime',
-            device_key='wdTestKey')
+
 @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
             remote_server='https://xbterminal.io')
 class WithdrawalTestCase(unittest.TestCase):
@@ -257,9 +260,12 @@ class WithdrawalTestCase(unittest.TestCase):
             },
         })
 
-        order = Withdrawal.create_order(Decimal('1.00'))
+        order = Withdrawal.create_order('wdTestKey', Decimal('1.00'))
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
+        data = send_mock.call_args[0][2]
+        self.assertEqual(data['device'], 'wdTestKey')
+        self.assertEqual(data['amount'], '1.00')
         self.assertEqual(order.uid, 'test_uid')
         self.assertEqual(order.btc_amount, Decimal('0.25'))
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
@@ -284,7 +290,8 @@ class WithdrawalTestCase(unittest.TestCase):
         send_mock.return_value = Mock()
 
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
-        order.cancel()
+        result = order.cancel()
+        self.assertTrue(result)
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
 
@@ -295,7 +302,8 @@ class WithdrawalTestCase(unittest.TestCase):
         send_mock.side_effect = NetworkError
 
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
-        order.cancel()
+        result = order.cancel()
+        self.assertFalse(result)
         self.assertTrue(send_mock.called)
 
     @patch('xbterminal.stages.withdrawal.api.send_request')
@@ -305,13 +313,13 @@ class WithdrawalTestCase(unittest.TestCase):
             'json.return_value': {'status': 'sent'},
         })
         result = order.check()
-        self.assertIsNone(result)
+        self.assertEqual(result, 'sent')
 
         send_mock.return_value = Mock(**{
             'json.return_value': {'status': 'completed'},
         })
         result = order.check()
-        self.assertEqual(result, 'https://xbterminal.io/wrc/test_uid/')
+        self.assertEqual(result, 'completed')
 
     @patch('xbterminal.stages.withdrawal.api.send_request')
     def test_check_order_error(self, send_mock):
@@ -320,3 +328,8 @@ class WithdrawalTestCase(unittest.TestCase):
         result = order.check()
         self.assertIsNone(result)
         self.assertTrue(send_mock.called)
+
+    def test_receipt_url(self):
+        order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
+        self.assertEqual(order.receipt_url,
+                         'https://xbterminal.io/wrc/test_uid/')

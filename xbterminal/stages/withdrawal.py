@@ -2,7 +2,6 @@ from decimal import Decimal
 import logging
 import re
 
-import xbterminal
 from xbterminal.helpers import api
 
 logger = logging.getLogger(__name__)
@@ -23,16 +22,17 @@ class Withdrawal(object):
         self.confirmed = False
 
     @classmethod
-    def create_order(cls, fiat_amount):
+    def create_order(cls, device_key, fiat_amount):
         """
         Accepts:
+            device_key: device key, string
             fiat_amount: amount to withdraw (Decimal)
         Returns:
             class instance or None
         """
         url = api.get_url('withdrawal_init')
         payload = {
-            'device': xbterminal.runtime['device_key'],
+            'device': device_key,
             'amount': str(fiat_amount),
         }
         response = api.send_request('post', url, payload, signed=True)
@@ -60,13 +60,16 @@ class Withdrawal(object):
         try:
             api.send_request('post', url, signed=True)
         except Exception as error:
-            return None
-        logger.info('cancelled withdrawal order {0}'.format(self.uid))
+            logger.exception(error)
+            return False
+        else:
+            logger.info('cancelled withdrawal order {0}'.format(self.uid))
+            return True
 
     def check(self):
         """
         Returns:
-            receipt_url or None
+            status: withdrawal status or None in case of error
         """
         url = api.get_url('withdrawal_check', uid=self.uid)
         try:
@@ -74,5 +77,9 @@ class Withdrawal(object):
             result = response.json()
         except Exception as error:
             return None
-        if result['status'] == 'completed':
-            return api.get_url('withdrawal_receipt', uid=self.uid)
+        else:
+            return result['status']
+
+    @property
+    def receipt_url(self):
+        return api.get_url('withdrawal_receipt', uid=self.uid)

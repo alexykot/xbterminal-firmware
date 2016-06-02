@@ -2,7 +2,6 @@
 from decimal import Decimal
 import logging
 
-import xbterminal
 from xbterminal import defaults
 from xbterminal.helpers import api
 
@@ -19,9 +18,10 @@ class Payment(object):
         self.request = request.decode('base64') if request else None
 
     @classmethod
-    def create_order(cls, fiat_amount, bt_mac):
+    def create_order(cls, device_key, fiat_amount, bt_mac):
         """
         Accepts:
+            device_key: device key, string
             fiat_amount: amount to pay (Decimal)
             bt_mac: mac address
         Returns:
@@ -29,8 +29,8 @@ class Payment(object):
         """
         payment_init_url = api.get_url('payment_init')
         payload = {
-            'device': xbterminal.runtime['device_key'],
-            'amount': float(fiat_amount),
+            'device': device_key,
+            'amount': str(fiat_amount),
             'bt_mac': bt_mac,
         }
         response = api.send_request('post', payment_init_url, data=payload)
@@ -50,8 +50,11 @@ class Payment(object):
         try:
             api.send_request('post', url)
         except Exception as error:
-            return None
-        logger.info('cancelled payment order {0}'.format(self.uid))
+            logger.exception(error)
+            return False
+        else:
+            logger.info('cancelled payment order {0}'.format(self.uid))
+            return True
 
     def send(self, message):
         """
@@ -77,7 +80,7 @@ class Payment(object):
     def check(self):
         """
         Returns:
-            receipt_url: url or None
+            status: payment status or None in case of error
         """
         payment_check_url = api.get_url('payment_check', uid=self.uid)
         try:
@@ -85,5 +88,9 @@ class Payment(object):
             result = response.json()
         except Exception as error:
             return None
-        if result['status'] in ['notified', 'confirmed']:
-            return api.get_url('payment_receipt', uid=self.uid)
+        else:
+            return result['status']
+
+    @property
+    def receipt_url(self):
+        return api.get_url('payment_receipt', uid=self.uid)

@@ -411,6 +411,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
 
     def test_no_amount(self):
         run = {
+            'device_key': 'testKey',
             'payment': {
                 'fiat_amount': None,
             },
@@ -424,6 +425,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
     def test_proceed(self, create_order_mock):
         create_order_mock.return_value = Mock(payment_uri='test')
         run = {
+            'device_key': 'testKey',
             'payment': {
                 'fiat_amount': Decimal('1.00'),
             },
@@ -434,6 +436,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'load_indefinite')
         self.assertIsNotNone(run['payment']['order'])
+        self.assertEqual(create_order_mock.call_args[0][0], 'testKey')
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_info'])
 
@@ -441,6 +444,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
     def test_server_error(self, create_order_mock):
         create_order_mock.side_effect = ServerError
         run = {
+            'device_key': 'testKey',
             'payment': {
                 'fiat_amount': Decimal('1.00'),
             },
@@ -556,7 +560,8 @@ class PayWaitStageTestCase(unittest.TestCase):
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
             'payment_uri': 'test',
-            'check.return_value': 'test',
+            'check.return_value': 'notified',
+            'receipt_url': 'test_url',
         })
         host_system_mock = Mock()
         bluetooth_server_mock = Mock()
@@ -586,7 +591,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                          Decimal('1.00'))
         self.assertTrue(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
-        self.assertEqual(run['payment']['receipt_url'], 'test')
+        self.assertEqual(run['payment']['receipt_url'], 'test_url')
         self.assertIsNotNone(run['payment']['order'])
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_success'])
@@ -682,6 +687,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
     @patch('xbterminal.stages.withdrawal.Withdrawal.create_order')
     def test_proceed(self, create_order_mock):
         run = {
+            'device_key': 'testKey',
             'withdrawal': {'fiat_amount': Decimal('1.00')},
         }
         ui = Mock()
@@ -690,10 +696,12 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_scan'])
         self.assertEqual(run['withdrawal']['order'], 'test_order')
+        self.assertEqual(create_order_mock.call_args[0][0], 'testKey')
 
     @patch('xbterminal.stages.withdrawal.Withdrawal.create_order')
     def test_server_error(self, create_order_mock):
         run = {
+            'device_key': 'testKey',
             'withdrawal': {
                 'fiat_amount': Decimal('1.00'),
             },
@@ -846,7 +854,8 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         order_mock = Mock(**{
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
-            'check.return_value': 'test_url',
+            'check.return_value': 'completed',
+            'receipt_url': 'test_url',
             'confirmed': False,
         })
         host_system_mock = Mock()
