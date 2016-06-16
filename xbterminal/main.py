@@ -32,24 +32,22 @@ def init(state):
     state['remote_server'] = xbterminal.defaults.REMOTE_SERVERS[remote_server_name]
     logger.info('remote server {}'.format(state['remote_server']))
 
+    state['keypad'] = Keypad()
+
+    state['watcher'] = xbterminal.watcher.Watcher()
+    state['watcher'].start()
+
 
 def main():
     logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
     logger.debug('starting')
 
-    run = state
-
     init(state)
 
     main_window = xbterminal.gui.gui.initGUI()
-
-    run['keypad'] = Keypad()
-
-    watcher = xbterminal.watcher.Watcher()
-    watcher.start()
-
     worker = None
     worker_thread = None
+    run = state
 
     logger.debug('main loop starting')
     while True:
@@ -58,7 +56,7 @@ def main():
         main_window.processEvents()
 
         # (Re)load remote config
-        if watcher.internet and \
+        if run['watcher'].internet and \
                 run['init']['registration'] and \
                 run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             try:
@@ -75,7 +73,7 @@ def main():
                     run['remote_config']['currency']['prefix'])
 
         # Communicate with watcher
-        watcher_errors = watcher.get_errors()
+        watcher_errors = run['watcher'].get_errors()
         if watcher_errors:
             main_window.showErrors(watcher_errors)
             continue

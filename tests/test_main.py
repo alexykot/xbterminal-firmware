@@ -50,7 +50,8 @@ class InitTestCase(unittest.TestCase):
 
     @patch('xbterminal.main.xbterminal.helpers.configs.read_device_key')
     @patch('xbterminal.main.xbterminal.helpers.configs.load_local_config')
-    def test_init(self, load_mock, read_mock):
+    @patch('xbterminal.main.xbterminal.watcher.Watcher')
+    def test_init(self, watcher_mock, load_mock, read_mock):
         read_mock.return_value = 'test-key'
         load_mock.return_value = {'remote_server': 'prod'}
         state = {}
@@ -58,3 +59,5 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(state['device_key'], 'test-key')
         self.assertIn('local_config', state)
         self.assertEqual(state['remote_server'], 'https://xbterminal.io')
+        self.assertIn('keypad', state)
+        self.assertIn('watcher', state)
