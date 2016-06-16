@@ -1,10 +1,13 @@
 import unittest
 
+from mock import patch
+
 from xbterminal.state import get_initial_state
 from xbterminal import defaults
+from xbterminal.main import init
 
 
-class InitialStateTestCase(unittest.TestCase):
+class InitTestCase(unittest.TestCase):
 
     def test_initial_state(self):
         state = get_initial_state()
@@ -44,3 +47,14 @@ class InitialStateTestCase(unittest.TestCase):
         self.assertIsNone(state['bluetooth_server'])
         self.assertIsNone(state['nfc_server'])
         self.assertIsNone(state['qr_scanner'])
+
+    @patch('xbterminal.main.xbterminal.helpers.configs.read_device_key')
+    @patch('xbterminal.main.xbterminal.helpers.configs.load_local_config')
+    def test_init(self, load_mock, read_mock):
+        read_mock.return_value = 'test-key'
+        load_mock.return_value = {'remote_server': 'prod'}
+        state = {}
+        init(state)
+        self.assertEqual(state['device_key'], 'test-key')
+        self.assertIn('local_config', state)
+        self.assertEqual(state['remote_server'], 'https://xbterminal.io')

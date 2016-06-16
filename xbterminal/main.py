@@ -24,18 +24,22 @@ from xbterminal.state import state
 logger = logging.getLogger(__name__)
 
 
+def init(state):
+    state['device_key'] = xbterminal.helpers.configs.read_device_key()
+    state['local_config'] = xbterminal.helpers.configs.load_local_config()
+
+    remote_server_name = state['local_config'].get('remote_server', 'prod')
+    state['remote_server'] = xbterminal.defaults.REMOTE_SERVERS[remote_server_name]
+    logger.info('remote server {}'.format(state['remote_server']))
+
+
 def main():
     logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
     logger.debug('starting')
 
     run = state
 
-    run['device_key'] = xbterminal.helpers.configs.read_device_key()
-    run['local_config'] = xbterminal.helpers.configs.load_local_config()
-
-    remote_server_name = run['local_config'].get('remote_server', 'prod')
-    run['remote_server'] = xbterminal.defaults.REMOTE_SERVERS[remote_server_name]
-    logger.info('remote server {}'.format(run['remote_server']))
+    init(state)
 
     main_window = xbterminal.gui.gui.initGUI()
 
