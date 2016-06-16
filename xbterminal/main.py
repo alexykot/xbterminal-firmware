@@ -13,36 +13,21 @@ sys.path.insert(0, include_path)
 import xbterminal
 import xbterminal.defaults
 from xbterminal.exceptions import ConfigLoadError
-from xbterminal.keypad.keypad import Keypad
 import xbterminal.gui.gui
 import xbterminal.helpers.configs
 from xbterminal import defaults
 from xbterminal.stages.worker import StageWorker, move_to_thread
-import xbterminal.watcher
+from xbterminal.stages.init import init_step_1
 from xbterminal.state import state
 
 logger = logging.getLogger(__name__)
-
-
-def init(state):
-    state['device_key'] = xbterminal.helpers.configs.read_device_key()
-    state['local_config'] = xbterminal.helpers.configs.load_local_config()
-
-    remote_server_name = state['local_config'].get('remote_server', 'prod')
-    state['remote_server'] = xbterminal.defaults.REMOTE_SERVERS[remote_server_name]
-    logger.info('remote server {}'.format(state['remote_server']))
-
-    state['keypad'] = Keypad()
-
-    state['watcher'] = xbterminal.watcher.Watcher()
-    state['watcher'].start()
 
 
 def main():
     logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
     logger.debug('starting')
 
-    init(state)
+    init_step_1(state)
 
     main_window = xbterminal.gui.gui.initGUI()
     worker = None

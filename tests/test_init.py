@@ -4,7 +4,7 @@ from mock import patch
 
 from xbterminal.state import get_initial_state
 from xbterminal import defaults
-from xbterminal.main import init
+from xbterminal.stages.init import init_step_1
 
 
 class InitTestCase(unittest.TestCase):
@@ -48,14 +48,14 @@ class InitTestCase(unittest.TestCase):
         self.assertIsNone(state['nfc_server'])
         self.assertIsNone(state['qr_scanner'])
 
-    @patch('xbterminal.main.xbterminal.helpers.configs.read_device_key')
-    @patch('xbterminal.main.xbterminal.helpers.configs.load_local_config')
-    @patch('xbterminal.main.xbterminal.watcher.Watcher')
+    @patch('xbterminal.stages.init.configs.read_device_key')
+    @patch('xbterminal.stages.init.configs.load_local_config')
+    @patch('xbterminal.stages.init.Watcher')
     def test_init(self, watcher_mock, load_mock, read_mock):
         read_mock.return_value = 'test-key'
         load_mock.return_value = {'remote_server': 'prod'}
         state = {}
-        init(state)
+        init_step_1(state)
         self.assertEqual(state['device_key'], 'test-key')
         self.assertIn('local_config', state)
         self.assertEqual(state['remote_server'], 'https://xbterminal.io')
