@@ -5,9 +5,9 @@ import time
 logger = logging.getLogger(__name__)
 
 from xbterminal import defaults
-from xbterminal.stages import activation, amounts, payment, withdrawal
+from xbterminal.stages import amounts, payment, withdrawal
+from xbterminal.stages.init import init_step_2
 
-import xbterminal.helpers.clock
 import xbterminal.helpers.configs
 import xbterminal.helpers.qr
 from xbterminal.exceptions import NetworkError, ServerError
@@ -16,41 +16,10 @@ from xbterminal.exceptions import NetworkError, ServerError
 def bootup(run, ui):
     ui.showScreen('load_indefinite')
 
-    # Check system clock
-    # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
-    while True:
-        internet_time = xbterminal.helpers.clock.get_internet_time()
-        time_delta = abs(time.time() - internet_time)
-        if time_delta < 60:  # 1 minute
-            logger.info('clock synchronized')
-            run['init']['clock_synchronized'] = True
-            run['local_config']['last_started'] = time.time()
-            xbterminal.helpers.configs.save_local_config(run['local_config'])
-            break
-        logger.warning('machine time differs from internet time: {0}'.format(time_delta))
-        time.sleep(5)
-
-    # Check registration
-    if not activation.is_registered():
-        try:
-            run['local_config']['activation_code'] = activation.register_device()
-        except Exception as error:
-            # Registration error
-            logger.exception(error)
-            return defaults.STAGES['application_halt']
-        xbterminal.helpers.configs.save_local_config(run['local_config'])
-    run['init']['registration'] = True
-
-    # Load remote config
-    run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
-    run['init']['remote_config'] = True
-    run['remote_config_last_update'] = int(time.time())
+    init_step_2(run)
     ui.retranslateUi(
         run['remote_config']['language']['code'],
         run['remote_config']['currency']['prefix'])
-
-    logger.info('working with {0}'.format(
-        run['remote_config']['bitcoin_network']))
 
     if run['remote_config']['status'] == 'active':
         return defaults.STAGES['idle']

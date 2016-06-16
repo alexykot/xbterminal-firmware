@@ -1,10 +1,11 @@
+import time
 import unittest
 
 from mock import patch, Mock
 
 from xbterminal.state import get_initial_state
 from xbterminal import defaults
-from xbterminal.stages.init import init_step_1
+from xbterminal.stages.init import init_step_1, init_step_2
 
 
 class InitTestCase(unittest.TestCase):
@@ -77,3 +78,58 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(state['bluetooth_server'], 'bluetooth')
         self.assertEqual(state['nfc_server'], 'nfc')
         self.assertEqual(state['qr_scanner'], 'scanner')
+
+    @patch('xbterminal.stages.init.clock.get_internet_time')
+    @patch('xbterminal.helpers.configs.save_local_config')
+    @patch('xbterminal.stages.activation.is_registered')
+    @patch('xbterminal.helpers.configs.load_remote_config')
+    def test_init_step_2(self, load_remote_config_mock, is_registered_mock,
+                         save_local_config_mock, get_time_mock):
+        get_time_mock.return_value = time.time()
+        is_registered_mock.return_value = True
+        load_remote_config_mock.return_value = {
+            'status': 'active',
+            'bitcoin_network': 'mainnet',
+        }
+
+        state = {
+            'init': {},
+            'local_config': {},
+        }
+        init_step_2(state)
+        self.assertTrue(state['init']['clock_synchronized'])
+        self.assertIn('last_started', state['local_config'])
+        self.assertTrue(save_local_config_mock.called)
+        self.assertTrue(state['init']['registration'])
+        self.assertTrue(state['init']['remote_config'])
+        self.assertGreater(state['remote_config_last_update'], 0)
+        self.assertEqual(state['remote_config']['status'], 'active')
+
+    @patch('xbterminal.stages.init.clock.get_internet_time')
+    @patch('xbterminal.helpers.configs.save_local_config')
+    @patch('xbterminal.stages.activation.is_registered')
+    @patch('xbterminal.stages.activation.register_device')
+    @patch('xbterminal.helpers.configs.load_remote_config')
+    def test_init_step_2_registration(self, load_remote_config_mock,
+                                      register_device_mock,
+                                      is_registered_mock,
+                                      save_local_config_mock,
+                                      get_time_mock):
+        get_time_mock.return_value = time.time()
+        is_registered_mock.return_value = False
+        register_device_mock.return_value = 'testCode'
+        load_remote_config_mock.return_value = {
+            'status': 'activation',
+            'bitcoin_network': 'mainnet',
+        }
+
+        state = {
+            'init': {},
+            'local_config': {},
+        }
+        init_step_2(state)
+        self.assertTrue(state['init']['registration'])
+        self.assertEqual(state['local_config']['activation_code'], 'testCode')
+        self.assertTrue(state['init']['remote_config'])
+        self.assertGreater(state['remote_config_last_update'], 0)
+        self.assertEqual(state['remote_config']['status'], 'activation')
