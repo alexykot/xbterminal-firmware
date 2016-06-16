@@ -1,6 +1,6 @@
 import unittest
 
-from xbterminal.main import get_initial_state
+from xbterminal.state import get_initial_state
 from xbterminal import defaults
 
 

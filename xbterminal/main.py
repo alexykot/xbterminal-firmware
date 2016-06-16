@@ -5,7 +5,6 @@ import time
 import sys
 import os
 import logging.config
-from collections import deque
 import signal
 
 include_path = os.path.dirname(os.path.dirname(__file__))
@@ -20,55 +19,16 @@ import xbterminal.helpers.configs
 from xbterminal import defaults
 from xbterminal.stages.worker import StageWorker, move_to_thread
 import xbterminal.watcher
+from xbterminal.state import state
 
 logger = logging.getLogger(__name__)
-
-
-def get_initial_state():
-    return {
-        'device_key': None,
-        'local_config': {},
-        'remote_server': None,
-        'remote_config': {},
-        'last_activity_timestamp': None,
-        'keypad': None,
-        'keyboard_events': deque(maxlen=1),  # Only for keyboard driver
-        'host_system': None,
-        'bluetooth_server': None,
-        'nfc_server': None,
-        'qr_scanner': None,
-        'screen_buttons': {button_name: False for button_name
-                           in xbterminal.gui.gui.GUI.BUTTONS},
-        'init': {
-            'clock_synchronized': False,
-            'registration': False,
-            'remote_config': False,
-            'remote_config_last_update': 0,
-        },
-        'CURRENT_STAGE': defaults.STAGES['bootup'],
-        'payment': {
-            # Variables related to payment process
-            'fiat_amount': None,
-            'order': None,
-            'qr_image_path': None,
-            'receipt_url': None,
-        },
-        'withdrawal': {
-            # Variables related to withdrawal process
-            'fiat_amount': None,
-            'order': None,
-            'address': None,
-            'receipt_url': None,
-            'qr_image_path': None,
-        },
-    }
 
 
 def main():
     logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
     logger.debug('starting')
 
-    run = xbterminal.runtime = get_initial_state()
+    run = xbterminal.runtime = state
 
     run['device_key'] = xbterminal.helpers.configs.read_device_key()
     run['local_config'] = xbterminal.helpers.configs.load_local_config()
