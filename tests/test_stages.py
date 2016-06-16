@@ -40,27 +40,33 @@ class BootupStageTestCase(unittest.TestCase):
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.is_registered')
-    def test_bootup(self, is_registered_mock,
-                    save_local_config_mock,
-                    get_time_mock, sleep_mock):
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'configs.load_remote_config')
+    def test_bootup(self, load_remote_config_mock, is_registered_mock,
+                    save_local_config_mock, get_time_mock, sleep_mock):
         run = {
-            'init': {'remote_config': True},
+            'init': {},
             'local_config': {},
-            'remote_config': {
-                'status': 'active',
-                'bitcoin_network': 'mainnet',
-            },
         }
         ui = Mock()
         get_time_mock.return_value = time.time()
         is_registered_mock.return_value = True
+        load_remote_config_mock.return_value = {
+            'status': 'active',
+            'bitcoin_network': 'mainnet',
+            'language': {'code': 'en'},
+            'currency': {'prefix': '$'},
+        }
         next_stage = stages.bootup(run, ui)
 
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
         self.assertTrue(run['init']['clock_synchronized'])
-        self.assertTrue(run['init']['registration'])
         self.assertIn('last_started', run['local_config'])
         self.assertTrue(save_local_config_mock.called)
+        self.assertTrue(run['init']['registration'])
+        self.assertTrue(run['init']['remote_config'])
+        self.assertGreater(run['remote_config_last_update'], 0)
+        self.assertEqual(run['remote_config']['status'], 'active')
         self.assertEqual(next_stage, defaults.STAGES['idle'])
 
     @patch('xbterminal.stages.stages.time.sleep')
@@ -72,25 +78,33 @@ class BootupStageTestCase(unittest.TestCase):
            'activation.is_registered')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.register_device')
-    def test_registration(self, register_device_mock, is_registered_mock,
+    @patch('xbterminal.stages.stages.xbterminal.helpers.'
+           'configs.load_remote_config')
+    def test_registration(self, load_remote_config_mock,
+                          register_device_mock, is_registered_mock,
                           save_local_config_mock, get_time_mock, sleep_mock):
         run = {
-            'init': {'remote_config': True},
+            'init': {},
             'local_config': {},
-            'remote_config': {
-                'status': 'activation',
-                'bitcoin_network': 'mainnet',
-            },
         }
         ui = Mock()
         get_time_mock.return_value = time.time()
         is_registered_mock.return_value = False
         register_device_mock.return_value = 'testCode'
+        load_remote_config_mock.return_value = {
+            'status': 'activation',
+            'bitcoin_network': 'mainnet',
+            'language': {'code': 'en'},
+            'currency': {'prefix': '$'},
+        }
         next_stage = stages.bootup(run, ui)
 
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
         self.assertEqual(run['local_config']['activation_code'], 'testCode')
         self.assertTrue(run['init']['registration'])
+        self.assertTrue(run['init']['remote_config'])
+        self.assertGreater(run['remote_config_last_update'], 0)
+        self.assertEqual(run['remote_config']['status'], 'activation')
         self.assertEqual(next_stage, defaults.STAGES['activate'])
 
 

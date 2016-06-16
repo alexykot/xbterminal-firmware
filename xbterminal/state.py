@@ -9,6 +9,7 @@ def get_initial_state():
         'local_config': {},
         'remote_server': None,
         'remote_config': {},
+        'remote_config_last_update': 0,
         'last_activity_timestamp': None,
         'keypad': None,
         'keyboard_events': deque(maxlen=1),  # Only for keyboard driver
@@ -22,7 +23,6 @@ def get_initial_state():
             'clock_synchronized': False,
             'registration': False,
             'remote_config': False,
-            'remote_config_last_update': 0,
         },
         'CURRENT_STAGE': defaults.STAGES['bootup'],
         'payment': {

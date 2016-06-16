@@ -12,7 +12,6 @@ sys.path.insert(0, include_path)
 
 import xbterminal
 import xbterminal.defaults
-from xbterminal.exceptions import ConfigLoadError
 import xbterminal.gui.gui
 import xbterminal.helpers.configs
 from xbterminal import defaults
@@ -40,24 +39,7 @@ def main():
 
         main_window.processEvents()
 
-        # (Re)load remote config
-        if run['watcher'].internet and \
-                run['init']['registration'] and \
-                run['init']['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
-            try:
-                run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
-            except ConfigLoadError as error:
-                # No remote config available, stop
-                logger.exception(error)
-                break
-            else:
-                run['init']['remote_config'] = True
-                run['init']['remote_config_last_update'] = int(time.time())
-                main_window.retranslateUi(
-                    run['remote_config']['language']['code'],
-                    run['remote_config']['currency']['prefix'])
-
-        # Communicate with watcher
+        # Check for errors
         watcher_errors = run['watcher'].get_errors()
         if watcher_errors:
             main_window.showErrors(watcher_errors)
@@ -65,17 +47,26 @@ def main():
         else:
             main_window.hideErrors()
 
+        # Reload remote config
+        if run['init']['registration'] and \
+                run['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
+            run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
+            run['remote_config_last_update'] = int(time.time())
+            main_window.retranslateUi(
+                run['remote_config']['language']['code'],
+                run['remote_config']['currency']['prefix'])
+
         # Read keypad input
         run['keypad'].getKey()
         if run['last_activity_timestamp'] < run['keypad'].last_activity_timestamp:
             run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
 
         if run['keypad'].last_key_pressed == 'application_halt':
-            graceful_exit()
+            break
 
         # Manage stages
         if run['CURRENT_STAGE'] == 'application_halt':
-            graceful_exit()
+            break
         if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)
             worker.ui.signal.connect(main_window.stageWorkerSlot)

@@ -41,11 +41,13 @@ def bootup(run, ui):
         xbterminal.helpers.configs.save_local_config(run['local_config'])
     run['init']['registration'] = True
 
-    # Wait for remote config
-    while True:
-        if run['init']['remote_config']:
-            break
-        time.sleep(1)
+    # Load remote config
+    run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
+    run['init']['remote_config'] = True
+    run['remote_config_last_update'] = int(time.time())
+    ui.retranslateUi(
+        run['remote_config']['language']['code'],
+        run['remote_config']['currency']['prefix'])
 
     logger.info('working with {0}'.format(
         run['remote_config']['bitcoin_network']))
