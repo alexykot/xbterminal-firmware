@@ -1,7 +1,6 @@
 from collections import deque
 
 from xbterminal import defaults
-from xbterminal.gui.gui import GUI
 
 
 def get_initial_state():
@@ -17,7 +16,8 @@ def get_initial_state():
         'bluetooth_server': None,
         'nfc_server': None,
         'qr_scanner': None,
-        'screen_buttons': {button_name: False for button_name in GUI.BUTTONS},
+        'screen_buttons': {button_name: False for button_name
+                           in defaults.BUTTONS},
         'init': {
             'clock_synchronized': False,
             'registration': False,
