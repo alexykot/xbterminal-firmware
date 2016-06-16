@@ -31,10 +31,10 @@ class DeviceKeyTestCase(unittest.TestCase):
         self.assertEqual(device_key, 'testNumber')
 
 
-@patch.dict('xbterminal.helpers.configs.xbterminal.runtime',
+@patch.dict('xbterminal.helpers.configs.state',
             device_key='test',
             remote_config={})
-@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+@patch.dict('xbterminal.helpers.api.state',
             remote_server='https://xbterminal.io')
 class RemoteConfigTestCase(unittest.TestCase):
 

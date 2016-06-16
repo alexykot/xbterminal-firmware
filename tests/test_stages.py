@@ -10,7 +10,7 @@ from xbterminal.exceptions import ServerError
 
 
 patcher = patch.dict(
-    'xbterminal.stages.amounts.xbterminal.runtime',
+    'xbterminal.stages.amounts.state',
     remote_config={
         'language': {
             'code': 'en',

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal, ROUND_FLOOR
 
-import xbterminal
 from xbterminal.defaults import (
     OUTPUT_DEC_PLACES,
     BITCOIN_SCALE_DIVIZER,
     BITCOIN_OUTPUT_DEC_PLACES)
+from xbterminal.state import state
 
 
 FIAT_AMOUNT_TEMPLATE = u'{prefix}{integer}{dsep}{frac}'
@@ -21,9 +21,9 @@ def format_fiat_amount_pretty(value, prefix=False):
     quantum = Decimal(1) / 10 ** OUTPUT_DEC_PLACES
     integer_part = value.quantize(0, ROUND_FLOOR)
     fractional_part = (value - integer_part).quantize(quantum)
-    thousand_sep = xbterminal.runtime['remote_config']['language']['thousands_split']
-    decimal_sep = xbterminal.runtime['remote_config']['language']['fractional_split']
-    currency_prefix = xbterminal.runtime['remote_config']['currency']['prefix']
+    thousand_sep = state['remote_config']['language']['thousands_split']
+    decimal_sep = state['remote_config']['language']['fractional_split']
+    currency_prefix = state['remote_config']['currency']['prefix']
     return FIAT_AMOUNT_TEMPLATE.format(
         prefix=currency_prefix if prefix else '',
         integer=format(integer_part, thousand_sep),
@@ -36,8 +36,8 @@ def format_btc_amount_pretty(value, prefix=False, frac2_size='small'):
     quantum = Decimal(1) / 10 ** BITCOIN_OUTPUT_DEC_PLACES
     integer_part = value_scaled.quantize(0, ROUND_FLOOR)
     fractional_part = (value_scaled - integer_part).quantize(quantum)
-    thousand_sep = xbterminal.runtime['remote_config']['language']['thousands_split']
-    decimal_sep = xbterminal.runtime['remote_config']['language']['fractional_split']
+    thousand_sep = state['remote_config']['language']['thousands_split']
+    decimal_sep = state['remote_config']['language']['fractional_split']
     return BTC_AMOUNT_TEMPLATE.format(
         prefix=u'm฿' if prefix else '',
         integer=format(integer_part, thousand_sep),

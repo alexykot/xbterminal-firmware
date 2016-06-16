@@ -4,7 +4,6 @@ import time
 
 logger = logging.getLogger(__name__)
 
-import xbterminal
 from xbterminal import defaults
 from xbterminal.stages import activation, amounts, payment, withdrawal
 

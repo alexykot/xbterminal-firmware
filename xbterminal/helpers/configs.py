@@ -4,10 +4,10 @@ import os
 import logging
 import pprint
 
-import xbterminal
 from xbterminal import defaults
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.helpers import api
+from xbterminal.state import state
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ def read_batch_number():
 
 def load_remote_config():
     config_url = api.get_url('config',
-                             device_key=xbterminal.runtime['device_key'])
+                             device_key=state['device_key'])
     try:
         response = api.send_request('get', config_url)
         remote_config = response.json()
@@ -40,7 +40,7 @@ def load_remote_config():
             raise ConfigLoadError()
     else:
         # Compare configs
-        if cmp(xbterminal.runtime['remote_config'], remote_config):
+        if cmp(state['remote_config'], remote_config):
             logger.info('remote config loaded, contents:\n{config_contents}'.format(
                 config_contents=pprint.pformat(remote_config)))
         else:

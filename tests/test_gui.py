@@ -7,7 +7,7 @@ from xbterminal import defaults
 
 class ApplicationTestCase(unittest.TestCase):
 
-    @patch.dict('xbterminal.gui.gui.xbterminal.runtime',
+    @patch.dict('xbterminal.gui.gui.state',
                 local_config={})
     def test_init(self):
         application = Application()

@@ -12,7 +12,7 @@ from xbterminal.helpers import api
 from xbterminal.exceptions import NetworkError, ServerError
 
 
-@patch.dict('xbterminal.stages.amounts.xbterminal.runtime',
+@patch.dict('xbterminal.stages.amounts.state',
             remote_config={
                 'language': {
                     'code': 'en',
@@ -50,7 +50,7 @@ class AmountsUtilsTestCase(unittest.TestCase):
         self.assertEqual(result, u'1 BTC = $241.80')
 
 
-@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+@patch.dict('xbterminal.helpers.api.state',
             remote_server='https://xbterminal.io')
 class ApiUtilsTestCase(unittest.TestCase):
 
@@ -137,7 +137,7 @@ class GetAddressTestCase(unittest.TestCase):
         self.assertEqual(result, self.address)
 
 
-@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+@patch.dict('xbterminal.helpers.api.state',
             remote_server='https://xbterminal.io')
 class PaymentTestCase(unittest.TestCase):
 
@@ -244,7 +244,7 @@ class PaymentTestCase(unittest.TestCase):
                          'https://xbterminal.io/prc/test_uid/')
 
 
-@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+@patch.dict('xbterminal.helpers.api.state',
             remote_server='https://xbterminal.io')
 class WithdrawalTestCase(unittest.TestCase):
 

@@ -11,10 +11,10 @@ from PyQt4 import QtGui, QtCore
 
 logger = logging.getLogger(__name__)
 
-import xbterminal
 import xbterminal.helpers
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
+from xbterminal.state import state
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -41,7 +41,7 @@ class Application(QtGui.QApplication):
         self.loadTranslations()
 
     def initResources(self):
-        theme = xbterminal.runtime['local_config'].get(
+        theme = state['local_config'].get(
             'theme',
             defaults.UI_DEFAULT_THEME)
         file, pathname, description = imp.find_module(
@@ -127,12 +127,12 @@ class GUI(QtGui.QMainWindow):
             logger.exception(error)
 
     def keyPressEvent(self, event):
-        xbterminal.runtime['keyboard_events'].append(event.key())
+        state['keyboard_events'].append(event.key())
 
     def buttonPressEvent(self, button_name):
         logger.debug('button "{0}" pressed'.format(button_name))
-        xbterminal.runtime['last_activity_timestamp'] = time.time()
-        xbterminal.runtime['screen_buttons'][button_name] = True
+        state['last_activity_timestamp'] = time.time()
+        state['screen_buttons'][button_name] = True
 
     def currentScreen(self):
         screen_index = self.ui.main_stackedWidget.currentIndex()
@@ -166,8 +166,8 @@ class GUI(QtGui.QMainWindow):
         """
         if self._application.setLanguage(language_code):
             self.ui.retranslateUi(self)
-            xbterminal.runtime['local_config']['language'] = language_code
-            xbterminal.helpers.configs.save_local_config(xbterminal.runtime['local_config'])
+            state['local_config']['language'] = language_code
+            xbterminal.helpers.configs.save_local_config(state['local_config'])
 
     def showErrors(self, errors):
         translations = {
@@ -197,12 +197,12 @@ def initGUI():
 
     application.loadFonts()
 
-    if xbterminal.runtime['local_config'].get('show_cursor'):
+    if state['local_config'].get('show_cursor'):
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
     else:
         application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
 
-    language_code = xbterminal.runtime['local_config'].get(
+    language_code = state['local_config'].get(
         'language',
         defaults.UI_DEFAULT_LANGUAGE)
     application.setLanguage(language_code)

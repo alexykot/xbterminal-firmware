@@ -28,7 +28,7 @@ def main():
     logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
     logger.debug('starting')
 
-    run = xbterminal.runtime = state
+    run = state
 
     run['device_key'] = xbterminal.helpers.configs.read_device_key()
     run['local_config'] = xbterminal.helpers.configs.load_local_config()
@@ -101,14 +101,14 @@ def main():
 
 
 def sighup_handler(*args):
-    xbterminal.runtime['local_config'] = xbterminal.helpers.configs.load_local_config()
+    state['local_config'] = xbterminal.helpers.configs.load_local_config()
 
 signal.signal(signal.SIGHUP, sighup_handler)
 
 
 def graceful_exit():
     xbterminal.helpers.configs.save_local_config(
-        xbterminal.runtime['local_config'])
+        state['local_config'])
     logger.warning('application halted')
     sys.exit()
 
