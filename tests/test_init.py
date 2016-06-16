@@ -1,6 +1,6 @@
 import unittest
 
-from mock import patch
+from mock import patch, Mock
 
 from xbterminal.state import get_initial_state
 from xbterminal import defaults
@@ -51,13 +51,29 @@ class InitTestCase(unittest.TestCase):
     @patch('xbterminal.stages.init.configs.read_device_key')
     @patch('xbterminal.stages.init.configs.load_local_config')
     @patch('xbterminal.stages.init.Watcher')
-    def test_init(self, watcher_mock, load_mock, read_mock):
+    @patch('xbterminal.stages.init.BluetoothServer')
+    @patch('xbterminal.stages.init.NFCServer')
+    @patch('xbterminal.stages.init.QRScanner')
+    def test_init_step_1(self, scanner_cls_mock, nfc_cls_mock, bt_cls_mock,
+                         watcher_cls_mock, load_mock, read_mock):
         read_mock.return_value = 'test-key'
-        load_mock.return_value = {'remote_server': 'prod'}
+        load_mock.return_value = {
+            'remote_server': 'prod',
+            'use_cctalk_mock': True,
+        }
+        watcher_cls_mock.return_value = watcher_mock = Mock()
+        bt_cls_mock.return_value = 'bluetooth'
+        nfc_cls_mock.return_value = 'nfc'
+        scanner_cls_mock.return_value = 'scanner'
+
         state = {}
         init_step_1(state)
         self.assertEqual(state['device_key'], 'test-key')
         self.assertIn('local_config', state)
         self.assertEqual(state['remote_server'], 'https://xbterminal.io')
-        self.assertIn('keypad', state)
-        self.assertIn('watcher', state)
+        self.assertEqual(state['watcher'], watcher_mock)
+        self.assertEqual(state['keypad'].__class__.__name__, 'Keypad')
+        self.assertEqual(state['host_system'].__class__.__name__, 'HostSystem')
+        self.assertEqual(state['bluetooth_server'], 'bluetooth')
+        self.assertEqual(state['nfc_server'], 'nfc')
+        self.assertEqual(state['qr_scanner'], 'scanner')

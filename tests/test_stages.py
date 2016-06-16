@@ -40,12 +40,7 @@ class BootupStageTestCase(unittest.TestCase):
            'configs.save_local_config')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.is_registered')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.host.HostSystem')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
-    def test_bootup(self, qr_scanner_mock, nfc_server_mock, bt_server_mock,
-                    host_system_mock, is_registered_mock,
+    def test_bootup(self, is_registered_mock,
                     save_local_config_mock,
                     get_time_mock, sleep_mock):
         run = {
@@ -59,10 +54,6 @@ class BootupStageTestCase(unittest.TestCase):
         ui = Mock()
         get_time_mock.return_value = time.time()
         is_registered_mock.return_value = True
-        host_system_mock.return_value = 'host_system'
-        bt_server_mock.return_value = 'bt_server'
-        nfc_server_mock.return_value = 'nfc_server'
-        qr_scanner_mock.return_value = 'qr_scanner'
         next_stage = stages.bootup(run, ui)
 
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
@@ -70,10 +61,6 @@ class BootupStageTestCase(unittest.TestCase):
         self.assertTrue(run['init']['registration'])
         self.assertIn('last_started', run['local_config'])
         self.assertTrue(save_local_config_mock.called)
-        self.assertEqual(run['host_system'], 'host_system')
-        self.assertEqual(run['bluetooth_server'], 'bt_server')
-        self.assertEqual(run['nfc_server'], 'nfc_server')
-        self.assertEqual(run['qr_scanner'], 'qr_scanner')
         self.assertEqual(next_stage, defaults.STAGES['idle'])
 
     @patch('xbterminal.stages.stages.time.sleep')
@@ -85,13 +72,7 @@ class BootupStageTestCase(unittest.TestCase):
            'activation.is_registered')
     @patch('xbterminal.stages.stages.xbterminal.stages.'
            'activation.register_device')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.host.HostSystem')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.bt.BluetoothServer')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.nfcpy.NFCServer')
-    @patch('xbterminal.stages.stages.xbterminal.helpers.camera.QRScanner')
-    def test_registration(self, qr_scanner_mock, nfc_server_mock,
-                          bt_server_mock, host_system_mock,
-                          register_device_mock, is_registered_mock,
+    def test_registration(self, register_device_mock, is_registered_mock,
                           save_local_config_mock, get_time_mock, sleep_mock):
         run = {
             'init': {'remote_config': True},
@@ -105,19 +86,11 @@ class BootupStageTestCase(unittest.TestCase):
         get_time_mock.return_value = time.time()
         is_registered_mock.return_value = False
         register_device_mock.return_value = 'testCode'
-        host_system_mock.return_value = 'host_system'
-        bt_server_mock.return_value = 'bt_server'
-        nfc_server_mock.return_value = 'nfc_server'
-        qr_scanner_mock.return_value = 'qr_scanner'
         next_stage = stages.bootup(run, ui)
 
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
         self.assertEqual(run['local_config']['activation_code'], 'testCode')
         self.assertTrue(run['init']['registration'])
-        self.assertEqual(run['host_system'], 'host_system')
-        self.assertEqual(run['bluetooth_server'], 'bt_server')
-        self.assertEqual(run['nfc_server'], 'nfc_server')
-        self.assertEqual(run['qr_scanner'], 'qr_scanner')
         self.assertEqual(next_stage, defaults.STAGES['activate'])
 
 

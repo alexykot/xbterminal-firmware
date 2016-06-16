@@ -7,14 +7,9 @@ logger = logging.getLogger(__name__)
 from xbterminal import defaults
 from xbterminal.stages import activation, amounts, payment, withdrawal
 
-import xbterminal.helpers.bt
-import xbterminal.helpers.camera
 import xbterminal.helpers.clock
 import xbterminal.helpers.configs
-import xbterminal.helpers.host
-import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
-import xbterminal.gui.gui
 from xbterminal.exceptions import NetworkError, ServerError
 
 
@@ -34,13 +29,6 @@ def bootup(run, ui):
             break
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
-
-    # Initialize bluetooth and NFC servers
-    run['host_system'] = xbterminal.helpers.host.HostSystem(
-        use_mock=run['local_config'].get('use_cctalk_mock', True))
-    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
-    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
-    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
 
     # Check registration
     if not activation.is_registered():
