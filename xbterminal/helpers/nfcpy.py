@@ -3,7 +3,6 @@
 http://nfcpy.readthedocs.org/en/latest/
 """
 import logging
-import subprocess
 import threading
 import time
 
@@ -50,26 +49,6 @@ def send_uri(llc, uri):
     except (nfc.snep.SnepError,
             nfc.llcp.Error) as error:
         logger.exception(error)
-
-
-def reset_usb_hub():
-    logger.warning("USB HUB: RESETTING...")
-    bind_cmd = "echo usb1 > /sys/bus/usb/drivers/usb/bind"
-    unbind_cmd = "echo usb1 > /sys/bus/usb/drivers/usb/unbind"
-    # Unbind #1
-    subprocess.check_call(unbind_cmd, shell=True)
-    time.sleep(2)
-    # Bind #1 -> power-off
-    subprocess.check_call(bind_cmd, shell=True)
-    logger.warning("USB HUB: POWER OFF")
-    time.sleep(5)
-    # Unbind #2 -> power on
-    subprocess.check_call(unbind_cmd, shell=True)
-    logger.warning("USB HUB: POWER ON")
-    time.sleep(10)
-    # Bind #2
-    subprocess.check_call(bind_cmd, shell=True)
-    time.sleep(10)
 
 
 class NFCServer(object):
