@@ -19,6 +19,7 @@ class BitcoinSender(threading.Thread):
 
     def __init__(self, uri):
         super(BitcoinSender, self).__init__()
+        self.daemon = True
         self.terminate = False
         self.uri = uri
 

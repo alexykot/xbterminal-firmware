@@ -93,6 +93,7 @@ class Worker(threading.Thread):
 
     def __init__(self, camera):
         super(Worker, self).__init__()
+        self.daemon = True
         self.camera = camera
         self.data = None
         self._stop = threading.Event()

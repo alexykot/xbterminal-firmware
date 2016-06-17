@@ -88,6 +88,7 @@ class BluetoothWorker(threading.Thread):
 
     def __init__(self, device_id, payment):
         super(BluetoothWorker, self).__init__()
+        self.daemon = True
         self.device_id = device_id
         self.payment = payment
         self.server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
