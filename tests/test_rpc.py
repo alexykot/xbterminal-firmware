@@ -72,3 +72,19 @@ class APITestCase(unittest.TestCase):
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_activation_status()
         self.assertEqual(result['status'], 'active')
+
+    def test_get_activation_status_loading(self):
+        with patch.dict('xbterminal.api.state'):
+            result = api.get_activation_status()
+        self.assertEqual(result['status'], 'loading')
+
+    def test_get_activation_code(self):
+        state = {'local_config': {'activation_code': 'test'}}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_activation_code()
+        self.assertEqual(result['activation_code'], 'test')
+
+    def test_get_activation_code_none(self):
+        with patch.dict('xbterminal.api.state'):
+            result = api.get_activation_code()
+        self.assertIsNone(result['activation_code'])
