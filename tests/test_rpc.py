@@ -1,6 +1,7 @@
+from decimal import Decimal
 import json
 import unittest
-from mock import patch
+from mock import patch, Mock
 
 from tornado.testing import AsyncHTTPTestCase
 
@@ -88,3 +89,26 @@ class APITestCase(unittest.TestCase):
         with patch.dict('xbterminal.api.state'):
             result = api.get_activation_code()
         self.assertIsNone(result['activation_code'])
+
+    @patch('xbterminal.api.Payment.create_order')
+    def test_create_payment_order(self, create_order_mock):
+        state = {
+            'device_key': 'test-key',
+            'bluetooth_server': Mock(mac_address='00:00:00:00:00:00'),
+        }
+        create_order_mock.return_value = Mock(**{
+            'uid': 'test-uid',
+            'btc_amount': Decimal('0.25'),
+            'exchange_rate': Decimal('10.0'),
+            'payment_uri': 'test-uri',
+        })
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.create_payment_order(fiat_amount='1.25')
+        call_args = create_order_mock.call_args[0]
+        self.assertEqual(call_args[0], 'test-key')
+        self.assertEqual(call_args[1], '1.25')
+        self.assertEqual(call_args[2], '00:00:00:00:00:00')
+        self.assertEqual(result['uid'], 'test-uid')
+        self.assertEqual(result['btc_amount'], '0.25')
+        self.assertEqual(result['exchange_rate'], '10.0')
+        self.assertEqual(result['payment_uri'], 'test-uri')
