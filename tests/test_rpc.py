@@ -41,10 +41,28 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
             method='POST',
             body=json.dumps(payload),
             headers=headers)
-
         self.assertEqual(response.code, 200)
         result = json.loads(response.body)
         self.assertEqual(result['result'], 'test')
+
+    def test_echo_error(self):
+        payload = {
+            'method': 'echo',
+            'jsonrpc': '2.0',
+            'params': {},
+            'id': 0,
+        }
+        headers = {'Content-Type': 'application/json'}
+        response = self.fetch(
+            '/',
+            method='POST',
+            body=json.dumps(payload),
+            headers=headers)
+        self.assertEqual(response.code, 200)
+        result = json.loads(response.body)
+        self.assertIn('error', result)
+        self.assertEqual(result['error']['message'], 'Server error')
+        self.assertEqual(result['error']['code'], -32000)
 
 
 class APITestCase(unittest.TestCase):
