@@ -5,6 +5,7 @@ from mock import patch
 from tornado.testing import AsyncHTTPTestCase
 
 from xbterminal.main_rpc import Application
+from xbterminal import api
 
 
 class ApplicationTestCase(unittest.TestCase):
@@ -19,12 +20,10 @@ class ApplicationTestCase(unittest.TestCase):
         self.assertTrue(init_2_mock.called)
 
 
-class JSONRPCTestCase(AsyncHTTPTestCase):
+class JSONRPCServerTestCase(AsyncHTTPTestCase):
 
     def get_app(self):
-        state = {'remote_server': 'prod'}
-        with patch.dict('xbterminal.main.state', **state), \
-                patch('xbterminal.main_rpc.logging.config.dictConfig'), \
+        with patch('xbterminal.main_rpc.logging.config.dictConfig'), \
                 patch('xbterminal.main_rpc.init_step_1'), \
                 patch('xbterminal.main_rpc.init_step_2'):
             return Application()
@@ -46,3 +45,12 @@ class JSONRPCTestCase(AsyncHTTPTestCase):
         self.assertEqual(response.code, 200)
         result = json.loads(response.body)
         self.assertEqual(result['result'], 'test')
+
+
+class APITestCase(unittest.TestCase):
+
+    def test_get_activation_status(self):
+        state = {'remote_config': {'status': 'active'}}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_activation_status()
+        self.assertEqual(result['status'], 'active')

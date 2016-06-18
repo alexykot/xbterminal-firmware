@@ -2,13 +2,14 @@ import logging.config
 import sys
 import os
 
-from jsonrpc import JSONRPCResponseManager, dispatcher
+from jsonrpc import JSONRPCResponseManager
 import tornado.ioloop
 import tornado.web
 
 include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
+from xbterminal.api import dispatcher
 from xbterminal.defaults import LOG_CONFIG
 from xbterminal.stages.init import init_step_1, init_step_2
 from xbterminal.state import state
@@ -35,11 +36,6 @@ class Application(tornado.web.Application):
 
         init_step_1(state)
         init_step_2(state)
-
-
-@dispatcher.add_method
-def echo(**kwargs):
-    return kwargs['message']
 
 
 if __name__ == "__main__":
