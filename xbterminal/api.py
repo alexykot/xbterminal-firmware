@@ -29,6 +29,7 @@ def create_payment_order(**kwargs):
     order = Payment.create_order(state['device_key'],
                                  kwargs['fiat_amount'],
                                  state['bluetooth_server'].mac_address)
+    state['payments'][order.uid] = order
     data = {
         'uid': order.uid,
         'btc_amount': str(order.btc_amount),
@@ -36,3 +37,26 @@ def create_payment_order(**kwargs):
         'payment_uri': order.payment_uri,
     }
     return data
+
+
+@dispatcher.add_method
+def check_payment_order(**kwargs):
+    order_uid = kwargs['uid']
+    order = state['payments'][order_uid]
+    status = order.check()
+    return {'status': status}
+
+
+@dispatcher.add_method
+def cancel_payment_order(**kwargs):
+    order_uid = kwargs['uid']
+    order = state['payments'][order_uid]
+    result = order.cancel()
+    return {'result': result}
+
+
+@dispatcher.add_method
+def get_payment_receipt(**kwargs):
+    order_uid = kwargs['uid']
+    order = state['payments'][order_uid]
+    return {'receipt_url': order.receipt_url}

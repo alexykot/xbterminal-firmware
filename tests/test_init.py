@@ -48,6 +48,8 @@ class InitTestCase(unittest.TestCase):
         self.assertIsNone(state['bluetooth_server'])
         self.assertIsNone(state['nfc_server'])
         self.assertIsNone(state['qr_scanner'])
+        self.assertEqual(state['payments'], {})
+        self.assertEqual(state['withdrawals'], {})
 
     @patch('xbterminal.stages.init.configs.read_device_key')
     @patch('xbterminal.stages.init.configs.load_local_config')

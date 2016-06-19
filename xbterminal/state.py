@@ -40,6 +40,9 @@ def get_initial_state():
             'receipt_url': None,
             'qr_image_path': None,
         },
+        # For API
+        'payments': {},
+        'withdrawals': {},
     }
 
 state = get_initial_state()

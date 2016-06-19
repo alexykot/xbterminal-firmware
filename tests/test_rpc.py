@@ -95,8 +95,9 @@ class APITestCase(unittest.TestCase):
         state = {
             'device_key': 'test-key',
             'bluetooth_server': Mock(mac_address='00:00:00:00:00:00'),
+            'payments': {},
         }
-        create_order_mock.return_value = Mock(**{
+        create_order_mock.return_value = order_mock = Mock(**{
             'uid': 'test-uid',
             'btc_amount': Decimal('0.25'),
             'exchange_rate': Decimal('10.0'),
@@ -108,7 +109,38 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(call_args[0], 'test-key')
         self.assertEqual(call_args[1], '1.25')
         self.assertEqual(call_args[2], '00:00:00:00:00:00')
+        self.assertEqual(state['payments']['test-uid'], order_mock)
         self.assertEqual(result['uid'], 'test-uid')
         self.assertEqual(result['btc_amount'], '0.25')
         self.assertEqual(result['exchange_rate'], '10.0')
         self.assertEqual(result['payment_uri'], 'test-uri')
+
+    def test_check_payment_order(self):
+        state = {
+            'payments': {
+                'test-uid': Mock(**{'check.return_value': 'new'}),
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.check_payment_order(uid='test-uid')
+        self.assertEqual(result['status'], 'new')
+
+    def test_cancel_payment_order(self):
+        state = {
+            'payments': {
+                'test-uid': Mock(**{'cancel.return_value': True}),
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.cancel_payment_order(uid='test-uid')
+        self.assertTrue(result['result'])
+
+    def test_get_receipt_url(self):
+        state = {
+            'payments': {
+                'test-uid': Mock(receipt_url='test-url'),
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_payment_receipt(uid='test-uid')
+        self.assertEqual(result['receipt_url'], 'test-url')
