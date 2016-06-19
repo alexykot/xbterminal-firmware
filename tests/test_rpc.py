@@ -135,7 +135,7 @@ class APITestCase(unittest.TestCase):
             result = api.cancel_payment_order(uid='test-uid')
         self.assertTrue(result['result'])
 
-    def test_get_receipt_url(self):
+    def test_get_payment_receipt(self):
         state = {
             'payments': {
                 'test-uid': Mock(receipt_url='test-url'),
@@ -143,4 +143,71 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_payment_receipt(uid='test-uid')
+        self.assertEqual(result['receipt_url'], 'test-url')
+
+    @patch('xbterminal.api.Withdrawal.create_order')
+    def test_create_withdrawal_order(self, create_order_mock):
+        state = {
+            'device_key': 'test-key',
+            'withdrawals': {},
+        }
+        create_order_mock.return_value = order_mock = Mock(**{
+            'uid': 'test-uid',
+            'btc_amount': Decimal('0.25'),
+            'exchange_rate': Decimal('10.0'),
+        })
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.create_withdrawal_order(fiat_amount='1.25')
+        call_args = create_order_mock.call_args[0]
+        self.assertEqual(call_args[0], 'test-key')
+        self.assertEqual(call_args[1], '1.25')
+        self.assertEqual(state['withdrawals']['test-uid'], order_mock)
+        self.assertEqual(result['uid'], 'test-uid')
+        self.assertEqual(result['btc_amount'], '0.25')
+        self.assertEqual(result['exchange_rate'], '10.0')
+
+    def test_confirm_withdrawal_order(self):
+        order_mock = Mock(btc_amount=Decimal('0.2'),
+                          exchange_rate=Decimal('200'))
+        state = {
+            'withdrawals': {
+                'test-uid': order_mock,
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.confirm_withdrawal_order(
+                uid='test-uid', address='test-address')
+        self.assertEqual(order_mock.confirm.call_args[0][0],
+                         'test-address')
+        self.assertEqual(result['btc_amount'], '0.2')
+        self.assertEqual(result['exchange_rate'], '200')
+
+    def test_check_withdrawal_order(self):
+        state = {
+            'withdrawals': {
+                'test-uid': Mock(**{'check.return_value': 'new'}),
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.check_withdrawal_order(uid='test-uid')
+        self.assertEqual(result['status'], 'new')
+
+    def test_cancel_withdrawal_order(self):
+        state = {
+            'withdrawals': {
+                'test-uid': Mock(**{'cancel.return_value': True}),
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.cancel_withdrawal_order(uid='test-uid')
+        self.assertTrue(result['result'])
+
+    def test_get_withdrawal_receipt(self):
+        state = {
+            'withdrawals': {
+                'test-uid': Mock(receipt_url='test-url'),
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_withdrawal_receipt(uid='test-uid')
         self.assertEqual(result['receipt_url'], 'test-url')

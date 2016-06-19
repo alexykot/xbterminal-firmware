@@ -275,12 +275,17 @@ class WithdrawalTestCase(unittest.TestCase):
     @patch('xbterminal.helpers.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_confirm_order(self, send_mock):
-        send_mock.return_value = Mock(**{'json.return_value': {}})
+        send_mock.return_value = Mock(**{'json.return_value': {
+            'btc_amount': '0.26',
+            'exchange_rate': '200.5',
+        }})
 
-        order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
+        order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200.0'))
         order.confirm('1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE')
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
+        self.assertEqual(order.btc_amount, Decimal('0.26'))
+        self.assertEqual(order.exchange_rate, Decimal('200.5'))
         self.assertTrue(order.confirmed)
 
     @patch('xbterminal.stages.withdrawal.api.send_request')

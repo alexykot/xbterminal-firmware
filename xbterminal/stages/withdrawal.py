@@ -51,7 +51,10 @@ class Withdrawal(object):
         """
         url = api.get_url('withdrawal_confirm', uid=self.uid)
         payload = {'address': customer_address}
-        api.send_request('post', url, payload, signed=True)
+        response = api.send_request('post', url, payload, signed=True)
+        result = response.json()
+        self.btc_amount = Decimal(result['btc_amount'])
+        self.exchange_rate = Decimal(result['exchange_rate'])
         self.confirmed = True
         logger.info('confirmed withdrawal order {0}'.format(self.uid))
 
