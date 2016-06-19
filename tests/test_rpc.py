@@ -29,11 +29,14 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
                 patch('xbterminal.main_rpc.init_step_2'):
             return Application()
 
-    def test_echo(self):
+    @patch.dict(
+        'xbterminal.api.state',
+        payments={'test-uid': Mock(**{'check.return_value': 'new'})})
+    def test_check_payment_order(self):
         payload = {
-            'method': 'echo',
+            'method': 'check_payment_order',
             'jsonrpc': '2.0',
-            'params': {'message': 'test'},
+            'params': {'uid': 'test-uid'},
             'id': 0,
         }
         headers = {'Content-Type': 'application/json'}
@@ -44,13 +47,16 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
             headers=headers)
         self.assertEqual(response.code, 200)
         result = json.loads(response.body)
-        self.assertEqual(result['result'], 'test')
+        self.assertEqual(result['result']['status'], 'new')
 
-    def test_echo_error(self):
+    @patch.dict(
+        'xbterminal.api.state',
+        payments={'test-uid': Mock(**{'check.side_effect': ValueError})})
+    def test_check_payment_order_error(self):
         payload = {
-            'method': 'echo',
+            'method': 'check_payment_order',
             'jsonrpc': '2.0',
-            'params': {},
+            'params': {'uid': 'test-uid'},
             'id': 0,
         }
         headers = {'Content-Type': 'application/json'}
@@ -64,9 +70,22 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
         self.assertIn('error', result)
         self.assertEqual(result['error']['message'], 'Server error')
         self.assertEqual(result['error']['code'], -32000)
+        self.assertEqual(result['error']['data']['type'], 'ValueError')
 
 
 class APITestCase(unittest.TestCase):
+
+    def test_get_connection_status_online(self):
+        state = {'watcher': Mock(internet=True)}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_connection_status()
+        self.assertEqual(result['status'], 'online')
+
+    def test_get_connection_status_offline(self):
+        state = {'watcher': Mock(internet=False)}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_connection_status()
+        self.assertEqual(result['status'], 'offline')
 
     def test_get_activation_status(self):
         state = {'remote_config': {'status': 'active'}}

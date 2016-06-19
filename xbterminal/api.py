@@ -8,8 +8,9 @@ dispatcher = Dispatcher()
 
 
 @dispatcher.add_method
-def echo(**kwargs):
-    return kwargs['message']
+def get_connection_status(**kwargs):
+    is_connected = state['watcher'].internet
+    return {'status': 'online' if is_connected else 'offline'}
 
 
 @dispatcher.add_method
