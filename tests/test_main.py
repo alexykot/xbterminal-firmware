@@ -1,46 +1,37 @@
 import unittest
 
-from xbterminal.main import get_initial_state
-from xbterminal import defaults
+from mock import patch, Mock
+
+from xbterminal.main import main
 
 
-class InitialStateTestCase(unittest.TestCase):
+class MainTestCase(unittest.TestCase):
 
-    def test_initial_state(self):
-        state = get_initial_state()
-        self.assertFalse(state['init']['clock_synchronized'])
-        self.assertFalse(state['init']['registration'])
-        self.assertFalse(state['init']['remote_config'])
-        self.assertEqual(state['init']['remote_config_last_update'], 0)
-        self.assertEqual(state['CURRENT_STAGE'], defaults.STAGES['bootup'])
-        self.assertIsNone(state['payment']['fiat_amount'])
-        self.assertIsNone(state['payment']['order'])
-        self.assertIsNone(state['payment']['qr_image_path'])
-        self.assertIsNone(state['payment']['receipt_url'])
-        self.assertIsNone(state['withdrawal']['fiat_amount'])
-        self.assertIsNone(state['withdrawal']['order'])
-        self.assertIsNone(state['withdrawal']['address'])
-        self.assertIsNone(state['withdrawal']['receipt_url'])
-        self.assertIsNone(state['withdrawal']['qr_image_path'])
-        self.assertFalse(state['screen_buttons']['idle_begin_btn'])
-        self.assertFalse(state['screen_buttons']['sel_pay_btn'])
-        self.assertFalse(state['screen_buttons']['sel_withdraw_btn'])
-        self.assertFalse(state['screen_buttons']['pamount_opt1_btn'])
-        self.assertFalse(state['screen_buttons']['pamount_opt2_btn'])
-        self.assertFalse(state['screen_buttons']['pamount_opt3_btn'])
-        self.assertFalse(state['screen_buttons']['pamount_opt4_btn'])
-        self.assertFalse(state['screen_buttons']['pconfirm_decr_btn'])
-        self.assertFalse(state['screen_buttons']['pconfirm_incr_btn'])
-        self.assertFalse(state['screen_buttons']['pconfirm_confirm_btn'])
-        self.assertFalse(state['screen_buttons']['wconfirm_confirm_btn'])
-        self.assertIsNone(state['device_key'])
-        self.assertEqual(len(state['local_config'].keys()), 0)
-        self.assertIsNone(state['remote_server'])
-        self.assertEqual(len(state['remote_config'].keys()), 0)
-        self.assertIsNone(state['last_activity_timestamp'])
-        self.assertIsNone(state['keypad'])
-        self.assertEqual(len(state['keyboard_events']), 0)
-        self.assertIsNone(state['host_system'])
-        self.assertIsNone(state['bluetooth_server'])
-        self.assertIsNone(state['nfc_server'])
-        self.assertIsNone(state['qr_scanner'])
+    @patch('xbterminal.main.logging.config.dictConfig')
+    @patch('xbterminal.main.init_step_1')
+    @patch('xbterminal.main.xbterminal.gui.gui.initGUI')
+    @patch('xbterminal.main.xbterminal.helpers.configs.load_remote_config')
+    def test_main(self, load_remote_config_mock,
+                  initgui_mock, init_mock, log_config_mock):
+        watcher_mock = Mock(**{'get_errors.return_value': None})
+        load_remote_config_mock.return_value = {
+            'language': {'code': 'en'},
+            'currency': {'prefix': '$'},
+        }
+        keypad_mock = Mock(last_activity_timestamp=0)
+        state = {
+            'watcher': watcher_mock,
+            'keypad': keypad_mock,
+            'init': {'registration': True},
+            'remote_config_last_update': 0,
+            'last_activity_timestamp': 0,
+            'CURRENT_STAGE': 'application_halt',
+        }
+        with patch.dict('xbterminal.main.state', **state):
+            main()
+        self.assertTrue(log_config_mock.called)
+        self.assertTrue(init_mock.called)
+        self.assertTrue(initgui_mock.called)
+        self.assertTrue(watcher_mock.get_errors.called)
+        self.assertTrue(load_remote_config_mock.called)
+        self.assertTrue(keypad_mock.getKey.called)

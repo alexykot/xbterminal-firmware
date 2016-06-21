@@ -4,7 +4,7 @@ from mock import patch, Mock
 from xbterminal.stages.activation import register_device, is_registered
 
 
-@patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+@patch.dict('xbterminal.helpers.api.state',
             remote_server='https://xbterminal.io')
 class RegistrationTestCase(unittest.TestCase):
 

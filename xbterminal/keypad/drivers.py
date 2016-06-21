@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt4 import QtCore
 
-import xbterminal
+from xbterminal.state import state
 
 
 class KeyboardDriver(object):
@@ -25,7 +25,7 @@ class KeyboardDriver(object):
     }
 
     def getKey(self):
-        events = xbterminal.runtime['keyboard_events']
+        events = state['keyboard_events']
         try:
             key = events.pop()
         except IndexError:

@@ -13,7 +13,7 @@ class WatcherTestCase(unittest.TestCase):
         self.assertIsNone(watcher.internet)
         self.assertEqual(watcher.errors, {})
 
-    @patch.dict('xbterminal.helpers.api.xbterminal.runtime',
+    @patch.dict('xbterminal.helpers.api.state',
                 remote_server='http://xbterminal.io')
     @patch('xbterminal.watcher.api.send_request')
     def test_check_connection(self, send_mock):

@@ -1,13 +1,13 @@
 import logging
 import requests
 
-import xbterminal
 from xbterminal.defaults import (
     REMOTE_API_ENDPOINTS,
     EXTERNAL_CALLS_TIMEOUT,
     EXTERNAL_CALLS_REQUEST_HEADERS)
 from xbterminal.helpers import crypto
 from xbterminal.exceptions import NetworkError, ServerError
+from xbterminal.state import state
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ VALID_STATUS_CODES = [200, 204]
 
 
 def get_url(endpoint_name, **kwargs):
-    url = (xbterminal.runtime['remote_server'] +
+    url = (state['remote_server'] +
            REMOTE_API_ENDPOINTS[endpoint_name])
     if not kwargs:
         return url

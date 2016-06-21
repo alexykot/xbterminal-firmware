@@ -4,64 +4,22 @@ import time
 
 logger = logging.getLogger(__name__)
 
-import xbterminal
 from xbterminal import defaults
-from xbterminal.stages import activation, amounts, payment, withdrawal
+from xbterminal.stages import amounts, payment, withdrawal
+from xbterminal.stages.init import init_step_2
 
-import xbterminal.helpers.bt
-import xbterminal.helpers.camera
-import xbterminal.helpers.clock
 import xbterminal.helpers.configs
-import xbterminal.helpers.host
-import xbterminal.helpers.nfcpy
 import xbterminal.helpers.qr
-import xbterminal.gui.gui
 from xbterminal.exceptions import NetworkError, ServerError
 
 
 def bootup(run, ui):
     ui.showScreen('load_indefinite')
 
-    # Check system clock
-    # BBB has no battery, so system time gets reset after every reboot and may be wildly incorrect
-    while True:
-        internet_time = xbterminal.helpers.clock.get_internet_time()
-        time_delta = abs(time.time() - internet_time)
-        if time_delta < 60:  # 1 minute
-            logger.info('clock synchronized')
-            run['init']['clock_synchronized'] = True
-            run['local_config']['last_started'] = time.time()
-            xbterminal.helpers.configs.save_local_config(run['local_config'])
-            break
-        logger.warning('machine time differs from internet time: {0}'.format(time_delta))
-        time.sleep(5)
-
-    # Initialize bluetooth and NFC servers
-    run['host_system'] = xbterminal.helpers.host.HostSystem(
-        use_mock=run['local_config'].get('use_cctalk_mock', True))
-    run['bluetooth_server'] = xbterminal.helpers.bt.BluetoothServer()
-    run['nfc_server'] = xbterminal.helpers.nfcpy.NFCServer()
-    run['qr_scanner'] = xbterminal.helpers.camera.QRScanner(backend='fswebcam')
-
-    # Check registration
-    if not activation.is_registered():
-        try:
-            run['local_config']['activation_code'] = activation.register_device()
-        except Exception as error:
-            # Registration error
-            logger.exception(error)
-            return defaults.STAGES['application_halt']
-        xbterminal.helpers.configs.save_local_config(run['local_config'])
-    run['init']['registration'] = True
-
-    # Wait for remote config
-    while True:
-        if run['init']['remote_config']:
-            break
-        time.sleep(1)
-
-    logger.info('working with {0}'.format(
-        run['remote_config']['bitcoin_network']))
+    init_step_2(run)
+    ui.retranslateUi(
+        run['remote_config']['language']['code'],
+        run['remote_config']['currency']['prefix'])
 
     if run['remote_config']['status'] == 'active':
         return defaults.STAGES['idle']

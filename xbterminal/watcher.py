@@ -31,7 +31,8 @@ USB_DEVICES = {
 class Watcher(threading.Thread):
 
     def __init__(self):
-        threading.Thread.__init__(self)
+        super(Watcher, self).__init__()
+        self.daemon = True
         self._internet = None
         self.period = 2
         self.errors = {}
