@@ -96,7 +96,7 @@ def qemu_start(arch='armhf', vmopts=''):
                 '{}'.format(vmopts))
 
 
-def compile_and_package(working_dir):
+def compile_and_package(working_dir, main_module):
     with cd(working_dir):
         # Collect data
         machine = run('uname -m')
@@ -122,7 +122,7 @@ def compile_and_package(working_dir):
         puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
                      version, timestamp, arch)))
         run('chmod +x tools/compile.sh')
-        run('nice -n -10 tools/compile.sh')
+        run('nice -n -10 tools/compile.sh xbterminal/{}'.format(main_module))
 
         # Create tarball
         run('mv build/pkg build/{pn}'.format(pn=package_name))
@@ -172,7 +172,9 @@ def qemu_compile(working_dir='/srv/xbterminal'):
 
 
 @task
-def remote_compile(working_dir='xbterminal', target_dir='/srv/xbterminal'):
+def remote_compile(working_dir='xbterminal',
+                   target_dir='/srv/xbterminal',
+                   main_module='main.py'):
     # Build
     qt()
 
@@ -193,4 +195,4 @@ def remote_compile(working_dir='xbterminal', target_dir='/srv/xbterminal'):
     run('echo "BASE_DIR = \'{0}\'" > {1}/xbterminal/nuitka_fix.py'.format(
         target_dir, working_dir))
 
-    compile_and_package(working_dir)
+    compile_and_package(working_dir, main_module)
