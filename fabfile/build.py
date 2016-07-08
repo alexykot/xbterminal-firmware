@@ -129,7 +129,7 @@ def compile_and_package(working_dir, main_module):
         run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
 
         # Copy resulting files to host machine
-        get('build/main.exe',
+        get('build/main',
             'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
         get('build/{pn}.tar.gz'.format(pn=package_name),
             'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))

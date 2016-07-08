@@ -48,6 +48,7 @@ mkdir -p build/pkg/xbterminal/runtime
 mkdir -p build/pkg/xbterminal/gui/themes
 mkdir -p build/pkg/xbterminal/gui/ts
 cp LICENSE build/pkg/
-cp build/${MAIN_MODULE_NAME}.exe build/pkg/xbterminal/main
+mv build/${MAIN_MODULE_NAME}.exe build/main
+cp build/main build/pkg/xbterminal/main
 cp build/themes/*.so build/pkg/xbterminal/gui/themes/
 cp xbterminal/gui/ts/*.qm build/pkg/xbterminal/gui/ts/
