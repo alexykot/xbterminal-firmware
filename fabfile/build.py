@@ -96,7 +96,7 @@ def qemu_start(arch='armhf', vmopts=''):
                 '{}'.format(vmopts))
 
 
-def compile_and_package(working_dir, main_module):
+def compile_and_package(working_dir):
     with cd(working_dir):
         # Collect data
         machine = run('uname -m')
@@ -110,6 +110,8 @@ def compile_and_package(working_dir, main_module):
 
         main_name = 'main_{pv}_{arch}'.format(
             arch=arch, pv=version)
+        main_rpc_name = 'main_rpc_{pv}_{arch}'.format(
+            arch=arch, pv=version)
         package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
             arch=arch, pv=version)
 
@@ -122,22 +124,26 @@ def compile_and_package(working_dir, main_module):
         puts(magenta('Starting compilation: {0}.{1} @ {2}'.format(
                      version, timestamp, arch)))
         run('chmod +x tools/compile.sh')
-        run('nice -n -10 tools/compile.sh xbterminal/{}'.format(main_module))
+        run('nice -n -10 tools/compile.sh')
 
         # Create tarball
         run('mv build/pkg build/{pn}'.format(pn=package_name))
         run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
 
         # Copy resulting files to host machine
-        get('build/main',
+        get('build/main.exe',
             'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
+        get('build/main_rpc.exe',
+            'build/{mrn}.{ts}'.format(mrn=main_rpc_name, ts=timestamp))
         get('build/{pn}.tar.gz'.format(pn=package_name),
             'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))
 
     with lcd('build'):
         local('rm -f {mn}'.format(mn=main_name))
+        local('rm -f {mrn}'.format(mrn=main_rpc_name))
         local('rm -f {pn}.tar.gz'.format(pn=package_name))
         local('ln -s {mn}.{ts} {mn}'.format(mn=main_name, ts=timestamp))
+        local('ln -s {mrn}.{ts} {mrn}'.format(mrn=main_rpc_name, ts=timestamp))
         local('ln -s {pn}.{ts}.tar.gz {pn}.tar.gz'.format(pn=package_name, ts=timestamp))
 
 
@@ -173,8 +179,7 @@ def qemu_compile(working_dir='/srv/xbterminal'):
 
 @task
 def remote_compile(working_dir='xbterminal',
-                   target_dir='/srv/xbterminal',
-                   main_module='main.py'):
+                   target_dir='/srv/xbterminal'):
     # Build
     qt()
 
@@ -195,4 +200,4 @@ def remote_compile(working_dir='xbterminal',
     run('echo "BASE_DIR = \'{0}\'" > {1}/xbterminal/nuitka_fix.py'.format(
         target_dir, working_dir))
 
-    compile_and_package(working_dir, main_module)
+    compile_and_package(working_dir)
