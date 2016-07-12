@@ -9,10 +9,10 @@ class MainTestCase(unittest.TestCase):
 
     @patch('xbterminal.main.logging.config.dictConfig')
     @patch('xbterminal.main.init_step_1')
-    @patch('xbterminal.main.xbterminal.gui.gui.initGUI')
+    @patch('xbterminal.main.xbterminal.gui.gui.GUI')
     @patch('xbterminal.main.xbterminal.helpers.configs.load_remote_config')
     def test_main(self, load_remote_config_mock,
-                  initgui_mock, init_mock, log_config_mock):
+                  gui_mock, init_mock, log_config_mock):
         watcher_mock = Mock(**{'get_errors.return_value': None})
         load_remote_config_mock.return_value = {
             'language': {'code': 'en'},
@@ -31,7 +31,7 @@ class MainTestCase(unittest.TestCase):
             main()
         self.assertTrue(log_config_mock.called)
         self.assertTrue(init_mock.called)
-        self.assertTrue(initgui_mock.called)
+        self.assertTrue(gui_mock.called)
         self.assertTrue(watcher_mock.get_errors.called)
         self.assertTrue(load_remote_config_mock.called)
         self.assertTrue(keypad_mock.getKey.called)

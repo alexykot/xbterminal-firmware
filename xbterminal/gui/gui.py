@@ -15,6 +15,7 @@ import xbterminal.helpers
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
 from xbterminal.state import state
+from xbterminal.keypad.keypad import Keypad
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -100,9 +101,24 @@ class Application(QtGui.QApplication):
 
 class GUI(QtGui.QMainWindow):
 
-    def __init__(self, application):
+    def __init__(self):
+        # Initialize Qt application
+        application = Application(sys.argv)
+        application.loadFonts()
+        if state['local_config'].get('show_cursor'):
+            application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
+        else:
+            application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
+        language_code = state['local_config'].get(
+            'language',
+            defaults.UI_DEFAULT_LANGUAGE)
+        application.setLanguage(language_code)
+        application.loadStyles()
+        # Initialize Qt main window
         super(GUI, self).__init__()
         self._application = application
+        # Keypad
+        state['keypad'] = Keypad()
         # Initialize UI
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
@@ -187,27 +203,3 @@ class GUI(QtGui.QMainWindow):
         if self.currentScreen() == 'errors':
             # Restore previous screen
             self.showScreen(self._saved_screen)
-
-
-def initGUI():
-    """
-    Initialize GUI
-    """
-    application = Application(sys.argv)
-
-    application.loadFonts()
-
-    if state['local_config'].get('show_cursor'):
-        application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
-    else:
-        application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
-
-    language_code = state['local_config'].get(
-        'language',
-        defaults.UI_DEFAULT_LANGUAGE)
-    application.setLanguage(language_code)
-
-    application.loadStyles()
-
-    main_window = GUI(application)
-    return main_window
