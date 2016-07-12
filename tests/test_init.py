@@ -75,7 +75,6 @@ class InitTestCase(unittest.TestCase):
         self.assertIn('local_config', state)
         self.assertEqual(state['remote_server'], 'https://xbterminal.io')
         self.assertEqual(state['watcher'], watcher_mock)
-        self.assertEqual(state['keypad'].__class__.__name__, 'Keypad')
         self.assertEqual(state['host_system'].__class__.__name__, 'HostSystem')
         self.assertEqual(state['bluetooth_server'], 'bluetooth')
         self.assertEqual(state['nfc_server'], 'nfc')

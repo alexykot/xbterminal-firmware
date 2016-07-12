@@ -7,7 +7,6 @@ from xbterminal.helpers.bt import BluetoothServer
 from xbterminal.helpers.camera import QRScanner
 from xbterminal.helpers.host import HostSystem
 from xbterminal.helpers.nfcpy import NFCServer
-from xbterminal.keypad.keypad import Keypad
 from xbterminal.stages import activation
 from xbterminal.watcher import Watcher
 
@@ -25,7 +24,6 @@ def init_step_1(state):
     state['watcher'] = Watcher()
     state['watcher'].start()
 
-    state['keypad'] = Keypad()
     state['host_system'] = HostSystem(
         use_mock=state['local_config'].get('use_cctalk_mock', True))
     state['bluetooth_server'] = BluetoothServer()

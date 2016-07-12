@@ -28,7 +28,7 @@ def main():
 
     init_step_1(state)
 
-    main_window = xbterminal.gui.gui.initGUI()
+    main_window = xbterminal.gui.gui.GUI()
     worker = None
     worker_thread = None
     run = state
