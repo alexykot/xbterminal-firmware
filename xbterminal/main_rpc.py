@@ -40,5 +40,5 @@ class Application(tornado.web.Application):
 
 if __name__ == "__main__":
     app = Application()
-    app.listen(8888)
+    app.listen(8888, address='127.0.0.1')
     tornado.ioloop.IOLoop.current().start()

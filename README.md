@@ -53,11 +53,23 @@ Get new device key:
 cp /etc/salt/minion_id /vagrant/xbterminal/runtime/device_key
 ```
 
+#### GUI application
+
 Start the application and activate device at http://stage.xbterminal.com:
 
 ```
-sudo xinit /vagrant/xbterminal/main.py
+xinit /vagrant/xbterminal/main.py
 ```
+
+#### JSON-RPC server
+
+Start server:
+
+```
+python /vagrant/xbterminal/main_rpc.py
+```
+
+JSON-RPC server accepts connections on port **8888**.
 
 ## Versioning
 
@@ -82,7 +94,7 @@ fab build.remote_compile
 
 This command outputs two files:
 
-* Binary executable `build/main_{version}_{arch}`
+* Binary executables `build/main_{version}_{arch}` and `build/main_rpc_{version}_{arch}`.
 * Installation package `build/xbterminal-firmware_{version}_{arch}.tar.gz`.
 
 ### QEMU VM
