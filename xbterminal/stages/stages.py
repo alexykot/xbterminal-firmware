@@ -2,14 +2,13 @@ from decimal import Decimal
 import logging
 import time
 
-logger = logging.getLogger(__name__)
-
 from xbterminal import defaults
 from xbterminal.stages import amounts, payment, withdrawal
 from xbterminal.stages.init import init_step_2
-
 from xbterminal.helpers import qr
 from xbterminal.exceptions import NetworkError, ServerError
+
+logger = logging.getLogger(__name__)
 
 
 def bootup(run, ui):
