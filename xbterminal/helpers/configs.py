@@ -32,7 +32,7 @@ def load_remote_config():
     try:
         response = api.send_request('get', config_url)
         remote_config = response.json()
-    except Exception as error:
+    except Exception:
         logger.warning("no remote configs available, trying local cache")
         try:
             return load_remote_config_cache()
