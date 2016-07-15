@@ -8,8 +8,7 @@ from xbterminal import defaults
 from xbterminal.stages import amounts, payment, withdrawal
 from xbterminal.stages.init import init_step_2
 
-import xbterminal.helpers.configs
-import xbterminal.helpers.qr
+from xbterminal.helpers import qr
 from xbterminal.exceptions import NetworkError, ServerError
 
 
@@ -189,8 +188,8 @@ def pay_info(run, ui):
             run['screen_buttons']['pinfo_pay_btn'] = False
             # Prepare QR image
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
-            xbterminal.helpers.qr.qr_gen(run['payment']['order'].payment_uri,
-                                         run['payment']['qr_image_path'])
+            qr.qr_gen(run['payment']['order'].payment_uri,
+                      run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_wait']
         if run['screen_buttons']['pinfo_cancel_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
@@ -258,8 +257,8 @@ def pay_success(run, ui):
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['psuccess_yes_btn'] = False
             run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
-            xbterminal.helpers.qr.qr_gen(run['payment']['receipt_url'],
-                                         run['payment']['qr_image_path'])
+            qr.qr_gen(run['payment']['receipt_url'],
+                      run['payment']['qr_image_path'])
             return defaults.STAGES['payment']['pay_receipt']
         if run['screen_buttons']['psuccess_no_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
@@ -413,8 +412,8 @@ def withdraw_success(run, ui):
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['wsuccess_yes_btn'] = False
             run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
-            xbterminal.helpers.qr.qr_gen(run['withdrawal']['receipt_url'],
-                                         run['withdrawal']['qr_image_path'])
+            qr.qr_gen(run['withdrawal']['receipt_url'],
+                      run['withdrawal']['qr_image_path'])
             return defaults.STAGES['withdrawal']['withdraw_receipt']
         if run['screen_buttons']['wsuccess_no_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
