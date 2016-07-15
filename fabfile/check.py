@@ -5,7 +5,7 @@ from fabric.api import task, local, prefix
 def flake8():
     with prefix('. venv/bin/activate'):
         local('flake8 --max-line-length=110 fabfile')
-        local('flake8 --max-line-length=125 '
+        local('flake8 --max-line-length=100 '
               '--exclude xbterminal/gui/ui.py,xbterminal/gui/themes/*.py '
               '--ignore=E402 '
               'xbterminal')

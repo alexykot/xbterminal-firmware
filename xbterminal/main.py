@@ -47,7 +47,8 @@ def main():
 
         # Reload remote config
         if run['init']['registration'] and \
-                run['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
+                run['remote_config_last_update'] + \
+                defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             run['remote_config'] = configs.load_remote_config()
             run['remote_config_last_update'] = int(time.time())
             main_window.retranslateUi(
