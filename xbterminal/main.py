@@ -10,11 +10,9 @@ import signal
 include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
-import xbterminal
-import xbterminal.defaults
-import xbterminal.gui.gui
-import xbterminal.helpers.configs
 from xbterminal import defaults
+from xbterminal.gui.gui import GUI
+from xbterminal.helpers import configs
 from xbterminal.stages.worker import StageWorker, move_to_thread
 from xbterminal.stages.init import init_step_1
 from xbterminal.state import state
@@ -23,12 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    logging.config.dictConfig(xbterminal.defaults.LOG_CONFIG)
+    logging.config.dictConfig(defaults.LOG_CONFIG)
     logger.debug('starting')
 
     init_step_1(state)
 
-    main_window = xbterminal.gui.gui.GUI()
+    main_window = GUI()
     worker = None
     worker_thread = None
     run = state
@@ -50,7 +48,7 @@ def main():
         # Reload remote config
         if run['init']['registration'] and \
                 run['remote_config_last_update'] + defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
-            run['remote_config'] = xbterminal.helpers.configs.load_remote_config()
+            run['remote_config'] = configs.load_remote_config()
             run['remote_config_last_update'] = int(time.time())
             main_window.retranslateUi(
                 run['remote_config']['language']['code'],
@@ -79,13 +77,13 @@ def main():
 
 
 def sighup_handler(*args):
-    state['local_config'] = xbterminal.helpers.configs.load_local_config()
+    state['local_config'] = configs.load_local_config()
 
 signal.signal(signal.SIGHUP, sighup_handler)
 
 
 def graceful_exit():
-    xbterminal.helpers.configs.save_local_config(
+    configs.save_local_config(
         state['local_config'])
     logger.warning('application halted')
     sys.exit()

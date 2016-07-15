@@ -9,8 +9,8 @@ class MainTestCase(unittest.TestCase):
 
     @patch('xbterminal.main.logging.config.dictConfig')
     @patch('xbterminal.main.init_step_1')
-    @patch('xbterminal.main.xbterminal.gui.gui.GUI')
-    @patch('xbterminal.main.xbterminal.helpers.configs.load_remote_config')
+    @patch('xbterminal.main.GUI')
+    @patch('xbterminal.main.configs.load_remote_config')
     def test_main(self, load_remote_config_mock,
                   gui_mock, init_mock, log_config_mock):
         watcher_mock = Mock(**{'get_errors.return_value': None})
