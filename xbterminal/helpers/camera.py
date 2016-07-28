@@ -39,6 +39,9 @@ class OpenCVBackend(object):
 
 class FsWebCamBackend(object):
 
+    fps = 30
+    resolution = '640x480'
+
     def __init__(self):
         self.image_path = os.path.join(RUNTIME_PATH, 'camera.jpg')
         self.device = None
@@ -73,7 +76,8 @@ class FsWebCamBackend(object):
             output = subprocess.check_output([
                 'fswebcam',
                 '--device', self.device,
-                '--resolution', '320x240',
+                '--resolution', self.resolution,
+                '--fps', self.fps,
                 '--skip', '1',
                 '--no-banner',
                 self.image_path,
