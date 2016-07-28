@@ -54,7 +54,7 @@ class FsWebCamBackend(object):
             output = subprocess.check_output(
                 ['fswebcam', '--device', path],
                 stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as error:
+        except subprocess.CalledProcessError:
             return False
         else:
             return 'Captured frame' in output

@@ -72,7 +72,7 @@ class Payment(object):
                 url=payment_response_url,
                 data=message,
                 headers=headers)
-        except Exception as error:
+        except Exception:
             return None
         payment_ack = response.content
         return payment_ack
@@ -86,7 +86,7 @@ class Payment(object):
         try:
             response = api.send_request('get', payment_check_url)
             result = response.json()
-        except Exception as error:
+        except Exception:
             return None
         else:
             return result['status']

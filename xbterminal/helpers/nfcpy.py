@@ -57,7 +57,7 @@ class NFCServer(object):
     def __init__(self):
         self._nfc_thread = None
         try:
-            clf = nfc.ContactlessFrontend(READER_PATH)
+            nfc.ContactlessFrontend(READER_PATH)
         except IOError:
             self.is_available = False
         else:

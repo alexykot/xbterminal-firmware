@@ -78,7 +78,7 @@ class Withdrawal(object):
         try:
             response = api.send_request('get', url)
             result = response.json()
-        except Exception as error:
+        except Exception:
             return None
         else:
             return result['status']

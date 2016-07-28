@@ -3,9 +3,9 @@ import threading
 
 from PyQt4 import QtCore
 
-logger = logging.getLogger(__name__)
-
 from xbterminal.stages import stages
+
+logger = logging.getLogger(__name__)
 
 
 class SignalProxy(QtCore.QObject):

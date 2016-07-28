@@ -158,7 +158,6 @@ EXTERNAL_CALLS_TIMEOUT = 15
 EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
-TRANSACTION_CANCELLED_MESSAGE_TIMEOUT = 60  # if transaction cancelled - how long to show "cancelled" message in seconds
 
 OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 

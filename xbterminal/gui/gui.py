@@ -9,13 +9,13 @@ import imp
 
 from PyQt4 import QtGui, QtCore
 
-logger = logging.getLogger(__name__)
-
 import xbterminal.helpers
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
 from xbterminal.state import state
 from xbterminal.keypad.keypad import Keypad
+
+logger = logging.getLogger(__name__)
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -24,9 +24,10 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtGui.QApplication.translate(
+            context, text, disambig,
+            QtGui.QApplication.UnicodeUTF8)
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
