@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 USB_DEVICES = {
     'bt': [
         (0x0a5c, 0x21e8, 'BCM20702A0 Bluetooth 4.0'),
+        (0x0a12, 0x0000, 'Cambridge Silicon Radio Bluetooth'),
     ],
     'nfc': [
         (0x04e6, 0x5591, 'SCL3711-NFC&RW'),
