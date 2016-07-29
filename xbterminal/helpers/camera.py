@@ -77,7 +77,7 @@ class FsWebCamBackend(object):
                 'fswebcam',
                 '--device', self.device,
                 '--resolution', self.resolution,
-                '--fps', self.fps,
+                '--fps', str(self.fps),
                 '--skip', '1',
                 '--no-banner',
                 self.image_path,
