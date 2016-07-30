@@ -40,7 +40,6 @@ class OpenCVBackend(object):
 class FsWebCamBackend(object):
 
     fps = 30
-    resolution = '640x480'
 
     def __init__(self):
         self.image_path = os.path.join(RUNTIME_PATH, 'camera.jpg')
@@ -49,6 +48,10 @@ class FsWebCamBackend(object):
             path = '/dev/video{}'.format(idx)
             if self._check_device(path):
                 self.device = path
+                if idx == 0:
+                    self.resolution = '480x320'
+                else:
+                    self.resulution = '640x480'
                 logger.info('camera found at {}'.format(self.device))
                 break
 
