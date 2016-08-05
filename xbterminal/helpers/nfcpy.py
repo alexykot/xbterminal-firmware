@@ -4,7 +4,6 @@ http://nfcpy.readthedocs.org/en/latest/
 """
 import logging
 import threading
-import time
 
 import nfc
 import nfc.snep
@@ -37,10 +36,11 @@ class BitcoinSender(threading.Thread):
         return self.terminate
 
     def run(self):
-        clf = nfc.ContactlessFrontend(READER_PATH)
-        clf.connect(llcp={'on-connect': self.on_connect},
-                    terminate=self.terminate_callback_function)
-        clf.close()
+        while not self.terminate:
+            clf = nfc.ContactlessFrontend(READER_PATH)
+            clf.connect(llcp={'on-connect': self.on_connect},
+                        terminate=lambda: self.terminate)
+            clf.close()
 
 
 def send_uri(llc, uri):
@@ -71,11 +71,6 @@ class NFCServer(object):
             # Do nothing if device is not available
             return
 
-        if self.is_active():
-            self.stop()
-
-        time.sleep(0.3)  # required to free up device before reusing
-
         self._nfc_thread = BitcoinSender(uri)
         self._nfc_thread.start()
         logger.info('NFC activated')
@@ -89,3 +84,4 @@ class NFCServer(object):
             self._nfc_thread.terminate = True
             self._nfc_thread.join()
         self._nfc_thread = None
+        logger.info('NFC deactivated')

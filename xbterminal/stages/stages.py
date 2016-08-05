@@ -222,6 +222,7 @@ def pay_wait(run, ui):
             effective_rate=run['payment']['order'].exchange_rate))
     logger.info('payment uri: {}'.format(run['payment']['order'].payment_uri))
     run['bluetooth_server'].start(run['payment']['order'])
+    run['nfc_server'].start(run['payment']['order'].payment_uri)
     while True:
         if run['screen_buttons']['pwait_cancel_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
@@ -230,10 +231,6 @@ def pay_wait(run, ui):
             run['nfc_server'].stop()
             run['bluetooth_server'].stop()
             return defaults.STAGES['payment']['pay_amount']
-
-        if not run['nfc_server'].is_active():
-            run['nfc_server'].start(run['payment']['order'].payment_uri)
-            time.sleep(0.5)
 
         if run['payment']['order'].check() in ['notified', 'confirmed']:
             run['payment']['receipt_url'] = run['payment']['order'].receipt_url
@@ -280,10 +277,8 @@ def pay_receipt(run, ui):
     assert run['payment']['receipt_url']
     ui.showScreen('pay_receipt')
     ui.setImage('preceipt_receipt_qr_img', run['payment']['qr_image_path'])
+    run['nfc_server'].start(run['payment']['receipt_url'])
     while True:
-        if not run['nfc_server'].is_active():
-            run['nfc_server'].start(run['payment']['receipt_url'])
-            time.sleep(0.5)
         if run['screen_buttons']['preceipt_goback_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
             run['screen_buttons']['preceipt_goback_btn'] = False
@@ -443,10 +438,8 @@ def withdraw_receipt(run, ui):
     assert run['withdrawal']['receipt_url']
     assert run['withdrawal']['qr_image_path'] is not None
     ui.setImage('wreceipt_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    run['nfc_server'].start(run['withdrawal']['receipt_url'])
     while True:
-        if not run['nfc_server'].is_active():
-            run['nfc_server'].start(run['withdrawal']['receipt_url'])
-            time.sleep(0.5)
         if run['screen_buttons']['wreceipt_goback_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
             run['screen_buttons']['wreceipt_goback_btn'] = False

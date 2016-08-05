@@ -484,7 +484,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertTrue(bluetooth_server_mock.start.called)
         self.assertTrue(bluetooth_server_mock.stop.called)
         self.assertFalse(host_system_mock.add_credit.called)
-        self.assertFalse(nfc_server_mock.start.called)
+        self.assertTrue(nfc_server_mock.start.called)
         self.assertTrue(nfc_server_mock.stop.called)
 
         self.assertTrue(order_mock.cancel.called)
