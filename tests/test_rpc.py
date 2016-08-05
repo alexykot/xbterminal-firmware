@@ -112,9 +112,13 @@ class APITestCase(unittest.TestCase):
 
     @patch('xbterminal.api.configs.load_remote_config')
     def test_get_device_config(self, load_mock):
+        state = {'remote_server': 'https://xbterminal.io'}
         load_mock.return_value = {'language': {'code': 'en'}}
-        result = api.get_device_config()
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_device_config()
         self.assertEqual(result['language']['code'], 'en')
+        self.assertEqual(result['remote_server'],
+                         'https://xbterminal.io')
 
     @patch('xbterminal.api.Payment.create_order')
     def test_create_payment_order(self, create_order_mock):

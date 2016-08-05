@@ -30,7 +30,9 @@ def get_activation_code(**kwargs):
 @dispatcher.add_method
 def get_device_config(**kwargs):
     state['remote_config'] = configs.load_remote_config()
-    return state['remote_config']
+    result = {'remote_server': state['remote_server']}
+    result.update(state['remote_config'])
+    return result
 
 
 @dispatcher.add_method
