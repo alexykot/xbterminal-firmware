@@ -7,6 +7,7 @@ from tornado.testing import AsyncHTTPTestCase
 
 from xbterminal.main_rpc import Application
 from xbterminal import api
+from xbterminal.api_client import JSONRPCClient
 
 
 class ApplicationTestCase(unittest.TestCase):
@@ -230,3 +231,27 @@ class APITestCase(unittest.TestCase):
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_withdrawal_receipt(uid='test-uid')
         self.assertEqual(result['receipt_url'], 'test-url')
+
+
+class JSONRPCClientTestCase(unittest.TestCase):
+
+    @patch('xbterminal.api_client.requests.post')
+    def test_get_connection_status(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'result': {'status': 'online'},
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        result = cli.get_connection_status()
+        self.assertEqual(result['status'], 'online')
+        self.assertEqual(post_mock.call_args[0][0], 'http://127.0.0.1:8888/')
+        data = post_mock.call_args[1]['json']
+        self.assertEqual(data['method'], 'get_connection_status')
+        self.assertEqual(data['params'], {})
+        self.assertEqual(data['jsonrpc'], '2.0')
+        self.assertEqual(data['id'], 0)
+        headers = post_mock.call_args[1]['headers']
+        self.assertEqual(headers['content-type'], 'application/json')
