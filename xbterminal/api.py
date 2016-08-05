@@ -3,6 +3,7 @@ from jsonrpc import Dispatcher
 from xbterminal.state import state
 from xbterminal.stages.payment import Payment
 from xbterminal.stages.withdrawal import Withdrawal
+from xbterminal.helpers import configs
 
 dispatcher = Dispatcher()
 
@@ -24,6 +25,12 @@ def get_activation_status(**kwargs):
 def get_activation_code(**kwargs):
     activation_code = state['local_config'].get('activation_code')
     return {'activation_code': activation_code}
+
+
+@dispatcher.add_method
+def get_device_config(**kwargs):
+    state['remote_config'] = configs.load_remote_config()
+    return state['remote_config']
 
 
 @dispatcher.add_method
