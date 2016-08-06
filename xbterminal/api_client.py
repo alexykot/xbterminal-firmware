@@ -1,5 +1,7 @@
 import requests
 
+from xbterminal import exceptions
+
 
 class JSONRPCClient(object):
 
@@ -16,7 +18,11 @@ class JSONRPCClient(object):
                                  json=payload,
                                  headers=headers)
         data = response.json()
-        return data['result']
+        if 'result' in data:
+            return data['result']
+        else:
+            error_type = data['error']['data']['type']
+            raise getattr(exceptions, error_type)
 
     def __getattr__(self, name):
         func = lambda **kwargs: self._make_request(name, **kwargs)  # flake8: noqa

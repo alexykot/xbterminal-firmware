@@ -6,7 +6,7 @@ from mock import patch, Mock
 from tornado.testing import AsyncHTTPTestCase
 
 from xbterminal.main_rpc import Application
-from xbterminal import api
+from xbterminal import api, exceptions
 from xbterminal.api_client import JSONRPCClient
 
 
@@ -372,3 +372,16 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(data['params'], {'uid': 'test'})
         self.assertEqual(data['jsonrpc'], '2.0')
         self.assertEqual(data['id'], 0)
+
+    @patch('xbterminal.api_client.requests.post')
+    def test_error(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'error': {'data': {'type': 'NetworkError'}},
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        with self.assertRaises(exceptions.NetworkError):
+            cli.check_payment_order(uid='test')
