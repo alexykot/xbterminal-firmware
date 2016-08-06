@@ -48,7 +48,7 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
             headers=headers)
         self.assertEqual(response.code, 200)
         result = json.loads(response.body)
-        self.assertEqual(result['result']['status'], 'new')
+        self.assertEqual(result['result'], 'new')
 
     @patch.dict(
         'xbterminal.api.state',
@@ -80,35 +80,35 @@ class APITestCase(unittest.TestCase):
         state = {'watcher': Mock(internet=True)}
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_connection_status()
-        self.assertEqual(result['status'], 'online')
+        self.assertEqual(result, 'online')
 
     def test_get_connection_status_offline(self):
         state = {'watcher': Mock(internet=False)}
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_connection_status()
-        self.assertEqual(result['status'], 'offline')
+        self.assertEqual(result, 'offline')
 
     def test_get_activation_status(self):
         state = {'remote_config': {'status': 'active'}}
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_activation_status()
-        self.assertEqual(result['status'], 'active')
+        self.assertEqual(result, 'active')
 
     def test_get_activation_status_loading(self):
         with patch.dict('xbterminal.api.state'):
             result = api.get_activation_status()
-        self.assertEqual(result['status'], 'loading')
+        self.assertEqual(result, 'loading')
 
     def test_get_activation_code(self):
         state = {'local_config': {'activation_code': 'test'}}
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_activation_code()
-        self.assertEqual(result['activation_code'], 'test')
+        self.assertEqual(result, 'test')
 
     def test_get_activation_code_none(self):
         with patch.dict('xbterminal.api.state'):
             result = api.get_activation_code()
-        self.assertIsNone(result['activation_code'])
+        self.assertIsNone(result)
 
     @patch('xbterminal.api.configs.load_remote_config')
     def test_get_device_config(self, load_mock):
@@ -153,7 +153,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.check_payment_order(uid='test-uid')
-        self.assertEqual(result['status'], 'new')
+        self.assertEqual(result, 'new')
 
     def test_cancel_payment_order(self):
         state = {
@@ -163,7 +163,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.cancel_payment_order(uid='test-uid')
-        self.assertTrue(result['result'])
+        self.assertTrue(result)
 
     def test_get_payment_receipt(self):
         state = {
@@ -173,7 +173,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_payment_receipt(uid='test-uid')
-        self.assertEqual(result['receipt_url'], 'test-url')
+        self.assertEqual(result, 'test-url')
 
     @patch('xbterminal.api.Withdrawal.create_order')
     def test_create_withdrawal_order(self, create_order_mock):
@@ -220,7 +220,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.check_withdrawal_order(uid='test-uid')
-        self.assertEqual(result['status'], 'new')
+        self.assertEqual(result, 'new')
 
     def test_cancel_withdrawal_order(self):
         state = {
@@ -230,7 +230,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.cancel_withdrawal_order(uid='test-uid')
-        self.assertTrue(result['result'])
+        self.assertTrue(result)
 
     def test_get_withdrawal_receipt(self):
         state = {
@@ -240,7 +240,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_withdrawal_receipt(uid='test-uid')
-        self.assertEqual(result['receipt_url'], 'test-url')
+        self.assertEqual(result, 'test-url')
 
     def test_start_bluetooth_server(self):
         bt_server_mock = Mock()
@@ -253,7 +253,7 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.api.state', **state):
             result = api.start_bluetooth_server(payment_uid='test-uid')
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertEqual(bt_server_mock.start.call_args[0][0], order_mock)
 
     def test_stop_bluetooth_server(self):
@@ -261,7 +261,7 @@ class APITestCase(unittest.TestCase):
         state = {'bluetooth_server': bt_server_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.stop_bluetooth_server()
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertTrue(bt_server_mock.stop.called)
 
     def test_start_nfc_server(self):
@@ -269,7 +269,7 @@ class APITestCase(unittest.TestCase):
         state = {'nfc_server': nfc_server_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.start_nfc_server(message='test')
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertEqual(nfc_server_mock.start.call_args[0][0], 'test')
 
     def test_stop_nfc_server(self):
@@ -277,7 +277,7 @@ class APITestCase(unittest.TestCase):
         state = {'nfc_server': nfc_server_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.stop_nfc_server()
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertTrue(nfc_server_mock.stop.called)
 
     def test_start_qr_scanner(self):
@@ -285,7 +285,7 @@ class APITestCase(unittest.TestCase):
         state = {'qr_scanner': qr_scanner_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.start_qr_scanner()
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertTrue(qr_scanner_mock.start.called)
 
     def test_stop_qr_scanner(self):
@@ -293,7 +293,7 @@ class APITestCase(unittest.TestCase):
         state = {'qr_scanner': qr_scanner_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.stop_qr_scanner()
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertTrue(qr_scanner_mock.stop.called)
 
     def test_get_scanned_address(self):
@@ -304,14 +304,14 @@ class APITestCase(unittest.TestCase):
         state = {'qr_scanner': qr_scanner_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.get_scanned_address()
-        self.assertEqual(result['address'], address)
+        self.assertEqual(result, address)
 
     def test_host_add_credit(self):
         host_mock = Mock()
         state = {'host_system': host_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.host_add_credit(fiat_amount='0.5')
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertEqual(host_mock.add_credit.call_args[0][0],
                          Decimal('0.5'))
 
@@ -320,7 +320,7 @@ class APITestCase(unittest.TestCase):
         state = {'host_system': host_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.host_withdraw(fiat_amount='0.5')
-        self.assertEqual(result['result'], True)
+        self.assertTrue(result)
         self.assertEqual(host_mock.withdraw.call_args[0][0],
                          Decimal('0.5'))
 
@@ -329,7 +329,7 @@ class APITestCase(unittest.TestCase):
         state = {'host_system': host_mock}
         with patch.dict('xbterminal.api.state', **state):
             result = api.host_get_payout()
-        self.assertEqual(result['current_credit'], '0.25')
+        self.assertEqual(result, '0.25')
 
 
 class JSONRPCClientTestCase(unittest.TestCase):
@@ -339,13 +339,13 @@ class JSONRPCClientTestCase(unittest.TestCase):
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
-                'result': {'status': 'online'},
+                'result': 'online',
                 'id': 0,
             },
         })
         cli = JSONRPCClient()
         result = cli.get_connection_status()
-        self.assertEqual(result['status'], 'online')
+        self.assertEqual(result, 'online')
         self.assertEqual(post_mock.call_args[0][0], 'http://127.0.0.1:8888/')
         data = post_mock.call_args[1]['json']
         self.assertEqual(data['method'], 'get_connection_status')
@@ -354,3 +354,21 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(data['id'], 0)
         headers = post_mock.call_args[1]['headers']
         self.assertEqual(headers['content-type'], 'application/json')
+
+    @patch('xbterminal.api_client.requests.post')
+    def test_check_payment_order(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'result': 'new',
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        result = cli.check_payment_order(uid='test')
+        self.assertEqual(result, 'new')
+        data = post_mock.call_args[1]['json']
+        self.assertEqual(data['method'], 'check_payment_order')
+        self.assertEqual(data['params'], {'uid': 'test'})
+        self.assertEqual(data['jsonrpc'], '2.0')
+        self.assertEqual(data['id'], 0)
