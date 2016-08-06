@@ -33,9 +33,9 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
     @patch.dict(
         'xbterminal.api.state',
         payments={'test-uid': Mock(**{'check.return_value': 'new'})})
-    def test_check_payment_order(self):
+    def test_get_payment_status(self):
         payload = {
-            'method': 'check_payment_order',
+            'method': 'get_payment_status',
             'jsonrpc': '2.0',
             'params': {'uid': 'test-uid'},
             'id': 0,
@@ -53,9 +53,9 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
     @patch.dict(
         'xbterminal.api.state',
         payments={'test-uid': Mock(**{'check.side_effect': ValueError})})
-    def test_check_payment_order_error(self):
+    def test_get_payment_status_error(self):
         payload = {
-            'method': 'check_payment_order',
+            'method': 'get_payment_status',
             'jsonrpc': '2.0',
             'params': {'uid': 'test-uid'},
             'id': 0,
@@ -88,15 +88,15 @@ class APITestCase(unittest.TestCase):
             result = api.get_connection_status()
         self.assertEqual(result, 'offline')
 
-    def test_get_activation_status(self):
+    def test_get_device_status(self):
         state = {'remote_config': {'status': 'active'}}
         with patch.dict('xbterminal.api.state', **state):
-            result = api.get_activation_status()
+            result = api.get_device_status()
         self.assertEqual(result, 'active')
 
-    def test_get_activation_status_loading(self):
+    def test_get_device_status_loading(self):
         with patch.dict('xbterminal.api.state'):
-            result = api.get_activation_status()
+            result = api.get_device_status()
         self.assertEqual(result, 'loading')
 
     def test_get_activation_code(self):
@@ -145,24 +145,24 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['exchange_rate'], '10.0')
         self.assertEqual(result['payment_uri'], 'test-uri')
 
-    def test_check_payment_order(self):
+    def test_get_payment_status(self):
         state = {
             'payments': {
                 'test-uid': Mock(**{'check.return_value': 'new'}),
             },
         }
         with patch.dict('xbterminal.api.state', **state):
-            result = api.check_payment_order(uid='test-uid')
+            result = api.get_payment_status(uid='test-uid')
         self.assertEqual(result, 'new')
 
-    def test_cancel_payment_order(self):
+    def test_cancel_payment(self):
         state = {
             'payments': {
                 'test-uid': Mock(**{'cancel.return_value': True}),
             },
         }
         with patch.dict('xbterminal.api.state', **state):
-            result = api.cancel_payment_order(uid='test-uid')
+            result = api.cancel_payment(uid='test-uid')
         self.assertTrue(result)
 
     def test_get_payment_receipt(self):
@@ -196,7 +196,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['btc_amount'], '0.25')
         self.assertEqual(result['exchange_rate'], '10.0')
 
-    def test_confirm_withdrawal_order(self):
+    def test_confirm_withdrawal(self):
         order_mock = Mock(btc_amount=Decimal('0.2'),
                           exchange_rate=Decimal('200'))
         state = {
@@ -205,31 +205,31 @@ class APITestCase(unittest.TestCase):
             },
         }
         with patch.dict('xbterminal.api.state', **state):
-            result = api.confirm_withdrawal_order(
+            result = api.confirm_withdrawal(
                 uid='test-uid', address='test-address')
         self.assertEqual(order_mock.confirm.call_args[0][0],
                          'test-address')
         self.assertEqual(result['btc_amount'], '0.2')
         self.assertEqual(result['exchange_rate'], '200')
 
-    def test_check_withdrawal_order(self):
+    def test_get_withdrawal_status(self):
         state = {
             'withdrawals': {
                 'test-uid': Mock(**{'check.return_value': 'new'}),
             },
         }
         with patch.dict('xbterminal.api.state', **state):
-            result = api.check_withdrawal_order(uid='test-uid')
+            result = api.get_withdrawal_status(uid='test-uid')
         self.assertEqual(result, 'new')
 
-    def test_cancel_withdrawal_order(self):
+    def test_cancel_withdrawal(self):
         state = {
             'withdrawals': {
                 'test-uid': Mock(**{'cancel.return_value': True}),
             },
         }
         with patch.dict('xbterminal.api.state', **state):
-            result = api.cancel_withdrawal_order(uid='test-uid')
+            result = api.cancel_withdrawal(uid='test-uid')
         self.assertTrue(result)
 
     def test_get_withdrawal_receipt(self):
@@ -356,7 +356,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(headers['content-type'], 'application/json')
 
     @patch('xbterminal.api_client.requests.post')
-    def test_check_payment_order(self, post_mock):
+    def test_get_payment_status(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
@@ -365,10 +365,10 @@ class JSONRPCClientTestCase(unittest.TestCase):
             },
         })
         cli = JSONRPCClient()
-        result = cli.check_payment_order(uid='test')
+        result = cli.get_payment_status(uid='test')
         self.assertEqual(result, 'new')
         data = post_mock.call_args[1]['json']
-        self.assertEqual(data['method'], 'check_payment_order')
+        self.assertEqual(data['method'], 'get_payment_status')
         self.assertEqual(data['params'], {'uid': 'test'})
         self.assertEqual(data['jsonrpc'], '2.0')
         self.assertEqual(data['id'], 0)
@@ -384,4 +384,4 @@ class JSONRPCClientTestCase(unittest.TestCase):
         })
         cli = JSONRPCClient()
         with self.assertRaises(exceptions.NetworkError):
-            cli.check_payment_order(uid='test')
+            cli.get_payment_status(uid='test')

@@ -16,7 +16,7 @@ def get_connection_status(**kwargs):
 
 
 @dispatcher.add_method
-def get_activation_status(**kwargs):
+def get_device_status(**kwargs):
     # Return 'loading' if remote_config is not loaded yet
     status = state['remote_config'].get('status', 'loading')
     return status
@@ -52,7 +52,7 @@ def create_payment_order(**kwargs):
 
 
 @dispatcher.add_method
-def check_payment_order(**kwargs):
+def get_payment_status(**kwargs):
     order_uid = kwargs['uid']
     order = state['payments'][order_uid]
     status = order.check()
@@ -60,7 +60,7 @@ def check_payment_order(**kwargs):
 
 
 @dispatcher.add_method
-def cancel_payment_order(**kwargs):
+def cancel_payment(**kwargs):
     order_uid = kwargs['uid']
     order = state['payments'][order_uid]
     result = order.cancel()
@@ -88,7 +88,7 @@ def create_withdrawal_order(**kwargs):
 
 
 @dispatcher.add_method
-def confirm_withdrawal_order(**kwargs):
+def confirm_withdrawal(**kwargs):
     order_uid = kwargs['uid']
     address = kwargs['address']
     order = state['withdrawals'][order_uid]
@@ -101,7 +101,7 @@ def confirm_withdrawal_order(**kwargs):
 
 
 @dispatcher.add_method
-def check_withdrawal_order(**kwargs):
+def get_withdrawal_status(**kwargs):
     order_uid = kwargs['uid']
     order = state['withdrawals'][order_uid]
     status = order.check()
@@ -109,7 +109,7 @@ def check_withdrawal_order(**kwargs):
 
 
 @dispatcher.add_method
-def cancel_withdrawal_order(**kwargs):
+def cancel_withdrawal(**kwargs):
     order_uid = kwargs['uid']
     order = state['withdrawals'][order_uid]
     result = order.cancel()
