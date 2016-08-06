@@ -1,8 +1,9 @@
+from decimal import Decimal
 from jsonrpc import Dispatcher
 
 from xbterminal.state import state
 from xbterminal.stages.payment import Payment
-from xbterminal.stages.withdrawal import Withdrawal
+from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
 from xbterminal.helpers import configs
 
 dispatcher = Dispatcher()
@@ -120,3 +121,68 @@ def get_withdrawal_receipt(**kwargs):
     order_uid = kwargs['uid']
     order = state['withdrawals'][order_uid]
     return {'receipt_url': order.receipt_url}
+
+
+@dispatcher.add_method
+def start_bluetooth_server(**kwargs):
+    payment_uid = kwargs['payment_uid']
+    payment = state['payments'][payment_uid]
+    state['bluetooth_server'].start(payment)
+    return {'result': True}
+
+
+@dispatcher.add_method
+def stop_bluetooth_server(**kwargs):
+    state['bluetooth_server'].stop()
+    return {'result': True}
+
+
+@dispatcher.add_method
+def start_nfc_server(**kwargs):
+    message = kwargs['message']
+    state['nfc_server'].start(message)
+    return {'result': True}
+
+
+@dispatcher.add_method
+def stop_nfc_server(**kwargs):
+    state['nfc_server'].stop()
+    return {'result': True}
+
+
+@dispatcher.add_method
+def start_qr_scanner(**kwargs):
+    state['qr_scanner'].start()
+    return {'result': True}
+
+
+@dispatcher.add_method
+def get_scanned_address(**kwargs):
+    address = get_bitcoin_address(state['qr_scanner'].get_data() or '')
+    return {'address': address}
+
+
+@dispatcher.add_method
+def stop_qr_scanner(**kwargs):
+    state['qr_scanner'].stop()
+    return {'result': True}
+
+
+@dispatcher.add_method
+def host_add_credit(**kwargs):
+    amount = Decimal(kwargs['fiat_amount'])
+    state['host_system'].add_credit(amount)
+    return {'result': True}
+
+
+@dispatcher.add_method
+def host_withdraw(**kwargs):
+    amount = Decimal(kwargs['fiat_amount'])
+    state['host_system'].withdraw(amount)
+    return {'result': True}
+
+
+@dispatcher.add_method
+def host_get_payout(**kwargs):
+    current_credit = state['host_system'].get_payout()
+    return {'current_credit': str(current_credit)}

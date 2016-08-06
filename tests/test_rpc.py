@@ -242,6 +242,95 @@ class APITestCase(unittest.TestCase):
             result = api.get_withdrawal_receipt(uid='test-uid')
         self.assertEqual(result['receipt_url'], 'test-url')
 
+    def test_start_bluetooth_server(self):
+        bt_server_mock = Mock()
+        order_mock = Mock()
+        state = {
+            'bluetooth_server': bt_server_mock,
+            'payments': {
+                'test-uid': order_mock,
+            },
+        }
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.start_bluetooth_server(payment_uid='test-uid')
+        self.assertEqual(result['result'], True)
+        self.assertEqual(bt_server_mock.start.call_args[0][0], order_mock)
+
+    def test_stop_bluetooth_server(self):
+        bt_server_mock = Mock()
+        state = {'bluetooth_server': bt_server_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.stop_bluetooth_server()
+        self.assertEqual(result['result'], True)
+        self.assertTrue(bt_server_mock.stop.called)
+
+    def test_start_nfc_server(self):
+        nfc_server_mock = Mock()
+        state = {'nfc_server': nfc_server_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.start_nfc_server(message='test')
+        self.assertEqual(result['result'], True)
+        self.assertEqual(nfc_server_mock.start.call_args[0][0], 'test')
+
+    def test_stop_nfc_server(self):
+        nfc_server_mock = Mock()
+        state = {'nfc_server': nfc_server_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.stop_nfc_server()
+        self.assertEqual(result['result'], True)
+        self.assertTrue(nfc_server_mock.stop.called)
+
+    def test_start_qr_scanner(self):
+        qr_scanner_mock = Mock()
+        state = {'qr_scanner': qr_scanner_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.start_qr_scanner()
+        self.assertEqual(result['result'], True)
+        self.assertTrue(qr_scanner_mock.start.called)
+
+    def test_stop_qr_scanner(self):
+        qr_scanner_mock = Mock()
+        state = {'qr_scanner': qr_scanner_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.stop_qr_scanner()
+        self.assertEqual(result['result'], True)
+        self.assertTrue(qr_scanner_mock.stop.called)
+
+    def test_get_scanned_address(self):
+        address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
+        qr_scanner_mock = Mock(**{
+            'get_data.return_value': address,
+        })
+        state = {'qr_scanner': qr_scanner_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.get_scanned_address()
+        self.assertEqual(result['address'], address)
+
+    def test_host_add_credit(self):
+        host_mock = Mock()
+        state = {'host_system': host_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.host_add_credit(fiat_amount='0.5')
+        self.assertEqual(result['result'], True)
+        self.assertEqual(host_mock.add_credit.call_args[0][0],
+                         Decimal('0.5'))
+
+    def test_host_withdraw(self):
+        host_mock = Mock()
+        state = {'host_system': host_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.host_withdraw(fiat_amount='0.5')
+        self.assertEqual(result['result'], True)
+        self.assertEqual(host_mock.withdraw.call_args[0][0],
+                         Decimal('0.5'))
+
+    def test_host_get_payout(self):
+        host_mock = Mock(**{'get_payout.return_value': Decimal('0.25')})
+        state = {'host_system': host_mock}
+        with patch.dict('xbterminal.api.state', **state):
+            result = api.host_get_payout()
+        self.assertEqual(result['current_credit'], '0.25')
+
 
 class JSONRPCClientTestCase(unittest.TestCase):
 
