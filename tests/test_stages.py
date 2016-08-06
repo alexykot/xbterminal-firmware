@@ -669,7 +669,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
                 'wscan_goback_btn': True,
             },
             'qr_scanner': Mock(**{'get_data.return_value': None}),
-            'local_config': {},
+            'gui_config': {},
             'withdrawal': {
                 'fiat_amount': Decimal(0),
                 'order': order_mock,
@@ -694,7 +694,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
                 'wscan_goback_btn': False,
             },
             'qr_scanner': Mock(**{'get_data.return_value': self.address}),
-            'local_config': {},
+            'gui_config': {},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
                 'order': order_mock,
@@ -720,7 +720,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
                 'wscan_goback_btn': False,
             },
             'qr_scanner': Mock(**{'get_data.return_value': None}),
-            'local_config': {'default_withdrawal_address': self.address},
+            'gui_config': {'default_withdrawal_address': self.address},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
                 'order': order_mock,

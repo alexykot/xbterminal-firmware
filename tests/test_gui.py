@@ -7,10 +7,13 @@ from xbterminal import defaults
 
 class GUITestCase(unittest.TestCase):
 
-    @patch.dict('xbterminal.gui.gui.state',
-                local_config={})
-    def test_init_application(self):
-        application = Application()
+    @patch.dict('xbterminal.gui.gui.state')
+    @patch('xbterminal.gui.gui.configs.load_gui_config')
+    def test_init_application(self, load_config_mock):
+        load_config_mock.return_value = {'show_cursor': True}
+        with patch.dict('xbterminal.gui.gui.state', {}):
+            application = Application()
+        self.assertTrue(load_config_mock.called)
         self.assertEqual(application.language, defaults.UI_DEFAULT_LANGUAGE)
         self.assertEqual(len(application._translators.keys()), 3)
 
@@ -21,7 +24,7 @@ class GUITestCase(unittest.TestCase):
         ui_mock.Ui_MainWindow.return_value = Mock(**{
             'main_stackedWidget.currentIndex.return_value': 0,
         })
-        state = {'local_config': {}}
+        state = {'gui_config': {}}
         with patch.dict('xbterminal.gui.gui.state', state):
             window = GUI()
         self.assertEqual(window._application, app_mock)

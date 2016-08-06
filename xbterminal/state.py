@@ -7,6 +7,7 @@ def get_initial_state():
     return {
         'device_key': None,
         'local_config': {},
+        'gui_config': {},
         'remote_server': None,
         'remote_config': {},
         'remote_config_last_update': 0,

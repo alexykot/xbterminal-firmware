@@ -37,13 +37,17 @@ class Application(QtGui.QApplication):
 
     def __init__(self, *args, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
+        self.loadConfig()
         self.initResources()
         self._translators = {}
         self.language = defaults.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
 
+    def loadConfig(self):
+        state['gui_config'] = configs.load_gui_config()
+
     def initResources(self):
-        theme = state['local_config'].get(
+        theme = state['gui_config'].get(
             'theme',
             defaults.UI_DEFAULT_THEME)
         file, pathname, description = imp.find_module(
@@ -106,11 +110,11 @@ class GUI(QtGui.QMainWindow):
         # Initialize Qt application
         application = Application(sys.argv)
         application.loadFonts()
-        if state['local_config'].get('show_cursor'):
+        if state['gui_config'].get('show_cursor'):
             application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         else:
             application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
-        language_code = state['local_config'].get(
+        language_code = state['gui_config'].get(
             'language',
             defaults.UI_DEFAULT_LANGUAGE)
         application.setLanguage(language_code)
@@ -183,8 +187,8 @@ class GUI(QtGui.QMainWindow):
         """
         if self._application.setLanguage(language_code):
             self.ui.retranslateUi(self)
-            state['local_config']['language'] = language_code
-            configs.save_local_config(state['local_config'])
+            state['gui_config']['language'] = language_code
+            configs.save_gui_config(state['gui_config'])
 
     def showErrors(self, errors):
         translations = {

@@ -36,6 +36,7 @@ class InitTestCase(unittest.TestCase):
         self.assertFalse(state['screen_buttons']['wconfirm_confirm_btn'])
         self.assertIsNone(state['device_key'])
         self.assertEqual(len(state['local_config'].keys()), 0)
+        self.assertEqual(len(state['gui_config'].keys()), 0)
         self.assertIsNone(state['remote_server'])
         self.assertEqual(len(state['remote_config'].keys()), 0)
         self.assertEqual(state['remote_config_last_update'], 0)
