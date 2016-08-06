@@ -52,15 +52,3 @@ def move_to_thread(worker):
     thread = StageWorkerThread(target=worker.run)
     thread.start()
     return thread
-
-
-def move_to_qthread(worker):
-    """
-    Run StageWorker inside the QThread
-    """
-    thread = QtCore.QThread()
-    worker.moveToThread(thread)
-    worker.finished.connect(thread.quit)
-    thread.started.connect(worker.run)
-    thread.start()
-    return thread
