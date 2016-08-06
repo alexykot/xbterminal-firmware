@@ -5,7 +5,6 @@ import time
 import sys
 import os
 import logging.config
-import signal
 
 include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
@@ -61,6 +60,7 @@ def main():
             run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
 
         if run['keypad'].last_key_pressed == 'application_halt':
+            main_window.close()
             break
 
         # Manage stages
@@ -77,22 +77,9 @@ def main():
             run['keypad'].resetKey()
 
 
-def sighup_handler(*args):
-    state['local_config'] = configs.load_local_config()
-
-signal.signal(signal.SIGHUP, sighup_handler)
-
-
-def graceful_exit():
-    configs.save_local_config(
-        state['local_config'])
-    logger.warning('application halted')
-    sys.exit()
-
-
 if __name__ == "__main__":
     try:
         main()
     except Exception as error:
         logger.exception(error)
-    graceful_exit()
+    logger.warning('application halted')
