@@ -192,9 +192,8 @@ def pay_info(run, ui):
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['pinfo_pay_btn'] = False
             # Prepare QR image
-            run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             qr.qr_gen(run['payment']['order'].payment_uri,
-                      run['payment']['qr_image_path'])
+                      defaults.QR_IMAGE_PATH)
             return defaults.STAGES['payment']['pay_wait']
         if run['screen_buttons']['pinfo_cancel_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
@@ -211,7 +210,7 @@ def pay_wait(run, ui):
     ui.showScreen('pay_wait')
     ui.setText('pwait_btc_amount_lbl',
                amounts.format_btc_amount_pretty(run['payment']['order'].btc_amount, prefix=True))
-    ui.setImage('pwait_qr_img', run['payment']['qr_image_path'])
+    ui.setImage('pwait_qr_img', defaults.QR_IMAGE_PATH)
     logger.info(
         'local payment requested, '
         'amount fiat: {amount_fiat}, '
@@ -258,9 +257,8 @@ def pay_success(run, ui):
         if run['screen_buttons']['psuccess_yes_btn'] or \
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['psuccess_yes_btn'] = False
-            run['payment']['qr_image_path'] = defaults.QR_IMAGE_PATH
             qr.qr_gen(run['payment']['receipt_url'],
-                      run['payment']['qr_image_path'])
+                      defaults.QR_IMAGE_PATH)
             return defaults.STAGES['payment']['pay_receipt']
         if run['screen_buttons']['psuccess_no_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
@@ -276,7 +274,7 @@ def pay_success(run, ui):
 def pay_receipt(run, ui):
     assert run['payment']['receipt_url']
     ui.showScreen('pay_receipt')
-    ui.setImage('preceipt_receipt_qr_img', run['payment']['qr_image_path'])
+    ui.setImage('preceipt_receipt_qr_img', defaults.QR_IMAGE_PATH)
     run['nfc_server'].start(run['payment']['receipt_url'])
     while True:
         if run['screen_buttons']['preceipt_goback_btn'] or \
@@ -418,9 +416,8 @@ def withdraw_success(run, ui):
         if run['screen_buttons']['wsuccess_yes_btn'] or \
                 run['keypad'].last_key_pressed == 'enter':
             run['screen_buttons']['wsuccess_yes_btn'] = False
-            run['withdrawal']['qr_image_path'] = defaults.QR_IMAGE_PATH
             qr.qr_gen(run['withdrawal']['receipt_url'],
-                      run['withdrawal']['qr_image_path'])
+                      defaults.QR_IMAGE_PATH)
             return defaults.STAGES['withdrawal']['withdraw_receipt']
         if run['screen_buttons']['wsuccess_no_btn'] or \
                 run['keypad'].last_key_pressed == 'backspace':
@@ -436,8 +433,7 @@ def withdraw_success(run, ui):
 def withdraw_receipt(run, ui):
     ui.showScreen('withdraw_receipt')
     assert run['withdrawal']['receipt_url']
-    assert run['withdrawal']['qr_image_path'] is not None
-    ui.setImage('wreceipt_receipt_qr_img', run['withdrawal']['qr_image_path'])
+    ui.setImage('wreceipt_receipt_qr_img', defaults.QR_IMAGE_PATH)
     run['nfc_server'].start(run['withdrawal']['receipt_url'])
     while True:
         if run['screen_buttons']['wreceipt_goback_btn'] or \
@@ -463,7 +459,6 @@ def _clear_payment_runtime(run, ui, cancel_order=False):
     run['payment']['fiat_amount'] = None
     run['payment']['order'] = None
     run['payment']['receipt_url'] = None
-    run['payment']['qr_image_path'] = None
 
     ui.setText('pinfo_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
@@ -490,7 +485,6 @@ def _clear_withdrawal_runtime(run, ui, clear_amount=True, cancel_order=False):
     run['withdrawal']['order'] = None
     run['withdrawal']['address'] = None
     run['withdrawal']['receipt_url'] = None
-    run['withdrawal']['qr_image_path'] = None
 
     ui.setText('wscan_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))

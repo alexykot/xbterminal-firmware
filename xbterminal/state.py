@@ -29,7 +29,6 @@ def get_initial_state():
             # Variables related to payment process
             'fiat_amount': None,
             'order': None,
-            'qr_image_path': None,
             'receipt_url': None,
         },
         'withdrawal': {
@@ -38,7 +37,6 @@ def get_initial_state():
             'order': None,
             'address': None,
             'receipt_url': None,
-            'qr_image_path': None,
         },
         # For API
         'payments': {},

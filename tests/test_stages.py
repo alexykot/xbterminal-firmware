@@ -426,7 +426,8 @@ class PayInfoStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in run['screen_buttons'].values()))
 
-    def test_pay(self):
+    @patch('xbterminal.stages.stages.qr.qr_gen')
+    def test_pay(self, qr_gen_mock):
         order_mock = Mock(**{
             'btc_amount': Decimal(0),
             'exchange_rate': Decimal(0),
@@ -449,7 +450,7 @@ class PayInfoStageTestCase(unittest.TestCase):
                          defaults.STAGES['payment']['pay_wait'])
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_info')
         self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa31.03')
-        self.assertIsNotNone(run['payment']['qr_image_path'])
+        self.assertTrue(qr_gen_mock.call_args[0][0], 'test')
         self.assertFalse(any(state for state
                              in run['screen_buttons'].values()))
 
@@ -566,7 +567,8 @@ class PaySuccessStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in run['screen_buttons'].values()))
 
-    def test_yes(self):
+    @patch('xbterminal.stages.stages.qr.qr_gen')
+    def test_yes(self, qr_gen_mock):
         order_mock = Mock(btc_amount=Decimal('0.12345678'))
         run = {
             'keypad': Mock(last_key_pressed=None),
@@ -584,9 +586,9 @@ class PaySuccessStageTestCase(unittest.TestCase):
         next_stage = stages.pay_success(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['payment']['pay_receipt'])
-        self.assertIsNotNone(run['payment']['qr_image_path'])
         self.assertIsNotNone(run['payment']['order'])
         self.assertIsNotNone(run['payment']['receipt_url'])
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
         self.assertFalse(any(state for state
                          in run['screen_buttons'].values()))
 
@@ -863,7 +865,8 @@ class WithdrawSuccessStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in run['screen_buttons'].values()))
 
-    def test_yes(self):
+    @patch('xbterminal.stages.stages.qr.qr_gen')
+    def test_yes(self, qr_gen_mock):
         order_mock = Mock(btc_amount=Decimal('0.12345678'))
         run = {
             'keypad': Mock(last_key_pressed=None),
@@ -881,9 +884,9 @@ class WithdrawSuccessStageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_success(run, ui)
         self.assertEqual(next_stage,
                          defaults.STAGES['withdrawal']['withdraw_receipt'])
-        self.assertIsNotNone(run['withdrawal']['qr_image_path'])
         self.assertIsNotNone(run['withdrawal']['order'])
         self.assertIsNotNone(run['withdrawal']['receipt_url'])
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
         self.assertFalse(any(state for state
                          in run['screen_buttons'].values()))
 
