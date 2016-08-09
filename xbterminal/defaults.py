@@ -129,6 +129,9 @@ LOG_CONFIG = {
         'urllib3.connectionpool': {
             'level': 'WARNING',
         },
+        'tornado.access': {
+            'level': 'WARNING',
+        },
     },
 }
 

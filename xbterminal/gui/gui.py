@@ -9,7 +9,7 @@ import imp
 
 from PyQt4 import QtGui, QtCore
 
-import xbterminal.helpers
+from xbterminal.helpers import configs
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
 from xbterminal.state import state
@@ -184,7 +184,7 @@ class GUI(QtGui.QMainWindow):
         if self._application.setLanguage(language_code):
             self.ui.retranslateUi(self)
             state['local_config']['language'] = language_code
-            xbterminal.helpers.configs.save_local_config(state['local_config'])
+            configs.save_local_config(state['local_config'])
 
     def showErrors(self, errors):
         translations = {
