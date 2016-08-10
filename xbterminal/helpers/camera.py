@@ -51,7 +51,7 @@ class FsWebCamBackend(object):
                 if idx == 0:
                     self.resolution = '480x320'
                 else:
-                    self.resulution = '640x480'
+                    self.resolution = '640x480'
                 logger.info('camera found at {}'.format(self.device))
                 break
 
