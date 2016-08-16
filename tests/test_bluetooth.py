@@ -3,7 +3,7 @@ import subprocess
 import unittest
 from mock import patch, Mock
 
-from xbterminal.helpers.bt import (
+from xbterminal.rpc.utils.bt import (
     BluetoothServer,
     BluetoothWorker,
     PaymentRequestWorker,
@@ -22,8 +22,8 @@ class BluetoothServerTestCase(unittest.TestCase):
                 TX bytes:952 acl:0 sco:0 commands:38 errors:0
         """
 
-    @patch('xbterminal.helpers.bt.subprocess.check_output')
-    @patch('xbterminal.helpers.bt.subprocess.check_call')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_output')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_call')
     def test_init(self, check_call_mock, check_output_mock):
         check_output_mock.return_value = self.hciconfig_output
         bt_server = BluetoothServer()
@@ -36,17 +36,17 @@ class BluetoothServerTestCase(unittest.TestCase):
         args_2 = check_call_mock.call_args_list[1][0][0]
         self.assertEqual(args_2, ['hciconfig', 'hci0', 'noauth'])
 
-    @patch('xbterminal.helpers.bt.subprocess.check_output')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_output')
     def test_init_proc_error(self, check_output_mock):
         check_output_mock.side_effect = subprocess.CalledProcessError(1, 2, 3)
         bt_server = BluetoothServer()
         self.assertIsNone(bt_server.device_id)
         self.assertIsNone(bt_server.mac_address)
 
-    @patch('xbterminal.helpers.bt.subprocess.check_output')
-    @patch('xbterminal.helpers.bt.subprocess.check_call')
-    @patch('xbterminal.helpers.bt.PaymentRequestWorker')
-    @patch('xbterminal.helpers.bt.PaymentResponseWorker')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_output')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_call')
+    @patch('xbterminal.rpc.utils.bt.PaymentRequestWorker')
+    @patch('xbterminal.rpc.utils.bt.PaymentResponseWorker')
     def test_start_stop(self, prsp_worker_cls_mock, preq_worker_cls_mock,
                         check_call_mock, check_output_mock):
         check_output_mock.return_value = self.hciconfig_output
@@ -76,8 +76,8 @@ class BluetoothServerTestCase(unittest.TestCase):
         self.assertEqual(len(bt_server.workers), 0)
         self.assertFalse(bt_server.is_running())
 
-    @patch('xbterminal.helpers.bt.subprocess.check_output')
-    @patch('xbterminal.helpers.bt.subprocess.check_call')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_output')
+    @patch('xbterminal.rpc.utils.bt.subprocess.check_call')
     def test_start_stop_no_device(self, check_call_mock, check_output_mock):
         check_output_mock.side_effect = subprocess.CalledProcessError(1, 2, 3)
         bt_server = BluetoothServer()
@@ -97,10 +97,10 @@ class BluetoothServerTestCase(unittest.TestCase):
 
 class BluetoothWorkerTestCase(unittest.TestCase):
 
-    @patch('xbterminal.helpers.bt.bluetooth.BluetoothSocket')
-    @patch('xbterminal.helpers.bt.dbus.SystemBus')
-    @patch('xbterminal.helpers.bt.dbus.Interface')
-    @patch('xbterminal.helpers.bt.create_sdp_record_xml')
+    @patch('xbterminal.rpc.utils.bt.bluetooth.BluetoothSocket')
+    @patch('xbterminal.rpc.utils.bt.dbus.SystemBus')
+    @patch('xbterminal.rpc.utils.bt.dbus.Interface')
+    @patch('xbterminal.rpc.utils.bt.create_sdp_record_xml')
     def test_init(self, create_sdp_rec_mock,
                   interface_cls_mock, system_bus_cls_mock,
                   bt_socket_cls_mock):
@@ -114,9 +114,9 @@ class BluetoothWorkerTestCase(unittest.TestCase):
         self.assertIsNone(bt_worker.client_sock)
         self.assertTrue(create_sdp_rec_mock.called)
 
-    @patch('xbterminal.helpers.bt.bluetooth.BluetoothSocket')
-    @patch('xbterminal.helpers.bt.dbus.SystemBus')
-    @patch('xbterminal.helpers.bt.dbus.Interface')
+    @patch('xbterminal.rpc.utils.bt.bluetooth.BluetoothSocket')
+    @patch('xbterminal.rpc.utils.bt.dbus.SystemBus')
+    @patch('xbterminal.rpc.utils.bt.dbus.Interface')
     def test_payment_request(self, interface_cls_mock, system_bus_cls_mock,
                              bt_socket_cls_mock):
         bt_socket_cls_mock.return_value = Mock(**{
@@ -133,9 +133,9 @@ class BluetoothWorkerTestCase(unittest.TestCase):
         self.assertEqual(bt_worker.client_sock.send.call_args[0][0],
                          '\xc8\x01\x03\x12\x0bx')
 
-    @patch('xbterminal.helpers.bt.bluetooth.BluetoothSocket')
-    @patch('xbterminal.helpers.bt.dbus.SystemBus')
-    @patch('xbterminal.helpers.bt.dbus.Interface')
+    @patch('xbterminal.rpc.utils.bt.bluetooth.BluetoothSocket')
+    @patch('xbterminal.rpc.utils.bt.dbus.SystemBus')
+    @patch('xbterminal.rpc.utils.bt.dbus.Interface')
     def test_payment_response(self, interface_cls_mock, system_bus_cls_mock,
                               bt_socket_cls_mock):
         bt_socket_cls_mock.return_value = Mock(**{
@@ -152,9 +152,9 @@ class BluetoothWorkerTestCase(unittest.TestCase):
         self.assertEqual(bt_worker.client_sock.send.call_args[0][0],
                          '\x03\n\x85\x02')
 
-    @patch('xbterminal.helpers.bt.bluetooth.BluetoothSocket')
-    @patch('xbterminal.helpers.bt.dbus.SystemBus')
-    @patch('xbterminal.helpers.bt.dbus.Interface')
+    @patch('xbterminal.rpc.utils.bt.bluetooth.BluetoothSocket')
+    @patch('xbterminal.rpc.utils.bt.dbus.SystemBus')
+    @patch('xbterminal.rpc.utils.bt.dbus.Interface')
     def test_payment_response_error(self, interface_cls_mock,
                                     system_bus_cls_mock,
                                     bt_socket_cls_mock):

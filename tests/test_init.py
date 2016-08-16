@@ -4,7 +4,7 @@ import unittest
 from mock import patch, Mock
 
 from xbterminal.rpc.state import get_initial_rpc_state
-from xbterminal.stages.init import init_step_1, init_step_2
+from xbterminal.rpc.init import init_step_1, init_step_2
 
 
 class InitTestCase(unittest.TestCase):
@@ -25,12 +25,12 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(state['payments'], {})
         self.assertEqual(state['withdrawals'], {})
 
-    @patch('xbterminal.stages.init.configs.read_device_key')
-    @patch('xbterminal.stages.init.configs.load_local_config')
-    @patch('xbterminal.stages.init.Watcher')
-    @patch('xbterminal.stages.init.BluetoothServer')
-    @patch('xbterminal.stages.init.NFCServer')
-    @patch('xbterminal.stages.init.QRScanner')
+    @patch('xbterminal.rpc.init.configs.read_device_key')
+    @patch('xbterminal.rpc.init.configs.load_local_config')
+    @patch('xbterminal.rpc.init.Watcher')
+    @patch('xbterminal.rpc.init.BluetoothServer')
+    @patch('xbterminal.rpc.init.NFCServer')
+    @patch('xbterminal.rpc.init.QRScanner')
     def test_init_step_1(self, scanner_cls_mock, nfc_cls_mock, bt_cls_mock,
                          watcher_cls_mock, load_mock, read_mock):
         read_mock.return_value = 'test-key'
@@ -54,10 +54,10 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(state['nfc_server'], 'nfc')
         self.assertEqual(state['qr_scanner'], 'scanner')
 
-    @patch('xbterminal.stages.init.clock.get_internet_time')
-    @patch('xbterminal.helpers.configs.save_local_config')
-    @patch('xbterminal.stages.activation.is_registered')
-    @patch('xbterminal.helpers.configs.load_remote_config')
+    @patch('xbterminal.rpc.init.clock.get_internet_time')
+    @patch('xbterminal.rpc.utils.configs.save_local_config')
+    @patch('xbterminal.rpc.activation.is_registered')
+    @patch('xbterminal.rpc.utils.configs.load_remote_config')
     def test_init_step_2(self, load_remote_config_mock, is_registered_mock,
                          save_local_config_mock, get_time_mock):
         get_time_mock.return_value = time.time()
@@ -80,11 +80,11 @@ class InitTestCase(unittest.TestCase):
         self.assertGreater(state['remote_config_last_update'], 0)
         self.assertEqual(state['remote_config']['status'], 'active')
 
-    @patch('xbterminal.stages.init.clock.get_internet_time')
-    @patch('xbterminal.helpers.configs.save_local_config')
-    @patch('xbterminal.stages.activation.is_registered')
-    @patch('xbterminal.stages.activation.register_device')
-    @patch('xbterminal.helpers.configs.load_remote_config')
+    @patch('xbterminal.rpc.init.clock.get_internet_time')
+    @patch('xbterminal.rpc.utils.configs.save_local_config')
+    @patch('xbterminal.rpc.activation.is_registered')
+    @patch('xbterminal.rpc.activation.register_device')
+    @patch('xbterminal.rpc.utils.configs.load_remote_config')
     def test_init_step_2_registration(self, load_remote_config_mock,
                                       register_device_mock,
                                       is_registered_mock,

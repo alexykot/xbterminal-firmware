@@ -2,9 +2,9 @@ from decimal import Decimal
 from jsonrpc import Dispatcher
 
 from xbterminal.rpc.state import state
-from xbterminal.stages.payment import Payment
-from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
-from xbterminal.helpers import configs
+from xbterminal.rpc.payment import Payment
+from xbterminal.rpc.withdrawal import Withdrawal, get_bitcoin_address
+from xbterminal.rpc.utils import configs
 
 dispatcher = Dispatcher()
 

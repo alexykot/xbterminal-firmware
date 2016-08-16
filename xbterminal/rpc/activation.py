@@ -1,6 +1,6 @@
 import logging
 
-from xbterminal.helpers import api, crypto, configs, salt
+from xbterminal.rpc.utils import api, crypto, configs, salt
 
 logger = logging.getLogger(__name__)
 

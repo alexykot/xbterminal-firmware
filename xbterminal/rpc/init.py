@@ -1,14 +1,13 @@
 import logging
 import time
 
-from xbterminal.rpc import settings
-from xbterminal.helpers import configs, clock
-from xbterminal.helpers.bt import BluetoothServer
-from xbterminal.helpers.camera import QRScanner
-from xbterminal.helpers.host import HostSystem
-from xbterminal.helpers.nfcpy import NFCServer
-from xbterminal.stages import activation
-from xbterminal.watcher import Watcher
+from xbterminal.rpc import activation, settings
+from xbterminal.rpc.utils import configs, clock
+from xbterminal.rpc.utils.bt import BluetoothServer
+from xbterminal.rpc.utils.camera import QRScanner
+from xbterminal.rpc.utils.host import HostSystem
+from xbterminal.rpc.utils.nfcpy import NFCServer
+from xbterminal.rpc.watcher import Watcher
 
 logger = logging.getLogger(__name__)
 

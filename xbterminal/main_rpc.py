@@ -11,7 +11,7 @@ sys.path.insert(0, include_path)
 
 from xbterminal.rpc.api import dispatcher
 from xbterminal.rpc.settings import LOG_CONFIG
-from xbterminal.stages.init import init_step_1, init_step_2
+from xbterminal.rpc.init import init_step_1, init_step_2
 from xbterminal.rpc.state import state
 
 logger = logging.getLogger(__name__)

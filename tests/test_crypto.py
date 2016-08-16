@@ -8,18 +8,18 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
 
-from xbterminal.helpers import crypto
+from xbterminal.rpc.utils import crypto
 
 
 class CryptoTestCase(unittest.TestCase):
 
-    @patch('xbterminal.helpers.crypto.save_secret_key')
+    @patch('xbterminal.rpc.utils.crypto.save_secret_key')
     def test_generate_keypair(self, save_key_mock):
         secret_key_pem, public_key_pem = crypto.generate_keypair()
         self.assertTrue(isinstance(secret_key_pem, str))
         self.assertTrue(isinstance(public_key_pem, str))
 
-    @patch('xbterminal.helpers.crypto.read_secret_key')
+    @patch('xbterminal.rpc.utils.crypto.read_secret_key')
     def test_signing(self, read_key_mock):
         secret_key_pem, public_key_pem = crypto.generate_keypair()
         read_key_mock.return_value = secret_key_pem

@@ -1,7 +1,7 @@
 import unittest
 from mock import patch, Mock
 
-from xbterminal.watcher import Watcher
+from xbterminal.rpc.watcher import Watcher
 
 
 class WatcherTestCase(unittest.TestCase):
@@ -13,9 +13,9 @@ class WatcherTestCase(unittest.TestCase):
         self.assertIsNone(watcher.internet)
         self.assertEqual(watcher.errors, {})
 
-    @patch.dict('xbterminal.helpers.api.state',
+    @patch.dict('xbterminal.rpc.utils.api.state',
                 remote_server='http://xbterminal.io')
-    @patch('xbterminal.watcher.api.send_request')
+    @patch('xbterminal.rpc.watcher.api.send_request')
     def test_check_connection(self, send_mock):
         watcher = Watcher()
         self.assertIsNone(watcher.internet)
@@ -34,8 +34,8 @@ class WatcherTestCase(unittest.TestCase):
         self.assertEqual(watcher.errors['internet'],
                          'internet disconnected')
 
-    @patch('xbterminal.watcher.psutil')
-    @patch('xbterminal.watcher.usb.core.find')
+    @patch('xbterminal.rpc.watcher.psutil')
+    @patch('xbterminal.rpc.watcher.usb.core.find')
     def test_log_system_stats(self, find_mock, psutil_mock):
         psutil_mock.cpu_percent.return_value = 10
         psutil_mock.virtual_memory.return_value = Mock(percent=40)

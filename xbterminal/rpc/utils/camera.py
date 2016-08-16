@@ -10,7 +10,7 @@ try:
 except ImportError:
     pass
 
-from xbterminal.helpers import qr
+from xbterminal.rpc.utils import qr
 from xbterminal.rpc.settings import RUNTIME_PATH
 
 logger = logging.getLogger(__name__)

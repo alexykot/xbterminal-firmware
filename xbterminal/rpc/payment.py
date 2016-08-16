@@ -3,7 +3,7 @@ from decimal import Decimal
 import logging
 
 from xbterminal.rpc import settings
-from xbterminal.helpers import api
+from xbterminal.rpc.utils import api
 
 logger = logging.getLogger(__name__)
 

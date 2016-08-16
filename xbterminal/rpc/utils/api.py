@@ -5,7 +5,7 @@ from xbterminal.rpc.settings import (
     REMOTE_API_ENDPOINTS,
     EXTERNAL_CALLS_TIMEOUT,
     EXTERNAL_CALLS_REQUEST_HEADERS)
-from xbterminal.helpers import crypto
+from xbterminal.rpc.utils import crypto
 from xbterminal.rpc.exceptions import NetworkError, ServerError
 from xbterminal.rpc.state import state
 
