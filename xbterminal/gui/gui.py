@@ -9,7 +9,7 @@ import imp
 
 from PyQt4 import QtGui, QtCore
 
-from xbterminal.helpers import configs
+from xbterminal.gui.utils import configs
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
 from xbterminal.state import gui_state as state
