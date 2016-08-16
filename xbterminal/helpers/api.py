@@ -11,7 +11,7 @@ from xbterminal.state import state
 
 logger = logging.getLogger(__name__)
 
-VALID_STATUS_CODES = [200, 204]
+VALID_STATUS_CODES = [200, 201, 204]
 
 
 def get_url(endpoint_name, **kwargs):
