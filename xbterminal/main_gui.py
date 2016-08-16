@@ -35,8 +35,11 @@ def main():
         main_window.processEvents()
 
         # Check for errors
-        server_status = state['client'].get_connection_status()
-        if server_status != 'online':
+        try:
+            connection_status = state['client'].get_connection_status()
+        except:
+            connection_status = 'offline'
+        if connection_status != 'online':
             main_window.showConnectionError()
             continue
         else:
