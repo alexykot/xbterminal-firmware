@@ -27,7 +27,7 @@ class MainTestCase(unittest.TestCase):
             'last_activity_timestamp': 0,
             'CURRENT_STAGE': 'application_halt',
         }
-        with patch.dict('xbterminal.main.run', **state):
+        with patch.dict('xbterminal.main.state', **state):
             main()
         self.assertTrue(log_config_mock.called)
         self.assertTrue(client_mock.get_connection_status.called)

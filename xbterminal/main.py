@@ -13,7 +13,7 @@ from xbterminal import defaults
 from xbterminal.api_client import JSONRPCClient
 from xbterminal.gui.gui import GUI
 from xbterminal.stages.worker import StageWorker, move_to_thread
-from xbterminal.state import gui_state as run
+from xbterminal.state import gui_state as state
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def main():
     logging.config.dictConfig(defaults.LOG_CONFIG)
     logger.debug('starting')
 
-    run['client'] = JSONRPCClient()
+    state['client'] = JSONRPCClient()
 
     main_window = GUI()
     worker = None
@@ -35,7 +35,7 @@ def main():
         main_window.processEvents()
 
         # Check for errors
-        server_status = run['client'].get_connection_status()
+        server_status = state['client'].get_connection_status()
         if server_status != 'online':
             main_window.showErrors(['internet disconnected'])
             continue
@@ -43,36 +43,36 @@ def main():
             main_window.hideErrors()
 
         # Reload remote config
-        if run['remote_config_last_update'] + \
+        if state['remote_config_last_update'] + \
                 defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
-            run['remote_config'] = run['client'].get_device_config()
-            run['remote_config_last_update'] = int(time.time())
+            state['remote_config'] = state['client'].get_device_config()
+            state['remote_config_last_update'] = int(time.time())
             main_window.retranslateUi(
-                run['remote_config']['language']['code'],
-                run['remote_config']['currency']['prefix'])
+                state['remote_config']['language']['code'],
+                state['remote_config']['currency']['prefix'])
 
         # Read keypad input
-        run['keypad'].getKey()
-        if run['last_activity_timestamp'] < run['keypad'].last_activity_timestamp:
-            run['last_activity_timestamp'] = run['keypad'].last_activity_timestamp
+        state['keypad'].getKey()
+        if state['last_activity_timestamp'] < state['keypad'].last_activity_timestamp:
+            state['last_activity_timestamp'] = state['keypad'].last_activity_timestamp
 
-        if run['keypad'].last_key_pressed == 'application_halt':
+        if state['keypad'].last_key_pressed == 'application_halt':
             main_window.close()
             break
 
         # Manage stages
-        if run['CURRENT_STAGE'] == 'application_halt':
+        if state['CURRENT_STAGE'] == 'application_halt':
             main_window.close()
             break
         if worker_thread is None:
-            worker = StageWorker(run['CURRENT_STAGE'], run)
+            worker = StageWorker(state['CURRENT_STAGE'], state)
             worker.ui.signal.connect(main_window.stageWorkerSlot)
             worker_thread = move_to_thread(worker)
         elif not worker_thread.is_alive():
             if worker.next_stage is not None:
-                run['CURRENT_STAGE'] = worker.next_stage
+                state['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None
-            run['keypad'].resetKey()
+            state['keypad'].resetKey()
 
 
 if __name__ == "__main__":
