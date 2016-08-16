@@ -10,11 +10,10 @@ include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
 from xbterminal import defaults
+from xbterminal.api_client import JSONRPCClient
 from xbterminal.gui.gui import GUI
-from xbterminal.helpers import configs
 from xbterminal.stages.worker import StageWorker, move_to_thread
-from xbterminal.stages.init import init_step_1
-from xbterminal.state import state
+from xbterminal.state import gui_state as run
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +22,11 @@ def main():
     logging.config.dictConfig(defaults.LOG_CONFIG)
     logger.debug('starting')
 
-    init_step_1(state)
+    run['client'] = JSONRPCClient()
 
     main_window = GUI()
     worker = None
     worker_thread = None
-    run = state
 
     logger.debug('main loop starting')
     while True:
@@ -37,18 +35,17 @@ def main():
         main_window.processEvents()
 
         # Check for errors
-        watcher_errors = run['watcher'].get_errors()
-        if watcher_errors:
-            main_window.showErrors(watcher_errors)
+        server_status = run['client'].get_connection_status()
+        if server_status != 'online':
+            main_window.showErrors(['internet disconnected'])
             continue
         else:
             main_window.hideErrors()
 
         # Reload remote config
-        if run['init']['registration'] and \
-                run['remote_config_last_update'] + \
+        if run['remote_config_last_update'] + \
                 defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
-            run['remote_config'] = configs.load_remote_config()
+            run['remote_config'] = run['client'].get_device_config()
             run['remote_config_last_update'] = int(time.time())
             main_window.retranslateUi(
                 run['remote_config']['language']['code'],
@@ -65,6 +62,7 @@ def main():
 
         # Manage stages
         if run['CURRENT_STAGE'] == 'application_halt':
+            main_window.close()
             break
         if worker_thread is None:
             worker = StageWorker(run['CURRENT_STAGE'], run)

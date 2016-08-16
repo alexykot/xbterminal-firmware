@@ -5,7 +5,7 @@ from xbterminal.defaults import (
     OUTPUT_DEC_PLACES,
     BITCOIN_SCALE_DIVIZER,
     BITCOIN_OUTPUT_DEC_PLACES)
-from xbterminal.state import state
+from xbterminal.state import gui_state as state
 
 
 FIAT_AMOUNT_TEMPLATE = u'{prefix}{integer}{dsep}{frac}'

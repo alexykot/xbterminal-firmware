@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt4 import QtCore
 
-from xbterminal.state import state
+from xbterminal.state import gui_state as state
 
 
 class KeyboardDriver(object):
