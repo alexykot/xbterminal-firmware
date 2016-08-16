@@ -5,7 +5,7 @@ from mock import patch, Mock
 from tests import mocks
 
 from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
-from xbterminal.exceptions import NetworkError
+from xbterminal.rpc.exceptions import NetworkError
 
 
 class GetAddressTestCase(unittest.TestCase):

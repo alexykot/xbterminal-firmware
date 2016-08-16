@@ -9,7 +9,7 @@ from xbterminal.helpers.configs import (
     load_remote_config_cache,
     load_local_config,
     save_local_config)
-from xbterminal.exceptions import ConfigLoadError
+from xbterminal.rpc.exceptions import ConfigLoadError
 
 
 class DeviceKeyTestCase(unittest.TestCase):

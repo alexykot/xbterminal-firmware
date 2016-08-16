@@ -6,7 +6,7 @@ from xbterminal.rpc.settings import (
     EXTERNAL_CALLS_TIMEOUT,
     EXTERNAL_CALLS_REQUEST_HEADERS)
 from xbterminal.helpers import crypto
-from xbterminal.exceptions import NetworkError, ServerError
+from xbterminal.rpc.exceptions import NetworkError, ServerError
 from xbterminal.rpc.state import state
 
 logger = logging.getLogger(__name__)

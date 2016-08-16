@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import requests
 
-from xbterminal import exceptions
+from xbterminal.gui import exceptions
 
 
 class JSONRPCClient(object):

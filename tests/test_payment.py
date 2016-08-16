@@ -4,7 +4,7 @@ import unittest
 from mock import patch, Mock
 
 from xbterminal.stages.payment import Payment
-from xbterminal.exceptions import NetworkError
+from xbterminal.rpc.exceptions import NetworkError
 
 
 @patch.dict('xbterminal.helpers.api.state',

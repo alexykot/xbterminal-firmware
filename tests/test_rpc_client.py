@@ -2,7 +2,7 @@ from decimal import Decimal
 import unittest
 from mock import patch, Mock
 
-from xbterminal import exceptions
+from xbterminal.gui import exceptions
 from xbterminal.gui.rpc_client import JSONRPCClient
 
 

@@ -4,7 +4,7 @@ from tests import mocks
 
 from xbterminal.rpc import settings
 from xbterminal.helpers import api
-from xbterminal.exceptions import NetworkError, ServerError
+from xbterminal.rpc.exceptions import NetworkError, ServerError
 
 
 @patch.dict('xbterminal.helpers.api.state',

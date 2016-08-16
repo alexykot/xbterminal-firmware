@@ -5,7 +5,7 @@ import logging
 import pprint
 
 from xbterminal.rpc import settings
-from xbterminal.exceptions import ConfigLoadError
+from xbterminal.rpc.exceptions import ConfigLoadError
 from xbterminal.helpers import api
 from xbterminal.rpc.state import state
 

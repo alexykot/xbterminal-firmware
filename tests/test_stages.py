@@ -5,7 +5,7 @@ import unittest
 
 from xbterminal.gui import settings
 from xbterminal.gui import stages
-from xbterminal.exceptions import ServerError
+from xbterminal.gui.exceptions import ServerError
 
 
 patcher = patch.dict(
