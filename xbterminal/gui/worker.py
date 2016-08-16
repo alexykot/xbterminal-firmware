@@ -3,7 +3,7 @@ import threading
 
 from PyQt4 import QtCore
 
-from xbterminal.stages import stages
+from xbterminal.gui import stages
 
 logger = logging.getLogger(__name__)
 

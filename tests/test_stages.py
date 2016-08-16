@@ -4,12 +4,12 @@ from mock import patch, Mock
 import unittest
 
 from xbterminal import defaults
-from xbterminal.stages import stages
+from xbterminal.gui import stages
 from xbterminal.exceptions import ServerError
 
 
 patcher = patch.dict(
-    'xbterminal.stages.amounts.state',
+    'xbterminal.gui.amounts.state',
     remote_config={
         'language': {
             'code': 'en',
@@ -455,7 +455,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    @patch('xbterminal.stages.stages.qr.qr_gen')
+    @patch('xbterminal.gui.stages.qr.qr_gen')
     def test_pay(self, qr_gen_mock):
         state = {
             'keypad': Mock(last_key_pressed=None),
@@ -606,7 +606,7 @@ class PaySuccessStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    @patch('xbterminal.stages.stages.qr.qr_gen')
+    @patch('xbterminal.gui.stages.qr.qr_gen')
     def test_yes(self, qr_gen_mock):
         state = {
             'keypad': Mock(last_key_pressed=None),
@@ -961,7 +961,7 @@ class WithdrawSuccessStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    @patch('xbterminal.stages.stages.qr.qr_gen')
+    @patch('xbterminal.gui.stages.qr.qr_gen')
     def test_yes(self, qr_gen_mock):
         state = {
             'keypad': Mock(last_key_pressed=None),

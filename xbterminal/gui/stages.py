@@ -3,7 +3,7 @@ import logging
 import time
 
 from xbterminal import defaults
-from xbterminal.stages import amounts
+from xbterminal.gui import amounts
 from xbterminal.helpers import qr
 from xbterminal.exceptions import NetworkError, ServerError
 

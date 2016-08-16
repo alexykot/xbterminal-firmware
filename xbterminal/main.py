@@ -12,7 +12,7 @@ sys.path.insert(0, include_path)
 from xbterminal import defaults
 from xbterminal.api_client import JSONRPCClient
 from xbterminal.gui.gui import GUI
-from xbterminal.stages.worker import StageWorker, move_to_thread
+from xbterminal.gui.worker import StageWorker, move_to_thread
 from xbterminal.state import gui_state as state
 
 logger = logging.getLogger(__name__)

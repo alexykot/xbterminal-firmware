@@ -5,12 +5,12 @@ from mock import patch, Mock
 from tests import mocks
 
 from xbterminal import defaults
-from xbterminal.stages import amounts
+from xbterminal.gui import amounts
 from xbterminal.helpers import api
 from xbterminal.exceptions import NetworkError, ServerError
 
 
-@patch.dict('xbterminal.stages.amounts.state',
+@patch.dict('xbterminal.gui.amounts.state',
             remote_config={
                 'language': {
                     'code': 'en',
