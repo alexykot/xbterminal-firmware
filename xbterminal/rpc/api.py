@@ -1,7 +1,7 @@
 from decimal import Decimal
 from jsonrpc import Dispatcher
 
-from xbterminal.state import state
+from xbterminal.rpc.state import state
 from xbterminal.stages.payment import Payment
 from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
 from xbterminal.helpers import configs

@@ -7,7 +7,7 @@ import pprint
 from xbterminal.rpc import settings
 from xbterminal.exceptions import ConfigLoadError
 from xbterminal.helpers import api
-from xbterminal.state import state
+from xbterminal.rpc.state import state
 
 logger = logging.getLogger(__name__)
 

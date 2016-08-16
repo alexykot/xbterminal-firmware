@@ -3,7 +3,7 @@ import unittest
 
 from mock import patch, Mock
 
-from xbterminal.state import get_initial_rpc_state
+from xbterminal.rpc.state import get_initial_rpc_state
 from xbterminal.stages.init import init_step_1, init_step_2
 
 
