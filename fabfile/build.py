@@ -201,3 +201,8 @@ def remote_compile(working_dir='xbterminal',
         target_dir, working_dir))
 
     compile_and_package(working_dir)
+
+
+@task
+def clean():
+    local("find . -name '*.pyc' -delete")
