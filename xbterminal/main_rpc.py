@@ -9,7 +9,7 @@ import tornado.web
 include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
-from xbterminal.api import dispatcher
+from xbterminal.rpc.api import dispatcher
 from xbterminal.defaults import LOG_CONFIG
 from xbterminal.stages.init import init_step_1, init_step_2
 from xbterminal.state import state
