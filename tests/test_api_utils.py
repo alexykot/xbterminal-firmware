@@ -2,7 +2,7 @@ import unittest
 from mock import patch, Mock
 from tests import mocks
 
-from xbterminal import defaults
+from xbterminal.rpc import settings
 from xbterminal.helpers import api
 from xbterminal.exceptions import NetworkError, ServerError
 
@@ -26,10 +26,10 @@ class ApiUtilsTestCase(unittest.TestCase):
         request = session_mock.send.call_args[0][0]
         self.assertEqual(request.url, 'http://test_url.com/')
         self.assertEqual(request.headers['User-Agent'],
-                         defaults.EXTERNAL_CALLS_REQUEST_HEADERS['User-Agent'])
+                         settings.EXTERNAL_CALLS_REQUEST_HEADERS['User-Agent'])
         self.assertNotIn('X-Signature', request.headers)
         self.assertEqual(session_mock.send.call_args[1]['timeout'],
-                         defaults.EXTERNAL_CALLS_TIMEOUT)
+                         settings.EXTERNAL_CALLS_TIMEOUT)
 
     @patch('xbterminal.helpers.api.requests.Session')
     @patch('xbterminal.helpers.crypto.read_secret_key',

@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
-from xbterminal.defaults import SECRET_KEY_FILE_PATH
+from xbterminal.rpc.settings import SECRET_KEY_FILE_PATH
 
 
 def save_secret_key(pem):

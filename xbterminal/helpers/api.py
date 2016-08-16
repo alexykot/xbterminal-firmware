@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from xbterminal.defaults import (
+from xbterminal.rpc.settings import (
     REMOTE_API_ENDPOINTS,
     EXTERNAL_CALLS_TIMEOUT,
     EXTERNAL_CALLS_REQUEST_HEADERS)

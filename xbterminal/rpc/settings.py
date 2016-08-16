@@ -4,7 +4,7 @@ from decimal import Decimal
 try:
     from xbterminal.nuitka_fix import BASE_DIR
 except ImportError:
-    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 

@@ -1,7 +1,7 @@
 import logging
 import time
 
-from xbterminal import defaults
+from xbterminal.rpc import settings
 from xbterminal.helpers import configs, clock
 from xbterminal.helpers.bt import BluetoothServer
 from xbterminal.helpers.camera import QRScanner
@@ -18,7 +18,7 @@ def init_step_1(state):
     state['local_config'] = configs.load_local_config()
 
     remote_server_name = state['local_config'].get('remote_server', 'prod')
-    state['remote_server'] = defaults.REMOTE_SERVERS[remote_server_name]
+    state['remote_server'] = settings.REMOTE_SERVERS[remote_server_name]
     logger.info('remote server {}'.format(state['remote_server']))
 
     state['watcher'] = Watcher()
