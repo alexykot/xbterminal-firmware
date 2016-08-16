@@ -13,7 +13,7 @@ from xbterminal.helpers import configs
 from xbterminal.gui import ui as appui
 from xbterminal import defaults
 from xbterminal.state import gui_state as state
-from xbterminal.keypad.keypad import Keypad
+from xbterminal.gui.keypad import Keypad
 
 logger = logging.getLogger(__name__)
 

@@ -32,6 +32,6 @@ class MainTestCase(unittest.TestCase):
         self.assertTrue(log_config_mock.called)
         self.assertTrue(client_mock.get_connection_status.called)
         self.assertTrue(client_mock.get_device_config.called)
-        self.assertTrue(keypad_mock.getKey.called)
+        self.assertTrue(keypad_mock.get_key.called)
         self.assertTrue(main_window_mock.processEvents.called)
         self.assertTrue(main_window_mock.close.called)

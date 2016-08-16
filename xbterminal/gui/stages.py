@@ -122,7 +122,7 @@ def pay_confirm(state, ui):
         if state['screen_buttons']['pconfirm_decr_btn'] or \
                 state['keypad'].last_key_pressed == 1:
             state['screen_buttons']['pconfirm_decr_btn'] = False
-            state['keypad'].resetKey()
+            state['keypad'].reset_key()
             state['payment']['fiat_amount'] -= Decimal('0.05')
             if state['payment']['fiat_amount'] < 0:
                 state['payment']['fiat_amount'] = Decimal('0.00')
@@ -132,7 +132,7 @@ def pay_confirm(state, ui):
         if state['screen_buttons']['pconfirm_incr_btn'] or \
                 state['keypad'].last_key_pressed == 2:
             state['screen_buttons']['pconfirm_incr_btn'] = False
-            state['keypad'].resetKey()
+            state['keypad'].reset_key()
             state['payment']['fiat_amount'] += Decimal('0.05')
             ui.setText(
                 'pconfirm_amount_lbl',

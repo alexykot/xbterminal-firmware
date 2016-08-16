@@ -52,7 +52,7 @@ def main():
                 state['remote_config']['currency']['prefix'])
 
         # Read keypad input
-        state['keypad'].getKey()
+        state['keypad'].get_key()
         if state['last_activity_timestamp'] < state['keypad'].last_activity_timestamp:
             state['last_activity_timestamp'] = state['keypad'].last_activity_timestamp
 
@@ -72,7 +72,7 @@ def main():
             if worker.next_stage is not None:
                 state['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None
-            state['keypad'].resetKey()
+            state['keypad'].reset_key()
 
 
 if __name__ == "__main__":
