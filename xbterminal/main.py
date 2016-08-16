@@ -10,7 +10,7 @@ include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
 from xbterminal.gui import settings
-from xbterminal.api_client import JSONRPCClient
+from xbterminal.gui.rpc_client import JSONRPCClient
 from xbterminal.gui.gui import GUI
 from xbterminal.gui.worker import StageWorker, move_to_thread
 from xbterminal.gui.state import state

@@ -3,8 +3,7 @@ import logging
 import time
 
 from xbterminal.gui import settings
-from xbterminal.gui import amounts
-from xbterminal.gui.utils import qr
+from xbterminal.gui.utils import amounts, qr
 from xbterminal.exceptions import NetworkError, ServerError
 
 logger = logging.getLogger(__name__)
