@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import requests
 
 from xbterminal import exceptions
@@ -28,3 +30,45 @@ class JSONRPCClient(object):
         func = lambda **kwargs: self._make_request(name, **kwargs)  # flake8: noqa
         func.__name__ = name
         return func
+
+    def create_payment_order(self, fiat_amount):
+        result = self._make_request('create_payment_order',
+                                    fiat_amount=str(fiat_amount))
+        return {
+            'uid': result['uid'],
+            'btc_amount': Decimal(result['btc_amount']),
+            'exchange_rate': Decimal(result['exchange_rate']),
+            'payment_uri': result['payment_uri'],
+        }
+
+    def create_withdrawal_order(self, fiat_amount):
+        result = self._make_request('create_withdrawal_order',
+                                    fiat_amount=str(fiat_amount))
+        return {
+            'uid': result['uid'],
+            'btc_amount': Decimal(result['btc_amount']),
+            'exchange_rate': Decimal(result['exchange_rate']),
+        }
+
+    def confirm_withdrawal(self, uid, address):
+        result = self._make_request('confirm_withdrawal',
+                                    uid=uid,
+                                    address=address)
+        return {
+            'btc_amount': Decimal(result['btc_amount']),
+            'exchange_rate': Decimal(result['exchange_rate']),
+        }
+
+    def host_add_credit(self, fiat_amount):
+        result = self._make_request('host_add_credit',
+                                    fiat_amount=str(fiat_amount))
+        return result
+
+    def host_withdraw(self, fiat_amount):
+        result = self._make_request('host_withdraw',
+                                    fiat_amount=str(fiat_amount))
+        return result
+
+    def host_get_payout(self):
+        result = self._make_request('host_get_payout')
+        return Decimal(result)
