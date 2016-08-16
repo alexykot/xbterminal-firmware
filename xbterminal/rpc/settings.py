@@ -11,7 +11,7 @@ PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
 BATCH_NUMBER_FILE_PATH = os.path.join(RUNTIME_PATH, 'batch_number')
 DEVICE_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'device_key')
-LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_config')
+RPC_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'rpc_config')
 REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
 SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
 

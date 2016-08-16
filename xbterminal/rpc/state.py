@@ -1,7 +1,7 @@
 def get_initial_rpc_state():
     return {
         'device_key': None,
-        'local_config': {},
+        'rpc_config': {},
         'remote_server': None,
         'remote_config': {},
         'host_system': None,

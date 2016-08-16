@@ -7,8 +7,8 @@ from xbterminal.rpc.utils.configs import (
     load_remote_config,
     save_remote_config_cache,
     load_remote_config_cache,
-    load_local_config,
-    save_local_config)
+    load_rpc_config,
+    save_rpc_config)
 from xbterminal.rpc.exceptions import ConfigLoadError
 
 
@@ -94,31 +94,31 @@ class RemoteConfigTestCase(unittest.TestCase):
 class LocalConfigTestCase(unittest.TestCase):
 
     @patch('xbterminal.rpc.utils.configs.os.path.exists')
-    @patch('xbterminal.rpc.utils.configs.save_local_config')
+    @patch('xbterminal.rpc.utils.configs.save_rpc_config')
     def test_load_config(self, save_config_mock, exists_mock):
         exists_mock.return_value = True
         open_mock = mock_open(read_data='{"ddd": 444}')
         with patch('xbterminal.rpc.utils.configs.open',
                    open_mock, create=True):
-            local_config = load_local_config()
+            rpc_config = load_rpc_config()
 
-        self.assertEqual(local_config['ddd'], 444)
+        self.assertEqual(rpc_config['ddd'], 444)
         self.assertFalse(save_config_mock.called)
 
     @patch('xbterminal.rpc.utils.configs.os.path.exists')
-    @patch('xbterminal.rpc.utils.configs.save_local_config')
+    @patch('xbterminal.rpc.utils.configs.save_rpc_config')
     def test_load_config_error(self, save_config_mock, exists_mock):
         exists_mock.return_value = False
-        local_config = load_local_config()
+        rpc_config = load_rpc_config()
 
-        self.assertEqual(len(local_config.keys()), 0)
+        self.assertEqual(len(rpc_config.keys()), 0)
         self.assertTrue(save_config_mock.called)
 
     def test_save_config(self):
         open_mock = mock_open()
         with patch('xbterminal.rpc.utils.configs.open',
                    open_mock, create=True):
-            save_local_config({'eee': 555})
+            save_rpc_config({'eee': 555})
 
         self.assertEqual(open_mock().write.call_args[0][0],
                          '{\n  "eee": 555\n}')

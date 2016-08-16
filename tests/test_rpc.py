@@ -99,7 +99,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result, 'loading')
 
     def test_get_activation_code(self):
-        state = {'local_config': {'activation_code': 'test'}}
+        state = {'rpc_config': {'activation_code': 'test'}}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.get_activation_code()
         self.assertEqual(result, 'test')

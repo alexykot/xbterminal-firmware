@@ -24,7 +24,7 @@ def get_device_status(**kwargs):
 
 @dispatcher.add_method
 def get_activation_code(**kwargs):
-    activation_code = state['local_config'].get('activation_code')
+    activation_code = state['rpc_config'].get('activation_code')
     return activation_code
 
 

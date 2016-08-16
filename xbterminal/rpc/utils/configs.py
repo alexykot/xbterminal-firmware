@@ -67,31 +67,31 @@ def load_remote_config_cache():
     return remote_config
 
 
-def load_local_config():
+def load_rpc_config():
     """
-    Local config params:
+    RPC server config params:
         activation_code: string (default: None)
         last_started: float (default: None)
         remote_server: string (default: 'prod')
         use_cctalk_mock: boolean (default: True)
     Returns:
-        local_config: dict
+        rpc_config: dict
     """
-    if not os.path.exists(settings.LOCAL_CONFIG_FILE_PATH):
-        local_config = {}
-        save_local_config(local_config)
-        logger.info('created new local config at {}'.format(
-            settings.LOCAL_CONFIG_FILE_PATH))
+    if not os.path.exists(settings.RPC_CONFIG_FILE_PATH):
+        rpc_config = {}
+        save_rpc_config(rpc_config)
+        logger.info('created new rpc config at {}'.format(
+            settings.RPC_CONFIG_FILE_PATH))
     else:
-        with open(settings.LOCAL_CONFIG_FILE_PATH) as local_config_file:
-            local_config = json.loads(local_config_file.read())
-            logger.info('local config loaded from {0}:\n{1}'.format(
-                settings.LOCAL_CONFIG_FILE_PATH,
-                pprint.pformat(local_config)))
-    return local_config
+        with open(settings.RPC_CONFIG_FILE_PATH) as rpc_config_file:
+            rpc_config = json.loads(rpc_config_file.read())
+            logger.info('rpc config loaded from {0}:\n{1}'.format(
+                settings.RPC_CONFIG_FILE_PATH,
+                pprint.pformat(rpc_config)))
+    return rpc_config
 
 
-def save_local_config(local_config):
-    with open(settings.LOCAL_CONFIG_FILE_PATH, 'w') as local_config_file:
-        local_config_file.write(json.dumps(
-            local_config, indent=2, sort_keys=True, separators=(',', ': ')))
+def save_rpc_config(rpc_config):
+    with open(settings.RPC_CONFIG_FILE_PATH, 'w') as rpc_config_file:
+        rpc_config_file.write(json.dumps(
+            rpc_config, indent=2, sort_keys=True, separators=(',', ': ')))
