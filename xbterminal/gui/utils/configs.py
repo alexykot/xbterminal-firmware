@@ -3,7 +3,7 @@ import os
 import logging
 import pprint
 
-from xbterminal import defaults
+from xbterminal.gui import settings
 
 logger = logging.getLogger(__name__)
 
@@ -18,12 +18,12 @@ def load_gui_config():
     Returns:
         gui_config: dict
     """
-    if not os.path.exists(defaults.GUI_CONFIG_FILE_PATH):
+    if not os.path.exists(settings.GUI_CONFIG_FILE_PATH):
         gui_config = {}
         save_gui_config(gui_config)
         logger.info('created new GUI config')
     else:
-        with open(defaults.GUI_CONFIG_FILE_PATH) as gui_config_file:
+        with open(settings.GUI_CONFIG_FILE_PATH) as gui_config_file:
             gui_config = json.loads(gui_config_file.read())
             logger.info('GUI config loaded:\n{0}'.format(
                 pprint.pformat(gui_config)))
@@ -31,6 +31,6 @@ def load_gui_config():
 
 
 def save_gui_config(gui_config):
-    with open(defaults.GUI_CONFIG_FILE_PATH, 'w') as gui_config_file:
+    with open(settings.GUI_CONFIG_FILE_PATH, 'w') as gui_config_file:
         gui_config_file.write(json.dumps(
             gui_config, indent=2, sort_keys=True, separators=(',', ': ')))

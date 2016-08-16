@@ -2,7 +2,7 @@ import unittest
 from mock import patch, Mock
 
 from xbterminal.gui.gui import Application, GUI
-from xbterminal import defaults
+from xbterminal.gui import settings
 
 
 class GUITestCase(unittest.TestCase):
@@ -14,7 +14,7 @@ class GUITestCase(unittest.TestCase):
         with patch.dict('xbterminal.gui.gui.state', {}):
             application = Application()
         self.assertTrue(load_config_mock.called)
-        self.assertEqual(application.language, defaults.UI_DEFAULT_LANGUAGE)
+        self.assertEqual(application.language, settings.UI_DEFAULT_LANGUAGE)
         self.assertEqual(len(application._translators.keys()), 3)
 
     @patch('xbterminal.gui.gui.Application')

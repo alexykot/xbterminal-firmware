@@ -11,8 +11,8 @@ from PyQt4 import QtGui, QtCore
 
 from xbterminal.gui.utils import configs
 from xbterminal.gui import ui as appui
-from xbterminal import defaults
-from xbterminal.state import gui_state as state
+from xbterminal.gui import settings
+from xbterminal.gui.state import state
 from xbterminal.gui.keypad import Keypad
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class Application(QtGui.QApplication):
         self.loadConfig()
         self.initResources()
         self._translators = {}
-        self.language = defaults.UI_DEFAULT_LANGUAGE
+        self.language = settings.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
 
     def loadConfig(self):
@@ -49,9 +49,9 @@ class Application(QtGui.QApplication):
     def initResources(self):
         theme = state['gui_config'].get(
             'theme',
-            defaults.UI_DEFAULT_THEME)
+            settings.UI_DEFAULT_THEME)
         file, pathname, description = imp.find_module(
-            theme, [defaults.UI_THEMES_PATH])
+            theme, [settings.UI_THEMES_PATH])
         imp.load_module(theme, file, pathname, description)
 
     def loadFonts(self):
@@ -79,7 +79,7 @@ class Application(QtGui.QApplication):
         """
         Load translations from files
         """
-        ts_dir = defaults.UI_TRANSLATIONS_PATH
+        ts_dir = settings.UI_TRANSLATIONS_PATH
         for file_name in os.listdir(ts_dir):
             match = re.match("xbterminal_(?P<code>\w+).qm", file_name)
             if match:
@@ -96,9 +96,9 @@ class Application(QtGui.QApplication):
         """
         if self.language == language_code:
             return False
-        if self.language != defaults.UI_DEFAULT_LANGUAGE:
+        if self.language != settings.UI_DEFAULT_LANGUAGE:
             self.removeTranslator(self._translators[self.language])
-        if language_code != defaults.UI_DEFAULT_LANGUAGE:
+        if language_code != settings.UI_DEFAULT_LANGUAGE:
             self.installTranslator(self._translators[language_code])
         self.language = language_code
         return True
@@ -116,7 +116,7 @@ class GUI(QtGui.QMainWindow):
             application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.BlankCursor))
         language_code = state['gui_config'].get(
             'language',
-            defaults.UI_DEFAULT_LANGUAGE)
+            settings.UI_DEFAULT_LANGUAGE)
         application.setLanguage(language_code)
         application.loadStyles()
         # Initialize Qt main window
@@ -132,7 +132,7 @@ class GUI(QtGui.QMainWindow):
         self.ui.loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Set up buttons
-        for button_name in defaults.BUTTONS:
+        for button_name in settings.BUTTONS:
             button = getattr(self.ui, button_name)
             button.clicked.connect(
                 functools.partial(self.buttonPressEvent, button_name))
@@ -157,12 +157,12 @@ class GUI(QtGui.QMainWindow):
 
     def currentScreen(self):
         screen_index = self.ui.main_stackedWidget.currentIndex()
-        for screen_name, i in defaults.SCREENS.items():
+        for screen_name, i in settings.SCREENS.items():
             if i == screen_index:
                 return screen_name
 
     def showScreen(self, screen_name):
-        screen_index = defaults.SCREENS[screen_name]
+        screen_index = settings.SCREENS[screen_name]
         self.ui.main_stackedWidget.setCurrentIndex(screen_index)
 
     def setText(self, widget_name, text):

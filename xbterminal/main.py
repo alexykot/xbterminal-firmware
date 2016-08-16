@@ -9,17 +9,17 @@ import logging.config
 include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
-from xbterminal import defaults
+from xbterminal.gui import settings
 from xbterminal.api_client import JSONRPCClient
 from xbterminal.gui.gui import GUI
 from xbterminal.gui.worker import StageWorker, move_to_thread
-from xbterminal.state import gui_state as state
+from xbterminal.gui.state import state
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    logging.config.dictConfig(defaults.LOG_CONFIG)
+    logging.config.dictConfig(settings.LOG_CONFIG)
     logger.debug('starting')
 
     state['client'] = JSONRPCClient()
@@ -44,7 +44,7 @@ def main():
 
         # Reload remote config
         if state['remote_config_last_update'] + \
-                defaults.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
+                settings.REMOTE_CONFIG_UPDATE_CYCLE < time.time():
             state['remote_config'] = state['client'].get_device_config()
             state['remote_config_last_update'] = int(time.time())
             main_window.retranslateUi(

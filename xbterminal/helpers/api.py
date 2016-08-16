@@ -7,7 +7,7 @@ from xbterminal.defaults import (
     EXTERNAL_CALLS_REQUEST_HEADERS)
 from xbterminal.helpers import crypto
 from xbterminal.exceptions import NetworkError, ServerError
-from xbterminal.state import rpc_state as state
+from xbterminal.state import state
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ from decimal import Decimal
 from mock import patch, Mock
 import unittest
 
-from xbterminal import defaults
+from xbterminal.gui import settings
 from xbterminal.gui import stages
 from xbterminal.exceptions import ServerError
 
@@ -43,7 +43,7 @@ class BootupStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.bootup(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
-        self.assertEqual(next_stage, defaults.STAGES['idle'])
+        self.assertEqual(next_stage, settings.STAGES['idle'])
 
     def test_registration(self):
         state = {
@@ -56,7 +56,7 @@ class BootupStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.bootup(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'load_indefinite')
-        self.assertEqual(next_stage, defaults.STAGES['activate'])
+        self.assertEqual(next_stage, settings.STAGES['activate'])
 
 
 class ActivateStageTestCase(unittest.TestCase):
@@ -80,7 +80,7 @@ class ActivateStageTestCase(unittest.TestCase):
                          'xbterminal.io')
         self.assertEqual(ui.setText.call_args_list[1][0][1],
                          'testCode')
-        self.assertEqual(next_stage, defaults.STAGES['idle'])
+        self.assertEqual(next_stage, settings.STAGES['idle'])
 
 
 class IdleStageTestCase(unittest.TestCase):
@@ -93,7 +93,7 @@ class IdleStageTestCase(unittest.TestCase):
         next_stage = stages.idle(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'idle')
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -106,7 +106,7 @@ class IdleStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.idle(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
@@ -121,7 +121,7 @@ class IdleStageTestCase(unittest.TestCase):
         next_stage = stages.idle(state, ui)
         self.assertTrue(client_mock.host_get_payout.called)
         self.assertEqual(next_stage,
-                         defaults.STAGES['selection'])
+                         settings.STAGES['selection'])
 
 
 class SelectionStageTestCase(unittest.TestCase):
@@ -141,7 +141,7 @@ class SelectionStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0], 'selection')
         self.assertEqual(ui.setText.call_args[0][1], u'£0.15')
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -159,7 +159,7 @@ class SelectionStageTestCase(unittest.TestCase):
         next_stage = stages.selection(state, ui)
         self.assertTrue(client_mock.host_get_payout.called)
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_loading1'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.5'))
@@ -188,7 +188,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_amount')
         self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.33')
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_confirm'])
+                         settings.STAGES['payment']['pay_confirm'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
         self.assertEqual(state['payment']['fiat_amount'], Decimal('1.00'))
@@ -212,7 +212,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_amount(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_confirm'])
+                         settings.STAGES['payment']['pay_confirm'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
         self.assertEqual(state['payment']['fiat_amount'], Decimal('2.50'))
@@ -236,7 +236,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_amount(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_confirm'])
+                         settings.STAGES['payment']['pay_confirm'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
         self.assertEqual(state['payment']['fiat_amount'], Decimal('10.00'))
@@ -260,7 +260,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_amount(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_confirm'])
+                         settings.STAGES['payment']['pay_confirm'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
         self.assertEqual(state['payment']['fiat_amount'], Decimal('0.00'))
@@ -284,7 +284,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_amount(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -314,7 +314,7 @@ class PayConfirmStageTestCase(unittest.TestCase):
         self.assertEqual(ui.setText.call_args_list[1][0][1], u'\xa30.50')
         self.assertEqual(ui.setText.call_args_list[2][0][1], u'\xa30.45')
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_loading'])
+                         settings.STAGES['payment']['pay_loading'])
         self.assertEqual(state['payment']['fiat_amount'], Decimal('0.45'))
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
@@ -337,7 +337,7 @@ class PayConfirmStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_confirm(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_loading'])
+                         settings.STAGES['payment']['pay_loading'])
         self.assertEqual(state['payment']['fiat_amount'], Decimal('0.55'))
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
@@ -361,7 +361,7 @@ class PayConfirmStageTestCase(unittest.TestCase):
         next_stage = stages.pay_confirm(state, ui)
         self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa30.33')
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -377,7 +377,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_loading(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
 
     def test_proceed(self):
         client_mock = Mock(**{
@@ -401,7 +401,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
             client_mock.create_payment_order.call_args[1]['fiat_amount'],
             Decimal('1.00'))
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_info'])
+                         settings.STAGES['payment']['pay_info'])
 
     def test_server_error(self):
         client_mock = Mock(**{
@@ -417,7 +417,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
         next_stage = stages.pay_loading(state, ui)
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
 
 
 class PayInfoStageTestCase(unittest.TestCase):
@@ -444,7 +444,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_info(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
         self.assertEqual(client_mock.cancel_payment.call_args[1]['uid'],
                          'testUid')
         self.assertIsNone(state['payment']['uid'])
@@ -474,7 +474,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_info(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_wait'])
+                         settings.STAGES['payment']['pay_wait'])
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_info')
         self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa31.03')
         self.assertTrue(qr_gen_mock.call_args[0][0], 'test')
@@ -523,7 +523,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['payment_uri'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_amount'])
+                         settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -574,7 +574,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertEqual(state['payment']['receipt_url'], 'test_url')
         self.assertIsNotNone(state['payment']['uid'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_success'])
+                         settings.STAGES['payment']['pay_success'])
 
 
 class PaySuccessStageTestCase(unittest.TestCase):
@@ -602,7 +602,7 @@ class PaySuccessStageTestCase(unittest.TestCase):
         self.assertIsNone(state['payment']['uid'])
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -624,7 +624,7 @@ class PaySuccessStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_success(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['payment']['pay_receipt'])
+                         settings.STAGES['payment']['pay_receipt'])
         self.assertIsNotNone(state['payment']['uid'])
         self.assertIsNotNone(state['payment']['receipt_url'])
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
@@ -663,7 +663,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['receipt_url'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -687,7 +687,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
             client_mock.create_withdrawal_order.call_args[1]['fiat_amount'],
             Decimal('1.00'))
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_scan'])
+                         settings.STAGES['withdrawal']['withdraw_scan'])
         self.assertEqual(state['withdrawal']['uid'], 'testUid')
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.5'))
 
@@ -705,7 +705,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_loading1(state, ui)
         self.assertIsNone(state['withdrawal']['fiat_amount'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
 
 
 class WithdrawScanStageTestCase(unittest.TestCase):
@@ -736,7 +736,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_scan(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['selection'])
+                         settings.STAGES['selection'])
         self.assertTrue(client_mock.start_qr_scanner.called)
         self.assertTrue(client_mock.stop_qr_scanner.called)
         self.assertTrue(client_mock.cancel_withdrawal.call_args[1]['uid'],
@@ -776,7 +776,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         self.assertTrue(client_mock.start_qr_scanner.called)
         self.assertTrue(client_mock.stop_qr_scanner.called)
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_confirm'])
+                         settings.STAGES['withdrawal']['withdraw_confirm'])
         self.assertIsNotNone(state['withdrawal']['address'])
 
     def test_default_address(self):
@@ -804,7 +804,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         self.assertTrue(client_mock.start_qr_scanner.called)
         self.assertTrue(client_mock.stop_qr_scanner.called)
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_confirm'])
+                         settings.STAGES['withdrawal']['withdraw_confirm'])
         self.assertEqual(state['withdrawal']['address'], self.address)
 
 
@@ -832,7 +832,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_confirm(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertEqual(
             client_mock.cancel_withdrawal.call_args[1]['uid'],
             'testUid')
@@ -867,7 +867,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         self.assertEqual(ui.setText.call_args_list[3][0][1],
                          u'1 BTC = £553.12')
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_loading2'])
+                         settings.STAGES['withdrawal']['withdraw_loading2'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -903,7 +903,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             client_mock.host_withdraw.call_args[1]['fiat_amount'],
             Decimal('0.50'))
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_success'])
+                         settings.STAGES['withdrawal']['withdraw_success'])
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.41'))
         self.assertEqual(state['withdrawal']['exchange_rate'],
                          Decimal('202.0'))
@@ -928,7 +928,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             'testUid')
         self.assertFalse(client_mock.cancel_withdrawal.called)
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNone(state['withdrawal']['address'])
 
@@ -957,7 +957,7 @@ class WithdrawSuccessStageTestCase(unittest.TestCase):
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNone(state['withdrawal']['fiat_amount'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -979,7 +979,7 @@ class WithdrawSuccessStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_success(state, ui)
         self.assertEqual(next_stage,
-                         defaults.STAGES['withdrawal']['withdraw_receipt'])
+                         settings.STAGES['withdrawal']['withdraw_receipt'])
         self.assertIsNotNone(state['withdrawal']['receipt_url'])
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
         self.assertFalse(any(state for state
@@ -1018,6 +1018,6 @@ class WithdrawReceiptStageTestCase(unittest.TestCase):
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNone(state['withdrawal']['fiat_amount'])
         self.assertEqual(next_stage,
-                         defaults.STAGES['idle'])
+                         settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))

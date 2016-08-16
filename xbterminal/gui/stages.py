@@ -2,7 +2,7 @@ from decimal import Decimal
 import logging
 import time
 
-from xbterminal import defaults
+from xbterminal.gui import settings
 from xbterminal.gui import amounts
 from xbterminal.helpers import qr
 from xbterminal.exceptions import NetworkError, ServerError
@@ -18,9 +18,9 @@ def bootup(state, ui):
         state['remote_config']['currency']['prefix'])
 
     if state['remote_config']['status'] == 'active':
-        return defaults.STAGES['idle']
+        return settings.STAGES['idle']
     else:
-        return defaults.STAGES['activate']
+        return settings.STAGES['activate']
 
 
 def activate(state, ui):
@@ -31,7 +31,7 @@ def activate(state, ui):
     ui.setText('activation_code_lbl', activation_code)
     while True:
         if state['remote_config']['status'] == 'active':
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -41,10 +41,10 @@ def idle(state, ui):
         if state['screen_buttons']['idle_begin_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['idle_begin_btn'] = False
-            return defaults.STAGES['payment']['pay_amount']
+            return settings.STAGES['payment']['pay_amount']
         # Communicate with the host system
         if state['client'].host_get_payout():
-            return defaults.STAGES['selection']
+            return settings.STAGES['selection']
         time.sleep(0.1)
 
 
@@ -57,12 +57,12 @@ def selection(state, ui):
         if state['screen_buttons']['sel_pay_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['sel_pay_btn'] = False
-            return defaults.STAGES['payment']['pay_amount']
+            return settings.STAGES['payment']['pay_amount']
         if state['screen_buttons']['sel_withdraw_btn'] or \
                 state['keypad'].last_key_pressed == 'alt':
             state['screen_buttons']['sel_withdraw_btn'] = False
             state['withdrawal']['fiat_amount'] = current_credit
-            return defaults.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_loading1']
         time.sleep(0.1)
 
 
@@ -83,30 +83,30 @@ def pay_amount(state, ui):
                 state['keypad'].last_key_pressed == 1:
             state['screen_buttons']['pamount_opt1_btn'] = False
             state['payment']['fiat_amount'] = options['pamount_opt1_btn']
-            return defaults.STAGES['payment']['pay_confirm']
+            return settings.STAGES['payment']['pay_confirm']
         elif state['screen_buttons']['pamount_opt2_btn'] or \
                 state['keypad'].last_key_pressed == 2:
             state['screen_buttons']['pamount_opt2_btn'] = False
             state['payment']['fiat_amount'] = options['pamount_opt2_btn']
-            return defaults.STAGES['payment']['pay_confirm']
+            return settings.STAGES['payment']['pay_confirm']
         elif state['screen_buttons']['pamount_opt3_btn'] or \
                 state['keypad'].last_key_pressed == 3:
             state['screen_buttons']['pamount_opt3_btn'] = False
             state['payment']['fiat_amount'] = options['pamount_opt3_btn']
-            return defaults.STAGES['payment']['pay_confirm']
+            return settings.STAGES['payment']['pay_confirm']
         elif state['screen_buttons']['pamount_opt4_btn'] or \
                 state['keypad'].last_key_pressed == 4:
             state['screen_buttons']['pamount_opt4_btn'] = False
             state['payment']['fiat_amount'] = Decimal('0.00')
-            return defaults.STAGES['payment']['pay_confirm']
+            return settings.STAGES['payment']['pay_confirm']
         elif state['screen_buttons']['pamount_cancel_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['pamount_cancel_btn'] = False
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -141,15 +141,15 @@ def pay_confirm(state, ui):
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['pconfirm_confirm_btn'] = False
             if state['payment']['fiat_amount'] > 0:
-                return defaults.STAGES['payment']['pay_loading']
+                return settings.STAGES['payment']['pay_loading']
         if state['screen_buttons']['pconfirm_goback_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['pconfirm_goback_btn'] = False
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['payment']['pay_amount']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['payment']['pay_amount']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -157,7 +157,7 @@ def pay_loading(state, ui):
     ui.showScreen('load_indefinite')
 
     if state['payment']['fiat_amount'] is None:
-        return defaults.STAGES['payment']['pay_amount']
+        return settings.STAGES['payment']['pay_amount']
 
     while True:
         try:
@@ -169,11 +169,11 @@ def pay_loading(state, ui):
             continue
         except ServerError:
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         else:
             # Payment parameters loaded
             state['payment'].update(payment_info)
-            return defaults.STAGES['payment']['pay_info']
+            return settings.STAGES['payment']['pay_info']
 
 
 def pay_info(state, ui):
@@ -190,16 +190,16 @@ def pay_info(state, ui):
             state['screen_buttons']['pinfo_pay_btn'] = False
             # Prepare QR image
             qr.qr_gen(state['payment']['payment_uri'],
-                      defaults.QR_IMAGE_PATH)
-            return defaults.STAGES['payment']['pay_wait']
+                      settings.QR_IMAGE_PATH)
+            return settings.STAGES['payment']['pay_wait']
         if state['screen_buttons']['pinfo_cancel_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['pinfo_cancel_btn'] = False
             _clear_payment_runtime(state, ui, cancel_order=True)
-            return defaults.STAGES['payment']['pay_amount']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['payment']['pay_amount']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui, cancel_order=True)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -207,7 +207,7 @@ def pay_wait(state, ui):
     ui.showScreen('pay_wait')
     ui.setText('pwait_btc_amount_lbl',
                amounts.format_btc_amount_pretty(state['payment']['btc_amount'], prefix=True))
-    ui.setImage('pwait_qr_img', defaults.QR_IMAGE_PATH)
+    ui.setImage('pwait_qr_img', settings.QR_IMAGE_PATH)
     logger.info(
         'local payment requested, '
         'amount fiat: {amount_fiat}, '
@@ -226,7 +226,7 @@ def pay_wait(state, ui):
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
-            return defaults.STAGES['payment']['pay_amount']
+            return settings.STAGES['payment']['pay_amount']
 
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
@@ -237,13 +237,13 @@ def pay_wait(state, ui):
             state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
-            return defaults.STAGES['payment']['pay_success']
+            return settings.STAGES['payment']['pay_success']
 
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
-            return defaults.STAGES['payment']['pay_cancel']
+            return settings.STAGES['payment']['pay_cancel']
 
         time.sleep(0.5)
 
@@ -258,23 +258,23 @@ def pay_success(state, ui):
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['psuccess_yes_btn'] = False
             qr.qr_gen(state['payment']['receipt_url'],
-                      defaults.QR_IMAGE_PATH)
-            return defaults.STAGES['payment']['pay_receipt']
+                      settings.QR_IMAGE_PATH)
+            return settings.STAGES['payment']['pay_receipt']
         if state['screen_buttons']['psuccess_no_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['psuccess_no_btn'] = False
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
 def pay_receipt(state, ui):
     assert state['payment']['receipt_url']
     ui.showScreen('pay_receipt')
-    ui.setImage('preceipt_receipt_qr_img', defaults.QR_IMAGE_PATH)
+    ui.setImage('preceipt_receipt_qr_img', settings.QR_IMAGE_PATH)
     state['client'].start_nfc_server(message=state['payment']['receipt_url'])
     while True:
         if state['screen_buttons']['preceipt_goback_btn'] or \
@@ -282,11 +282,11 @@ def pay_receipt(state, ui):
             state['screen_buttons']['preceipt_goback_btn'] = False
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -295,9 +295,9 @@ def pay_cancel(state, ui):
     while True:
         if state['keypad'].last_key_pressed is not None:
             _clear_payment_runtime(state, ui)
-            return defaults.STAGES['payment']['pay_amount']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
-            return defaults.STAGES['idle']
+            return settings.STAGES['payment']['pay_amount']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -314,10 +314,10 @@ def withdraw_loading1(state, ui):
             continue
         except ServerError:
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         else:
             state['withdrawal'].update(withdrawal_info)
-            return defaults.STAGES['withdrawal']['withdraw_scan']
+            return settings.STAGES['withdrawal']['withdraw_scan']
 
 
 def withdraw_scan(state, ui):
@@ -340,17 +340,17 @@ def withdraw_scan(state, ui):
             logger.debug('address scanned: {0}'.format(address))
             state['client'].stop_qr_scanner()
             state['withdrawal']['address'] = address
-            return defaults.STAGES['withdrawal']['withdraw_confirm']
+            return settings.STAGES['withdrawal']['withdraw_confirm']
         if state['screen_buttons']['wscan_goback_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['wscan_goback_btn'] = False
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui, clear_amount=False, cancel_order=True)
-            return defaults.STAGES['selection']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['selection']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -368,15 +368,15 @@ def withdraw_confirm(state, ui):
         if state['screen_buttons']['wconfirm_confirm_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['wconfirm_confirm_btn'] = False
-            return defaults.STAGES['withdrawal']['withdraw_loading2']
+            return settings.STAGES['withdrawal']['withdraw_loading2']
         elif state['screen_buttons']['wconfirm_cancel_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['wconfirm_cancel_btn'] = False
             _clear_withdrawal_runtime(state, ui, cancel_order=True)
-            return defaults.STAGES['idle']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
@@ -397,7 +397,7 @@ def withdraw_loading2(state, ui):
                 continue
             except ServerError:
                 _clear_withdrawal_runtime(state, ui)
-                return defaults.STAGES['idle']
+                return settings.STAGES['idle']
             state['withdrawal'].update(withdrawal_info)
             continue
         elif withdrawal_status == 'completed':
@@ -407,10 +407,10 @@ def withdraw_loading2(state, ui):
                 state['withdrawal']['receipt_url']))
             state['client'].host_withdraw(
                 fiat_amount=state['withdrawal']['fiat_amount'])
-            return defaults.STAGES['withdrawal']['withdraw_success']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['withdrawal']['withdraw_success']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.5)
 
 
@@ -424,23 +424,23 @@ def withdraw_success(state, ui):
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['wsuccess_yes_btn'] = False
             qr.qr_gen(state['withdrawal']['receipt_url'],
-                      defaults.QR_IMAGE_PATH)
-            return defaults.STAGES['withdrawal']['withdraw_receipt']
+                      settings.QR_IMAGE_PATH)
+            return settings.STAGES['withdrawal']['withdraw_receipt']
         if state['screen_buttons']['wsuccess_no_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['wsuccess_no_btn'] = False
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 
 def withdraw_receipt(state, ui):
     ui.showScreen('withdraw_receipt')
     assert state['withdrawal']['receipt_url']
-    ui.setImage('wreceipt_receipt_qr_img', defaults.QR_IMAGE_PATH)
+    ui.setImage('wreceipt_receipt_qr_img', settings.QR_IMAGE_PATH)
     state['client'].start_nfc_server(message=state['withdrawal']['receipt_url'])
     while True:
         if state['screen_buttons']['wreceipt_goback_btn'] or \
@@ -448,11 +448,11 @@ def withdraw_receipt(state, ui):
             state['screen_buttons']['wreceipt_goback_btn'] = False
             state['client'].stop_nfc_server()
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
-        if state['last_activity_timestamp'] + defaults.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             state['client'].stop_nfc_server()
             _clear_withdrawal_runtime(state, ui)
-            return defaults.STAGES['idle']
+            return settings.STAGES['idle']
         time.sleep(0.1)
 
 

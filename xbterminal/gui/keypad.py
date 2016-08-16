@@ -4,7 +4,7 @@ import time
 
 from PyQt4 import QtCore
 
-from xbterminal.state import gui_state as state
+from xbterminal.gui.state import state
 
 logger = logging.getLogger(__name__)
 
