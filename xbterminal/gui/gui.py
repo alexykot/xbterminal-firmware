@@ -190,21 +190,15 @@ class GUI(QtGui.QMainWindow):
             state['gui_config']['language'] = language_code
             configs.save_gui_config(state['gui_config'])
 
-    def showErrors(self, errors):
-        translations = {
-            'no internet': _translate(
-                'MainWindow', 'no internet', None),
-            'internet disconnected': _translate(
-                'MainWindow', 'internet disconnected', None),
-        }
+    def showConnectionError(self):
+        error_message = _translate('MainWindow', 'connection error', None)
         if self.currentScreen() != 'errors':
             # Show error screen
             self._saved_screen = self.currentScreen()
             self.showScreen('errors')
-        self.ui.errors_lbl.setText(
-            '\n'.join(unicode(translations[error]) for error in errors))
+        self.ui.errors_lbl.setText(unicode(error_message))
 
-    def hideErrors(self):
+    def hideConnectionError(self):
         if self.currentScreen() == 'errors':
             # Restore previous screen
             self.showScreen(self._saved_screen)

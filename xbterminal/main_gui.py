@@ -37,10 +37,10 @@ def main():
         # Check for errors
         server_status = state['client'].get_connection_status()
         if server_status != 'online':
-            main_window.showErrors(['internet disconnected'])
+            main_window.showConnectionError()
             continue
         else:
-            main_window.hideErrors()
+            main_window.hideConnectionError()
 
         # Reload remote config
         if state['remote_config_last_update'] + \

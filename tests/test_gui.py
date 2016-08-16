@@ -31,3 +31,20 @@ class GUITestCase(unittest.TestCase):
         self.assertIsNotNone(window.ui)
         self.assertEqual(window._saved_screen, 'load_indefinite')
         self.assertTrue(window.show.called)
+
+    @patch('xbterminal.gui.gui.Application')
+    @patch('xbterminal.gui.gui.appui')
+    @patch('xbterminal.gui.gui._translate')
+    @patch.dict('xbterminal.gui.gui.state', {'gui_config': {}})
+    def test_connection_error(self, translate_mock, ui_mock, app_cls_mock):
+        ui_mock.Ui_MainWindow.return_value = Mock(**{
+            'main_stackedWidget.currentIndex.side_effect': [0, 2, 2, 15],
+        })
+        translate_mock.return_value = 'Connection error'
+        window = GUI()
+        window.showConnectionError()
+        self.assertEqual(window._saved_screen, 'idle')
+        widget_mock = window.ui.main_stackedWidget
+        self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 15)
+        window.hideConnectionError()
+        self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 2)
