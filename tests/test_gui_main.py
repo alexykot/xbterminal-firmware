@@ -2,14 +2,14 @@ import unittest
 
 from mock import patch, Mock
 
-from xbterminal.main import main
+from xbterminal.main_gui import main
 
 
 class MainTestCase(unittest.TestCase):
 
-    @patch('xbterminal.main.logging.config.dictConfig')
-    @patch('xbterminal.main.JSONRPCClient')
-    @patch('xbterminal.main.GUI')
+    @patch('xbterminal.main_gui.logging.config.dictConfig')
+    @patch('xbterminal.main_gui.JSONRPCClient')
+    @patch('xbterminal.main_gui.GUI')
     def test_main(self, gui_mock, client_cls_mock, log_config_mock):
         client_cls_mock.return_value = client_mock = Mock(**{
             'get_connection_status.return_value': 'online',
@@ -27,7 +27,7 @@ class MainTestCase(unittest.TestCase):
             'last_activity_timestamp': 0,
             'CURRENT_STAGE': 'application_halt',
         }
-        with patch.dict('xbterminal.main.state', **state):
+        with patch.dict('xbterminal.main_gui.state', **state):
             main()
         self.assertTrue(log_config_mock.called)
         self.assertTrue(client_mock.get_connection_status.called)
