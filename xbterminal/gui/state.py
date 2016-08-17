@@ -6,8 +6,6 @@ from xbterminal.gui import settings
 def get_initial_gui_state():
     return {
         'client': None,
-        'connection': False,
-        'connection_last_check': 0,
         'gui_config': {},
         'remote_config': {},
         'remote_config_last_update': 0,

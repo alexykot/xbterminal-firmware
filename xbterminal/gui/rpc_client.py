@@ -55,6 +55,10 @@ class JSONRPCClient(object):
         func.__name__ = name
         return func
 
+    @use_cache(1.5)
+    def get_connection_status(self):
+        return self._make_request('get_connection_status')
+
     def create_payment_order(self, fiat_amount):
         result = self._make_request('create_payment_order',
                                     fiat_amount=str(fiat_amount))

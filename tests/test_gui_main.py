@@ -12,7 +12,7 @@ class MainTestCase(unittest.TestCase):
     @patch('xbterminal.main_gui.GUI')
     def test_main(self, gui_mock, client_cls_mock, log_config_mock):
         client_cls_mock.return_value = client_mock = Mock(**{
-            'get_connection_status.return_value': True,
+            'get_connection_status.return_value': 'online',
             'get_device_config.return_value': {
                 'language': {'code': 'en'},
                 'currency': {'prefix': '$'},
@@ -21,8 +21,6 @@ class MainTestCase(unittest.TestCase):
         gui_mock.return_value = main_window_mock = Mock()
         keypad_mock = Mock(last_activity_timestamp=0)
         state = {
-            'connection': False,
-            'connection_last_check': 0,
             'keypad': keypad_mock,
             'init': {'registration': True},
             'remote_config_last_update': 0,

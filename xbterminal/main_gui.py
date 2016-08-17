@@ -34,14 +34,12 @@ def main():
 
         main_window.processEvents()
 
-        # Check connection
-        if state['connection_last_check'] + settings.CONNECTION_CHECK_PERIOD < time.time():
-            state['connection_last_check'] = time.time()
-            try:
-                state['connection'] = state['client'].get_connection_status()
-            except:
-                state['connection'] = False
-        if not state['connection']:
+        # Check for errors
+        try:
+            connection_status = state['client'].get_connection_status()
+        except:
+            connection_status = 'offline'
+        if connection_status != 'online':
             main_window.showConnectionError()
             continue
         else:

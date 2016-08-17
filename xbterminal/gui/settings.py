@@ -120,7 +120,6 @@ LOG_CONFIG = {
     },
 }
 
-CONNECTION_CHECK_PERIOD = 2  # seconds
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
