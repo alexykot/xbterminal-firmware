@@ -120,6 +120,9 @@ LOG_CONFIG = {
     },
 }
 
+MAIN_LOOP_PERIOD = 0.05  # seconds
+STAGE_LOOP_PERIOD = 0.1  # seconds
+
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds

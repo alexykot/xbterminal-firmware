@@ -30,7 +30,7 @@ def main():
 
     logger.debug('main loop starting')
     while True:
-        time.sleep(0.05)
+        time.sleep(settings.MAIN_LOOP_PERIOD)
 
         main_window.processEvents()
 

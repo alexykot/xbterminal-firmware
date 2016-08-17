@@ -31,7 +31,7 @@ def activate(state, ui):
     while True:
         if state['remote_config']['status'] == 'active':
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def idle(state, ui):
@@ -44,7 +44,7 @@ def idle(state, ui):
         # Communicate with the host system
         if state['client'].host_get_payout():
             return settings.STAGES['selection']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def selection(state, ui):
@@ -62,7 +62,7 @@ def selection(state, ui):
             state['screen_buttons']['sel_withdraw_btn'] = False
             state['withdrawal']['fiat_amount'] = current_credit
             return settings.STAGES['withdrawal']['withdraw_loading1']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_amount(state, ui):
@@ -106,7 +106,7 @@ def pay_amount(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_confirm(state, ui):
@@ -149,7 +149,7 @@ def pay_confirm(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_loading(state, ui):
@@ -199,7 +199,7 @@ def pay_info(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui, cancel_order=True)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_wait(state, ui):
@@ -244,7 +244,7 @@ def pay_wait(state, ui):
             state['client'].stop_bluetooth_server()
             return settings.STAGES['payment']['pay_cancel']
 
-        time.sleep(0.5)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_success(state, ui):
@@ -267,7 +267,7 @@ def pay_success(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_receipt(state, ui):
@@ -286,7 +286,7 @@ def pay_receipt(state, ui):
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_cancel(state, ui):
@@ -297,7 +297,7 @@ def pay_cancel(state, ui):
             return settings.STAGES['payment']['pay_amount']
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_loading1(state, ui):
@@ -350,7 +350,7 @@ def withdraw_scan(state, ui):
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_confirm(state, ui):
@@ -376,7 +376,7 @@ def withdraw_confirm(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_loading2(state, ui):
@@ -410,7 +410,7 @@ def withdraw_loading2(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.5)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_success(state, ui):
@@ -433,7 +433,7 @@ def withdraw_success(state, ui):
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_receipt(state, ui):
@@ -452,7 +452,7 @@ def withdraw_receipt(state, ui):
             state['client'].stop_nfc_server()
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        time.sleep(0.1)
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def _clear_payment_runtime(state, ui, cancel_order=False):
