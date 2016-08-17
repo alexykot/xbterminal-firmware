@@ -1,8 +1,32 @@
 from decimal import Decimal
+import time
 
 import requests
 
 from xbterminal.gui import exceptions
+
+
+class use_cache(object):
+    """
+    Prevents too frequent RPC calls in loops
+    """
+    def __init__(self, timeout):
+        """
+        Accepts:
+            timeout: minimum interval between calls
+        """
+        self.cache = {}
+        self.timeout = timeout
+
+    def __call__(self, func):
+        def wrapper(*args, **kwargs):
+            key = str(args) + str(kwargs)
+            timestamp, result = self.cache.get(key, (0, None))
+            if timestamp + self.timeout < time.time():
+                result = func(*args, **kwargs)
+                self.cache[key] = (time.time(), result)
+            return result
+        return wrapper
 
 
 class JSONRPCClient(object):
@@ -69,6 +93,7 @@ class JSONRPCClient(object):
                                     fiat_amount=str(fiat_amount))
         return result
 
+    @use_cache(2)
     def host_get_payout(self):
         result = self._make_request('host_get_payout')
         return Decimal(result)
