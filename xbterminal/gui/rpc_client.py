@@ -69,6 +69,10 @@ class JSONRPCClient(object):
             'payment_uri': result['payment_uri'],
         }
 
+    @use_cache(3.0)
+    def get_payment_status(self, uid):
+        return self._make_request('get_payment_status', uid=uid)
+
     def create_withdrawal_order(self, fiat_amount):
         result = self._make_request('create_withdrawal_order',
                                     fiat_amount=str(fiat_amount))
@@ -87,6 +91,14 @@ class JSONRPCClient(object):
             'exchange_rate': Decimal(result['exchange_rate']),
         }
 
+    @use_cache(3.0)
+    def get_withdrawal_status(self, uid):
+        return self._make_request('get_withdrawal_status', uid=uid)
+
+    @use_cache(1.0)
+    def get_scanned_address(self):
+        return self._make_request('get_scanned_address')
+
     def host_add_credit(self, fiat_amount):
         result = self._make_request('host_add_credit',
                                     fiat_amount=str(fiat_amount))
@@ -97,7 +109,7 @@ class JSONRPCClient(object):
                                     fiat_amount=str(fiat_amount))
         return result
 
-    @use_cache(2)
+    @use_cache(2.0)
     def host_get_payout(self):
         result = self._make_request('host_get_payout')
         return Decimal(result)

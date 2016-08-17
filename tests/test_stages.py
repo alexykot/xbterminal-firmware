@@ -876,7 +876,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
 
     def test_proceed(self):
         client_mock = Mock(**{
-            'get_withdrawal_status.side_effect': ['new', 'completed'],
+            'get_withdrawal_status.return_value': 'completed',
             'confirm_withdrawal.return_value': {
                 'btc_amount': Decimal('0.41'),
                 'exchange_rate': Decimal('202.0'),
@@ -896,6 +896,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.withdraw_loading2(state, ui)
+        self.assertEqual(client_mock.get_withdrawal_status.call_count, 1)
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')

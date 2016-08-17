@@ -383,23 +383,25 @@ def withdraw_loading2(state, ui):
     ui.showScreen('load_indefinite')
     assert state['withdrawal']['address'] is not None
     while True:
+        try:
+            withdrawal_info = state['client'].confirm_withdrawal(
+                uid=state['withdrawal']['uid'],
+                address=state['withdrawal']['address'])
+        except NetworkError:
+            logger.warning('network error, retry in 5 seconds')
+            time.sleep(5)
+            continue
+        except ServerError:
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
+        state['withdrawal'].update(withdrawal_info)
+        logger.info('withdrawal {} confirmed'.format(
+            state['withdrawal']['uid']))
+        break
+    while True:
         withdrawal_status = state['client'].get_withdrawal_status(
             uid=state['withdrawal']['uid'])
-        if withdrawal_status == 'new':
-            try:
-                withdrawal_info = state['client'].confirm_withdrawal(
-                    uid=state['withdrawal']['uid'],
-                    address=state['withdrawal']['address'])
-            except NetworkError:
-                logger.warning('network error, retry in 5 seconds')
-                time.sleep(5)
-                continue
-            except ServerError:
-                _clear_withdrawal_runtime(state, ui)
-                return settings.STAGES['idle']
-            state['withdrawal'].update(withdrawal_info)
-            continue
-        elif withdrawal_status == 'completed':
+        if withdrawal_status == 'completed':
             state['withdrawal']['receipt_url'] = state['client'].get_withdrawal_receipt(
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(
