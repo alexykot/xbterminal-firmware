@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 class JSONRPCHandler(tornado.web.RequestHandler):
 
     def post(self):
+        logger.debug(self.request.body)
         response = JSONRPCResponseManager.handle(
             self.request.body, dispatcher)
         self.write(response.json)

@@ -79,13 +79,13 @@ class APITestCase(unittest.TestCase):
         state = {'watcher': Mock(internet=True)}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.get_connection_status()
-        self.assertEqual(result, 'online')
+        self.assertEqual(result, True)
 
     def test_get_connection_status_offline(self):
         state = {'watcher': Mock(internet=False)}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.get_connection_status()
-        self.assertEqual(result, 'offline')
+        self.assertEqual(result, False)
 
     def test_get_device_status(self):
         state = {'remote_config': {'status': 'active'}}

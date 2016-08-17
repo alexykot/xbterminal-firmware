@@ -12,7 +12,7 @@ dispatcher = Dispatcher()
 @dispatcher.add_method
 def get_connection_status(**kwargs):
     is_connected = state['watcher'].internet
-    return 'online' if is_connected else 'offline'
+    return is_connected
 
 
 @dispatcher.add_method

@@ -9,6 +9,8 @@ class InitTestCase(unittest.TestCase):
     def get_initial_gui_state(self):
         state = get_initial_gui_state()
         self.assertIsNone(state['client'])
+        self.assertFalse(state['connection'])
+        self.assertEqual(state['connection_last_check'], 0)
         self.assertEqual(state['gui_config'], {})
         self.assertEqual(state['remote_config'], {})
         self.assertEqual(state['remote_config_last_update'], 0)
