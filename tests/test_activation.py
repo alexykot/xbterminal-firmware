@@ -1,18 +1,18 @@
 import unittest
 from mock import patch, Mock
 
-from xbterminal.stages.activation import register_device, is_registered
+from xbterminal.rpc.activation import register_device, is_registered
 
 
-@patch.dict('xbterminal.helpers.api.state',
+@patch.dict('xbterminal.rpc.utils.api.state',
             remote_server='https://xbterminal.io')
 class RegistrationTestCase(unittest.TestCase):
 
-    @patch('xbterminal.stages.activation.configs.read_device_key')
-    @patch('xbterminal.stages.activation.configs.read_batch_number')
-    @patch('xbterminal.stages.activation.salt.get_public_key_fingerprint')
-    @patch('xbterminal.stages.activation.crypto.save_secret_key')
-    @patch('xbterminal.stages.activation.api.send_request')
+    @patch('xbterminal.rpc.activation.configs.read_device_key')
+    @patch('xbterminal.rpc.activation.configs.read_batch_number')
+    @patch('xbterminal.rpc.activation.salt.get_public_key_fingerprint')
+    @patch('xbterminal.rpc.activation.crypto.save_secret_key')
+    @patch('xbterminal.rpc.activation.api.send_request')
     def test_register_device(self, send_mock, secret_key_mock,
                              salt_finger_mock,
                              batch_number_mock, device_key_mock):
@@ -30,7 +30,7 @@ class RegistrationTestCase(unittest.TestCase):
         self.assertEqual(post_data['salt_fingerprint'], salt_fingerprint)
         self.assertIn('api_key', post_data)
 
-    @patch('xbterminal.stages.activation.crypto.read_secret_key')
+    @patch('xbterminal.rpc.activation.crypto.read_secret_key')
     def test_is_registered(self, secret_key_mock):
         self.assertTrue(is_registered())
         secret_key_mock.side_effect = IOError

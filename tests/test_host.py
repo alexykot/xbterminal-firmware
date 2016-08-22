@@ -1,7 +1,7 @@
 from decimal import Decimal
 import unittest
 
-from xbterminal.helpers.host import HostSystem
+from xbterminal.rpc.utils.host import HostSystem
 
 
 class HostSystemTestCase(unittest.TestCase):

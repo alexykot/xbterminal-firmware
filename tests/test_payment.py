@@ -3,15 +3,15 @@ from decimal import Decimal
 import unittest
 from mock import patch, Mock
 
-from xbterminal.stages.payment import Payment
-from xbterminal.exceptions import NetworkError
+from xbterminal.rpc.payment import Payment
+from xbterminal.rpc.exceptions import NetworkError
 
 
-@patch.dict('xbterminal.helpers.api.state',
+@patch.dict('xbterminal.rpc.utils.api.state',
             remote_server='https://xbterminal.io')
 class PaymentTestCase(unittest.TestCase):
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_create_order(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
@@ -37,7 +37,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertEqual(order.payment_uri, 'bitcoin:test')
         self.assertIsNone(order.request)
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_cancel(self, send_mock):
         order = Payment('test_uid', Decimal('0.25'), Decimal(200),
                         'test_uri', None)
@@ -45,7 +45,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertTrue(send_mock.called)
         self.assertTrue(result)
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_cancel_error(self, send_mock):
         send_mock.side_effect = ValueError
         order = Payment('test_uid', Decimal('0.25'), Decimal(200),
@@ -54,7 +54,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertTrue(send_mock.called)
         self.assertFalse(result)
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_send(self, send_mock):
         send_mock.return_value = Mock(content='ack')
 
@@ -69,7 +69,7 @@ class PaymentTestCase(unittest.TestCase):
                          'application/bitcoin-payment')
         self.assertEqual(result, 'ack')
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_check_new(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
@@ -83,7 +83,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertTrue(send_mock.called)
         self.assertEqual(result, 'new')
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_check_notified(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
@@ -97,7 +97,7 @@ class PaymentTestCase(unittest.TestCase):
         self.assertTrue(send_mock.called)
         self.assertEqual(result, 'notified')
 
-    @patch('xbterminal.stages.payment.api.send_request')
+    @patch('xbterminal.rpc.payment.api.send_request')
     def test_check_error(self, send_mock):
         send_mock.side_effect = NetworkError
 

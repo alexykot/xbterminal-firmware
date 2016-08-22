@@ -2,8 +2,8 @@
 from decimal import Decimal
 import logging
 
-from xbterminal import defaults
-from xbterminal.helpers import api
+from xbterminal.rpc import settings
+from xbterminal.rpc.utils import api
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +38,8 @@ class Payment(object):
         # Parse result
         instance = cls(
             result['uid'],
-            Decimal(result['btc_amount']).quantize(defaults.BTC_DEC_PLACES),
-            Decimal(result['exchange_rate']).quantize(defaults.BTC_DEC_PLACES),
+            Decimal(result['btc_amount']).quantize(settings.BTC_DEC_PLACES),
+            Decimal(result['exchange_rate']).quantize(settings.BTC_DEC_PLACES),
             result['payment_uri'],
             result.get('payment_request'))
         logger.info("created payment order {0}".format(instance.uid))

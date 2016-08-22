@@ -1,10 +1,10 @@
 from decimal import Decimal
 from jsonrpc import Dispatcher
 
-from xbterminal.state import state
-from xbterminal.stages.payment import Payment
-from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
-from xbterminal.helpers import configs
+from xbterminal.rpc.state import state
+from xbterminal.rpc.payment import Payment
+from xbterminal.rpc.withdrawal import Withdrawal, get_bitcoin_address
+from xbterminal.rpc.utils import configs
 
 dispatcher = Dispatcher()
 
@@ -24,7 +24,7 @@ def get_device_status(**kwargs):
 
 @dispatcher.add_method
 def get_activation_code(**kwargs):
-    activation_code = state['local_config'].get('activation_code')
+    activation_code = state['rpc_config'].get('activation_code')
     return activation_code
 
 

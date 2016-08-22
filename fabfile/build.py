@@ -108,7 +108,7 @@ def compile_and_package(working_dir):
         version = run('cat VERSION')
         timestamp = int(time.time())
 
-        main_name = 'main_{pv}_{arch}'.format(
+        main_gui_name = 'main_gui_{pv}_{arch}'.format(
             arch=arch, pv=version)
         main_rpc_name = 'main_rpc_{pv}_{arch}'.format(
             arch=arch, pv=version)
@@ -131,18 +131,18 @@ def compile_and_package(working_dir):
         run('tar -cvzf  build/{pn}.tar.gz -C build {pn}'.format(pn=package_name))
 
         # Copy resulting files to host machine
-        get('build/main.exe',
-            'build/{mn}.{ts}'.format(mn=main_name, ts=timestamp))
+        get('build/main_gui.exe',
+            'build/{mgn}.{ts}'.format(mgn=main_gui_name, ts=timestamp))
         get('build/main_rpc.exe',
             'build/{mrn}.{ts}'.format(mrn=main_rpc_name, ts=timestamp))
         get('build/{pn}.tar.gz'.format(pn=package_name),
             'build/{pn}.{ts}.tar.gz'.format(pn=package_name, ts=timestamp))
 
     with lcd('build'):
-        local('rm -f {mn}'.format(mn=main_name))
+        local('rm -f {mgn}'.format(mgn=main_gui_name))
         local('rm -f {mrn}'.format(mrn=main_rpc_name))
         local('rm -f {pn}.tar.gz'.format(pn=package_name))
-        local('ln -s {mn}.{ts} {mn}'.format(mn=main_name, ts=timestamp))
+        local('ln -s {mgn}.{ts} {mgn}'.format(mgn=main_gui_name, ts=timestamp))
         local('ln -s {mrn}.{ts} {mrn}'.format(mrn=main_rpc_name, ts=timestamp))
         local('ln -s {pn}.{ts}.tar.gz {pn}.tar.gz'.format(pn=package_name, ts=timestamp))
 
@@ -201,3 +201,8 @@ def remote_compile(working_dir='xbterminal',
         target_dir, working_dir))
 
     compile_and_package(working_dir)
+
+
+@task
+def clean():
+    local("find . -name '*.pyc' -delete")

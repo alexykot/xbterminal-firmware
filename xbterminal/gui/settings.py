@@ -1,6 +1,4 @@
 import os
-from decimal import Decimal
-
 
 STAGES = {
     'bootup': 'bootup',
@@ -74,22 +72,15 @@ BUTTONS = [
     'wreceipt_goback_btn',
 ]
 
-SCREEN_BRIGHTNESS = 40
-
 try:
     from xbterminal.nuitka_fix import BASE_DIR
 except ImportError:
-    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
-BATCH_NUMBER_FILE_PATH = os.path.join(RUNTIME_PATH, 'batch_number')
-DEVICE_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'device_key')
-LOCAL_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'local_config')
-REMOTE_CONFIG_CACHE_FILE_PATH = os.path.join(RUNTIME_PATH, 'remote_config_cache')
-SECRET_KEY_FILE_PATH = os.path.join(RUNTIME_PATH, 'secret_key')
-LOG_FILE_PATH = os.path.join(RUNTIME_PATH, 'app.log')
+GUI_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'gui_config')
 QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
 UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
@@ -111,16 +102,10 @@ LOG_CONFIG = {
             'level': 'DEBUG',
             'formatter': 'simple',
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'level': 'WARNING',
-            'formatter': 'simple',
-            'filename': LOG_FILE_PATH,
-        },
     },
     'loggers': {
         '': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
         },
         'requests.packages.urllib3.connectionpool': {
@@ -135,30 +120,10 @@ LOG_CONFIG = {
     },
 }
 
-REMOTE_SERVERS = {
-    'prod': 'https://xbterminal.io',
-    'stage': 'http://stage.xbterminal.com',
-    'dev': 'http://dev.xbterminal.com:8083',
-}
-REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
+MAIN_LOOP_PERIOD = 0.05  # seconds
+STAGE_LOOP_PERIOD = 0.1  # seconds
 
-REMOTE_API_ENDPOINTS = {
-    'ping': '/api/v2/ping/',
-    'registration': '/api/v2/devices/',
-    'config': '/api/v2/devices/{device_key}/',
-    'payment_init': '/api/v2/payments/',
-    'payment_cancel': '/api/v2/payments/{uid}/cancel/',
-    'payment_response': '/api/v2/payments/{uid}/response/',
-    'payment_check': '/api/v2/payments/{uid}/',
-    'payment_receipt': '/prc/{uid}/',
-    'withdrawal_init': '/api/v2/withdrawals/',
-    'withdrawal_confirm': '/api/v2/withdrawals/{uid}/confirm/',
-    'withdrawal_cancel': '/api/v2/withdrawals/{uid}/cancel/',
-    'withdrawal_check': '/api/v2/withdrawals/{uid}/',
-    'withdrawal_receipt': '/wrc/{uid}/',
-}
-EXTERNAL_CALLS_TIMEOUT = 15
-EXTERNAL_CALLS_REQUEST_HEADERS = {'User-Agent': 'XBTerminal type 1'}
+REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
 
@@ -166,6 +131,3 @@ OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 
 BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 5
-
-FIAT_DEC_PLACES = Decimal('0.00000000')
-BTC_DEC_PLACES = Decimal('0.00000000')

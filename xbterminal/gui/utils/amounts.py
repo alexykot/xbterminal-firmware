@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal, ROUND_FLOOR
 
-from xbterminal.defaults import (
+from xbterminal.gui.settings import (
     OUTPUT_DEC_PLACES,
     BITCOIN_SCALE_DIVIZER,
     BITCOIN_OUTPUT_DEC_PLACES)
-from xbterminal.state import state
+from xbterminal.gui.state import state
 
 
 FIAT_AMOUNT_TEMPLATE = u'{prefix}{integer}{dsep}{frac}'

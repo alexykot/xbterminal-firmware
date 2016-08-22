@@ -1,31 +1,30 @@
 import logging
 import time
 
-from xbterminal import defaults
-from xbterminal.helpers import configs, clock
-from xbterminal.helpers.bt import BluetoothServer
-from xbterminal.helpers.camera import QRScanner
-from xbterminal.helpers.host import HostSystem
-from xbterminal.helpers.nfcpy import NFCServer
-from xbterminal.stages import activation
-from xbterminal.watcher import Watcher
+from xbterminal.rpc import activation, settings
+from xbterminal.rpc.utils import configs, clock
+from xbterminal.rpc.utils.bt import BluetoothServer
+from xbterminal.rpc.utils.camera import QRScanner
+from xbterminal.rpc.utils.host import HostSystem
+from xbterminal.rpc.utils.nfcpy import NFCServer
+from xbterminal.rpc.watcher import Watcher
 
 logger = logging.getLogger(__name__)
 
 
 def init_step_1(state):
     state['device_key'] = configs.read_device_key()
-    state['local_config'] = configs.load_local_config()
+    state['rpc_config'] = configs.load_rpc_config()
 
-    remote_server_name = state['local_config'].get('remote_server', 'prod')
-    state['remote_server'] = defaults.REMOTE_SERVERS[remote_server_name]
+    remote_server_name = state['rpc_config'].get('remote_server', 'prod')
+    state['remote_server'] = settings.REMOTE_SERVERS[remote_server_name]
     logger.info('remote server {}'.format(state['remote_server']))
 
     state['watcher'] = Watcher()
     state['watcher'].start()
 
     state['host_system'] = HostSystem(
-        use_mock=state['local_config'].get('use_cctalk_mock', True))
+        use_mock=state['rpc_config'].get('use_cctalk_mock', True))
     state['bluetooth_server'] = BluetoothServer()
     state['nfc_server'] = NFCServer()
     state['qr_scanner'] = QRScanner(backend='fswebcam')
@@ -39,16 +38,16 @@ def init_step_2(state):
         if time_delta < 60:  # 1 minute
             logger.info('clock synchronized')
             state['init']['clock_synchronized'] = True
-            state['local_config']['last_started'] = time.time()
-            configs.save_local_config(state['local_config'])
+            state['rpc_config']['last_started'] = time.time()
+            configs.save_rpc_config(state['rpc_config'])
             break
         logger.warning('machine time differs from internet time: {0}'.format(time_delta))
         time.sleep(5)
 
     # Check registration
     if not activation.is_registered():
-        state['local_config']['activation_code'] = activation.register_device()
-        configs.save_local_config(state['local_config'])
+        state['rpc_config']['activation_code'] = activation.register_device()
+        configs.save_rpc_config(state['rpc_config'])
     state['init']['registration'] = True
 
     # Load remote config

@@ -4,8 +4,8 @@ import unittest
 from mock import patch, Mock
 from tests import mocks
 
-from xbterminal.stages.withdrawal import Withdrawal, get_bitcoin_address
-from xbterminal.exceptions import NetworkError
+from xbterminal.rpc.withdrawal import Withdrawal, get_bitcoin_address
+from xbterminal.rpc.exceptions import NetworkError
 
 
 class GetAddressTestCase(unittest.TestCase):
@@ -24,12 +24,12 @@ class GetAddressTestCase(unittest.TestCase):
         self.assertEqual(result, self.address)
 
 
-@patch.dict('xbterminal.helpers.api.state',
+@patch.dict('xbterminal.rpc.utils.api.state',
             remote_server='https://xbterminal.io')
 class WithdrawalTestCase(unittest.TestCase):
 
-    @patch('xbterminal.stages.withdrawal.api.send_request')
-    @patch('xbterminal.helpers.crypto.read_secret_key',
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
+    @patch('xbterminal.rpc.utils.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_create_order(self, send_mock):
         send_mock.return_value = Mock(**{
@@ -51,8 +51,8 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
         self.assertFalse(order.confirmed)
 
-    @patch('xbterminal.stages.withdrawal.api.send_request')
-    @patch('xbterminal.helpers.crypto.read_secret_key',
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
+    @patch('xbterminal.rpc.utils.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_confirm_order(self, send_mock):
         send_mock.return_value = Mock(**{'json.return_value': {
@@ -68,8 +68,8 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.exchange_rate, Decimal('200.5'))
         self.assertTrue(order.confirmed)
 
-    @patch('xbterminal.stages.withdrawal.api.send_request')
-    @patch('xbterminal.helpers.crypto.read_secret_key',
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
+    @patch('xbterminal.rpc.utils.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_cancel_order(self, send_mock):
         send_mock.return_value = Mock()
@@ -80,8 +80,8 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
 
-    @patch('xbterminal.stages.withdrawal.api.send_request')
-    @patch('xbterminal.helpers.crypto.read_secret_key',
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
+    @patch('xbterminal.rpc.utils.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_cancel_order_error(self, send_mock):
         send_mock.side_effect = NetworkError
@@ -91,7 +91,7 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertFalse(result)
         self.assertTrue(send_mock.called)
 
-    @patch('xbterminal.stages.withdrawal.api.send_request')
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
     def test_check_order(self, send_mock):
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
         send_mock.return_value = Mock(**{
@@ -106,7 +106,7 @@ class WithdrawalTestCase(unittest.TestCase):
         result = order.check()
         self.assertEqual(result, 'completed')
 
-    @patch('xbterminal.stages.withdrawal.api.send_request')
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
     def test_check_order_error(self, send_mock):
         order = Withdrawal('test_uid', Decimal('0.25'), Decimal('200'))
         send_mock.side_effect = NetworkError
