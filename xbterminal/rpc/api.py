@@ -148,7 +148,10 @@ def get_withdrawal_receipt(**kwargs):
 @dispatcher.add_method
 def start_bluetooth_server(**kwargs):
     payment_uid = kwargs['payment_uid']
-    payment = state['payments'][payment_uid]
+    try:
+        payment = state['payments'][payment_uid]
+    except KeyError:
+        raise OrderNotFound
     state['bluetooth_server'].start(payment)
     return True
 

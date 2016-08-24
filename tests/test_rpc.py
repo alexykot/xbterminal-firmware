@@ -267,6 +267,15 @@ class APITestCase(unittest.TestCase):
         self.assertTrue(result)
         self.assertEqual(bt_server_mock.start.call_args[0][0], order_mock)
 
+    def test_start_bluetooth_server_payment_not_found(self):
+        state = {
+            'bluetooth_server': Mock(),
+            'payments': {},
+        }
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            with self.assertRaises(exceptions.OrderNotFound):
+                api.start_bluetooth_server(payment_uid='test-uid')
+
     def test_stop_bluetooth_server(self):
         bt_server_mock = Mock()
         state = {'bluetooth_server': bt_server_mock}
