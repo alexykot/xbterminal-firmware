@@ -6,10 +6,11 @@ from xbterminal.rpc.utils.host import HostSystem
 
 class HostSystemTestCase(unittest.TestCase):
 
-    def test_cctalk(self):
+    def test_cctalk_mock(self):
         host_system = HostSystem(use_mock=True)
+        self.assertIsNone(host_system.get_payout())
         host_system.add_credit(Decimal('1.25'))
         self.assertEqual(host_system._module.balance, 125)
         self.assertEqual(host_system.get_payout(), Decimal('1.25'))
         host_system.withdraw(Decimal('1.25'))
-        self.assertEqual(host_system.get_payout(), Decimal(0))
+        self.assertIsNone(host_system.get_payout())
