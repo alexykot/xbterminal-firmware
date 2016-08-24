@@ -48,7 +48,7 @@ class JSONRPCClient(object):
             return data['result']
         else:
             error_type = data['error']['data']['type']
-            raise getattr(exceptions, error_type)
+            raise getattr(exceptions, error_type, Exception)
 
     def __getattr__(self, name):
         func = lambda **kwargs: self._make_request(name, **kwargs)  # flake8: noqa

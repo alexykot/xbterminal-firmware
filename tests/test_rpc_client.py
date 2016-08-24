@@ -30,7 +30,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(headers['content-type'], 'application/json')
 
     @patch('xbterminal.gui.rpc_client.requests.post')
-    def test_error(self, post_mock):
+    def test_network_error(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
@@ -40,6 +40,19 @@ class JSONRPCClientTestCase(unittest.TestCase):
         })
         cli = JSONRPCClient()
         with self.assertRaises(exceptions.NetworkError):
+            cli.get_payment_status(uid='test')
+
+    @patch('xbterminal.gui.rpc_client.requests.post')
+    def test_assertion_error(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'error': {'data': {'type': 'AssertionError'}},
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        with self.assertRaises(Exception):
             cli.get_payment_status(uid='test')
 
     @patch('xbterminal.gui.rpc_client.requests.post')

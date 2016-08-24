@@ -6,7 +6,7 @@ from mock import patch, Mock
 from tornado.testing import AsyncHTTPTestCase
 
 from xbterminal.main_rpc import Application
-from xbterminal.rpc import api
+from xbterminal.rpc import api, exceptions
 
 
 class ApplicationTestCase(unittest.TestCase):
@@ -154,6 +154,12 @@ class APITestCase(unittest.TestCase):
             result = api.get_payment_status(uid='test-uid')
         self.assertEqual(result, 'new')
 
+    def test_get_payment_status_not_found(self):
+        state = {'payments': {}}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            with self.assertRaises(exceptions.OrderNotFound):
+                api.get_payment_status(uid='test-uid')
+
     def test_cancel_payment(self):
         state = {
             'payments': {
@@ -220,6 +226,12 @@ class APITestCase(unittest.TestCase):
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.get_withdrawal_status(uid='test-uid')
         self.assertEqual(result, 'new')
+
+    def test_get_withdrawal_status_not_found(self):
+        state = {'withdrawals': {}}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            with self.assertRaises(exceptions.OrderNotFound):
+                api.get_withdrawal_status(uid='test-uid')
 
     def test_cancel_withdrawal(self):
         state = {
