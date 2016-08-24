@@ -150,6 +150,19 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(result, Decimal('12.0'))
 
     @patch('xbterminal.gui.rpc_client.requests.post')
+    def test_host_get_payout_none(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'result': None,
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        result = cli.host_get_payout()
+        self.assertEqual(result, Decimal('0.00'))
+
+    @patch('xbterminal.gui.rpc_client.requests.post')
     def test_host_get_payout_cached(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.side_effect': [{
