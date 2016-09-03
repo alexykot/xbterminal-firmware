@@ -1,6 +1,7 @@
 from decimal import Decimal
 from jsonrpc import Dispatcher
 
+from xbterminal.rpc.exceptions import OrderNotFound
 from xbterminal.rpc.state import state
 from xbterminal.rpc.payment import Payment
 from xbterminal.rpc.withdrawal import Withdrawal, get_bitcoin_address
@@ -54,7 +55,10 @@ def create_payment_order(**kwargs):
 @dispatcher.add_method
 def get_payment_status(**kwargs):
     order_uid = kwargs['uid']
-    order = state['payments'][order_uid]
+    try:
+        order = state['payments'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     status = order.check()
     return status
 
@@ -62,7 +66,10 @@ def get_payment_status(**kwargs):
 @dispatcher.add_method
 def cancel_payment(**kwargs):
     order_uid = kwargs['uid']
-    order = state['payments'][order_uid]
+    try:
+        order = state['payments'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     result = order.cancel()
     return result
 
@@ -70,7 +77,10 @@ def cancel_payment(**kwargs):
 @dispatcher.add_method
 def get_payment_receipt(**kwargs):
     order_uid = kwargs['uid']
-    order = state['payments'][order_uid]
+    try:
+        order = state['payments'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     return order.receipt_url
 
 
@@ -91,7 +101,10 @@ def create_withdrawal_order(**kwargs):
 def confirm_withdrawal(**kwargs):
     order_uid = kwargs['uid']
     address = kwargs['address']
-    order = state['withdrawals'][order_uid]
+    try:
+        order = state['withdrawals'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     order.confirm(address)
     result = {
         'btc_amount': str(order.btc_amount),
@@ -103,7 +116,10 @@ def confirm_withdrawal(**kwargs):
 @dispatcher.add_method
 def get_withdrawal_status(**kwargs):
     order_uid = kwargs['uid']
-    order = state['withdrawals'][order_uid]
+    try:
+        order = state['withdrawals'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     status = order.check()
     return status
 
@@ -111,7 +127,10 @@ def get_withdrawal_status(**kwargs):
 @dispatcher.add_method
 def cancel_withdrawal(**kwargs):
     order_uid = kwargs['uid']
-    order = state['withdrawals'][order_uid]
+    try:
+        order = state['withdrawals'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     result = order.cancel()
     return result
 
@@ -119,14 +138,20 @@ def cancel_withdrawal(**kwargs):
 @dispatcher.add_method
 def get_withdrawal_receipt(**kwargs):
     order_uid = kwargs['uid']
-    order = state['withdrawals'][order_uid]
+    try:
+        order = state['withdrawals'][order_uid]
+    except KeyError:
+        raise OrderNotFound
     return order.receipt_url
 
 
 @dispatcher.add_method
 def start_bluetooth_server(**kwargs):
     payment_uid = kwargs['payment_uid']
-    payment = state['payments'][payment_uid]
+    try:
+        payment = state['payments'][payment_uid]
+    except KeyError:
+        raise OrderNotFound
     state['bluetooth_server'].start(payment)
     return True
 

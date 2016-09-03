@@ -8,3 +8,7 @@ class NetworkError(Exception):
 
 class ServerError(Exception):
     pass
+
+
+class OrderNotFound(Exception):
+    pass
