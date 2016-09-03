@@ -350,3 +350,10 @@ class APITestCase(unittest.TestCase):
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_get_payout()
         self.assertEqual(result, '0.25')
+
+    def test_host_get_payout_none(self):
+        host_mock = Mock(**{'get_payout.return_value': None})
+        state = {'host_system': host_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.host_get_payout()
+        self.assertIsNone(result)

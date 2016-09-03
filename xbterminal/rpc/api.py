@@ -209,5 +209,8 @@ def host_withdraw(**kwargs):
 
 @dispatcher.add_method
 def host_get_payout(**kwargs):
-    current_credit = state['host_system'].get_payout()
-    return str(current_credit)
+    payout = state['host_system'].get_payout()
+    if payout:
+        return str(payout)
+    else:
+        return None
