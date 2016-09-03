@@ -20,9 +20,7 @@ QPushButton {
     qproperty-pixmap: url(':/images/bc_logo.png');
 }
 
-#pamount_credit_lbl,
 #pamount_desc_lbl,
-#pconfirm_credit_lbl,
 #pconfirm_desc_lbl,
 #pinfo_desc_lbl,
 #pinfo_fiat_amount_lbl,

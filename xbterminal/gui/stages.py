@@ -67,9 +67,6 @@ def selection(state, ui):
 
 def pay_amount(state, ui):
     ui.showScreen('pay_amount')
-    current_credit = state['client'].host_get_payout()
-    ui.setText('pamount_credit_lbl',
-               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     options = {
         'pamount_opt1_btn': Decimal('1.00'),
         'pamount_opt2_btn': Decimal('2.50'),
@@ -112,9 +109,6 @@ def pay_amount(state, ui):
 def pay_confirm(state, ui):
     ui.showScreen('pay_confirm')
     assert state['payment']['fiat_amount'] >= 0
-    current_credit = state['client'].host_get_payout()
-    ui.setText('pconfirm_credit_lbl',
-               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     ui.setText('pconfirm_amount_lbl',
                amounts.format_fiat_amount_pretty(state['payment']['fiat_amount'], prefix=True))
     while True:
