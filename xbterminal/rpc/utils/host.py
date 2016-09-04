@@ -14,9 +14,6 @@ APM_STATUS_OUTOFSERVICE = 0x22
 
 class CCTalkMock(object):
 
-    def __init__(self):
-        self.balance = 0
-
     def initialize(self):
         pass
 
@@ -24,20 +21,16 @@ class CCTalkMock(object):
         return APM_STATUS_ACTIVE
 
     def add_credit(self, amount):
-        self.balance += amount
-
-    def withdraw(self, amount):
-        assert amount == self.balance
-        self.balance -= amount
+        pass
 
     def get_payout_status(self):
-        if self.balance != 0:
-            return PAYOUT_STATUS_COMPLETE
-        else:
-            return PAYOUT_STATUS_IDLE
+        return PAYOUT_STATUS_IDLE
 
     def get_payout(self):
-        return self.balance
+        return 0
+
+    def pay_cash(self, amount):
+        pass
 
 
 class HostSystem(object):
@@ -64,16 +57,6 @@ class HostSystem(object):
         coins = int(amount * self.factor)
         self._module.add_credit(coins)
 
-    def withdraw(self, amount):
-        """
-        Accepts:
-            amount: fiat amount, Decimal
-        """
-        # Only for CCTalk mock
-        if hasattr(self._module, 'withdraw'):
-            coins = int(amount * self.factor)
-            self._module.withdraw(coins)
-
     def get_payout(self):
         """
         Returns:
@@ -93,5 +76,10 @@ class HostSystem(object):
         else:
             raise AssertionError
 
-    def pay_cash(self):
-        self._module.pay_cash()
+    def pay_cash(self, amount):
+        """
+        Accepts:
+            amount: fiat amount, Decimal
+        """
+        coins = int(amount * self.factor)
+        self._module.pay_cash(coins)

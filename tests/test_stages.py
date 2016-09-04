@@ -846,7 +846,6 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
                 'exchange_rate': Decimal('202.0'),
             },
             'get_withdrawal_receipt.return_value': 'test_url',
-            'host_withdraw.return_value': True,
         })
         state = {
             'client': client_mock,
@@ -864,9 +863,6 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
-        self.assertEqual(
-            client_mock.host_withdraw.call_args[1]['fiat_amount'],
-            Decimal('0.50'))
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_success'])
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.41'))

@@ -387,8 +387,6 @@ def withdraw_loading2(state, ui):
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(
                 state['withdrawal']['receipt_url']))
-            state['client'].host_withdraw(
-                fiat_amount=state['withdrawal']['fiat_amount'])
             return settings.STAGES['withdrawal']['withdraw_success']
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)

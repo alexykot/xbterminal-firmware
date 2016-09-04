@@ -104,8 +104,8 @@ class JSONRPCClient(object):
                                     fiat_amount=str(fiat_amount))
         return result
 
-    def host_withdraw(self, fiat_amount):
-        result = self._make_request('host_withdraw',
+    def host_pay_cash(self, fiat_amount):
+        result = self._make_request('host_pay_cash',
                                     fiat_amount=str(fiat_amount))
         return result
 
