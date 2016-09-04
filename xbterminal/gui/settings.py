@@ -15,6 +15,7 @@ STAGES = {
         'pay_cancel': 'pay_cancel',
     },
     'withdrawal': {
+        'withdraw_select': 'withdraw_select',
         'withdraw_loading1': 'withdraw_loading1',
         'withdraw_scan': 'withdraw_scan',
         'withdraw_confirm': 'withdraw_confirm',
@@ -36,11 +37,12 @@ SCREENS = {
     'pay_success': 7,
     'pay_receipt': 8,
     'pay_cancel': 9,
-    'withdraw_scan': 10,
-    'withdraw_confirm': 11,
-    'withdraw_success': 12,
-    'withdraw_receipt': 13,
-    'errors': 14,
+    'withdraw_select': 10,
+    'withdraw_scan': 11,
+    'withdraw_confirm': 12,
+    'withdraw_success': 13,
+    'withdraw_receipt': 14,
+    'errors': 15,
 }
 
 BUTTONS = [
@@ -60,6 +62,9 @@ BUTTONS = [
     'psuccess_no_btn',
     'psuccess_yes_btn',
     'preceipt_goback_btn',
+    'wselect_fiat_btn',
+    'wselect_bitcoin_btn',
+    'wselect_goback_btn',
     'wscan_goback_btn',
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',

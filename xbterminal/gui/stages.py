@@ -48,7 +48,7 @@ def idle(state, ui):
                 'default_withdrawal_amount', '0.1'))
         if payout:
             state['withdrawal']['fiat_amount'] = payout
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_select']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -281,6 +281,28 @@ def pay_cancel(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
+def withdraw_select(state, ui):
+    ui.showScreen('withdraw_select')
+    while True:
+        if state['screen_buttons']['wselect_fiat_btn'] or \
+                state['keypad'].last_key_pressed == 'enter':
+            state['screen_buttons']['wselect_fiat_btn'] = False
+            state['client'].host_pay_cash(
+                fiat_amount=state['withdrawal']['fiat_amount'])
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
+        if state['screen_buttons']['wselect_bitcoin_btn'] or \
+                state['keypad'].last_key_pressed == 'alt':
+            state['screen_buttons']['wselect_bitcoin_btn'] = False
+            return settings.STAGES['withdrawal']['withdraw_loading1']
+        if state['screen_buttons']['wselect_goback_btn'] or \
+                state['keypad'].last_key_pressed == 'backspace':
+            state['screen_buttons']['wselect_goback_btn'] = False
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
 def withdraw_loading1(state, ui):
     ui.showScreen('load_indefinite')
     assert state['withdrawal']['fiat_amount'] > 0
@@ -326,7 +348,7 @@ def withdraw_scan(state, ui):
             state['screen_buttons']['wscan_goback_btn'] = False
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui, clear_amount=False, cancel_order=True)
-            return settings.STAGES['idle']
+            return settings.STAGES['withdrawal']['withdraw_select']
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
