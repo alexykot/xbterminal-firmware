@@ -12,6 +12,7 @@ def load_gui_config():
     """
     GUI config params:
         default_withdrawal_address: string (default: None)
+        default_withdrawal_amount: string (default: '0.1')
         language: string (default: 'en')
         theme: string (default: 'default')
         show_cursor: boolean (default: False)

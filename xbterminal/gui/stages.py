@@ -42,25 +42,12 @@ def idle(state, ui):
             state['screen_buttons']['idle_begin_btn'] = False
             return settings.STAGES['payment']['pay_amount']
         # Communicate with the host system
-        if state['client'].host_get_payout():
-            return settings.STAGES['selection']
-        time.sleep(settings.STAGE_LOOP_PERIOD)
-
-
-def selection(state, ui):
-    ui.showScreen('selection')
-    current_credit = state['client'].host_get_payout()
-    ui.setText('sel_amount_lbl',
-               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
-    while True:
-        if state['screen_buttons']['sel_pay_btn'] or \
-                state['keypad'].last_key_pressed == 'enter':
-            state['screen_buttons']['sel_pay_btn'] = False
-            return settings.STAGES['payment']['pay_amount']
-        if state['screen_buttons']['sel_withdraw_btn'] or \
-                state['keypad'].last_key_pressed == 'alt':
-            state['screen_buttons']['sel_withdraw_btn'] = False
-            state['withdrawal']['fiat_amount'] = current_credit
+        payout = state['client'].host_get_payout()
+        if state['keypad'].last_key_pressed == 'alt':
+            payout = Decimal(state['gui_config'].get(
+                'default_withdrawal_amount', '0.1'))
+        if payout:
+            state['withdrawal']['fiat_amount'] = payout
             return settings.STAGES['withdrawal']['withdraw_loading1']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
@@ -339,7 +326,7 @@ def withdraw_scan(state, ui):
             state['screen_buttons']['wscan_goback_btn'] = False
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui, clear_amount=False, cancel_order=True)
-            return settings.STAGES['selection']
+            return settings.STAGES['idle']
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
