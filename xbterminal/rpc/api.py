@@ -201,16 +201,16 @@ def host_add_credit(**kwargs):
 
 
 @dispatcher.add_method
-def host_withdraw(**kwargs):
-    amount = Decimal(kwargs['fiat_amount'])
-    state['host_system'].withdraw(amount)
-    return True
-
-
-@dispatcher.add_method
 def host_get_payout(**kwargs):
     payout = state['host_system'].get_payout()
     if payout:
         return str(payout)
     else:
         return None
+
+
+@dispatcher.add_method
+def host_pay_cash(**kwargs):
+    amount = Decimal(kwargs['fiat_amount'])
+    state['host_system'].pay_cash(amount)
+    return True

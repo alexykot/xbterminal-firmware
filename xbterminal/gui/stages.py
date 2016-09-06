@@ -42,34 +42,18 @@ def idle(state, ui):
             state['screen_buttons']['idle_begin_btn'] = False
             return settings.STAGES['payment']['pay_amount']
         # Communicate with the host system
-        if state['client'].host_get_payout():
-            return settings.STAGES['selection']
-        time.sleep(settings.STAGE_LOOP_PERIOD)
-
-
-def selection(state, ui):
-    ui.showScreen('selection')
-    current_credit = state['client'].host_get_payout()
-    ui.setText('sel_amount_lbl',
-               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
-    while True:
-        if state['screen_buttons']['sel_pay_btn'] or \
-                state['keypad'].last_key_pressed == 'enter':
-            state['screen_buttons']['sel_pay_btn'] = False
-            return settings.STAGES['payment']['pay_amount']
-        if state['screen_buttons']['sel_withdraw_btn'] or \
-                state['keypad'].last_key_pressed == 'alt':
-            state['screen_buttons']['sel_withdraw_btn'] = False
-            state['withdrawal']['fiat_amount'] = current_credit
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+        payout = state['client'].host_get_payout()
+        if state['keypad'].last_key_pressed == 'alt':
+            payout = Decimal(state['gui_config'].get(
+                'default_withdrawal_amount', '0.1'))
+        if payout:
+            state['withdrawal']['fiat_amount'] = payout
+            return settings.STAGES['withdrawal']['withdraw_select']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def pay_amount(state, ui):
     ui.showScreen('pay_amount')
-    current_credit = state['client'].host_get_payout()
-    ui.setText('pamount_credit_lbl',
-               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     options = {
         'pamount_opt1_btn': Decimal('1.00'),
         'pamount_opt2_btn': Decimal('2.50'),
@@ -112,9 +96,6 @@ def pay_amount(state, ui):
 def pay_confirm(state, ui):
     ui.showScreen('pay_confirm')
     assert state['payment']['fiat_amount'] >= 0
-    current_credit = state['client'].host_get_payout()
-    ui.setText('pconfirm_credit_lbl',
-               amounts.format_fiat_amount_pretty(current_credit, prefix=True))
     ui.setText('pconfirm_amount_lbl',
                amounts.format_fiat_amount_pretty(state['payment']['fiat_amount'], prefix=True))
     while True:
@@ -300,6 +281,28 @@ def pay_cancel(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
+def withdraw_select(state, ui):
+    ui.showScreen('withdraw_select')
+    while True:
+        if state['screen_buttons']['wselect_fiat_btn'] or \
+                state['keypad'].last_key_pressed == 'enter':
+            state['screen_buttons']['wselect_fiat_btn'] = False
+            state['client'].host_pay_cash(
+                fiat_amount=state['withdrawal']['fiat_amount'])
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
+        if state['screen_buttons']['wselect_bitcoin_btn'] or \
+                state['keypad'].last_key_pressed == 'alt':
+            state['screen_buttons']['wselect_bitcoin_btn'] = False
+            return settings.STAGES['withdrawal']['withdraw_loading1']
+        if state['screen_buttons']['wselect_goback_btn'] or \
+                state['keypad'].last_key_pressed == 'backspace':
+            state['screen_buttons']['wselect_goback_btn'] = False
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
 def withdraw_loading1(state, ui):
     ui.showScreen('load_indefinite')
     assert state['withdrawal']['fiat_amount'] > 0
@@ -345,7 +348,7 @@ def withdraw_scan(state, ui):
             state['screen_buttons']['wscan_goback_btn'] = False
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui, clear_amount=False, cancel_order=True)
-            return settings.STAGES['selection']
+            return settings.STAGES['withdrawal']['withdraw_select']
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
@@ -406,8 +409,6 @@ def withdraw_loading2(state, ui):
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(
                 state['withdrawal']['receipt_url']))
-            state['client'].host_withdraw(
-                fiat_amount=state['withdrawal']['fiat_amount'])
             return settings.STAGES['withdrawal']['withdraw_success']
         if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
             _clear_withdrawal_runtime(state, ui)

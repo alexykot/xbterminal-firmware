@@ -10,7 +10,5 @@ class HostSystemTestCase(unittest.TestCase):
         host_system = HostSystem(use_mock=True)
         self.assertIsNone(host_system.get_payout())
         host_system.add_credit(Decimal('1.25'))
-        self.assertEqual(host_system._module.balance, 125)
-        self.assertEqual(host_system.get_payout(), Decimal('1.25'))
-        host_system.withdraw(Decimal('1.25'))
+        host_system.pay_cash(Decimal('1.25'))
         self.assertIsNone(host_system.get_payout())

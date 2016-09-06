@@ -335,15 +335,6 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(host_mock.add_credit.call_args[0][0],
                          Decimal('0.5'))
 
-    def test_host_withdraw(self):
-        host_mock = Mock()
-        state = {'host_system': host_mock}
-        with patch.dict('xbterminal.rpc.api.state', **state):
-            result = api.host_withdraw(fiat_amount='0.5')
-        self.assertTrue(result)
-        self.assertEqual(host_mock.withdraw.call_args[0][0],
-                         Decimal('0.5'))
-
     def test_host_get_payout(self):
         host_mock = Mock(**{'get_payout.return_value': Decimal('0.25')})
         state = {'host_system': host_mock}
@@ -357,3 +348,12 @@ class APITestCase(unittest.TestCase):
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_get_payout()
         self.assertIsNone(result)
+
+    def test_host_pay_cash(self):
+        host_mock = Mock()
+        state = {'host_system': host_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.host_pay_cash(fiat_amount='0.5')
+        self.assertTrue(result)
+        self.assertEqual(host_mock.pay_cash.call_args[0][0],
+                         Decimal('0.5'))
