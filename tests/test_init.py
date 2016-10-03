@@ -34,7 +34,7 @@ class InitTestCase(unittest.TestCase):
         read_mock.return_value = 'test-key'
         load_mock.return_value = {
             'remote_server': 'prod',
-            'use_cctalk_mock': True,
+            'use_bsp_mock': True,
         }
         watcher_cls_mock.return_value = watcher_mock = Mock()
         bt_cls_mock.return_value = 'bluetooth'
