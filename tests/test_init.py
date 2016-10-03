@@ -18,7 +18,7 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(len(state['rpc_config'].keys()), 0)
         self.assertIsNone(state['remote_server'])
         self.assertEqual(len(state['remote_config'].keys()), 0)
-        self.assertIsNone(state['host_system'])
+        self.assertIsNone(state['bsp_interface'])
         self.assertIsNone(state['bluetooth_server'])
         self.assertIsNone(state['nfc_server'])
         self.assertIsNone(state['qr_scanner'])
@@ -49,7 +49,8 @@ class InitTestCase(unittest.TestCase):
         self.assertIn('rpc_config', state)
         self.assertEqual(state['remote_server'], 'https://xbterminal.io')
         self.assertEqual(state['watcher'], watcher_mock)
-        self.assertEqual(state['host_system'].__class__.__name__, 'HostSystem')
+        self.assertEqual(state['bsp_interface'].__class__.__name__,
+                         'BSPLibraryInterface')
         self.assertEqual(state['bluetooth_server'], 'bluetooth')
         self.assertEqual(state['nfc_server'], 'nfc')
         self.assertEqual(state['qr_scanner'], 'scanner')

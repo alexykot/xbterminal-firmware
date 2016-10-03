@@ -12,7 +12,7 @@ APM_STATUS_ACTIVE = 0x21
 APM_STATUS_OUTOFSERVICE = 0x22
 
 
-class CCTalkMock(object):
+class BSPLibraryMock(object):
 
     def initialize(self):
         pass
@@ -39,21 +39,21 @@ class CCTalkMock(object):
         pass
 
 
-class HostSystem(object):
+class BSPLibraryInterface(object):
 
     factor = 100
 
     def __init__(self, use_mock=True):
         if use_mock:
-            self._module = CCTalkMock()
-            logger.info('host communication - using cctalk mock')
+            self._module = BSPLibraryMock()
+            logger.info('using BSP library mock')
         else:
             import itl_bsp
             self._module = itl_bsp
-            logger.info('host communication - using ITL BSP lib')
+            logger.info('using ITL BSP library')
         self._module.initialize()
         assert self._module.get_apm_status() == APM_STATUS_ACTIVE
-        logger.info('host communication - init done')
+        logger.info('BSP init done')
 
     def add_credit(self, amount):
         """
@@ -72,10 +72,10 @@ class HostSystem(object):
         if status == PAYOUT_STATUS_IDLE:
             return None
         elif status == PAYOUT_STATUS_PENDING:
-            logger.debug('host communication - payout pending')
+            logger.debug('payout pending')
             return None
         elif status == PAYOUT_STATUS_COMPLETE:
-            logger.debug('host communication - payout completed')
+            logger.debug('payout completed')
             coins = self._module.get_payout()
             amount = Decimal(coins) / self.factor
             return amount

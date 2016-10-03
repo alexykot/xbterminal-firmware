@@ -196,13 +196,13 @@ def stop_qr_scanner(**kwargs):
 @dispatcher.add_method
 def host_add_credit(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
-    state['host_system'].add_credit(amount)
+    state['bsp_interface'].add_credit(amount)
     return True
 
 
 @dispatcher.add_method
 def host_get_payout(**kwargs):
-    payout = state['host_system'].get_payout()
+    payout = state['bsp_interface'].get_payout()
     if payout:
         return str(payout)
     else:
@@ -212,5 +212,5 @@ def host_get_payout(**kwargs):
 @dispatcher.add_method
 def host_pay_cash(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
-    state['host_system'].pay_cash(amount)
+    state['bsp_interface'].pay_cash(amount)
     return True

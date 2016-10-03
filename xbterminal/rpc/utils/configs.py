@@ -73,7 +73,7 @@ def load_rpc_config():
         activation_code: string (default: None)
         last_started: float (default: None)
         remote_server: string (default: 'prod')
-        use_cctalk_mock: boolean (default: True)
+        use_bsp_mock: boolean (default: True)
     Returns:
         rpc_config: dict
     """
