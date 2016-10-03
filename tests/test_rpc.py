@@ -285,20 +285,20 @@ class APITestCase(unittest.TestCase):
         self.assertTrue(bt_server_mock.stop.called)
 
     def test_start_nfc_server(self):
-        nfc_server_mock = Mock()
-        state = {'nfc_server': nfc_server_mock}
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.start_nfc_server(message='test')
         self.assertTrue(result)
-        self.assertEqual(nfc_server_mock.start.call_args[0][0], 'test')
+        self.assertEqual(bsp_mock.write_ndef.call_args[0][0], 'test')
 
     def test_stop_nfc_server(self):
-        nfc_server_mock = Mock()
-        state = {'nfc_server': nfc_server_mock}
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.stop_nfc_server()
         self.assertTrue(result)
-        self.assertTrue(nfc_server_mock.stop.called)
+        self.assertTrue(bsp_mock.erase_ndef.called)
 
     def test_start_qr_scanner(self):
         qr_scanner_mock = Mock()
@@ -327,33 +327,33 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result, address)
 
     def test_host_add_credit(self):
-        host_mock = Mock()
-        state = {'host_system': host_mock}
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_add_credit(fiat_amount='0.5')
         self.assertTrue(result)
-        self.assertEqual(host_mock.add_credit.call_args[0][0],
+        self.assertEqual(bsp_mock.add_credit.call_args[0][0],
                          Decimal('0.5'))
 
     def test_host_get_payout(self):
-        host_mock = Mock(**{'get_payout.return_value': Decimal('0.25')})
-        state = {'host_system': host_mock}
+        bsp_mock = Mock(**{'get_payout.return_value': Decimal('0.25')})
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_get_payout()
         self.assertEqual(result, '0.25')
 
     def test_host_get_payout_none(self):
-        host_mock = Mock(**{'get_payout.return_value': None})
-        state = {'host_system': host_mock}
+        bsp_mock = Mock(**{'get_payout.return_value': None})
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_get_payout()
         self.assertIsNone(result)
 
     def test_host_pay_cash(self):
-        host_mock = Mock()
-        state = {'host_system': host_mock}
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_pay_cash(fiat_amount='0.5')
         self.assertTrue(result)
-        self.assertEqual(host_mock.pay_cash.call_args[0][0],
+        self.assertEqual(bsp_mock.pay_cash.call_args[0][0],
                          Decimal('0.5'))

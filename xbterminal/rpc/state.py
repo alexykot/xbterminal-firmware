@@ -4,9 +4,8 @@ def get_initial_rpc_state():
         'rpc_config': {},
         'remote_server': None,
         'remote_config': {},
-        'host_system': None,
+        'bsp_interface': None,
         'bluetooth_server': None,
-        'nfc_server': None,
         'qr_scanner': None,
         'init': {
             'clock_synchronized': False,

@@ -12,7 +12,7 @@ APM_STATUS_ACTIVE = 0x21
 APM_STATUS_OUTOFSERVICE = 0x22
 
 
-class CCTalkMock(object):
+class BSPLibraryMock(object):
 
     def initialize(self):
         pass
@@ -32,22 +32,28 @@ class CCTalkMock(object):
     def pay_cash(self, amount):
         pass
 
+    def write_ndef(self, message):
+        pass
 
-class HostSystem(object):
+    def erase_ndef(self):
+        pass
+
+
+class BSPLibraryInterface(object):
 
     factor = 100
 
     def __init__(self, use_mock=True):
         if use_mock:
-            self._module = CCTalkMock()
-            logger.info('host communication - using cctalk mock')
+            self._module = BSPLibraryMock()
+            logger.info('using BSP library mock')
         else:
             import itl_bsp
             self._module = itl_bsp
-            logger.info('host communication - using ITL BSP lib')
+            logger.info('using ITL BSP library')
         self._module.initialize()
         assert self._module.get_apm_status() == APM_STATUS_ACTIVE
-        logger.info('host communication - init done')
+        logger.info('BSP init done')
 
     def add_credit(self, amount):
         """
@@ -56,6 +62,7 @@ class HostSystem(object):
         """
         coins = int(amount * self.factor)
         self._module.add_credit(coins)
+        logger.info('credit added to host machine')
 
     def get_payout(self):
         """
@@ -66,10 +73,10 @@ class HostSystem(object):
         if status == PAYOUT_STATUS_IDLE:
             return None
         elif status == PAYOUT_STATUS_PENDING:
-            logger.debug('host communication - payout pending')
+            logger.debug('payout pending')
             return None
         elif status == PAYOUT_STATUS_COMPLETE:
-            logger.debug('host communication - payout completed')
+            logger.debug('payout completed')
             coins = self._module.get_payout()
             amount = Decimal(coins) / self.factor
             return amount
@@ -83,3 +90,19 @@ class HostSystem(object):
         """
         coins = int(amount * self.factor)
         self._module.pay_cash(coins)
+
+    def write_ndef(self, message):
+        """
+        Writes NDEF message
+        Accepts:
+            message: string
+        """
+        self._module.write_ndef(message)
+        logger.info('NDEF message written')
+
+    def erase_ndef(self):
+        """
+        Erases NDEF message
+        """
+        self._module.erase_ndef()
+        logger.info('NDEF message erased')

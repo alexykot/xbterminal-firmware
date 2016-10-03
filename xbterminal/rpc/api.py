@@ -165,13 +165,13 @@ def stop_bluetooth_server(**kwargs):
 @dispatcher.add_method
 def start_nfc_server(**kwargs):
     message = kwargs['message']
-    state['nfc_server'].start(message)
+    state['bsp_interface'].write_ndef(message)
     return True
 
 
 @dispatcher.add_method
 def stop_nfc_server(**kwargs):
-    state['nfc_server'].stop()
+    state['bsp_interface'].erase_ndef()
     return True
 
 
@@ -196,13 +196,13 @@ def stop_qr_scanner(**kwargs):
 @dispatcher.add_method
 def host_add_credit(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
-    state['host_system'].add_credit(amount)
+    state['bsp_interface'].add_credit(amount)
     return True
 
 
 @dispatcher.add_method
 def host_get_payout(**kwargs):
-    payout = state['host_system'].get_payout()
+    payout = state['bsp_interface'].get_payout()
     if payout:
         return str(payout)
     else:
@@ -212,5 +212,5 @@ def host_get_payout(**kwargs):
 @dispatcher.add_method
 def host_pay_cash(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
-    state['host_system'].pay_cash(amount)
+    state['bsp_interface'].pay_cash(amount)
     return True
