@@ -62,6 +62,7 @@ class BSPLibraryInterface(object):
         """
         coins = int(amount * self.factor)
         self._module.add_credit(coins)
+        logger.info('credit added to host machine')
 
     def get_payout(self):
         """
@@ -97,9 +98,11 @@ class BSPLibraryInterface(object):
             message: string
         """
         self._module.write_ndef(message)
+        logger.info('NDEF message written')
 
     def erase_ndef(self):
         """
         Erases NDEF message
         """
         self._module.erase_ndef()
+        logger.info('NDEF message erased')
