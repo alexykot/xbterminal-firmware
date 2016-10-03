@@ -285,20 +285,20 @@ class APITestCase(unittest.TestCase):
         self.assertTrue(bt_server_mock.stop.called)
 
     def test_start_nfc_server(self):
-        nfc_server_mock = Mock()
-        state = {'nfc_server': nfc_server_mock}
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.start_nfc_server(message='test')
         self.assertTrue(result)
-        self.assertEqual(nfc_server_mock.start.call_args[0][0], 'test')
+        self.assertEqual(bsp_mock.write_ndef.call_args[0][0], 'test')
 
     def test_stop_nfc_server(self):
-        nfc_server_mock = Mock()
-        state = {'nfc_server': nfc_server_mock}
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.stop_nfc_server()
         self.assertTrue(result)
-        self.assertTrue(nfc_server_mock.stop.called)
+        self.assertTrue(bsp_mock.erase_ndef.called)
 
     def test_start_qr_scanner(self):
         qr_scanner_mock = Mock()

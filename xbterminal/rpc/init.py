@@ -6,7 +6,6 @@ from xbterminal.rpc.utils import configs, clock
 from xbterminal.rpc.utils.bt import BluetoothServer
 from xbterminal.rpc.utils.camera import QRScanner
 from xbterminal.rpc.utils.bsp import BSPLibraryInterface
-from xbterminal.rpc.utils.nfcpy import NFCServer
 from xbterminal.rpc.watcher import Watcher
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,6 @@ def init_step_1(state):
     state['bsp_interface'] = BSPLibraryInterface(
         use_mock=state['rpc_config'].get('use_bsp_mock', True))
     state['bluetooth_server'] = BluetoothServer()
-    state['nfc_server'] = NFCServer()
     state['qr_scanner'] = QRScanner(backend='fswebcam')
 
 

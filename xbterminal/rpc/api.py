@@ -165,13 +165,13 @@ def stop_bluetooth_server(**kwargs):
 @dispatcher.add_method
 def start_nfc_server(**kwargs):
     message = kwargs['message']
-    state['nfc_server'].start(message)
+    state['bsp_interface'].write_ndef(message)
     return True
 
 
 @dispatcher.add_method
 def stop_nfc_server(**kwargs):
-    state['nfc_server'].stop()
+    state['bsp_interface'].erase_ndef()
     return True
 
 

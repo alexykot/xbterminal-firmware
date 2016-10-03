@@ -20,7 +20,6 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(len(state['remote_config'].keys()), 0)
         self.assertIsNone(state['bsp_interface'])
         self.assertIsNone(state['bluetooth_server'])
-        self.assertIsNone(state['nfc_server'])
         self.assertIsNone(state['qr_scanner'])
         self.assertEqual(state['payments'], {})
         self.assertEqual(state['withdrawals'], {})
@@ -29,9 +28,8 @@ class InitTestCase(unittest.TestCase):
     @patch('xbterminal.rpc.init.configs.load_rpc_config')
     @patch('xbterminal.rpc.init.Watcher')
     @patch('xbterminal.rpc.init.BluetoothServer')
-    @patch('xbterminal.rpc.init.NFCServer')
     @patch('xbterminal.rpc.init.QRScanner')
-    def test_init_step_1(self, scanner_cls_mock, nfc_cls_mock, bt_cls_mock,
+    def test_init_step_1(self, scanner_cls_mock, bt_cls_mock,
                          watcher_cls_mock, load_mock, read_mock):
         read_mock.return_value = 'test-key'
         load_mock.return_value = {
@@ -40,7 +38,6 @@ class InitTestCase(unittest.TestCase):
         }
         watcher_cls_mock.return_value = watcher_mock = Mock()
         bt_cls_mock.return_value = 'bluetooth'
-        nfc_cls_mock.return_value = 'nfc'
         scanner_cls_mock.return_value = 'scanner'
 
         state = {}
@@ -52,7 +49,6 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(state['bsp_interface'].__class__.__name__,
                          'BSPLibraryInterface')
         self.assertEqual(state['bluetooth_server'], 'bluetooth')
-        self.assertEqual(state['nfc_server'], 'nfc')
         self.assertEqual(state['qr_scanner'], 'scanner')
 
     @patch('xbterminal.rpc.init.clock.get_internet_time')
