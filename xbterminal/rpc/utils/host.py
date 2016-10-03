@@ -32,6 +32,12 @@ class CCTalkMock(object):
     def pay_cash(self, amount):
         pass
 
+    def write_ndef(self, message):
+        pass
+
+    def erase_ndef(self):
+        pass
+
 
 class HostSystem(object):
 
@@ -83,3 +89,17 @@ class HostSystem(object):
         """
         coins = int(amount * self.factor)
         self._module.pay_cash(coins)
+
+    def write_ndef(self, message):
+        """
+        Writes NDEF message
+        Accepts:
+            message: string
+        """
+        self._module.write_ndef(message)
+
+    def erase_ndef(self):
+        """
+        Erases NDEF message
+        """
+        self._module.erase_ndef()
