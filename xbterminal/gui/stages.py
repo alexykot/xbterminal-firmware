@@ -55,9 +55,12 @@ def idle(state, ui):
 def pay_amount(state, ui):
     ui.showScreen('pay_amount')
     options = {
-        'pamount_opt1_btn': Decimal('1.00'),
-        'pamount_opt2_btn': Decimal('2.50'),
-        'pamount_opt3_btn': Decimal('10.00'),
+        'pamount_opt1_btn': Decimal(
+            state['remote_config']['settings']['amount_1']),
+        'pamount_opt2_btn': Decimal(
+            state['remote_config']['settings']['amount_2']),
+        'pamount_opt3_btn': Decimal(
+            state['remote_config']['settings']['amount_3']),
     }
     for button, amount in options.items():
         ui.setText(button, amounts.format_fiat_amount_pretty(amount, prefix=True))
@@ -96,6 +99,11 @@ def pay_amount(state, ui):
 def pay_confirm(state, ui):
     ui.showScreen('pay_confirm')
     assert state['payment']['fiat_amount'] >= 0
+    amount_shift = Decimal(state['remote_config']['settings']['amount_shift'])
+    ui.setText('pconfirm_decr_btn',
+               '-{}'.format(amounts.format_fiat_amount_pretty(amount_shift)))
+    ui.setText('pconfirm_incr_btn',
+               '+{}'.format(amounts.format_fiat_amount_pretty(amount_shift)))
     ui.setText('pconfirm_amount_lbl',
                amounts.format_fiat_amount_pretty(state['payment']['fiat_amount'], prefix=True))
     while True:
@@ -103,7 +111,7 @@ def pay_confirm(state, ui):
                 state['keypad'].last_key_pressed == 1:
             state['screen_buttons']['pconfirm_decr_btn'] = False
             state['keypad'].reset_key()
-            state['payment']['fiat_amount'] -= Decimal('0.05')
+            state['payment']['fiat_amount'] -= Decimal(amount_shift)
             if state['payment']['fiat_amount'] < 0:
                 state['payment']['fiat_amount'] = Decimal('0.00')
             ui.setText(
@@ -113,7 +121,7 @@ def pay_confirm(state, ui):
                 state['keypad'].last_key_pressed == 2:
             state['screen_buttons']['pconfirm_incr_btn'] = False
             state['keypad'].reset_key()
-            state['payment']['fiat_amount'] += Decimal('0.05')
+            state['payment']['fiat_amount'] += Decimal(amount_shift)
             ui.setText(
                 'pconfirm_amount_lbl',
                 amounts.format_fiat_amount_pretty(state['payment']['fiat_amount'], prefix=True))
