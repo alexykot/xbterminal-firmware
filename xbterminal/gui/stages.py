@@ -36,10 +36,13 @@ def activate(state, ui):
 
 def idle(state, ui):
     ui.showScreen('idle')
+    standby_screen_last_refresh = 0
     while True:
         if state['screen_buttons']['idle_begin_btn'] or \
+                state['screen_buttons']['standby_wake_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['idle_begin_btn'] = False
+            state['screen_buttons']['standby_wake_btn'] = False
             return settings.STAGES['payment']['pay_amount']
         # Communicate with the host system
         payout = state['client'].host_get_payout()
@@ -49,6 +52,12 @@ def idle(state, ui):
         if payout:
             state['withdrawal']['fiat_amount'] = payout
             return settings.STAGES['withdrawal']['withdraw_select']
+        # Show standby screen when idle for a long time
+        current_time = time.time()
+        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < current_time and \
+                standby_screen_last_refresh + settings.STANDBY_SCREEN_REFRESH_CYCLE < current_time:
+            standby_screen_last_refresh = current_time
+            ui.showStandByScreen()
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 

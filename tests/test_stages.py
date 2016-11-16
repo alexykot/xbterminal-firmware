@@ -89,7 +89,10 @@ class IdleStageTestCase(unittest.TestCase):
         client_mock = Mock()
         state = {
             'client': client_mock,
-            'screen_buttons': {'idle_begin_btn': True},
+            'screen_buttons': {
+                'idle_begin_btn': True,
+                'standby_wake_btn': False,
+            },
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
@@ -105,7 +108,10 @@ class IdleStageTestCase(unittest.TestCase):
         state = {
             'client': client_mock,
             'keypad': keypad,
-            'screen_buttons': {'idle_begin_btn': False},
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'standby_wake_btn': False,
+            },
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
@@ -119,7 +125,10 @@ class IdleStageTestCase(unittest.TestCase):
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {'idle_begin_btn': False},
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'standby_wake_btn': False,
+            },
             'withdrawal': {},
         }
         ui = Mock()
@@ -136,7 +145,10 @@ class IdleStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': keypad,
             'gui_config': {'default_withdrawal_amount': '0.23'},
-            'screen_buttons': {'idle_begin_btn': False},
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'standby_wake_btn': False,
+            },
             'withdrawal': {},
         }
         ui = Mock()
@@ -145,6 +157,34 @@ class IdleStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_select'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.23'))
+
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_standby(self, sleep_mock):
+        client_mock = Mock(**{'host_get_payout.return_value': None})
+        keypad = Mock(last_key_pressed=None)
+        state = {
+            'last_activity_timestamp': 0,
+            'client': client_mock,
+            'keypad': keypad,
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'standby_wake_btn': False,
+            },
+            'withdrawal': {},
+        }
+
+        def standby_wake():
+            state['screen_buttons']['standby_wake_btn'] = True
+
+        ui = Mock(**{
+            'showStandByScreen.side_effect': standby_wake,
+        })
+        next_stage = stages.idle(state, ui)
+        self.assertTrue(ui.showStandByScreen.called)
+        self.assertEqual(next_stage,
+                         settings.STAGES['payment']['pay_amount'])
+        self.assertFalse(any(state for state
+                             in state['screen_buttons'].values()))
 
 
 class PaymentAmountStageTestCase(unittest.TestCase):

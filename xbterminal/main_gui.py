@@ -68,10 +68,12 @@ def main():
             main_window.close()
             break
         if worker_thread is None:
+            # Execute stage code
             worker = StageWorker(state['CURRENT_STAGE'], state)
             worker.ui.signal.connect(main_window.stageWorkerSlot)
             worker_thread = move_to_thread(worker)
         elif not worker_thread.is_alive():
+            # Move to next stage
             if worker.next_stage is not None:
                 state['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None
