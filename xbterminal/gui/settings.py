@@ -128,6 +128,7 @@ STAGE_LOOP_PERIOD = 0.1  # seconds
 
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
+STANDBY_SCREEN_TIMEOUT = 60
 STANDBY_SCREEN_REFRESH_CYCLE = 5  # seconds
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds

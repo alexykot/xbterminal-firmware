@@ -54,7 +54,7 @@ def idle(state, ui):
             return settings.STAGES['withdrawal']['withdraw_select']
         # Show standby screen when idle for a long time
         current_time = time.time()
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < current_time and \
+        if state['last_activity_timestamp'] + settings.STANDBY_SCREEN_TIMEOUT < current_time and \
                 standby_screen_last_refresh + settings.STANDBY_SCREEN_REFRESH_CYCLE < current_time:
             standby_screen_last_refresh = current_time
             ui.showStandByScreen()
