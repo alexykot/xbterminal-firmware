@@ -172,11 +172,13 @@ QPushButton {
 }
 #pconfirm_decr_btn {
     background-image: url(:/images/round-orange-down-btn.png);
+    padding-top: -100px;
     qproperty-geometry: rect(90 115 68 69);
     qproperty-text: '';
 }
 #pconfirm_incr_btn {
     background-image: url(:/images/round-orange-up-btn.png);
+    padding-top: -100px;
     qproperty-geometry: rect(320 115 68 69);
     qproperty-text: '';
 }
