@@ -3,6 +3,7 @@
     <file>images/loading.gif</file>
     <file>images/bg.png</file>
     <file>images/bc_logo.png</file>
+    <file>images/bc_logo_small.png</file>
   </qresource>
   <qresource>
     <file>fonts/OpenSans-Regular.ttf</file>

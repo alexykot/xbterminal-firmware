@@ -1,4 +1,5 @@
 from collections import deque
+import time
 
 from xbterminal.gui import settings
 
@@ -9,7 +10,7 @@ def get_initial_gui_state():
         'gui_config': {},
         'remote_config': {},
         'remote_config_last_update': 0,
-        'last_activity_timestamp': None,
+        'last_activity_timestamp': time.time(),
         'keypad': None,
         'keyboard_events': deque(maxlen=1),  # Only for keyboard driver
         'screen_buttons': {button_name: False for button_name

@@ -12,7 +12,7 @@ class InitTestCase(unittest.TestCase):
         self.assertEqual(state['gui_config'], {})
         self.assertEqual(state['remote_config'], {})
         self.assertEqual(state['remote_config_last_update'], 0)
-        self.assertIsNone(state['last_activity_timestamp'])
+        self.assertGreater(state['last_activity_timestamp'], 0)
         self.assertIsNone(state['keypad'])
         self.assertEqual(len(state['keyboard_events']), 1)
         self.assertFalse(state['screen_buttons']['idle_begin_btn'])

@@ -20,6 +20,21 @@ QPushButton {
     qproperty-pixmap: url(':/images/bc_logo.png');
 }
 
+#standby_wake_btn {
+    background-color: #000000;
+    border-width: 0px;
+}
+
+#standby_bc_logo_image {
+    qproperty-pixmap: url(':/images/bc_logo_small.png');
+}
+
+#standby_wake_lbl {
+    color: #EEEEEE;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
 #pamount_desc_lbl,
 #pconfirm_desc_lbl,
 #pinfo_desc_lbl,

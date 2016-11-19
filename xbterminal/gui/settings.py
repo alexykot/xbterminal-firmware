@@ -30,23 +30,25 @@ SCREENS = {
     'load_indefinite': 0,
     'activation': 1,
     'idle': 2,
-    'pay_amount': 3,
-    'pay_confirm': 4,
-    'pay_info': 5,
-    'pay_wait': 6,
-    'pay_success': 7,
-    'pay_receipt': 8,
-    'pay_cancel': 9,
-    'withdraw_select': 10,
-    'withdraw_scan': 11,
-    'withdraw_confirm': 12,
-    'withdraw_success': 13,
-    'withdraw_receipt': 14,
-    'errors': 15,
+    'standby': 3,
+    'pay_amount': 4,
+    'pay_confirm': 5,
+    'pay_info': 6,
+    'pay_wait': 7,
+    'pay_success': 8,
+    'pay_receipt': 9,
+    'pay_cancel': 10,
+    'withdraw_select': 11,
+    'withdraw_scan': 12,
+    'withdraw_confirm': 13,
+    'withdraw_success': 14,
+    'withdraw_receipt': 15,
+    'errors': 16,
 }
 
 BUTTONS = [
     'idle_begin_btn',
+    'standby_wake_btn',
     'pamount_opt1_btn',
     'pamount_opt2_btn',
     'pamount_opt3_btn',
@@ -125,6 +127,9 @@ MAIN_LOOP_PERIOD = 0.05  # seconds
 STAGE_LOOP_PERIOD = 0.1  # seconds
 
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
+
+STANDBY_SCREEN_TIMEOUT = 60
+STANDBY_SCREEN_REFRESH_CYCLE = 5  # seconds
 
 TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
 
