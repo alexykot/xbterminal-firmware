@@ -1,7 +1,9 @@
 <RCC>
   <qresource>
     <file>images/btn-orange.png</file>
+    <file>images/btn-orange-pressed.png</file>
     <file>images/btn-grey.png</file>
+    <file>images/btn-grey-pressed.png</file>
     <file>images/screen-idle.png</file>
     <file>images/background.png</file>
     <file>images/loading.gif</file>
@@ -20,12 +22,19 @@
     <file>images/orange-down-arrow-small.png</file>
     <file>images/orange-up-arrow-small.png</file>
     <file>images/round-orange-up-btn.png</file>
+    <file>images/round-orange-up-btn-pressed.png</file>
     <file>images/round-orange-down-btn.png</file>
+    <file>images/round-orange-down-btn-pressed.png</file>
     <file>images/pill-orange-btn-1.png</file>
+    <file>images/pill-orange-btn-1-pressed.png</file>
     <file>images/pill-orange-btn-2.png</file>
+    <file>images/pill-orange-btn-2-pressed.png</file>
     <file>images/pill-orange-btn-3.png</file>
+    <file>images/pill-orange-btn-3-pressed.png</file>
     <file>images/pill-grey-btn-1.png</file>
+    <file>images/pill-grey-btn-1-pressed.png</file>
     <file>images/pill-grey-btn-2.png</file>
+    <file>images/pill-grey-btn-2-pressed.png</file>
     <file>images/bc_logo_small.png</file>
   </qresource>
   <qresource>
