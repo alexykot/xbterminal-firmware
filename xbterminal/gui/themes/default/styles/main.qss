@@ -13,8 +13,8 @@ QPushButton {
 }
 
 QPushButton:pressed {
-    background-color: #F3F4F8;
-    border-color: #C7C7C7;
+    background-color: #C8C9CC;
+    border-color: #A8A8A8;
 }
 
 #main_stackedWidget {
@@ -80,7 +80,7 @@ QPushButton:pressed {
 #wselect_fiat_btn:pressed,
 #wselect_bitcoin_btn:pressed,
 #wconfirm_confirm_btn:pressed {
-    background-color: #BF4509;
+    background-color: #802E06;
 }
 
 #wscan_num1_lbl,
