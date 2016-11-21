@@ -13,15 +13,25 @@ QPushButton {
     text-transform: uppercase;
 }
 
+QPushButton:pressed {
+    border-image: url(:/images/btn-orange-pressed.png) 12 14 16 10 repeat;
+}
+
 #pamount_cancel_btn,
 #pconfirm_goback_btn,
 #pinfo_cancel_btn,
 #pwait_cancel_btn,
 #wscan_goback_btn,
 #wconfirm_cancel_btn {
-    border-width: 12px 12px 16px 10px;
     border-image: url(:/images/btn-grey.png) 12 14 16 10 repeat;
     color: #CCCCCC;
+}
+
+#pinfo_cancel_btn:pressed,
+#pwait_cancel_btn:pressed,
+#wscan_goback_btn:pressed,
+#wconfirm_cancel_btn:pressed {
+    border-image: url(:/images/btn-grey-pressed.png) 12 14 16 10 repeat;
 }
 
 #pamount_opt1_btn,
@@ -157,21 +167,36 @@ QPushButton {
     background-image: url(:/images/pill-orange-btn-1.png);
     qproperty-geometry: rect(20 100 131 84);
 }
+#pamount_opt1_btn:pressed {
+    background-image: url(:/images/pill-orange-btn-1-pressed.png);
+}
 #pamount_opt2_btn {
     background-image: url(:/images/pill-orange-btn-1.png);
     qproperty-geometry: rect(180 100 131 84);
+}
+#pamount_opt2_btn:pressed {
+    background-image: url(:/images/pill-orange-btn-1-pressed.png);
 }
 #pamount_opt3_btn {
     background-image: url(:/images/pill-orange-btn-1.png);
     qproperty-geometry: rect(340 100 131 84);
 }
+#pamount_opt3_btn:pressed {
+    background-image: url(:/images/pill-orange-btn-1-pressed.png);
+}
 #pamount_opt4_btn {
     background-image: url(:/images/pill-orange-btn-2.png);
     qproperty-geometry: rect(210 193 240 67);
 }
+#pamount_opt4_btn:pressed {
+    background-image: url(:/images/pill-orange-btn-2-pressed.png);
+}
 #pamount_cancel_btn {
     background-image: url(:/images/pill-grey-btn-1.png);
     qproperty-geometry: rect(35 193 155 67);
+}
+#pamount_cancel_btn:pressed {
+    background-image: url(:/images/pill-grey-btn-1-pressed.png);
 }
 
 #pconfirm_amount_lbl {
@@ -192,19 +217,31 @@ QPushButton {
     qproperty-geometry: rect(90 115 68 69);
     qproperty-text: '';
 }
+#pconfirm_decr_btn:pressed {
+    background-image: url(:/images/round-orange-down-btn-pressed.png);
+}
 #pconfirm_incr_btn {
     background-image: url(:/images/round-orange-up-btn.png);
     padding-top: -100px;
     qproperty-geometry: rect(320 115 68 69);
     qproperty-text: '';
 }
+#pconfirm_incr_btn:pressed {
+    background-image: url(:/images/round-orange-up-btn-pressed.png);
+}
 #pconfirm_goback_btn {
     background-image: url(:/images/pill-grey-btn-2.png);
     qproperty-geometry: rect(70 200 166 57);
 }
+#pconfirm_goback_btn:pressed {
+    background-image: url(:/images/pill-grey-btn-2-pressed.png);
+}
 #pconfirm_confirm_btn {
     background-image: url(:/images/pill-orange-btn-3.png);
     qproperty-geometry: rect(260 200 166 57);
+}
+#pconfirm_confirm_btn:pressed {
+    background-image: url(:/images/pill-orange-btn-3-pressed.png);
 }
 
 #pinfo_desc_lbl {

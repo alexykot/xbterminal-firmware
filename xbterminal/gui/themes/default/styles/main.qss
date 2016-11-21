@@ -12,6 +12,11 @@ QPushButton {
     text-transform: uppercase;
 }
 
+QPushButton:pressed {
+    background-color: #C8C9CC;
+    border-color: #A8A8A8;
+}
+
 #main_stackedWidget {
     background-image: url(:/images/bg.png);
 }
@@ -65,6 +70,17 @@ QPushButton {
     background-color: #d34c0a;
     border: none;
     color: #ffffff;
+}
+
+#pamount_opt1_btn:pressed,
+#pamount_opt2_btn:pressed,
+#pamount_opt3_btn:pressed,
+#pconfirm_confirm_btn:pressed,
+#pinfo_pay_btn:pressed,
+#wselect_fiat_btn:pressed,
+#wselect_bitcoin_btn:pressed,
+#wconfirm_confirm_btn:pressed {
+    background-color: #802E06;
 }
 
 #wscan_num1_lbl,

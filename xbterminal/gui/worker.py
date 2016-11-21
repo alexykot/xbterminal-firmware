@@ -1,9 +1,11 @@
 import logging
 import threading
+import time
 
 from PyQt4 import QtCore
 
 from xbterminal.gui import stages
+from xbterminal.gui.settings import STAGE_CHANGE_DELAY
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +35,7 @@ class StageWorker(QtCore.QObject):
 
     def run(self):
         logger.debug("moving to stage {0}".format(self.current_stage))
+        time.sleep(STAGE_CHANGE_DELAY)
         func = getattr(stages, self.current_stage)
         self.next_stage = func(self.runtime, self.ui)
         self.finished.emit()
