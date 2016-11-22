@@ -4,7 +4,10 @@ import time
 
 from xbterminal.gui import settings
 from xbterminal.gui.utils import amounts, qr
-from xbterminal.gui.exceptions import NetworkError, ServerError
+from xbterminal.gui.exceptions import (
+    NetworkError,
+    ServerError,
+    StageTimeout)
 
 logger = logging.getLogger(__name__)
 
@@ -99,9 +102,13 @@ def pay_amount(state, ui):
             state['screen_buttons']['pamount_cancel_btn'] = False
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_timeout(state, ui, 'pay_amount')
+        except StageTimeout:
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -530,3 +537,21 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
     ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setImage('wreceipt_receipt_qr_img', None)
+
+
+def _wait_for_timeout(state, ui, return_screen):
+    if state['last_activity_timestamp'] + \
+            settings.SCREEN_TIMEOUT - \
+            settings.SCREEN_TIMEOUT_CONFIRMATION_TIME < time.time():
+        ui.showScreen('timeout')
+        if state['last_activity_timestamp'] + \
+                settings.SCREEN_TIMEOUT < time.time():
+            raise StageTimeout
+    if state['screen_buttons']['timeout_no_btn'] or \
+            state['keypad'].last_key_pressed == 'backspace':
+        state['screen_buttons']['timeout_no_btn'] = False
+        raise StageTimeout
+    if state['screen_buttons']['timeout_yes_btn'] or \
+            state['keypad'].last_key_pressed == 'enter':
+        state['screen_buttons']['timeout_yes_btn'] = False
+        ui.showScreen(return_screen)
