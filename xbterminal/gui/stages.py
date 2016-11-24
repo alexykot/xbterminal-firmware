@@ -104,7 +104,7 @@ def pay_amount(state, ui):
             return settings.STAGES['idle']
 
         try:
-            _wait_for_timeout(state, ui, 'pay_amount')
+            _wait_for_screen_timeout(state, ui, 'pay_amount')
         except StageTimeout:
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
@@ -151,9 +151,13 @@ def pay_confirm(state, ui):
             state['screen_buttons']['pconfirm_goback_btn'] = False
             _clear_payment_runtime(state, ui)
             return settings.STAGES['payment']['pay_amount']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'pay_confirm')
+        except StageTimeout:
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -201,9 +205,13 @@ def pay_info(state, ui):
             state['screen_buttons']['pinfo_cancel_btn'] = False
             _clear_payment_runtime(state, ui, cancel_order=True)
             return settings.STAGES['payment']['pay_amount']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'pay_info')
+        except StageTimeout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -243,7 +251,9 @@ def pay_wait(state, ui):
             state['client'].stop_bluetooth_server()
             return settings.STAGES['payment']['pay_success']
 
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+        try:
+            _wait_for_transaction_timeout(state, ui)
+        except StageTimeout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
@@ -269,9 +279,13 @@ def pay_success(state, ui):
             state['screen_buttons']['psuccess_no_btn'] = False
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'pay_success')
+        except StageTimeout:
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -287,10 +301,14 @@ def pay_receipt(state, ui):
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'pay_receipt')
+        except StageTimeout:
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -373,10 +391,14 @@ def withdraw_scan(state, ui):
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui, clear_amount=False, cancel_order=True)
             return settings.STAGES['withdrawal']['withdraw_select']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_transaction_timeout(state, ui)
+        except StageTimeout:
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -400,9 +422,13 @@ def withdraw_confirm(state, ui):
             state['screen_buttons']['wconfirm_cancel_btn'] = False
             _clear_withdrawal_runtime(state, ui, cancel_order=True)
             return settings.STAGES['idle']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_transaction_timeout(state, ui)
+        except StageTimeout:
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -434,9 +460,13 @@ def withdraw_loading2(state, ui):
             logger.debug('withdrawal finished, receipt: {}'.format(
                 state['withdrawal']['receipt_url']))
             return settings.STAGES['withdrawal']['withdraw_success']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_transaction_timeout(state, ui)
+        except StageTimeout:
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -457,9 +487,13 @@ def withdraw_success(state, ui):
             state['screen_buttons']['wsuccess_no_btn'] = False
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'withdraw_success')
+        except StageTimeout:
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -475,10 +509,14 @@ def withdraw_receipt(state, ui):
             state['client'].stop_nfc_server()
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'withdraw_receipt')
+        except StageTimeout:
             state['client'].stop_nfc_server()
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -539,7 +577,7 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
     ui.setImage('wreceipt_receipt_qr_img', None)
 
 
-def _wait_for_timeout(state, ui, return_screen):
+def _wait_for_screen_timeout(state, ui, return_screen):
     if state['last_activity_timestamp'] + \
             settings.SCREEN_TIMEOUT - \
             settings.SCREEN_TIMEOUT_CONFIRMATION_TIME < time.time():
@@ -555,3 +593,9 @@ def _wait_for_timeout(state, ui, return_screen):
             state['keypad'].last_key_pressed == 'enter':
         state['screen_buttons']['timeout_yes_btn'] = False
         ui.showScreen(return_screen)
+
+
+def _wait_for_transaction_timeout(state, ui):
+    if state['last_activity_timestamp'] + \
+            settings.TRANSACTION_TIMEOUT < time.time():
+        raise StageTimeout
