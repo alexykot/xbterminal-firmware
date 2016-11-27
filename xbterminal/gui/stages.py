@@ -252,7 +252,7 @@ def pay_wait(state, ui):
             return settings.STAGES['payment']['pay_success']
 
         try:
-            _wait_for_transaction_timeout(state, ui)
+            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=900)
         except StageTimeout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
@@ -393,7 +393,7 @@ def withdraw_scan(state, ui):
             return settings.STAGES['withdrawal']['withdraw_select']
 
         try:
-            _wait_for_transaction_timeout(state, ui)
+            _wait_for_screen_timeout(state, ui, 'withdraw_scan', timeout=300)
         except StageTimeout:
             state['client'].stop_qr_scanner()
             _clear_withdrawal_runtime(state, ui)
@@ -424,7 +424,7 @@ def withdraw_confirm(state, ui):
             return settings.STAGES['idle']
 
         try:
-            _wait_for_transaction_timeout(state, ui)
+            _wait_for_screen_timeout(state, ui, 'withdraw_confirm', timeout=300)
         except StageTimeout:
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
@@ -462,7 +462,7 @@ def withdraw_loading2(state, ui):
             return settings.STAGES['withdrawal']['withdraw_success']
 
         try:
-            _wait_for_transaction_timeout(state, ui)
+            _wait_for_screen_timeout(state, ui, 'load_indefinite', timeout=300)
         except StageTimeout:
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
@@ -577,13 +577,12 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
     ui.setImage('wreceipt_receipt_qr_img', None)
 
 
-def _wait_for_screen_timeout(state, ui, return_screen):
+def _wait_for_screen_timeout(state, ui, current_screen,
+                             timeout=settings.SCREEN_TIMEOUT):
     if state['last_activity_timestamp'] + \
-            settings.SCREEN_TIMEOUT - \
-            settings.SCREEN_TIMEOUT_CONFIRMATION_TIME < time.time():
+            timeout - settings.SCREEN_TIMEOUT_CONFIRMATION_TIME < time.time():
         ui.showScreen('timeout')
-        if state['last_activity_timestamp'] + \
-                settings.SCREEN_TIMEOUT < time.time():
+        if state['last_activity_timestamp'] + timeout < time.time():
             raise StageTimeout
     if state['screen_buttons']['timeout_no_btn'] or \
             state['keypad'].last_key_pressed == 'backspace':
@@ -592,10 +591,4 @@ def _wait_for_screen_timeout(state, ui, return_screen):
     if state['screen_buttons']['timeout_yes_btn'] or \
             state['keypad'].last_key_pressed == 'enter':
         state['screen_buttons']['timeout_yes_btn'] = False
-        ui.showScreen(return_screen)
-
-
-def _wait_for_transaction_timeout(state, ui):
-    if state['last_activity_timestamp'] + \
-            settings.TRANSACTION_TIMEOUT < time.time():
-        raise StageTimeout
+        ui.showScreen(current_screen)
