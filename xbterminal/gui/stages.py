@@ -81,25 +81,18 @@ def pay_amount(state, ui):
                 state['keypad'].last_key_pressed == 1:
             state['screen_buttons']['pamount_opt1_btn'] = False
             state['payment']['fiat_amount'] = options['pamount_opt1_btn']
-            return settings.STAGES['payment']['pay_confirm']
+            return settings.STAGES['payment']['pay_loading']
         elif state['screen_buttons']['pamount_opt2_btn'] or \
                 state['keypad'].last_key_pressed == 2:
             state['screen_buttons']['pamount_opt2_btn'] = False
             state['payment']['fiat_amount'] = options['pamount_opt2_btn']
-            return settings.STAGES['payment']['pay_confirm']
+            return settings.STAGES['payment']['pay_loading']
         elif state['screen_buttons']['pamount_opt3_btn'] or \
                 state['keypad'].last_key_pressed == 3:
             state['screen_buttons']['pamount_opt3_btn'] = False
             state['payment']['fiat_amount'] = options['pamount_opt3_btn']
-            return settings.STAGES['payment']['pay_confirm']
-        elif state['screen_buttons']['pamount_opt4_btn'] or \
-                state['keypad'].last_key_pressed == 4:
-            state['screen_buttons']['pamount_opt4_btn'] = False
-            state['payment']['fiat_amount'] = Decimal('0.00')
-            return settings.STAGES['payment']['pay_confirm']
-        elif state['screen_buttons']['pamount_cancel_btn'] or \
-                state['keypad'].last_key_pressed == 'backspace':
-            state['screen_buttons']['pamount_cancel_btn'] = False
+            return settings.STAGES['payment']['pay_loading']
+        elif state['keypad'].last_key_pressed == 'backspace':
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
 
@@ -112,6 +105,7 @@ def pay_amount(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
+# TODO: remove stage
 def pay_confirm(state, ui):
     ui.showScreen('pay_confirm')
     assert state['payment']['fiat_amount'] >= 0
@@ -324,7 +318,13 @@ def pay_cancel(state, ui):
 
 
 def withdraw_select(state, ui):
+    assert state['withdrawal']['fiat_amount'] > 0
     ui.showScreen('withdraw_select')
+    ui.setText(
+        'wselect_fiat_amount_lbl',
+        amounts.format_fiat_amount_pretty(
+            state['withdrawal']['fiat_amount'], prefix=True))
+
     while True:
         if state['screen_buttons']['wselect_fiat_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
