@@ -8,3 +8,7 @@ class ServerError(Exception):
 
 class OrderNotFound(Exception):
     pass
+
+
+class StageTimeout(Exception):
+    pass

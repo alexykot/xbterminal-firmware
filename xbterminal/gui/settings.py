@@ -44,6 +44,7 @@ SCREENS = {
     'withdraw_success': 14,
     'withdraw_receipt': 15,
     'errors': 16,
+    'timeout': 17,
 }
 
 BUTTONS = [
@@ -73,6 +74,8 @@ BUTTONS = [
     'wsuccess_no_btn',
     'wsuccess_yes_btn',
     'wreceipt_goback_btn',
+    'timeout_no_btn',
+    'timeout_yes_btn',
 ]
 
 try:
@@ -129,10 +132,11 @@ STAGE_CHANGE_DELAY = 0.3  # seconds
 
 REMOTE_CONFIG_UPDATE_CYCLE = 60  # seconds between remote config updates
 
-STANDBY_SCREEN_TIMEOUT = 60
+STANDBY_SCREEN_TIMEOUT = 300
 STANDBY_SCREEN_REFRESH_CYCLE = 5  # seconds
 
-TRANSACTION_TIMEOUT = 900  # in person transaction timeout in seconds
+SCREEN_TIMEOUT = 60
+SCREEN_TIMEOUT_CONFIRMATION_TIME = 15
 
 OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 

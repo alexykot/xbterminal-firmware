@@ -315,6 +315,29 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
+    def test_timeout(self):
+        client_mock = Mock()
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'remote_config': self.remote_config,
+            'last_activity_timestamp': 0,
+            'screen_buttons': {
+                'pamount_opt1_btn': False,
+                'pamount_opt2_btn': False,
+                'pamount_opt3_btn': False,
+                'pamount_opt4_btn': False,
+                'pamount_cancel_btn': False,
+            },
+            'payment': {},
+        }
+        ui = Mock()
+        next_stage = stages.pay_amount(state, ui)
+        self.assertEqual(next_stage,
+                         settings.STAGES['idle'])
+        self.assertFalse(any(state for state
+                             in state['screen_buttons'].values()))
+
 
 class PayConfirmStageTestCase(unittest.TestCase):
 

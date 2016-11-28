@@ -53,7 +53,8 @@ QPushButton:pressed {
 #wconfirm_desc_lbl,
 #wconfirm_fiat_amount_lbl,
 #wsuccess_desc_lbl,
-#wreceipt_desc_lbl {
+#wreceipt_desc_lbl,
+#timeout_desc_lbl {
     background-color: #d34c0a;
     color: #fff;
     text-transform: uppercase;
