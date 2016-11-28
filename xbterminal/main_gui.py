@@ -40,7 +40,8 @@ def main():
         except:
             connection_status = 'offline'
         if connection_status != 'online':
-            main_window.showConnectionError()
+            if state['CURRENT_STAGE'] != 'bootup':
+                main_window.showConnectionError()
             continue
         else:
             main_window.hideConnectionError()
