@@ -70,6 +70,7 @@ def main():
             break
         if worker_thread is None:
             # Execute stage code
+            state['last_activity_timestamp'] = time.time()
             worker = StageWorker(state['CURRENT_STAGE'], state)
             worker.ui.signal.connect(main_window.stageWorkerSlot)
             worker_thread = move_to_thread(worker)
