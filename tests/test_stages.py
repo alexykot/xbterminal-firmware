@@ -600,6 +600,28 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_success'])
 
+    def test_timeout(self):
+        client_mock = Mock()
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'last_activity_timestamp': 0,
+            'screen_buttons': {
+                'pwait_cancel_btn': False,
+            },
+            'payment': {
+                'uid': 'testUid',
+                'fiat_amount': Decimal('1.00'),
+                'btc_amount': Decimal(0),
+                'exchange_rate': Decimal(0),
+                'payment_uri': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_wait(state, ui)
+        self.assertEqual(next_stage,
+                         settings.STAGES['payment']['pay_cancel'])
+
 
 class PaySuccessStageTestCase(unittest.TestCase):
 
@@ -690,6 +712,21 @@ class PayReceiptStageTestCase(unittest.TestCase):
                          settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
+
+
+class PayCancelStageTestCase(unittest.TestCase):
+
+    def test_return(self):
+        state = {
+            'keypad': Mock(last_key_pressed='enter'),
+            'payment': {},
+        }
+        ui = Mock()
+        next_stage = stages.pay_cancel(state, ui)
+        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
+                         'pay_cancel')
+        self.assertEqual(next_stage,
+                         settings.STAGES['idle'])
 
 
 class WithdrawSelectStageTestCase(unittest.TestCase):
