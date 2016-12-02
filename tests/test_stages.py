@@ -704,7 +704,6 @@ class WithdrawSelectStageTestCase(unittest.TestCase):
             'screen_buttons': {
                 'wselect_fiat_btn': True,
                 'wselect_bitcoin_btn': False,
-                'wselect_goback_btn': False,
             },
             'withdrawal': {
                 'fiat_amount': Decimal('1.00'),
@@ -727,7 +726,6 @@ class WithdrawSelectStageTestCase(unittest.TestCase):
             'screen_buttons': {
                 'wselect_fiat_btn': False,
                 'wselect_bitcoin_btn': True,
-                'wselect_goback_btn': False,
             },
             'withdrawal': {
                 'fiat_amount': Decimal('1.00'),
@@ -746,15 +744,14 @@ class WithdrawSelectStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    def test_goback(self):
+    def test_return(self):
         client_mock = Mock()
         state = {
             'client': client_mock,
-            'keypad': Mock(last_key_pressed=None),
+            'keypad': Mock(last_key_pressed='backspace'),
             'screen_buttons': {
                 'wselect_fiat_btn': False,
                 'wselect_bitcoin_btn': False,
-                'wselect_goback_btn': True,
             },
             'withdrawal': {
                 'fiat_amount': Decimal('1.00'),
@@ -766,8 +763,6 @@ class WithdrawSelectStageTestCase(unittest.TestCase):
         self.assertIsNone(state['withdrawal']['fiat_amount'])
         self.assertEqual(next_stage,
                          settings.STAGES['idle'])
-        self.assertFalse(any(state for state
-                             in state['screen_buttons'].values()))
 
 
 class WithdrawLoading1StageTestCase(unittest.TestCase):

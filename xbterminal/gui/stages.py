@@ -337,9 +337,7 @@ def withdraw_select(state, ui):
                 state['keypad'].last_key_pressed == 'alt':
             state['screen_buttons']['wselect_bitcoin_btn'] = False
             return settings.STAGES['withdrawal']['withdraw_loading1']
-        if state['screen_buttons']['wselect_goback_btn'] or \
-                state['keypad'].last_key_pressed == 'backspace':
-            state['screen_buttons']['wselect_goback_btn'] = False
+        if state['keypad'].last_key_pressed == 'backspace':
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
         time.sleep(settings.STAGE_LOOP_PERIOD)

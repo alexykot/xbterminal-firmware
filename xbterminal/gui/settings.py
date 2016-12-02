@@ -65,7 +65,6 @@ BUTTONS = [
     'preceipt_goback_btn',
     'wselect_fiat_btn',
     'wselect_bitcoin_btn',
-    'wselect_goback_btn',
     'wscan_goback_btn',
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',
