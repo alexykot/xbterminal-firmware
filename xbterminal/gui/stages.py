@@ -581,7 +581,7 @@ def _wait_for_screen_timeout(state, ui, current_screen,
                              timeout=settings.SCREEN_TIMEOUT):
     if state['last_activity_timestamp'] + \
             timeout - settings.SCREEN_TIMEOUT_CONFIRMATION_TIME < time.time():
-        ui.showScreen('timeout')
+        ui.showTimeoutScreen()
         if state['last_activity_timestamp'] + timeout < time.time():
             raise StageTimeout
     if state['screen_buttons']['timeout_no_btn'] or \

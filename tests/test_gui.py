@@ -55,6 +55,22 @@ class GUITestCase(unittest.TestCase):
 
     @patch('xbterminal.gui.gui.Application')
     @patch('xbterminal.gui.gui.appui')
+    def test_show_timeout_screen(self, appui_mock, app_cls_mock):
+        title_widget_mock = Mock(**{'text.return_value': 'SCREEN'})
+        appui_mock.Ui_MainWindow.return_value = ui_mock = Mock(**{
+            'main_stackedWidget.currentIndex.return_value': 3,
+            'main_stackedWidget.currentWidget.return_value': Mock(**{
+                'findChildren.return_value': [title_widget_mock],
+            }),
+        })
+        window = GUI()
+        window.showTimeoutScreen()
+        self.assertTrue(ui_mock.main_stackedWidget.setCurrentIndex.called)
+        self.assertEqual(ui_mock.timeout_desc_lbl.setText.call_args[0][0],
+                         'SCREEN')
+
+    @patch('xbterminal.gui.gui.Application')
+    @patch('xbterminal.gui.gui.appui')
     @patch('xbterminal.gui.gui._translate')
     @patch.dict('xbterminal.gui.gui.state', {'gui_config': {}})
     def test_connection_error(self, translate_mock, appui_mock, app_cls_mock):
