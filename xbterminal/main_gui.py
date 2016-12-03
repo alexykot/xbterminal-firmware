@@ -20,15 +20,16 @@ logger = logging.getLogger(__name__)
 
 def main():
     logging.config.dictConfig(settings.LOG_CONFIG)
-    logger.debug('starting')
+    logger.info('starting GUI application v{}'.format(settings.VERSION))
 
     state['client'] = JSONRPCClient()
 
     main_window = GUI()
+    logger.debug('GUI initialized, starting main loop')
+
     worker = None
     worker_thread = None
 
-    logger.debug('main loop starting')
     while True:
         time.sleep(settings.MAIN_LOOP_PERIOD)
 

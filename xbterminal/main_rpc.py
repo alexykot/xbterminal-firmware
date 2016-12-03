@@ -10,7 +10,7 @@ include_path = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, include_path)
 
 from xbterminal.rpc.api import dispatcher
-from xbterminal.rpc.settings import LOG_CONFIG
+from xbterminal.rpc.settings import LOG_CONFIG, VERSION
 from xbterminal.rpc.init import init_step_1, init_step_2
 from xbterminal.rpc.state import state
 
@@ -29,6 +29,7 @@ class Application(tornado.web.Application):
 
     def __init__(self, *args, **kwargs):
         logging.config.dictConfig(LOG_CONFIG)
+        logger.info('starting RPC server v{}'.format(VERSION))
 
         super(Application, self).__init__(*args, **kwargs)
         self.add_handlers('', [(r'/', JSONRPCHandler)])
