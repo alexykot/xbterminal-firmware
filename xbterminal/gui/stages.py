@@ -175,6 +175,9 @@ def pay_loading(state, ui):
         else:
             # Payment parameters loaded
             state['payment'].update(payment_info)
+            # Prepare QR image
+            qr.qr_gen(state['payment']['payment_uri'],
+                      settings.QR_IMAGE_PATH)
             return settings.STAGES['payment']['pay_info']
 
 
@@ -190,9 +193,6 @@ def pay_info(state, ui):
         if state['screen_buttons']['pinfo_pay_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['pinfo_pay_btn'] = False
-            # Prepare QR image
-            qr.qr_gen(state['payment']['payment_uri'],
-                      settings.QR_IMAGE_PATH)
             return settings.STAGES['payment']['pay_wait']
         if state['screen_buttons']['pinfo_cancel_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
