@@ -75,9 +75,8 @@ JSON-RPC server accepts connections on port **8888**.
 
 To add a new version:
 
-1. Update [VERSION](VERSION) file.
-2. Commit changes.
-3. Set tag: `git tag -a v0.9.4` ([more info](https://git-scm.com/book/en/v2/Git-Basics-Tagging)).
+1. Execute `bumpversion major|minor|patch`.
+2. Push changes to repo `git push origin --tags` ([more info](https://git-scm.com/book/en/v2/Git-Basics-Tagging)).
 
 ## Compiling
 
