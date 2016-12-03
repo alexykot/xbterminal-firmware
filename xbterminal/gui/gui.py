@@ -128,6 +128,9 @@ class GUI(QtGui.QMainWindow):
         # Initialize UI
         self.ui = appui.Ui_MainWindow()
         self.ui.setupUi(self)
+        # Version
+        if state['gui_config'].get('debug', False):
+            self.ui.version_lbl.setText(settings.VERSION)
         # Loader
         self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
