@@ -1,7 +1,7 @@
 import os
 from decimal import Decimal
 
-VERSION = '0.9.6'
+VERSION = '0.10.0'
 
 try:
     from xbterminal.nuitka_fix import BASE_DIR
