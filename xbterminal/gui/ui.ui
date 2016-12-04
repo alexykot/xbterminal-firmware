@@ -1194,23 +1194,22 @@ below the screen</string>
     </widget>
    </widget>
    <widget class="QWidget" name="pay_cancel_scrn">
-    <widget class="QLabel" name="pcancel_lbl">
+    <widget class="QLabel" name="pcancel_desc_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>40</y>
+       <y>0</y>
        <width>480</width>
-       <height>61</height>
+       <height>90</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>28</pointsize>
+       <pointsize>17</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>payment cancelled</string>
+      <string>Payment cancelled</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

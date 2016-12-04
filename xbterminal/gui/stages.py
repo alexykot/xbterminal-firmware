@@ -311,8 +311,8 @@ def pay_cancel(state, ui):
     while True:
         if state['keypad'].last_key_pressed is not None:
             _clear_payment_runtime(state, ui)
-            return settings.STAGES['payment']['pay_amount']
-        if state['last_activity_timestamp'] + settings.TRANSACTION_TIMEOUT < time.time():
+            return settings.STAGES['idle']
+        if state['last_activity_timestamp'] + settings.SCREEN_TIMEOUT < time.time():
             return settings.STAGES['idle']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
