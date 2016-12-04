@@ -403,7 +403,8 @@ class PayLoadingStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_amount'])
 
-    def test_proceed(self):
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_proceed(self, qr_gen_mock):
         client_mock = Mock(**{
             'create_payment_order.return_value': {
                 'uid': 'testUid',
@@ -420,10 +421,11 @@ class PayLoadingStageTestCase(unittest.TestCase):
         next_stage = stages.pay_loading(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'load_indefinite')
-        self.assertEqual(state['payment']['uid'], 'testUid')
         self.assertEqual(
             client_mock.create_payment_order.call_args[1]['fiat_amount'],
             Decimal('1.00'))
+        self.assertEqual(state['payment']['uid'], 'testUid')
+        self.assertTrue(qr_gen_mock.call_args[0][0], 'test')
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_info'])
 
@@ -479,8 +481,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    @patch('xbterminal.gui.stages.qr.qr_gen')
-    def test_pay(self, qr_gen_mock):
+    def test_pay(self):
         state = {
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
@@ -501,7 +502,6 @@ class PayInfoStageTestCase(unittest.TestCase):
                          settings.STAGES['payment']['pay_wait'])
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_info')
         self.assertEqual(ui.setText.call_args_list[0][0][1], u'\xa31.03')
-        self.assertTrue(qr_gen_mock.call_args[0][0], 'test')
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
