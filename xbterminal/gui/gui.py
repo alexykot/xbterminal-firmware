@@ -105,11 +105,17 @@ class Application(QtGui.QApplication):
         return True
 
 
-class GUI(QtGui.QMainWindow):
+class ERRORS(object):
 
-    ERRORS = {
-        1: _translate('MainWindow', 'connection error', None),
-    }
+    NETWORK_ERROR = (1, _translate(
+        'MainWindow', 'connection error', None))
+    RPC_ERROR = (2, _translate(
+        'MainWindow', 'connection error', None))
+    SERVER_ERROR = (3, _translate(
+        'MainWindow', 'server error', None))
+
+
+class GUI(QtGui.QMainWindow):
 
     def __init__(self):
         # Initialize Qt application
@@ -199,16 +205,18 @@ class GUI(QtGui.QMainWindow):
         self.ui.timeout_desc_lbl.setText(screen_title)
         self.showScreen('timeout')
 
-    def showErrorScreen(self, error_code):
+    def showErrorScreen(self, error):
+        state['error'] = error
+        error_code, error_message = getattr(ERRORS, error)
+        self.ui.error_code_val_lbl.setText(unicode(error_code).zfill(4))
+        self.ui.error_message_val_lbl.setText(unicode(error_message))
         if self.currentScreen() == 'error':
             return
         self._saved_screen = self.currentScreen()
-        error_message = self.ERRORS[error_code]
-        self.ui.error_code_val_lbl.setText(unicode(error_code).zfill(4))
-        self.ui.error_message_val_lbl.setText(unicode(error_message))
         self.showScreen('error')
 
     def hideErrorScreen(self):
+        state['error'] = None
         if self.currentScreen() == 'error':
             # Restore previous screen
             self.showScreen(self._saved_screen or 'idle')

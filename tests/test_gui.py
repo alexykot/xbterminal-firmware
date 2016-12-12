@@ -77,7 +77,7 @@ class GUITestCase(unittest.TestCase):
             'main_stackedWidget.currentIndex.side_effect': [2, 2, 16],
         })
         window = GUI()
-        window.showErrorScreen(1)
+        window.showErrorScreen('NETWORK_ERROR')
         self.assertEqual(window._saved_screen, 'idle')
         self.assertEqual(
             window.ui.error_code_val_lbl.setText.call_args[0][0],
