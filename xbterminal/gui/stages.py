@@ -170,6 +170,8 @@ def pay_loading(state, ui):
             time.sleep(5)
             continue
         except ServerError:
+            ui.showErrorScreen('SERVER_ERROR')
+            time.sleep(300)
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
         else:
@@ -355,6 +357,8 @@ def withdraw_loading1(state, ui):
             time.sleep(5)
             continue
         except ServerError:
+            ui.showErrorScreen('SERVER_ERROR')
+            time.sleep(300)
             _clear_withdrawal_runtime(state, ui, clear_amount=False)
             return settings.STAGES['withdrawal']['withdraw_select']
         else:
@@ -445,6 +449,8 @@ def withdraw_loading2(state, ui):
             time.sleep(5)
             continue
         except ServerError:
+            ui.showErrorScreen('SERVER_ERROR')
+            time.sleep(300)
             _clear_withdrawal_runtime(state, ui, clear_amount=False)
             return settings.STAGES['withdrawal']['withdraw_select']
         state['withdrawal'].update(withdrawal_info)
