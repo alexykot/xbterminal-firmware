@@ -42,10 +42,10 @@ def main():
             connection_status = 'offline'
         if connection_status != 'online':
             if state['CURRENT_STAGE'] != 'bootup':
-                main_window.showConnectionError()
+                main_window.showErrorScreen()
             continue
         else:
-            main_window.hideConnectionError()
+            main_window.hideErrorScreen()
 
         # Reload remote config
         if state['remote_config_last_update'] + \

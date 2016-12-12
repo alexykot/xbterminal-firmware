@@ -195,6 +195,19 @@ class GUI(QtGui.QMainWindow):
         self.ui.timeout_desc_lbl.setText(screen_title)
         self.showScreen('timeout')
 
+    def showErrorScreen(self):
+        error_message = _translate('MainWindow', 'connection error', None)
+        if self.currentScreen() == 'errors':
+            return
+        self._saved_screen = self.currentScreen()
+        self.showScreen('errors')
+        self.ui.errors_lbl.setText(unicode(error_message))
+
+    def hideErrorScreen(self):
+        if self.currentScreen() == 'errors':
+            # Restore previous screen
+            self.showScreen(self._saved_screen)
+
     def setText(self, widget_name, text):
         widget = getattr(self.ui, widget_name)
         widget.setText(text)
@@ -219,16 +232,3 @@ class GUI(QtGui.QMainWindow):
             self.ui.retranslateUi(self)
             state['gui_config']['language'] = language_code
             configs.save_gui_config(state['gui_config'])
-
-    def showConnectionError(self):
-        error_message = _translate('MainWindow', 'connection error', None)
-        if self.currentScreen() != 'errors':
-            # Show error screen
-            self._saved_screen = self.currentScreen()
-            self.showScreen('errors')
-        self.ui.errors_lbl.setText(unicode(error_message))
-
-    def hideConnectionError(self):
-        if self.currentScreen() == 'errors':
-            # Restore previous screen
-            self.showScreen(self._saved_screen)

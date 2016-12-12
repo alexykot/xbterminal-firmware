@@ -73,15 +73,15 @@ class GUITestCase(unittest.TestCase):
     @patch('xbterminal.gui.gui.appui')
     @patch('xbterminal.gui.gui._translate')
     @patch.dict('xbterminal.gui.gui.state', {'gui_config': {}})
-    def test_connection_error(self, translate_mock, appui_mock, app_cls_mock):
+    def test_error_screen(self, translate_mock, appui_mock, app_cls_mock):
         appui_mock.Ui_MainWindow.return_value = Mock(**{
             'main_stackedWidget.currentIndex.side_effect': [0, 2, 2, 16],
         })
         translate_mock.return_value = 'Connection error'
         window = GUI()
-        window.showConnectionError()
+        window.showErrorScreen()
         self.assertEqual(window._saved_screen, 'idle')
         widget_mock = window.ui.main_stackedWidget
         self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 16)
-        window.hideConnectionError()
+        window.hideErrorScreen()
         self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 2)
