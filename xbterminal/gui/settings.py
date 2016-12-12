@@ -45,7 +45,7 @@ SCREENS = {
     'withdraw_confirm': 13,
     'withdraw_success': 14,
     'withdraw_receipt': 15,
-    'errors': 16,
+    'error': 16,
     'timeout': 17,
 }
 

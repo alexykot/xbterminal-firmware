@@ -107,6 +107,10 @@ class Application(QtGui.QApplication):
 
 class GUI(QtGui.QMainWindow):
 
+    ERRORS = {
+        1: _translate('MainWindow', 'connection error', None),
+    }
+
     def __init__(self):
         # Initialize Qt application
         application = Application(sys.argv)
@@ -141,7 +145,7 @@ class GUI(QtGui.QMainWindow):
             button.clicked.connect(
                 functools.partial(self.buttonPressEvent, button_name))
         # Show window
-        self._saved_screen = self.currentScreen()
+        self._saved_screen = None
         self.show()
 
     def processEvents(self):
@@ -195,18 +199,20 @@ class GUI(QtGui.QMainWindow):
         self.ui.timeout_desc_lbl.setText(screen_title)
         self.showScreen('timeout')
 
-    def showErrorScreen(self):
-        error_message = _translate('MainWindow', 'connection error', None)
-        if self.currentScreen() == 'errors':
+    def showErrorScreen(self, error_code):
+        if self.currentScreen() == 'error':
             return
         self._saved_screen = self.currentScreen()
-        self.showScreen('errors')
-        self.ui.errors_lbl.setText(unicode(error_message))
+        error_message = self.ERRORS[error_code]
+        self.ui.error_code_val_lbl.setText(unicode(error_code).zfill(4))
+        self.ui.error_message_val_lbl.setText(unicode(error_message))
+        self.showScreen('error')
 
     def hideErrorScreen(self):
-        if self.currentScreen() == 'errors':
+        if self.currentScreen() == 'error':
             # Restore previous screen
-            self.showScreen(self._saved_screen)
+            self.showScreen(self._saved_screen or 'idle')
+            self._saved_screen = None
 
     def setText(self, widget_name, text):
         widget = getattr(self.ui, widget_name)

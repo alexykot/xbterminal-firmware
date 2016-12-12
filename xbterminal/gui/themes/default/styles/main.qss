@@ -55,6 +55,7 @@ QPushButton:pressed {
 #wconfirm_fiat_amount_lbl,
 #wsuccess_desc_lbl,
 #wreceipt_desc_lbl,
+#error_desc_lbl,
 #timeout_desc_lbl {
     background-color: #d34c0a;
     color: #fff;
@@ -92,6 +93,9 @@ QPushButton:pressed {
     color: #ffffff;
 }
 
-#errors_lbl {
+#error_code_lbl,
+#error_code_val_lbl,
+#error_message_lbl,
+#error_message_val_lbl {
     color: #990000;
 }

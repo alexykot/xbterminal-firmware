@@ -42,7 +42,7 @@ def main():
             connection_status = 'offline'
         if connection_status != 'online':
             if state['CURRENT_STAGE'] != 'bootup':
-                main_window.showErrorScreen()
+                main_window.showErrorScreen(1)
             continue
         else:
             main_window.hideErrorScreen()
