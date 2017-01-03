@@ -429,7 +429,8 @@ class PayLoadingStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_info'])
 
-    def test_server_error(self):
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_server_error(self, sleep_mock):
         client_mock = Mock(**{
             'create_payment_order.side_effect': ServerError,
         })
@@ -441,6 +442,9 @@ class PayLoadingStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.pay_loading(state, ui)
+        self.assertTrue(ui.showErrorScreen.called)
+        self.assertEqual(ui.showErrorScreen.call_args[0][0],
+                         'SERVER_ERROR')
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertEqual(next_stage,
                          settings.STAGES['idle'])
@@ -825,7 +829,8 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['uid'], 'testUid')
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.5'))
 
-    def test_server_error(self):
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_server_error(self, sleep_mock):
         client_mock = Mock(**{
             'create_withdrawal_order.side_effect': ServerError,
         })
@@ -837,6 +842,9 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.withdraw_loading1(state, ui)
+        self.assertTrue(ui.showErrorScreen.called)
+        self.assertEqual(ui.showErrorScreen.call_args[0][0],
+                         'SERVER_ERROR')
         self.assertFalse(client_mock.cancel_withdrawal.called)
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])
@@ -1072,7 +1080,8 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
                          Decimal('202.0'))
         self.assertEqual(state['withdrawal']['receipt_url'], 'test_url')
 
-    def test_server_error(self):
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_server_error(self, sleep_mock):
         client_mock = Mock(**{
             'get_withdrawal_status.return_value': 'new',
             'confirm_withdrawal.side_effect': ServerError,
@@ -1090,6 +1099,9 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
+        self.assertTrue(ui.showErrorScreen.called)
+        self.assertEqual(ui.showErrorScreen.call_args[0][0],
+                         'SERVER_ERROR')
         self.assertFalse(client_mock.cancel_withdrawal.called)
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_select'])

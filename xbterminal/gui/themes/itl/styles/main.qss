@@ -58,7 +58,8 @@ QPushButton:pressed {
 #wscan_desc_lbl,
 #wconfirm_desc_lbl,
 #wsuccess_desc_lbl,
-#wreceipt_desc_lbl {
+#wreceipt_desc_lbl,
+#error_desc_lbl {
     font-family: 'Lato Light';
     font-size: 28pt;
 }

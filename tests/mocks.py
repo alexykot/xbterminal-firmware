@@ -19,7 +19,11 @@ def read_secret_key_mock():
 
 class QApplication(MagicMock):
 
-    pass
+    UnicodeUTF8 = None
+
+    @staticmethod
+    def translate(context, text, *args):
+        return text
 
 
 class QMainWindow(MagicMock):

@@ -105,6 +105,16 @@ class Application(QtGui.QApplication):
         return True
 
 
+class ERRORS(object):
+
+    NETWORK_ERROR = (1, _translate(
+        'MainWindow', 'connection error', None))
+    RPC_ERROR = (2, _translate(
+        'MainWindow', 'connection error', None))
+    SERVER_ERROR = (3, _translate(
+        'MainWindow', 'server error', None))
+
+
 class GUI(QtGui.QMainWindow):
 
     def __init__(self):
@@ -141,7 +151,7 @@ class GUI(QtGui.QMainWindow):
             button.clicked.connect(
                 functools.partial(self.buttonPressEvent, button_name))
         # Show window
-        self._saved_screen = self.currentScreen()
+        self._saved_screen = None
         self.show()
 
     def processEvents(self):
@@ -195,6 +205,23 @@ class GUI(QtGui.QMainWindow):
         self.ui.timeout_desc_lbl.setText(screen_title)
         self.showScreen('timeout')
 
+    def showErrorScreen(self, error):
+        state['error'] = error
+        error_code, error_message = getattr(ERRORS, error)
+        self.ui.error_code_val_lbl.setText(unicode(error_code).zfill(4))
+        self.ui.error_message_val_lbl.setText(unicode(error_message))
+        if self.currentScreen() == 'error':
+            return
+        self._saved_screen = self.currentScreen()
+        self.showScreen('error')
+
+    def hideErrorScreen(self):
+        state['error'] = None
+        if self.currentScreen() == 'error':
+            # Restore previous screen
+            self.showScreen(self._saved_screen or 'idle')
+            self._saved_screen = None
+
     def setText(self, widget_name, text):
         widget = getattr(self.ui, widget_name)
         widget.setText(text)
@@ -219,16 +246,3 @@ class GUI(QtGui.QMainWindow):
             self.ui.retranslateUi(self)
             state['gui_config']['language'] = language_code
             configs.save_gui_config(state['gui_config'])
-
-    def showConnectionError(self):
-        error_message = _translate('MainWindow', 'connection error', None)
-        if self.currentScreen() != 'errors':
-            # Show error screen
-            self._saved_screen = self.currentScreen()
-            self.showScreen('errors')
-        self.ui.errors_lbl.setText(unicode(error_message))
-
-    def hideConnectionError(self):
-        if self.currentScreen() == 'errors':
-            # Restore previous screen
-            self.showScreen(self._saved_screen)

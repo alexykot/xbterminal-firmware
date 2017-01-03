@@ -27,6 +27,7 @@ class InitTestCase(unittest.TestCase):
         self.assertFalse(state['screen_buttons']['pconfirm_confirm_btn'])
         self.assertFalse(state['screen_buttons']['wconfirm_confirm_btn'])
         self.assertEqual(state['CURRENT_STAGE'], settings.STAGES['bootup'])
+        self.assertIsNone(state['error'])
         self.assertIsNone(state['payment']['uid'])
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['btc_amount'])

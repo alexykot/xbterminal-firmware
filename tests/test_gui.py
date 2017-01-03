@@ -29,7 +29,7 @@ class GUITestCase(unittest.TestCase):
             window = GUI()
         self.assertEqual(window._application, app_mock)
         self.assertIsNotNone(window.ui)
-        self.assertEqual(window._saved_screen, 'load_indefinite')
+        self.assertIsNone(window._saved_screen)
         self.assertTrue(window.show.called)
 
     @patch('xbterminal.gui.gui.Application')
@@ -71,17 +71,21 @@ class GUITestCase(unittest.TestCase):
 
     @patch('xbterminal.gui.gui.Application')
     @patch('xbterminal.gui.gui.appui')
-    @patch('xbterminal.gui.gui._translate')
     @patch.dict('xbterminal.gui.gui.state', {'gui_config': {}})
-    def test_connection_error(self, translate_mock, appui_mock, app_cls_mock):
+    def test_error_screen(self, appui_mock, app_cls_mock):
         appui_mock.Ui_MainWindow.return_value = Mock(**{
-            'main_stackedWidget.currentIndex.side_effect': [0, 2, 2, 16],
+            'main_stackedWidget.currentIndex.side_effect': [2, 2, 16],
         })
-        translate_mock.return_value = 'Connection error'
         window = GUI()
-        window.showConnectionError()
+        window.showErrorScreen('NETWORK_ERROR')
         self.assertEqual(window._saved_screen, 'idle')
+        self.assertEqual(
+            window.ui.error_code_val_lbl.setText.call_args[0][0],
+            '0001')
+        self.assertEqual(
+            window.ui.error_message_val_lbl.setText.call_args[0][0],
+            'connection error')
         widget_mock = window.ui.main_stackedWidget
         self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 16)
-        window.hideConnectionError()
+        window.hideErrorScreen()
         self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 2)
