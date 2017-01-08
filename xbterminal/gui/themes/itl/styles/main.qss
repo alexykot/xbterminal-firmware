@@ -79,7 +79,10 @@ QPushButton:pressed {
     background-image: url(:/images/screen-idle.png);
     background-repeat: no-repeat;
     color: rgba(0, 0, 0, 0);
-    qproperty-geometry: rect(0 0 480 272);
+}
+#idle_begin_lbl,
+#idle_nfc_lbl {
+    qproperty-text: '';
 }
 
 #standby_wake_btn {
