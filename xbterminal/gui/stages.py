@@ -39,6 +39,8 @@ def activate(state, ui):
 
 def idle(state, ui):
     ui.showScreen('idle')
+    state['client'].start_nfc_server(
+        message=state['remote_config']['remote_server'])
     standby_screen_last_refresh = 0
     while True:
         if state['screen_buttons']['idle_begin_btn'] or \
@@ -46,6 +48,7 @@ def idle(state, ui):
                 state['keypad'].last_key_pressed == 'enter':
             state['screen_buttons']['idle_begin_btn'] = False
             state['screen_buttons']['standby_wake_btn'] = False
+            state['client'].stop_nfc_server()
             return settings.STAGES['payment']['pay_amount']
         # Communicate with the host system
         payout = state['client'].host_get_payout()
@@ -54,6 +57,7 @@ def idle(state, ui):
                 'default_withdrawal_amount', '0.1'))
         if payout:
             state['withdrawal']['fiat_amount'] = payout
+            state['client'].stop_nfc_server()
             return settings.STAGES['withdrawal']['withdraw_select']
         # Show standby screen when idle for a long time
         current_time = time.time()
