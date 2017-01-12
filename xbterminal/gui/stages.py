@@ -446,7 +446,9 @@ def withdraw_loading2(state, ui):
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(
                 state['withdrawal']['receipt_url']))
-            return settings.STAGES['withdrawal']['withdraw_success']
+            qr.qr_gen(state['withdrawal']['receipt_url'],
+                      settings.QR_IMAGE_PATH)
+            return settings.STAGES['withdrawal']['withdraw_receipt']
 
         try:
             _wait_for_screen_timeout(state, ui, 'load_indefinite', timeout=300)
@@ -457,37 +459,12 @@ def withdraw_loading2(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
-def withdraw_success(state, ui):
-    ui.showScreen('withdraw_success')
-    assert state['withdrawal']['receipt_url']
-    ui.setText('wsuccess_btc_amount_lbl',
-               amounts.format_btc_amount_pretty(state['withdrawal']['btc_amount']))
-    while True:
-        if state['screen_buttons']['wsuccess_yes_btn'] or \
-                state['keypad'].last_key_pressed == 'enter':
-            state['screen_buttons']['wsuccess_yes_btn'] = False
-            qr.qr_gen(state['withdrawal']['receipt_url'],
-                      settings.QR_IMAGE_PATH)
-            return settings.STAGES['withdrawal']['withdraw_receipt']
-        if state['screen_buttons']['wsuccess_no_btn'] or \
-                state['keypad'].last_key_pressed == 'backspace':
-            state['screen_buttons']['wsuccess_no_btn'] = False
-            _clear_withdrawal_runtime(state, ui)
-            return settings.STAGES['idle']
-
-        try:
-            _wait_for_screen_timeout(state, ui, 'withdraw_success')
-        except StageTimeout:
-            _clear_withdrawal_runtime(state, ui)
-            return settings.STAGES['idle']
-
-        time.sleep(settings.STAGE_LOOP_PERIOD)
-
-
 def withdraw_receipt(state, ui):
     ui.showScreen('withdraw_receipt')
     assert state['withdrawal']['receipt_url']
     ui.setImage('wreceipt_receipt_qr_img', settings.QR_IMAGE_PATH)
+    ui.setText('wreceipt_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(state['withdrawal']['btc_amount']))
     state['client'].start_nfc_server(message=state['withdrawal']['receipt_url'])
     while True:
         if state['screen_buttons']['wreceipt_goback_btn'] or \

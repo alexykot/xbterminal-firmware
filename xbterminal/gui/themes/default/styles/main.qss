@@ -63,7 +63,6 @@ QPushButton:pressed {
 #wscan_desc_lbl,
 #wconfirm_desc_lbl,
 #wconfirm_fiat_amount_lbl,
-#wsuccess_desc_lbl,
 #wreceipt_desc_lbl,
 #error_desc_lbl,
 #timeout_desc_lbl {

@@ -21,7 +21,6 @@ STAGES = {
         'withdraw_scan': 'withdraw_scan',
         'withdraw_confirm': 'withdraw_confirm',
         'withdraw_loading2': 'withdraw_loading2',
-        'withdraw_success': 'withdraw_success',
         'withdraw_receipt': 'withdraw_receipt',
     },
     'application_halt': 'application_halt',
@@ -42,10 +41,9 @@ SCREENS = {
     'withdraw_select': 11,
     'withdraw_scan': 12,
     'withdraw_confirm': 13,
-    'withdraw_success': 14,
-    'withdraw_receipt': 15,
-    'error': 16,
-    'timeout': 17,
+    'withdraw_receipt': 14,
+    'error': 15,
+    'timeout': 16,
 }
 
 BUTTONS = [
@@ -67,8 +65,6 @@ BUTTONS = [
     'wscan_goback_btn',
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',
-    'wsuccess_no_btn',
-    'wsuccess_yes_btn',
     'wreceipt_goback_btn',
     'timeout_no_btn',
     'timeout_yes_btn',
