@@ -52,6 +52,7 @@ QPushButton:pressed {
 
 #pamount_desc_lbl,
 #pconfirm_desc_lbl,
+#pload_desc_lbl,
 #pinfo_desc_lbl,
 #pinfo_fiat_amount_lbl,
 #pwait_desc_empty_lbl,
@@ -94,6 +95,10 @@ QPushButton:pressed {
 #wselect_bitcoin_btn:pressed,
 #wconfirm_confirm_btn:pressed {
     background-color: #802E06;
+}
+
+#pload_loader_lbl {
+    qproperty-geometry: rect(0 30 480 272);
 }
 
 #wscan_num1_lbl,

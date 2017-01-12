@@ -141,9 +141,10 @@ class GUI(QtGui.QMainWindow):
         # Version
         if state['gui_config'].get('debug', False):
             self.ui.version_lbl.setText(settings.VERSION)
-        # Loader
+        # Loaders
         self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
+        self.ui.pload_loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Set up buttons
         for button_name in settings.BUTTONS:

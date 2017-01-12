@@ -442,7 +442,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_loading(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
-                         'load_indefinite')
+                         'pay_loading')
         self.assertEqual(
             client_mock.create_payment_order.call_args[1]['fiat_amount'],
             Decimal('1.00'))

@@ -160,7 +160,7 @@ def pay_confirm(state, ui):
 
 
 def pay_loading(state, ui):
-    ui.showScreen('load_indefinite')
+    ui.showScreen('pay_loading')
 
     if state['payment']['fiat_amount'] is None:
         return settings.STAGES['payment']['pay_amount']
