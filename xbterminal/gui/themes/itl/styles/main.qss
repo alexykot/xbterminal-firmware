@@ -52,12 +52,10 @@ QPushButton:pressed {
 #pamount_desc_lbl,
 #pconfirm_desc_lbl,
 #pinfo_desc_lbl,
-#psuccess_desc_lbl,
 #preceipt_desc_lbl,
 #pcancel_desc_lbl,
 #wscan_desc_lbl,
 #wconfirm_desc_lbl,
-#wsuccess_desc_lbl,
 #wreceipt_desc_lbl,
 #error_desc_lbl {
     font-family: 'Lato Light';
@@ -315,41 +313,6 @@ QPushButton:pressed {
     qproperty-geometry: rect(295 200 150 60);
 }
 
-#psuccess_desc_lbl,
-#wsuccess_desc_lbl {
-    qproperty-geometry: rect(0 40 480 50);
-    padding-right: 30px;
-}
-
-#psuccess_icon1_lbl {
-    background-image: url(:/images/little-green-tick.png);
-    qproperty-geometry: rect(390 57 23 20);
-}
-
-#psuccess_btc1_lbl,
-#psuccess_btc2_lbl,
-#wsuccess_btc1_lbl,
-#wsuccess_btc2_lbl {
-    color: #8fb1d4;
-}
-
-#psuccess_btc_amount_lbl,
-#wsuccess_btc_amount_lbl {
-    color: #f4cc50;
-    font-size: 20pt;
-    qproperty-geometry: rect(210 107 110 30);
-}
-
-#psuccess_no_btn,
-#wsuccess_no_btn {
-    qproperty-geometry: rect(90 200 110 60);
-}
-
-#psuccess_yes_btn,
-#wsuccess_yes_btn {
-    qproperty-geometry: rect(280 200 110 60);
-}
-
 #preceipt_desc_lbl,
 #wreceipt_desc_lbl {
     qproperty-geometry: rect(0 0 480 50);
@@ -477,11 +440,6 @@ QPushButton:pressed {
 #wconfirm_confirm_btn {
     qproperty-geometry: rect(170 200 290 60);
     padding-left: 35px;
-}
-
-#wsuccess_icon1_lbl {
-    background-image: url(:/images/little-green-tick.png);
-    qproperty-geometry: rect(415 57 23 20);
 }
 
 #errors_lbl {
