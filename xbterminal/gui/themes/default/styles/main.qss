@@ -24,6 +24,16 @@ QPushButton:pressed {
 #idle_bc_logo_image {
     qproperty-pixmap: url(':/images/bc_logo.png');
 }
+#idle_begin_btn {
+    border: none;
+    border-image: none;
+    background-color: transparent;
+}
+#idle_begin_lbl,
+#idle_nfc_lbl {
+    color: #33363e;
+    text-transform: uppercase;
+}
 
 #standby_wake_btn {
     background-color: #000000;
