@@ -1009,166 +1009,6 @@ touch with NFC</string>
     <zorder>pwait_icon1_lbl</zorder>
     <zorder>pwait_icon2_lbl</zorder>
    </widget>
-   <widget class="QWidget" name="pay_success_scrn">
-    <widget class="QLabel" name="psuccess_desc_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>480</width>
-       <height>90</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Payment successful</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="psuccess_no_btn">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>200</y>
-       <width>111</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>No</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="psuccess_yes_btn">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>200</y>
-       <width>111</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Yes</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="psuccess_btc1_lbl">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>110</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>for amount</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="psuccess_btc_amount_lbl">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>110</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>345.12345</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="psuccess_btc2_lbl">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>110</y>
-       <width>81</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>mbits</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="psuccess_receipt_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>150</y>
-       <width>480</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Would you like a receipt?</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="psuccess_icon1_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </widget>
    <widget class="QWidget" name="pay_receipt_scrn">
     <widget class="QLabel" name="preceipt_desc_lbl">
      <property name="geometry">
@@ -1196,7 +1036,7 @@ touch with NFC</string>
      <property name="geometry">
       <rect>
        <x>200</x>
-       <y>100</y>
+       <y>115</y>
        <width>271</width>
        <height>51</height>
       </rect>
@@ -1219,7 +1059,7 @@ touch NFC for a receipt</string>
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>110</y>
+       <y>100</y>
        <width>151</width>
        <height>151</height>
       </rect>
@@ -1240,7 +1080,7 @@ touch NFC for a receipt</string>
      <property name="geometry">
       <rect>
        <x>200</x>
-       <y>150</y>
+       <y>165</y>
        <width>271</width>
        <height>41</height>
       </rect>
@@ -1289,6 +1129,69 @@ below the screen</string>
      </property>
      <property name="text">
       <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="preceipt_btc1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>90</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>For amount</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="preceipt_btc2_lbl">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>90</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>mbits</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="preceipt_btc_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>90</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>345.12345</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

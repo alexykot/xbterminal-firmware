@@ -57,7 +57,6 @@ QPushButton:pressed {
 #pinfo_fiat_amount_lbl,
 #pwait_desc_empty_lbl,
 #pwait_desc_lbl,
-#psuccess_desc_lbl,
 #preceipt_desc_lbl,
 #pcancel_desc_lbl,
 #wselect_desc_lbl,

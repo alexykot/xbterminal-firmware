@@ -249,7 +249,9 @@ def pay_wait(state, ui):
             state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
-            return settings.STAGES['payment']['pay_success']
+            qr.qr_gen(state['payment']['receipt_url'],
+                      settings.QR_IMAGE_PATH)
+            return settings.STAGES['payment']['pay_receipt']
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=900)
@@ -262,36 +264,11 @@ def pay_wait(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
-def pay_success(state, ui):
-    assert state['payment']['receipt_url']
-    ui.showScreen('pay_success')
-    ui.setText('psuccess_btc_amount_lbl',
-               amounts.format_btc_amount_pretty(state['payment']['btc_amount']))
-    while True:
-        if state['screen_buttons']['psuccess_yes_btn'] or \
-                state['keypad'].last_key_pressed == 'enter':
-            state['screen_buttons']['psuccess_yes_btn'] = False
-            qr.qr_gen(state['payment']['receipt_url'],
-                      settings.QR_IMAGE_PATH)
-            return settings.STAGES['payment']['pay_receipt']
-        if state['screen_buttons']['psuccess_no_btn'] or \
-                state['keypad'].last_key_pressed == 'backspace':
-            state['screen_buttons']['psuccess_no_btn'] = False
-            _clear_payment_runtime(state, ui)
-            return settings.STAGES['idle']
-
-        try:
-            _wait_for_screen_timeout(state, ui, 'pay_success')
-        except StageTimeout:
-            _clear_payment_runtime(state, ui)
-            return settings.STAGES['idle']
-
-        time.sleep(settings.STAGE_LOOP_PERIOD)
-
-
 def pay_receipt(state, ui):
     assert state['payment']['receipt_url']
     ui.showScreen('pay_receipt')
+    ui.setText('preceipt_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(state['payment']['btc_amount']))
     ui.setImage('preceipt_receipt_qr_img', settings.QR_IMAGE_PATH)
     state['client'].start_nfc_server(message=state['payment']['receipt_url'])
     while True:
