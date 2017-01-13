@@ -151,6 +151,10 @@ class GUI(QtGui.QMainWindow):
             button = getattr(self.ui, button_name)
             button.clicked.connect(
                 functools.partial(self.buttonPressEvent, button_name))
+        # Hide elements
+        self.ui.pwait_paid_lbl.hide()
+        self.ui.pwait_paid_btc_amount_lbl.hide()
+        self.ui.pwait_cancel_refund_btn.hide()
         # Show window
         self._saved_screen = None
         self.show()
@@ -222,6 +226,14 @@ class GUI(QtGui.QMainWindow):
             # Restore previous screen
             self.showScreen(self._saved_screen or 'idle')
             self._saved_screen = None
+
+    def showWidget(self, widget_name):
+        widget = getattr(self.ui, widget_name)
+        widget.show()
+
+    def hideWidget(self, widget_name):
+        widget = getattr(self.ui, widget_name)
+        widget.hide()
 
     def setText(self, widget_name, text):
         widget = getattr(self.ui, widget_name)
