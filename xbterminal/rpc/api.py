@@ -59,8 +59,8 @@ def get_payment_status(**kwargs):
         order = state['payments'][order_uid]
     except KeyError:
         raise OrderNotFound
-    status = order.check()
-    return status
+    order.check()
+    return order.status
 
 
 @dispatcher.add_method

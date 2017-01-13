@@ -2,7 +2,6 @@
 from decimal import Decimal
 import logging
 
-from xbterminal.rpc import settings
 from xbterminal.rpc.utils import api
 
 logger = logging.getLogger(__name__)
@@ -10,10 +9,13 @@ logger = logging.getLogger(__name__)
 
 class Payment(object):
 
-    def __init__(self, uid, btc_amount, exchange_rate, payment_uri, request):
+    def __init__(self, uid, btc_amount, paid_btc_amount, exchange_rate,
+                 status, payment_uri, request):
         self.uid = uid
         self.btc_amount = btc_amount
+        self.paid_btc_amount = paid_btc_amount
         self.exchange_rate = exchange_rate
+        self.status = status
         self.payment_uri = payment_uri
         self.request = request.decode('base64') if request else None
 
@@ -38,11 +40,13 @@ class Payment(object):
         # Parse result
         instance = cls(
             result['uid'],
-            Decimal(result['btc_amount']).quantize(settings.BTC_DEC_PLACES),
-            Decimal(result['exchange_rate']).quantize(settings.BTC_DEC_PLACES),
+            Decimal(result['btc_amount']),
+            Decimal(result['paid_btc_amount']),
+            Decimal(result['exchange_rate']),
+            result['status'],
             result['payment_uri'],
             result.get('payment_request'))
-        logger.info("created payment order {0}".format(instance.uid))
+        logger.info('created payment order {0}'.format(instance.uid))
         return instance
 
     def cancel(self):
@@ -87,9 +91,13 @@ class Payment(object):
             response = api.send_request('get', payment_check_url)
             result = response.json()
         except Exception:
-            return None
+            pass
         else:
-            return result['status']
+            if self.status != result['status']:
+                logger.info('order status changed, {0} -> {1}'.format(
+                    self.status, result['status']))
+            self.paid_btc_amount = Decimal(result['paid_btc_amount'])
+            self.status = result['status']
 
     @property
     def receipt_url(self):
