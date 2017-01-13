@@ -120,8 +120,8 @@ def get_withdrawal_status(**kwargs):
         order = state['withdrawals'][order_uid]
     except KeyError:
         raise OrderNotFound
-    status = order.check()
-    return status
+    order.check()
+    return order.status
 
 
 @dispatcher.add_method

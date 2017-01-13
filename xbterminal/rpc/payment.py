@@ -82,10 +82,6 @@ class Payment(object):
         return payment_ack
 
     def check(self):
-        """
-        Returns:
-            status: payment status or None in case of error
-        """
         payment_check_url = api.get_url('payment_check', uid=self.uid)
         try:
             response = api.send_request('get', payment_check_url)
@@ -94,7 +90,7 @@ class Payment(object):
             pass
         else:
             if self.status != result['status']:
-                logger.info('order status changed, {0} -> {1}'.format(
+                logger.info('payment status changed, {0} -> {1}'.format(
                     self.status, result['status']))
             self.paid_btc_amount = Decimal(result['paid_btc_amount'])
             self.status = result['status']

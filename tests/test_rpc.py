@@ -220,14 +220,16 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['exchange_rate'], '200')
 
     def test_get_withdrawal_status(self):
+        order_mock = Mock(status='new')
         state = {
             'withdrawals': {
-                'test-uid': Mock(**{'check.return_value': 'new'}),
+                'test-uid': order_mock,
             },
         }
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.get_withdrawal_status(uid='test-uid')
         self.assertEqual(result, 'new')
+        self.assertTrue(order_mock.check.called)
 
     def test_get_withdrawal_status_not_found(self):
         state = {'withdrawals': {}}
