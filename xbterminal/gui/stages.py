@@ -242,7 +242,7 @@ def pay_wait(state, ui):
 
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
-        if payment_status in ['notified', 'confirmed']:
+        if payment_status['status'] in ['notified', 'confirmed']:
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))

@@ -31,7 +31,10 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
 
     @patch.dict(
         'xbterminal.rpc.api.state',
-        payments={'test-uid': Mock(status='new')})
+        payments={'test-uid': Mock(
+            paid_btc_amount=Decimal('0.05'),
+            status='new',
+        )})
     def test_get_payment_status(self):
         payload = {
             'method': 'get_payment_status',
@@ -47,7 +50,10 @@ class JSONRPCServerTestCase(AsyncHTTPTestCase):
             headers=headers)
         self.assertEqual(response.code, 200)
         result = json.loads(response.body)
-        self.assertEqual(result['result'], 'new')
+        self.assertEqual(result['result'], {
+            'paid_btc_amount': '0.05',
+            'status': 'new',
+        })
 
     @patch.dict(
         'xbterminal.rpc.api.state',
@@ -145,7 +151,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['payment_uri'], 'test-uri')
 
     def test_get_payment_status(self):
-        order_mock = Mock(status='new')
+        order_mock = Mock(paid_btc_amount=Decimal('0.5'), status='new')
         state = {
             'payments': {
                 'test-uid': order_mock,
@@ -153,7 +159,8 @@ class APITestCase(unittest.TestCase):
         }
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.get_payment_status(uid='test-uid')
-        self.assertEqual(result, 'new')
+        self.assertEqual(result['status'], 'new')
+        self.assertEqual(result['paid_btc_amount'], '0.5')
         self.assertTrue(order_mock.check.called)
 
     def test_get_payment_status_not_found(self):

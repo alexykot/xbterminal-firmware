@@ -584,7 +584,10 @@ class PayWaitStageTestCase(unittest.TestCase):
             'start_nfc_server.return_value': True,
             'stop_bluetooth_server.return_value': True,
             'stop_nfc_server.return_value': True,
-            'get_payment_status.return_value': 'notified',
+            'get_payment_status.return_value': {
+                'paid_btc_amount': Decimal('0.05'),
+                'status': 'notified',
+            },
             'get_payment_receipt.return_value': 'test_url',
             'host_add_credit.return_value': True,
         })
@@ -597,8 +600,8 @@ class PayWaitStageTestCase(unittest.TestCase):
             'payment': {
                 'uid': 'testUid',
                 'fiat_amount': Decimal('1.00'),
-                'btc_amount': Decimal(0),
-                'exchange_rate': Decimal(0),
+                'btc_amount': Decimal('0.05'),
+                'exchange_rate': Decimal('20'),
                 'payment_uri': 'test',
             },
         }
@@ -629,7 +632,12 @@ class PayWaitStageTestCase(unittest.TestCase):
                          settings.STAGES['payment']['pay_receipt'])
 
     def test_timeout(self):
-        client_mock = Mock()
+        client_mock = Mock(**{
+            'get_payment_status.return_value': {
+                'paid_btc_amount': Decimal(0),
+                'status': 'new',
+            },
+        })
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),

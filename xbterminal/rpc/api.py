@@ -60,7 +60,10 @@ def get_payment_status(**kwargs):
     except KeyError:
         raise OrderNotFound
     order.check()
-    return order.status
+    return {
+        'status': order.status,
+        'paid_btc_amount': str(order.paid_btc_amount),
+    }
 
 
 @dispatcher.add_method
