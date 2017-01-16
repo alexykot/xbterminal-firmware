@@ -1035,9 +1035,9 @@ touch with NFC</string>
     <widget class="QLabel" name="preceipt_scan_lbl">
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>115</y>
-       <width>271</width>
+       <x>210</x>
+       <y>140</y>
+       <width>261</width>
        <height>51</height>
       </rect>
      </property>
@@ -1048,8 +1048,8 @@ touch with NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>Scan QR code or
-touch NFC for a receipt</string>
+      <string>for receipt scan QR code or
+tap NFC around camera</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1076,34 +1076,11 @@ touch NFC for a receipt</string>
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="preceipt_tap_lbl">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>165</y>
-       <width>271</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Tap around the camera
-below the screen</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
     <widget class="QPushButton" name="preceipt_goback_btn">
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>210</y>
+       <y>200</y>
        <width>131</width>
        <height>51</height>
       </rect>
@@ -1134,9 +1111,9 @@ below the screen</string>
     <widget class="QLabel" name="preceipt_btc1_lbl">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>90</y>
-       <width>121</width>
+       <x>210</x>
+       <y>100</y>
+       <width>81</width>
        <height>31</height>
       </rect>
      </property>
@@ -1147,7 +1124,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>For amount</string>
+      <string>paid</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1156,9 +1133,9 @@ below the screen</string>
     <widget class="QLabel" name="preceipt_btc2_lbl">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>90</y>
-       <width>51</width>
+       <x>380</x>
+       <y>100</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -1175,9 +1152,9 @@ below the screen</string>
     <widget class="QLabel" name="preceipt_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>90</y>
-       <width>101</width>
+       <x>290</x>
+       <y>100</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -1188,7 +1165,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>345.12345</string>
+      <string>45.12345</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1822,9 +1799,9 @@ camera on this device</string>
     <widget class="QLabel" name="wreceipt_scan_lbl">
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>115</y>
-       <width>271</width>
+       <x>210</x>
+       <y>140</y>
+       <width>261</width>
        <height>51</height>
       </rect>
      </property>
@@ -1835,8 +1812,8 @@ camera on this device</string>
       </font>
      </property>
      <property name="text">
-      <string>Scan QR code or
-touch NFC for a receipt</string>
+      <string>for receipt scan QR code or
+tap NFC around camera</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1846,7 +1823,7 @@ touch NFC for a receipt</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>210</y>
+       <y>200</y>
        <width>131</width>
        <height>51</height>
       </rect>
@@ -1859,29 +1836,6 @@ touch NFC for a receipt</string>
      </property>
      <property name="text">
       <string>Go back</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wreceipt_tap_lbl">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>165</y>
-       <width>271</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Tap around the camera
-below the screen</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="wreceipt_desc_lbl">
@@ -1943,9 +1897,9 @@ below the screen</string>
     <widget class="QLabel" name="wreceipt_btc2_lbl">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>90</y>
-       <width>51</width>
+       <x>390</x>
+       <y>100</y>
+       <width>81</width>
        <height>31</height>
       </rect>
      </property>
@@ -1962,9 +1916,9 @@ below the screen</string>
     <widget class="QLabel" name="wreceipt_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>90</y>
-       <width>101</width>
+       <x>300</x>
+       <y>100</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -1975,7 +1929,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>345.12345</string>
+      <string>45.12345</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1984,9 +1938,9 @@ below the screen</string>
     <widget class="QLabel" name="wreceipt_btc1_lbl">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>90</y>
-       <width>121</width>
+       <x>210</x>
+       <y>100</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -1997,7 +1951,7 @@ below the screen</string>
       </font>
      </property>
      <property name="text">
-      <string>For amount</string>
+      <string>paid out</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
