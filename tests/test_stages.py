@@ -633,7 +633,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertFalse(ui.showWidget.called)
         self.assertFalse(ui.hideWidget.called)
         self.assertEqual(next_stage,
-                         settings.STAGES['payment']['pay_success'])
+                         settings.STAGES['payment']['pay_receipt'])
 
     @patch('xbterminal.gui.stages._wait_for_screen_timeout')
     def test_underpaid(self, wait_for_mock):
