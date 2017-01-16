@@ -577,7 +577,8 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    def test_success(self):
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_success(self, qr_gen_mock):
         client_mock = Mock(**{
             'start_bluetooth_server.return_value': True,
             'start_nfc_server.return_value': True,
@@ -621,10 +622,11 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.host_add_credit.call_args[1]['fiat_amount'],
             Decimal('1.00'))
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(state['payment']['receipt_url'], 'test_url')
         self.assertIsNotNone(state['payment']['uid'])
         self.assertEqual(next_stage,
-                         settings.STAGES['payment']['pay_success'])
+                         settings.STAGES['payment']['pay_receipt'])
 
     def test_timeout(self):
         client_mock = Mock()
@@ -649,61 +651,6 @@ class PayWaitStageTestCase(unittest.TestCase):
                          settings.STAGES['payment']['pay_cancel'])
 
 
-class PaySuccessStageTestCase(unittest.TestCase):
-
-    def test_no(self):
-        state = {
-            'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {
-                'psuccess_no_btn': True,
-                'psuccess_yes_btn': False,
-            },
-            'payment': {
-                'uid': 'testUid',
-                'fiat_amount': Decimal('1.00'),
-                'btc_amount': Decimal('0.12345678'),
-                'receipt_url': 'test',
-            },
-        }
-        ui = Mock()
-        next_stage = stages.pay_success(state, ui)
-        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
-                         'pay_success')
-        self.assertEqual(ui.showScreen.call_args_list[1][0][0],
-                         'load_indefinite')
-        self.assertIsNone(state['payment']['uid'])
-        self.assertIsNone(state['payment']['fiat_amount'])
-        self.assertEqual(next_stage,
-                         settings.STAGES['idle'])
-        self.assertFalse(any(state for state
-                             in state['screen_buttons'].values()))
-
-    @patch('xbterminal.gui.stages.qr.qr_gen')
-    def test_yes(self, qr_gen_mock):
-        state = {
-            'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {
-                'psuccess_no_btn': False,
-                'psuccess_yes_btn': True,
-            },
-            'payment': {
-                'uid': 'testUid',
-                'fiat_amount': Decimal('1.00'),
-                'btc_amount': Decimal('0.12345678'),
-                'receipt_url': 'test',
-            },
-        }
-        ui = Mock()
-        next_stage = stages.pay_success(state, ui)
-        self.assertEqual(next_stage,
-                         settings.STAGES['payment']['pay_receipt'])
-        self.assertIsNotNone(state['payment']['uid'])
-        self.assertIsNotNone(state['payment']['receipt_url'])
-        self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
-        self.assertFalse(any(state for state
-                         in state['screen_buttons'].values()))
-
-
 class PayReceiptStageTestCase(unittest.TestCase):
 
     def test_goback(self):
@@ -718,6 +665,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
             },
             'payment': {
                 'uid': 'testUid',
+                'btc_amount': Decimal('0.05'),
                 'receipt_url': 'test',
             },
         }
@@ -727,6 +675,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
                          'pay_receipt')
         self.assertEqual(ui.showScreen.call_args_list[1][0][0],
                          'load_indefinite')
+        self.assertIn('50.00', ui.setText.call_args_list[0][0][1])
         self.assertEqual(
             client_mock.start_nfc_server.call_args[1]['message'],
             'test')
@@ -1070,7 +1019,8 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
 
 class WithdrawLoading2StageTestCase(unittest.TestCase):
 
-    def test_proceed(self):
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_proceed(self, qr_gen_mock):
         client_mock = Mock(**{
             'get_withdrawal_status.return_value': 'completed',
             'confirm_withdrawal.return_value': {
@@ -1095,8 +1045,9 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_success'])
+                         settings.STAGES['withdrawal']['withdraw_receipt'])
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.41'))
         self.assertEqual(state['withdrawal']['exchange_rate'],
                          Decimal('202.0'))
@@ -1132,59 +1083,6 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])
 
 
-class WithdrawSuccessStageTestCase(unittest.TestCase):
-
-    def test_no(self):
-        state = {
-            'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {
-                'wsuccess_no_btn': True,
-                'wsuccess_yes_btn': False,
-            },
-            'withdrawal': {
-                'fiat_amount': Decimal('1.00'),
-                'btc_amount': Decimal('0.12345678'),
-                'receipt_url': 'test',
-            },
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_success(state, ui)
-        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
-                         'withdraw_success')
-        self.assertEqual(ui.showScreen.call_args_list[1][0][0],
-                         'load_indefinite')
-        self.assertIsNone(state['withdrawal']['uid'])
-        self.assertIsNone(state['withdrawal']['fiat_amount'])
-        self.assertEqual(next_stage,
-                         settings.STAGES['idle'])
-        self.assertFalse(any(state for state
-                             in state['screen_buttons'].values()))
-
-    @patch('xbterminal.gui.stages.qr.qr_gen')
-    def test_yes(self, qr_gen_mock):
-        state = {
-            'keypad': Mock(last_key_pressed=None),
-            'screen_buttons': {
-                'wsuccess_no_btn': False,
-                'wsuccess_yes_btn': True,
-            },
-            'withdrawal': {
-                'uid': 'testUid',
-                'fiat_amount': Decimal('1.00'),
-                'btc_amount': Decimal('0.12345678'),
-                'receipt_url': 'test',
-            },
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_success(state, ui)
-        self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_receipt'])
-        self.assertIsNotNone(state['withdrawal']['receipt_url'])
-        self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
-        self.assertFalse(any(state for state
-                         in state['screen_buttons'].values()))
-
-
 class WithdrawReceiptStageTestCase(unittest.TestCase):
 
     def test_goback(self):
@@ -1201,6 +1099,7 @@ class WithdrawReceiptStageTestCase(unittest.TestCase):
             'withdrawal': {
                 'uid': 'testUid',
                 'fiat_amount': Decimal('1.00'),
+                'btc_amount': Decimal('0.05'),
                 'receipt_url': 'test',
             },
         }
@@ -1210,6 +1109,7 @@ class WithdrawReceiptStageTestCase(unittest.TestCase):
                          'withdraw_receipt')
         self.assertEqual(ui.showScreen.call_args_list[1][0][0],
                          'load_indefinite')
+        self.assertIn('50.00', ui.setText.call_args_list[0][0][1])
         self.assertEqual(
             client_mock.start_nfc_server.call_args[1]['message'],
             'test')
