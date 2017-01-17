@@ -696,7 +696,8 @@ class PayWaitStageTestCase(unittest.TestCase):
 class PayProgressStageTestCase(unittest.TestCase):
 
     @patch('xbterminal.gui.stages.qr.qr_gen')
-    def test_proceed(self, qr_gen_mock):
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_proceed(self, sleep_mock, qr_gen_mock):
         client_mock = Mock(**{
             'get_payment_status.return_value': {
                 'paid_btc_amount': Decimal('0.05'),
@@ -720,6 +721,10 @@ class PayProgressStageTestCase(unittest.TestCase):
         next_stage = stages.pay_progress(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'pay_progress')
+        self.assertEqual(ui.hideWidget.call_args_list[0][0][0],
+                         'pprogress_received_lbl')
+        self.assertEqual(ui.showWidget.call_args_list[0][0][0],
+                         'pprogress_done_lbl')
         self.assertEqual(
             client_mock.get_payment_status.call_args[1]['uid'],
             'testUid')

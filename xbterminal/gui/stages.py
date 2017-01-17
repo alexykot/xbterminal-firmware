@@ -275,12 +275,15 @@ def pay_progress(state, ui):
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
         if payment_status['status'] in ['notified', 'confirmed']:
+            ui.hideWidget('pprogress_received_lbl')
+            ui.showWidget('pprogress_done_lbl')
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
             state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
             qr.qr_gen(state['payment']['receipt_url'],
                       settings.QR_IMAGE_PATH)
+            time.sleep(3)
             return settings.STAGES['payment']['pay_receipt']
 
         try:
@@ -532,6 +535,8 @@ def _clear_payment_runtime(state, ui, cancel_order=False):
     ui.hideWidget('pwait_paid_btc_amount_lbl')
     ui.hideWidget('pwait_cancel_refund_btn')
     ui.showWidget('pwait_cancel_btn')
+    ui.hideWidget('pprogress_done_lbl')
+    ui.showWidget('pprogress_received_lbl')
 
     ui.setText('pinfo_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
