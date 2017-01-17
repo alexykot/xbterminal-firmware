@@ -134,8 +134,9 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(data['params']['fiat_amount'], '10.00')
 
     @patch('xbterminal.gui.rpc_client.requests.post')
-    @patch('xbterminal.gui.rpc_client.use_cache')
-    def test_host_get_payout(self, cache_mock, post_mock):
+    @patch('xbterminal.gui.rpc_client.time.time')
+    def test_host_get_payout(self, time_mock, post_mock):
+        time_mock.side_effect = [1000, 0]  # Disable cache
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
@@ -148,8 +149,9 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(result, Decimal('12.0'))
 
     @patch('xbterminal.gui.rpc_client.requests.post')
-    @patch('xbterminal.gui.rpc_client.use_cache')
-    def test_host_get_payout_none(self, cache_mock, post_mock):
+    @patch('xbterminal.gui.rpc_client.time.time')
+    def test_host_get_payout_none(self, time_mock, post_mock):
+        time_mock.side_effect = [1000, 0]  # Disable cache
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
