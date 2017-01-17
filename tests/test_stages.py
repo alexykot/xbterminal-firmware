@@ -578,8 +578,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
-    @patch('xbterminal.gui.stages.qr.qr_gen')
-    def test_success(self, qr_gen_mock):
+    def test_received(self):
         client_mock = Mock(**{
             'start_bluetooth_server.return_value': True,
             'start_nfc_server.return_value': True,
@@ -587,10 +586,8 @@ class PayWaitStageTestCase(unittest.TestCase):
             'stop_nfc_server.return_value': True,
             'get_payment_status.return_value': {
                 'paid_btc_amount': Decimal('0.05'),
-                'status': 'notified',
+                'status': 'received',
             },
-            'get_payment_receipt.return_value': 'test_url',
-            'host_add_credit.return_value': True,
         })
         state = {
             'client': client_mock,
@@ -621,19 +618,11 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.get_payment_status.call_args[1]['uid'],
             'testUid')
-        self.assertEqual(
-            client_mock.get_payment_receipt.call_args[1]['uid'],
-            'testUid')
-        self.assertEqual(
-            client_mock.host_add_credit.call_args[1]['fiat_amount'],
-            Decimal('1.00'))
-        self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
-        self.assertEqual(state['payment']['receipt_url'], 'test_url')
         self.assertIsNotNone(state['payment']['uid'])
         self.assertFalse(ui.showWidget.called)
         self.assertFalse(ui.hideWidget.called)
         self.assertEqual(next_stage,
-                         settings.STAGES['payment']['pay_receipt'])
+                         settings.STAGES['payment']['pay_progress'])
 
     @patch('xbterminal.gui.stages._wait_for_screen_timeout')
     def test_underpaid(self, wait_for_mock):
@@ -643,7 +632,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                 'status': 'underpaid',
             }, {
                 'paid_btc_amount': Decimal('0.1'),
-                'status': 'notified',
+                'status': 'received',
             }],
         })
         state = {
@@ -673,7 +662,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertEqual(ui.hideWidget.call_args[0][0],
                          'pwait_cancel_btn')
         self.assertEqual(next_stage,
-                         settings.STAGES['payment']['pay_receipt'])
+                         settings.STAGES['payment']['pay_progress'])
 
     def test_timeout(self):
         client_mock = Mock(**{
@@ -702,6 +691,49 @@ class PayWaitStageTestCase(unittest.TestCase):
         next_stage = stages.pay_wait(state, ui)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_cancel'])
+
+
+class PayProgressStageTestCase(unittest.TestCase):
+
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_proceed(self, qr_gen_mock):
+        client_mock = Mock(**{
+            'get_payment_status.return_value': {
+                'paid_btc_amount': Decimal('0.05'),
+                'status': 'notified',
+            },
+            'get_payment_receipt.return_value': 'test_url',
+            'host_add_credit.return_value': True,
+        })
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'payment': {
+                'uid': 'testUid',
+                'fiat_amount': Decimal('1.00'),
+                'btc_amount': Decimal('0.05'),
+                'exchange_rate': Decimal('20'),
+                'payment_uri': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_progress(state, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0],
+                         'pay_progress')
+        self.assertEqual(
+            client_mock.get_payment_status.call_args[1]['uid'],
+            'testUid')
+        self.assertEqual(
+            client_mock.get_payment_receipt.call_args[1]['uid'],
+            'testUid')
+        self.assertEqual(
+            client_mock.host_add_credit.call_args[1]['fiat_amount'],
+            Decimal('1.00'))
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
+        self.assertEqual(state['payment']['receipt_url'], 'test_url')
+        self.assertIsNotNone(state['payment']['uid'])
+        self.assertEqual(next_stage,
+                         settings.STAGES['payment']['pay_receipt'])
 
 
 class PayReceiptStageTestCase(unittest.TestCase):

@@ -57,6 +57,7 @@ QPushButton:pressed {
 #pinfo_fiat_amount_lbl,
 #pwait_desc_empty_lbl,
 #pwait_desc_lbl,
+#pprogress_desc_lbl,
 #preceipt_desc_lbl,
 #pcancel_desc_lbl,
 #wselect_desc_lbl,
@@ -95,7 +96,8 @@ QPushButton:pressed {
     background-color: #802E06;
 }
 
-#pload_loader_lbl {
+#pload_loader_lbl,
+#pprogress_loader_lbl {
     qproperty-geometry: rect(0 30 480 272);
 }
 

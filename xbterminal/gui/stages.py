@@ -253,19 +253,38 @@ def pay_wait(state, ui):
             ui.showWidget('pwait_paid_btc_amount_lbl')
             ui.showWidget('pwait_cancel_refund_btn')
             ui.hideWidget('pwait_cancel_btn')
-        elif payment_status['status'] in ['notified', 'confirmed']:
+        elif payment_status['status'] == 'received':
+            state['client'].stop_nfc_server()
+            state['client'].stop_bluetooth_server()
+            return settings.STAGES['payment']['pay_progress']
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=450)
+        except StageTimeout:
+            _clear_payment_runtime(state, ui, cancel_order=True)
+            state['client'].stop_nfc_server()
+            state['client'].stop_bluetooth_server()
+            return settings.STAGES['payment']['pay_cancel']
+
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def pay_progress(state, ui):
+    ui.showScreen('pay_progress')
+    while True:
+        payment_status = state['client'].get_payment_status(
+            uid=state['payment']['uid'])
+        if payment_status['status'] in ['notified', 'confirmed']:
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
             state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
-            state['client'].stop_nfc_server()
-            state['client'].stop_bluetooth_server()
             qr.qr_gen(state['payment']['receipt_url'],
                       settings.QR_IMAGE_PATH)
             return settings.STAGES['payment']['pay_receipt']
 
         try:
-            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=900)
+            _wait_for_screen_timeout(state, ui, 'pay_progress', timeout=900)
         except StageTimeout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()

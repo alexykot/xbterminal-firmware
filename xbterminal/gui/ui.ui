@@ -1098,6 +1098,45 @@ touch with NFC</string>
     <zorder>pwait_paid_lbl</zorder>
     <zorder>pwait_cancel_refund_btn</zorder>
    </widget>
+   <widget class="QWidget" name="pay_progress_scrn">
+    <widget class="QLabel" name="pprogress_loader_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>272</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pprogress_desc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Payment processing</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="pay_receipt_scrn">
     <widget class="QLabel" name="preceipt_desc_lbl">
      <property name="geometry">

@@ -145,6 +145,7 @@ class GUI(QtGui.QMainWindow):
         self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
         self.ui.pload_loader_lbl.setMovie(self.loader)
+        self.ui.pprogress_loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Set up buttons
         for button_name in settings.BUTTONS:
