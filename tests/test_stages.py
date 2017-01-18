@@ -837,6 +837,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
             'create_withdrawal_order.return_value': {
                 'uid': 'testUid',
                 'btc_amount': Decimal('0.5'),
+                'tx_fee_btc_amount': Decimal('0.0001'),
             },
         })
         state = {
@@ -852,6 +853,8 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
                          settings.STAGES['withdrawal']['withdraw_scan'])
         self.assertEqual(state['withdrawal']['uid'], 'testUid')
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.5'))
+        self.assertEqual(state['withdrawal']['tx_fee_btc_amount'],
+                         Decimal('0.0001'))
 
     @patch('xbterminal.gui.stages.time.sleep')
     def test_server_error(self, sleep_mock):
@@ -1023,6 +1026,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
                 'uid': 'testUid',
                 'fiat_amount': Decimal(0),
                 'btc_amount': Decimal(0),
+                'tx_fee_btc_amount': Decimal('0.0001'),
                 'exchange_rate': Decimal(0),
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
             },
@@ -1051,6 +1055,7 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
                 'uid': 'testUid',
                 'fiat_amount': Decimal('5.12'),
                 'btc_amount': Decimal('0.34434334'),
+                'tx_fee_btc_amount': Decimal('0.0001'),
                 'exchange_rate': Decimal('553.12'),
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
             },
@@ -1064,6 +1069,8 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
                          u'£5.12')
         self.assertEqual(ui.setText.call_args_list[3][0][1],
                          u'1 BTC = £553.12')
+        self.assertIn('0.10', ui.setText.call_args_list[4][0][1])
+        self.assertEqual(ui.setText.call_count, 5)
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_loading2'])
         self.assertFalse(any(state for state

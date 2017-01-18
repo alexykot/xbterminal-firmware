@@ -83,6 +83,7 @@ class JSONRPCClient(object):
         return {
             'uid': result['uid'],
             'btc_amount': Decimal(result['btc_amount']),
+            'tx_fee_btc_amount': Decimal(result['tx_fee_btc_amount']),
             'exchange_rate': Decimal(result['exchange_rate']),
         }
 

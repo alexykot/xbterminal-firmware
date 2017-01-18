@@ -95,6 +95,7 @@ def create_withdrawal_order(**kwargs):
     result = {
         'uid': order.uid,
         'btc_amount': str(order.btc_amount),
+        'tx_fee_btc_amount': str(order.tx_fee_btc_amount),
         'exchange_rate': str(order.exchange_rate),
     }
     return result

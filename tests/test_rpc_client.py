@@ -104,6 +104,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
                 'result': {
                     'uid': 'abc',
                     'btc_amount': '0.50000000',
+                    'tx_fee_btc_amount': '0.0001000',
                     'exchange_rate': '200.00000000',
                 },
                 'id': 0,

@@ -15,9 +15,11 @@ def get_bitcoin_address(message):
 
 class Withdrawal(object):
 
-    def __init__(self, uid, btc_amount, exchange_rate, status):
+    def __init__(self, uid, btc_amount, tx_fee_btc_amount,
+                 exchange_rate, status):
         self.uid = uid
         self.btc_amount = btc_amount
+        self.tx_fee_btc_amount = tx_fee_btc_amount
         self.exchange_rate = exchange_rate
         self.status = status
         self.confirmed = False
@@ -41,6 +43,7 @@ class Withdrawal(object):
         # Parse result
         instance = cls(result['uid'],
                        Decimal(result['btc_amount']),
+                       Decimal(result['tx_fee_btc_amount']),
                        Decimal(result['exchange_rate']),
                        result['status'])
         logger.info('created withdrawal order {0}'.format(instance.uid))
