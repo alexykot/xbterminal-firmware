@@ -1136,7 +1136,7 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="pprogress_received_lbl">
+    <widget class="QLabel" name="pprogress_status_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1151,28 +1151,7 @@ touch with NFC</string>
       </font>
      </property>
      <property name="text">
-      <string>received, waiting for confidence</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="pprogress_done_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>220</y>
-       <width>480</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>done</string>
+      <string>status</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

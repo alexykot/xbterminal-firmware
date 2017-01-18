@@ -721,10 +721,7 @@ class PayProgressStageTestCase(unittest.TestCase):
         next_stage = stages.pay_progress(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'pay_progress')
-        self.assertEqual(ui.hideWidget.call_args_list[0][0][0],
-                         'pprogress_received_lbl')
-        self.assertEqual(ui.showWidget.call_args_list[0][0][0],
-                         'pprogress_done_lbl')
+        self.assertEqual(ui.setText.call_count, 3)
         self.assertEqual(
             client_mock.get_payment_status.call_args[1]['uid'],
             'testUid')

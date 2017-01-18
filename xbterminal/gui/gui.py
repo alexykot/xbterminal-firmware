@@ -115,6 +115,13 @@ class ERRORS(object):
         'MainWindow', 'server error', None))
 
 
+class PAYMENT_STATUSES:
+
+    RECEIVED = _translate('MainWindow', 'received', None)
+    WAITING = _translate('MainWindow', 'waiting for confidence', None)
+    DONE = _translate('MainWindow', 'done', None)
+
+
 class GUI(QtGui.QMainWindow):
 
     def __init__(self):
@@ -156,7 +163,6 @@ class GUI(QtGui.QMainWindow):
         self.ui.pwait_paid_lbl.hide()
         self.ui.pwait_paid_btc_amount_lbl.hide()
         self.ui.pwait_cancel_refund_btn.hide()
-        self.ui.pprogress_done_lbl.hide()
         # Show window
         self._saved_screen = None
         self.show()

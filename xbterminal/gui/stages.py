@@ -3,6 +3,7 @@ import logging
 import time
 
 from xbterminal.gui import settings
+from xbterminal.gui.gui import PAYMENT_STATUSES
 from xbterminal.gui.utils import amounts, qr
 from xbterminal.gui.exceptions import (
     NetworkError,
@@ -271,12 +272,14 @@ def pay_wait(state, ui):
 
 def pay_progress(state, ui):
     ui.showScreen('pay_progress')
+    ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.RECEIVED)
+    time.sleep(2)
+    ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.WAITING)
     while True:
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
         if payment_status['status'] in ['notified', 'confirmed']:
-            ui.hideWidget('pprogress_received_lbl')
-            ui.showWidget('pprogress_done_lbl')
+            ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.DONE)
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
@@ -535,8 +538,6 @@ def _clear_payment_runtime(state, ui, cancel_order=False):
     ui.hideWidget('pwait_paid_btc_amount_lbl')
     ui.hideWidget('pwait_cancel_refund_btn')
     ui.showWidget('pwait_cancel_btn')
-    ui.hideWidget('pprogress_done_lbl')
-    ui.showWidget('pprogress_received_lbl')
 
     ui.setText('pinfo_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
