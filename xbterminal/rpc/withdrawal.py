@@ -15,10 +15,11 @@ def get_bitcoin_address(message):
 
 class Withdrawal(object):
 
-    def __init__(self, uid, btc_amount, exchange_rate):
+    def __init__(self, uid, btc_amount, exchange_rate, status):
         self.uid = uid
         self.btc_amount = btc_amount
         self.exchange_rate = exchange_rate
+        self.status = status
         self.confirmed = False
 
     @classmethod
@@ -40,7 +41,8 @@ class Withdrawal(object):
         # Parse result
         instance = cls(result['uid'],
                        Decimal(result['btc_amount']),
-                       Decimal(result['exchange_rate']))
+                       Decimal(result['exchange_rate']),
+                       result['status'])
         logger.info('created withdrawal order {0}'.format(instance.uid))
         return instance
 
@@ -70,18 +72,17 @@ class Withdrawal(object):
             return True
 
     def check(self):
-        """
-        Returns:
-            status: withdrawal status or None in case of error
-        """
         url = api.get_url('withdrawal_check', uid=self.uid)
         try:
             response = api.send_request('get', url)
             result = response.json()
         except Exception:
-            return None
+            return
         else:
-            return result['status']
+            if self.status != result['status']:
+                logger.info('withdrawal status changed, {0} -> {1}'.format(
+                    self.status, result['status']))
+            self.status = result['status']
 
     @property
     def receipt_url(self):

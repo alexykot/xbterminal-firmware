@@ -71,7 +71,11 @@ class JSONRPCClient(object):
 
     @use_cache(3.0)
     def get_payment_status(self, uid):
-        return self._make_request('get_payment_status', uid=uid)
+        result = self._make_request('get_payment_status', uid=uid)
+        return {
+            'status': result['status'],
+            'paid_btc_amount': Decimal(result['paid_btc_amount']),
+        }
 
     def create_withdrawal_order(self, fiat_amount):
         result = self._make_request('create_withdrawal_order',

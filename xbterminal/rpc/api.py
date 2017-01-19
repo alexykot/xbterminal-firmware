@@ -59,8 +59,11 @@ def get_payment_status(**kwargs):
         order = state['payments'][order_uid]
     except KeyError:
         raise OrderNotFound
-    status = order.check()
-    return status
+    order.check()
+    return {
+        'status': order.status,
+        'paid_btc_amount': str(order.paid_btc_amount),
+    }
 
 
 @dispatcher.add_method
@@ -120,8 +123,8 @@ def get_withdrawal_status(**kwargs):
         order = state['withdrawals'][order_uid]
     except KeyError:
         raise OrderNotFound
-    status = order.check()
-    return status
+    order.check()
+    return order.status
 
 
 @dispatcher.add_method

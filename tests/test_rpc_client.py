@@ -78,6 +78,25 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(data['params']['fiat_amount'], '10.00')
 
     @patch('xbterminal.gui.rpc_client.requests.post')
+    def test_get_payment_status(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'result': {
+                    'paid_btc_amount': '0.5',
+                    'status': 'received',
+                },
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        result = cli.get_payment_status('test-uid')
+        self.assertEqual(result['status'], 'received')
+        self.assertEqual(result['paid_btc_amount'], Decimal('0.5'))
+        data = post_mock.call_args[1]['json']
+        self.assertEqual(data['method'], 'get_payment_status')
+
+    @patch('xbterminal.gui.rpc_client.requests.post')
     def test_create_withdrawal_order(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
@@ -111,7 +130,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
             },
         })
         cli = JSONRPCClient()
-        result = cli.confirm_withdrawal(Decimal('10.00'), 'address')
+        result = cli.confirm_withdrawal(1, 'address')
         self.assertEqual(result['btc_amount'], Decimal('0.5'))
         self.assertEqual(result['exchange_rate'], Decimal('200.0'))
         data = post_mock.call_args[1]['json']

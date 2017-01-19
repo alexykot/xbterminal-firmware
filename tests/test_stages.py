@@ -548,6 +548,7 @@ class PayWaitStageTestCase(unittest.TestCase):
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'pwait_cancel_btn': True,
+                'pwait_cancel_refund_btn': False,
             },
             'payment': {
                 'uid': 'testUid',
@@ -584,7 +585,10 @@ class PayWaitStageTestCase(unittest.TestCase):
             'start_nfc_server.return_value': True,
             'stop_bluetooth_server.return_value': True,
             'stop_nfc_server.return_value': True,
-            'get_payment_status.return_value': 'notified',
+            'get_payment_status.return_value': {
+                'paid_btc_amount': Decimal('0.05'),
+                'status': 'notified',
+            },
             'get_payment_receipt.return_value': 'test_url',
             'host_add_credit.return_value': True,
         })
@@ -593,12 +597,13 @@ class PayWaitStageTestCase(unittest.TestCase):
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'pwait_cancel_btn': False,
+                'pwait_cancel_refund_btn': False,
             },
             'payment': {
                 'uid': 'testUid',
                 'fiat_amount': Decimal('1.00'),
-                'btc_amount': Decimal(0),
-                'exchange_rate': Decimal(0),
+                'btc_amount': Decimal('0.05'),
+                'exchange_rate': Decimal('20'),
                 'payment_uri': 'test',
             },
         }
@@ -625,17 +630,65 @@ class PayWaitStageTestCase(unittest.TestCase):
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(state['payment']['receipt_url'], 'test_url')
         self.assertIsNotNone(state['payment']['uid'])
+        self.assertFalse(ui.showWidget.called)
+        self.assertFalse(ui.hideWidget.called)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_receipt'])
 
-    def test_timeout(self):
-        client_mock = Mock()
+    @patch('xbterminal.gui.stages._wait_for_screen_timeout')
+    def test_underpaid(self, wait_for_mock):
+        client_mock = Mock(**{
+            'get_payment_status.side_effect': [{
+                'paid_btc_amount': Decimal('0.05'),
+                'status': 'underpaid',
+            }, {
+                'paid_btc_amount': Decimal('0.1'),
+                'status': 'notified',
+            }],
+        })
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'last_activity_timestamp': 0,
             'screen_buttons': {
                 'pwait_cancel_btn': False,
+                'pwait_cancel_refund_btn': False,
+            },
+            'payment': {
+                'uid': 'testUid',
+                'fiat_amount': Decimal('1.00'),
+                'btc_amount': Decimal('0.1'),
+                'exchange_rate': Decimal('20'),
+                'payment_uri': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_wait(state, ui)
+        self.assertEqual(ui.showWidget.call_args_list[0][0][0],
+                         'pwait_paid_lbl')
+        self.assertEqual(ui.showWidget.call_args_list[1][0][0],
+                         'pwait_paid_btc_amount_lbl')
+        self.assertEqual(ui.showWidget.call_args_list[2][0][0],
+                         'pwait_cancel_refund_btn')
+        self.assertEqual(ui.hideWidget.call_args[0][0],
+                         'pwait_cancel_btn')
+        self.assertEqual(next_stage,
+                         settings.STAGES['payment']['pay_receipt'])
+
+    def test_timeout(self):
+        client_mock = Mock(**{
+            'get_payment_status.return_value': {
+                'paid_btc_amount': Decimal(0),
+                'status': 'new',
+            },
+        })
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'last_activity_timestamp': 0,
+            'screen_buttons': {
+                'pwait_cancel_btn': False,
+                'pwait_cancel_refund_btn': False,
             },
             'payment': {
                 'uid': 'testUid',

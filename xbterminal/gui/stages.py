@@ -233,8 +233,10 @@ def pay_wait(state, ui):
     state['client'].start_nfc_server(message=state['payment']['payment_uri'])
     while True:
         if state['screen_buttons']['pwait_cancel_btn'] or \
+                state['screen_buttons']['pwait_cancel_refund_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['pwait_cancel_btn'] = False
+            state['screen_buttons']['pwait_cancel_refund_btn'] = False
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
@@ -242,7 +244,16 @@ def pay_wait(state, ui):
 
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
-        if payment_status in ['notified', 'confirmed']:
+        if payment_status['status'] == 'underpaid':
+            ui.setText(
+                'pwait_paid_btc_amount_lbl',
+                amounts.format_btc_amount_pretty(
+                    payment_status['paid_btc_amount'], prefix=True))
+            ui.showWidget('pwait_paid_lbl')
+            ui.showWidget('pwait_paid_btc_amount_lbl')
+            ui.showWidget('pwait_cancel_refund_btn')
+            ui.hideWidget('pwait_cancel_btn')
+        elif payment_status['status'] in ['notified', 'confirmed']:
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
@@ -497,6 +508,11 @@ def _clear_payment_runtime(state, ui, cancel_order=False):
     state['payment']['exchange_rate'] = None
     state['payment']['payment_uri'] = None
     state['payment']['receipt_url'] = None
+
+    ui.hideWidget('pwait_paid_lbl')
+    ui.hideWidget('pwait_paid_btc_amount_lbl')
+    ui.hideWidget('pwait_cancel_refund_btn')
+    ui.showWidget('pwait_cancel_btn')
 
     ui.setText('pinfo_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
