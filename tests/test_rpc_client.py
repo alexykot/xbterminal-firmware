@@ -183,21 +183,6 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(result, Decimal('0.00'))
 
     @patch('xbterminal.gui.rpc_client.requests.post')
-    def test_host_get_payout_cached(self, post_mock):
-        post_mock.return_value = Mock(**{
-            'json.side_effect': [{
-                'jsonrpc': '2.0',
-                'result': '11.0',
-                'id': 0,
-            }, {'error': ''}],
-        })
-        cli = JSONRPCClient()
-        result = cli.host_get_payout()
-        self.assertEqual(result, Decimal('11.0'))
-        result = cli.host_get_payout()
-        self.assertEqual(result, Decimal('11.0'))
-
-    @patch('xbterminal.gui.rpc_client.requests.post')
     def test_host_pay_cash(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
@@ -212,3 +197,18 @@ class JSONRPCClientTestCase(unittest.TestCase):
         data = post_mock.call_args[1]['json']
         self.assertEqual(data['method'], 'host_pay_cash')
         self.assertEqual(data['params']['fiat_amount'], '10.00')
+
+    @patch('xbterminal.gui.rpc_client.requests.post')
+    def test_get_withdrawal_status_cached(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.side_effect': [{
+                'jsonrpc': '2.0',
+                'result': 'new',
+                'id': 0,
+            }, {'error': ''}],
+        })
+        cli = JSONRPCClient()
+        result = cli.get_withdrawal_status('xxx')
+        self.assertEqual(result, 'new')
+        result = cli.get_withdrawal_status('xxx')
+        self.assertEqual(result, 'new')
