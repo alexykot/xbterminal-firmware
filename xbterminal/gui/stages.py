@@ -432,6 +432,10 @@ def withdraw_confirm(state, ui):
                amounts.format_btc_amount_pretty(state['withdrawal']['btc_amount']))
     ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate_pretty(state['withdrawal']['exchange_rate']))
+    ui.setText(
+        'wconfirm_fee_amount_lbl',
+        amounts.format_btc_amount_pretty(
+            state['withdrawal']['tx_fee_btc_amount']))
     while True:
         if state['screen_buttons']['wconfirm_confirm_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':
@@ -576,9 +580,11 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
     ui.setText('wconfirm_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wconfirm_btc_amount_lbl',
-               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
+               amounts.format_btc_amount_pretty(Decimal(0)))
     ui.setText('wconfirm_xrate_amount_lbl',
                amounts.format_exchange_rate_pretty(Decimal(0)))
+    ui.setText('wconfirm_fee_amount_lbl',
+               amounts.format_btc_amount_pretty(Decimal(0)))
     ui.setImage('wreceipt_receipt_qr_img', None)
 
 

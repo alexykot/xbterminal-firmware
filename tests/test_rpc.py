@@ -198,7 +198,9 @@ class APITestCase(unittest.TestCase):
         create_order_mock.return_value = order_mock = Mock(**{
             'uid': 'test-uid',
             'btc_amount': Decimal('0.25'),
+            'tx_fee_btc_amount': Decimal('0.0001'),
             'exchange_rate': Decimal('10.0'),
+            'status': 'new',
         })
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.create_withdrawal_order(fiat_amount='1.25')
@@ -208,6 +210,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(state['withdrawals']['test-uid'], order_mock)
         self.assertEqual(result['uid'], 'test-uid')
         self.assertEqual(result['btc_amount'], '0.25')
+        self.assertEqual(result['tx_fee_btc_amount'], '0.0001')
         self.assertEqual(result['exchange_rate'], '10.0')
 
     def test_confirm_withdrawal(self):
