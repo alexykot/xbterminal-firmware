@@ -115,6 +115,13 @@ class ERRORS(object):
         'MainWindow', 'server error', None))
 
 
+class PAYMENT_STATUSES:
+
+    RECEIVED = _translate('MainWindow', 'received', None)
+    WAITING = _translate('MainWindow', 'waiting for confidence', None)
+    DONE = _translate('MainWindow', 'done', None)
+
+
 class GUI(QtGui.QMainWindow):
 
     def __init__(self):
@@ -145,6 +152,7 @@ class GUI(QtGui.QMainWindow):
         self.loader = QtGui.QMovie(':/images/loading.gif')
         self.ui.loader_lbl.setMovie(self.loader)
         self.ui.pload_loader_lbl.setMovie(self.loader)
+        self.ui.pprogress_loader_lbl.setMovie(self.loader)
         self.loader.start()
         # Set up buttons
         for button_name in settings.BUTTONS:

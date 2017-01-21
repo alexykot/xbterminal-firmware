@@ -3,6 +3,7 @@ import logging
 import time
 
 from xbterminal.gui import settings
+from xbterminal.gui.gui import PAYMENT_STATUSES
 from xbterminal.gui.utils import amounts, qr
 from xbterminal.gui.exceptions import (
     NetworkError,
@@ -253,19 +254,43 @@ def pay_wait(state, ui):
             ui.showWidget('pwait_paid_btc_amount_lbl')
             ui.showWidget('pwait_cancel_refund_btn')
             ui.hideWidget('pwait_cancel_btn')
-        elif payment_status['status'] in ['notified', 'confirmed']:
+        elif payment_status['status'] == 'received':
+            state['client'].stop_nfc_server()
+            state['client'].stop_bluetooth_server()
+            return settings.STAGES['payment']['pay_progress']
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=450)
+        except StageTimeout:
+            _clear_payment_runtime(state, ui, cancel_order=True)
+            state['client'].stop_nfc_server()
+            state['client'].stop_bluetooth_server()
+            return settings.STAGES['payment']['pay_cancel']
+
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def pay_progress(state, ui):
+    ui.showScreen('pay_progress')
+    ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.RECEIVED)
+    time.sleep(2)
+    ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.WAITING)
+    while True:
+        payment_status = state['client'].get_payment_status(
+            uid=state['payment']['uid'])
+        if payment_status['status'] in ['notified', 'confirmed']:
+            ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.DONE)
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
             state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
-            state['client'].stop_nfc_server()
-            state['client'].stop_bluetooth_server()
             qr.qr_gen(state['payment']['receipt_url'],
                       settings.QR_IMAGE_PATH)
+            time.sleep(3)
             return settings.STAGES['payment']['pay_receipt']
 
         try:
-            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=900)
+            _wait_for_screen_timeout(state, ui, 'pay_progress', timeout=900)
         except StageTimeout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
