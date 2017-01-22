@@ -51,6 +51,7 @@ def idle(state, ui):
             state['screen_buttons']['standby_wake_btn'] = False
             state['client'].stop_nfc_server()
             return settings.STAGES['payment']['pay_amount']
+
         # Communicate with the host system
         payout = state['client'].host_get_payout()
         if state['keypad'].last_key_pressed == 'alt':
@@ -60,6 +61,7 @@ def idle(state, ui):
             state['withdrawal']['fiat_amount'] = payout
             state['client'].stop_nfc_server()
             return settings.STAGES['withdrawal']['withdraw_select']
+
         # Show standby screen when idle for a long time
         current_time = time.time()
         if state['last_activity_timestamp'] + settings.STANDBY_SCREEN_TIMEOUT < current_time and \
@@ -100,6 +102,12 @@ def pay_amount(state, ui):
         elif state['keypad'].last_key_pressed == 'backspace':
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
+
+        payout = state['client'].host_get_payout()
+        if payout:
+            _clear_payment_runtime(state, ui)
+            state['withdrawal']['fiat_amount'] = payout
+            return settings.STAGES['withdrawal']['withdraw_select']
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_amount')
@@ -206,6 +214,12 @@ def pay_info(state, ui):
             state['screen_buttons']['pinfo_cancel_btn'] = False
             _clear_payment_runtime(state, ui, cancel_order=True)
             return settings.STAGES['payment']['pay_amount']
+
+        payout = state['client'].host_get_payout()
+        if payout:
+            _clear_payment_runtime(state, ui, cancel_order=True)
+            state['withdrawal']['fiat_amount'] = payout
+            return settings.STAGES['withdrawal']['withdraw_select']
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_info')
@@ -315,6 +329,13 @@ def pay_receipt(state, ui):
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
 
+        payout = state['client'].host_get_payout()
+        if payout:
+            state['client'].stop_nfc_server()
+            _clear_payment_runtime(state, ui)
+            state['withdrawal']['fiat_amount'] = payout
+            return settings.STAGES['withdrawal']['withdraw_select']
+
         try:
             _wait_for_screen_timeout(state, ui, 'pay_receipt')
         except StageTimeout:
@@ -331,6 +352,13 @@ def pay_cancel(state, ui):
         if state['keypad'].last_key_pressed is not None:
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
+
+        payout = state['client'].host_get_payout()
+        if payout:
+            _clear_payment_runtime(state, ui)
+            state['withdrawal']['fiat_amount'] = payout
+            return settings.STAGES['withdrawal']['withdraw_select']
+
         if state['last_activity_timestamp'] + settings.SCREEN_TIMEOUT < time.time():
             return settings.STAGES['idle']
         time.sleep(settings.STAGE_LOOP_PERIOD)
