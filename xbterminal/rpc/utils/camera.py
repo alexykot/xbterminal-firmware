@@ -132,7 +132,7 @@ class QRScanner(object):
         'fswebcam': FsWebCamBackend,
     }
 
-    def __init__(self, backend='opencv'):
+    def __init__(self, backend='fswebcam'):
         logger.info('using {0} backend'.format(backend))
         self.camera = self.backends[backend]()
         if not self.camera.is_available():
