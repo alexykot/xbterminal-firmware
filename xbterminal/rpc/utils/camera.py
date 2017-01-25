@@ -5,36 +5,11 @@ import threading
 import subprocess
 
 from PIL import Image
-try:
-    import cv2
-except ImportError:
-    pass
 
 from xbterminal.rpc.utils import qr
 from xbterminal.rpc.settings import RUNTIME_PATH
 
 logger = logging.getLogger(__name__)
-
-
-class OpenCVBackend(object):
-
-    source_index = 0
-
-    def __init__(self):
-        self._camera = cv2.VideoCapture(self.source_index)
-
-    def is_available(self):
-        return self._camera is not None and self._camera.isOpened()
-
-    def get_image(self):
-        """
-        Should return PIL Image instance or None
-        """
-        retcode, data = self._camera.read()
-        if not retcode or not data.any():
-            return None
-        image = Image.fromarray(data[..., ::-1])  # Convert from BGR to RGB
-        return image
 
 
 class FsWebCamBackend(object):
@@ -106,7 +81,6 @@ class Worker(threading.Thread):
         self._stop = threading.Event()
 
     def run(self):
-        logger.debug('qr scanner started')
         while True:
             if self._stop.is_set():
                 break
@@ -119,7 +93,6 @@ class Worker(threading.Thread):
             if data:
                 logger.debug('qr scanner has decoded message: {0}'.format(data))
                 self.data = data
-        logger.debug('qr scanner stopped')
 
     def stop(self):
         self._stop.set()
@@ -128,7 +101,6 @@ class Worker(threading.Thread):
 class QRScanner(object):
 
     backends = {
-        'opencv': OpenCVBackend,
         'fswebcam': FsWebCamBackend,
     }
 
@@ -145,11 +117,13 @@ class QRScanner(object):
         if self.camera.is_available() and not self.worker:
             self.worker = Worker(self.camera)
             self.worker.start()
+            logger.debug('qr scanner started')
 
     def stop(self):
         if self.worker and self.worker.is_alive():
             self.worker.stop()
             self.worker.join()
+            logger.debug('qr scanner stopped')
         self.worker = None
 
     def get_data(self):

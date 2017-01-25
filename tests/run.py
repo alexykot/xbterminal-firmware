@@ -9,7 +9,6 @@ sys.modules['PyQt4'] = mock.Mock(**{
     'QtGui.QMainWindow': mocks.QMainWindow,
 })
 sys.modules['dbus'] = mock.Mock()
-sys.modules['cv2'] = mock.Mock()
 sys.modules['zbar'] = mock.Mock()
 sys.modules['bluetooth'] = mock.Mock()
 
