@@ -41,9 +41,13 @@ class QRScanner(object):
 
     def _get_pipeline_config(self):
         try:
-            subprocess.check_call(['gst-inspect-1.0', 'imxv4l2src'])
+            with open('/dev/null', 'w') as devnull:
+                subprocess.check_call(
+                    ['gst-inspect-1.0', 'imxv4l2src'],
+                    stdout=devnull,
+                    stderr=devnull)
         except subprocess.CalledProcessError:
-            # IMX plugins are not available
+            logger.warning('imx plugins for gstreamer are not available')
             return [
                 'gst-launch-1.0', '-v', '-m',
                 'v4l2src', 'device={}'.format(self.device),
@@ -51,6 +55,8 @@ class QRScanner(object):
                 '!', 'queue',
                 '!', 'videoconvert',
                 '!', 'videoflip', 'method=horizontal-flip',
+                '!', 'videoscale',
+                '!', 'video/x-raw,width=480,height=272',
                 '!', 'ximagesink', 'sync=false', 'display=:0',
                 't.',
                 '!', 'queue',
