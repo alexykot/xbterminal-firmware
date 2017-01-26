@@ -49,14 +49,6 @@ class Worker(threading.Thread):
 
 class QRScanner(object):
 
-    ZBAR_MSG_REGEX = re.compile(
-        r'''
-        "zbar0"
-        .+?
-        symbol=\(string\)(?P<data>[^,\s]+),
-        ''',
-        re.VERBOSE)
-
     FPS = 2
 
     def __init__(self):
