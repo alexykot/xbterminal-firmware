@@ -1432,56 +1432,12 @@ tap NFC around camera</string>
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="withdraw_scan_scrn">
-    <widget class="QLabel" name="wscan_btc_amount_lbl">
+   <widget class="QWidget" name="withdraw_wait_scrn">
+    <widget class="QLabel" name="wwait_fiat_amount_lbl">
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>140</y>
-       <width>151</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>m฿30.05561</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_xrate_amount_lbl">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>180</y>
-       <width>151</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Open Sans</family>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>1 BTC = £212.12</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_fiat_amount_lbl">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>100</y>
+       <y>110</y>
        <width>151</width>
        <height>31</height>
       </rect>
@@ -1499,7 +1455,7 @@ tap NFC around camera</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="wscan_desc_lbl">
+    <widget class="QLabel" name="wwait_desc_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1525,10 +1481,10 @@ tap NFC around camera</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="wscan_goback_btn">
+    <widget class="QPushButton" name="wwait_goback_btn">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>30</x>
        <y>210</y>
        <width>131</width>
        <height>51</height>
@@ -1544,33 +1500,12 @@ tap NFC around camera</string>
       <string>Go back</string>
      </property>
     </widget>
-    <widget class="QLabel" name="wscan_num1_lbl">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>95</y>
-       <width>30</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>1</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_display1_lbl">
+    <widget class="QLabel" name="wwait_phone_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>130</y>
-       <width>171</width>
+       <y>150</y>
+       <width>480</width>
        <height>51</height>
       </rect>
      </property>
@@ -1580,41 +1515,41 @@ tap NFC around camera</string>
       </font>
      </property>
      <property name="text">
-      <string>Display QR code
-on phone</string>
+      <string>Please have your phone ready
+for address QR code scanning</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="wscan_num2_lbl">
+    <widget class="QPushButton" name="wwait_scan_btn">
      <property name="geometry">
       <rect>
-       <x>380</x>
-       <y>95</y>
-       <width>30</width>
-       <height>30</height>
+       <x>190</x>
+       <y>210</y>
+       <width>261</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
       <font>
+       <family>Open Sans</family>
        <pointsize>16</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>2</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <string>Scan address QR code</string>
      </property>
     </widget>
-    <widget class="QLabel" name="wscan_scan1_lbl">
+   </widget>
+   <widget class="QWidget" name="withdraw_scan_scrn">
+    <widget class="QLabel" name="wscan_bg_lbl">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>130</y>
-       <width>171</width>
-       <height>31</height>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>272</height>
       </rect>
      </property>
      <property name="font">
@@ -1623,94 +1558,10 @@ on phone</string>
       </font>
      </property>
      <property name="text">
-      <string>Scan QR code</string>
+      <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_display2_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>180</y>
-       <width>171</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Find your
-bitcoin address code
-and display</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_scan2_lbl">
-     <property name="geometry">
-      <rect>
-       <x>310</x>
-       <y>160</y>
-       <width>171</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Hold your phone to the
-camera on this device</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_icon1_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_icon2_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="wscan_icon3_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
      </property>
     </widget>
    </widget>

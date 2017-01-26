@@ -74,7 +74,7 @@ class GUITestCase(unittest.TestCase):
     @patch.dict('xbterminal.gui.gui.state', {'gui_config': {}})
     def test_error_screen(self, appui_mock, app_cls_mock):
         appui_mock.Ui_MainWindow.return_value = Mock(**{
-            'main_stackedWidget.currentIndex.side_effect': [2, 2, 16],
+            'main_stackedWidget.currentIndex.side_effect': [2, 2, 17],
         })
         window = GUI()
         window.showErrorScreen('NETWORK_ERROR')
@@ -86,6 +86,6 @@ class GUITestCase(unittest.TestCase):
             window.ui.error_message_val_lbl.setText.call_args[0][0],
             'connection error')
         widget_mock = window.ui.main_stackedWidget
-        self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 16)
+        self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 17)
         window.hideErrorScreen()
         self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 2)
