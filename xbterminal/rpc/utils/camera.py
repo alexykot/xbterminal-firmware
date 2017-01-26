@@ -1,8 +1,50 @@
 import logging
 import subprocess
+import threading
 import re
 
 logger = logging.getLogger(__name__)
+
+
+class Worker(threading.Thread):
+
+    ZBAR_MSG_REGEX = re.compile(
+        r'''
+        "zbar0"
+        .+?
+        symbol=\(string\)(?P<data>[^,\s]+),
+        ''',
+        re.VERBOSE)
+
+    def __init__(self, pipeline_config):
+        super(Worker, self).__init__()
+        self.daemon = True
+        self.pipeline = None
+        self.pipeline_config = pipeline_config
+        self.data = None
+        self._stop = threading.Event()
+
+    def run(self):
+        self.pipeline = subprocess.Popen(
+            self.pipeline_config,
+            stdout=subprocess.PIPE)
+        logger.debug('qr scanner started')
+        while True:
+            if self._stop.is_set():
+                break
+            line = self.pipeline.stdout.readline()
+            if not line:
+                break
+            match = self.ZBAR_MSG_REGEX.search(line)
+            if match:
+                data = match.group('data')
+                logger.debug('qr scanner has decoded message: {0}'.format(data))
+                self.data = data
+        logger.debug('qr scanner stopped')
+
+    def stop(self):
+        self.pipeline.kill()
+        self._stop.set()
 
 
 class QRScanner(object):
@@ -27,7 +69,7 @@ class QRScanner(object):
                 break
         else:
             logger.warning('camera is not available')
-        self.pipeline = None
+        self.worker = None
 
     def _check_device(self, path):
         try:
@@ -86,27 +128,18 @@ class QRScanner(object):
     def start(self):
         if not self.device:
             return
-        if self.pipeline is not None:
-            logger.warning('qt scanner already started')
-        self.pipeline = subprocess.Popen(
-            self._get_pipeline_config(),
-            stdout=subprocess.PIPE)
-        logger.debug('qr scanner started')
+        if self.worker is not None:
+            logger.warning('qr worker already started')
+            return
+        self.worker = Worker(self._get_pipeline_config())
+        self.worker.start()
 
     def stop(self):
-        if self.pipeline and self.pipeline.poll() is None:
-            self.pipeline.kill()
-            logger.debug('qr scanner stopped')
-        self.pipeline = None
+        if self.worker and self.worker.is_alive():
+            self.worker.stop()
+            self.worker.join()
+        self.worker = None
 
     def get_data(self):
-        if self.pipeline is not None:
-            while True:
-                line = self.pipeline.stdout.readline()
-                if not line:
-                    break
-                match = self.ZBAR_MSG_REGEX.search(line)
-                if match:
-                    data = match.group('data')
-                    logger.debug('qr scanner has decoded message: {0}'.format(data))
-                    return data
+        if self.worker is not None:
+            return self.worker.data
