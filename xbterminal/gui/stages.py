@@ -441,6 +441,7 @@ def withdraw_wait(state, ui):
 
 def withdraw_scan(state, ui):
     ui.showScreen('withdraw_scan')
+    stage_timeout = 30
     state['client'].start_qr_scanner()
     while True:
         default_address = state['gui_config'].get('default_withdrawal_address')
@@ -451,7 +452,7 @@ def withdraw_scan(state, ui):
             state['withdrawal']['address'] = address
             return settings.STAGES['withdrawal']['withdraw_confirm']
 
-        if state['last_activity_timestamp'] + 30 < time.time():
+        if state['last_activity_timestamp'] + stage_timeout < time.time():
             state['client'].stop_qr_scanner()
             return settings.STAGES['withdrawal']['withdraw_wait']
 
