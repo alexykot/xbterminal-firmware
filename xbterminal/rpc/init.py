@@ -25,7 +25,7 @@ def init_step_1(state):
     state['bsp_interface'] = BSPLibraryInterface(
         use_mock=state['rpc_config'].get('use_bsp_mock', False))
     state['bluetooth_server'] = BluetoothServer()
-    state['qr_scanner'] = QRScanner(backend='fswebcam')
+    state['qr_scanner'] = QRScanner()
 
 
 def init_step_2(state):

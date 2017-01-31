@@ -408,21 +408,40 @@ def withdraw_loading1(state, ui):
             return settings.STAGES['withdrawal']['withdraw_select']
         else:
             state['withdrawal'].update(withdrawal_info)
+            return settings.STAGES['withdrawal']['withdraw_wait']
+
+
+def withdraw_wait(state, ui):
+    ui.showScreen('withdraw_wait')
+    assert state['withdrawal']['uid'] is not None
+    ui.setText(
+        'wwait_fiat_amount_lbl',
+        amounts.format_fiat_amount_pretty(state['withdrawal']['fiat_amount'], prefix=True))
+    while True:
+        if state['screen_buttons']['wwait_goback_btn'] or \
+                state['keypad'].last_key_pressed == 'backspace':
+            state['screen_buttons']['wwait_goback_btn'] = False
+            _clear_withdrawal_runtime(state, ui, clear_amount=False,
+                                      cancel_order=True)
+            return settings.STAGES['withdrawal']['withdraw_select']
+        elif state['screen_buttons']['wwait_scan_btn'] or \
+                state['keypad'].last_key_pressed == 'enter':
+            state['screen_buttons']['wwait_scan_btn'] = False
             return settings.STAGES['withdrawal']['withdraw_scan']
+
+        try:
+            _wait_for_screen_timeout(state, ui, 'withdraw_wait', timeout=300)
+        except StageTimeout:
+            _clear_withdrawal_runtime(state, ui, clear_amount=False,
+                                      cancel_order=True)
+            return settings.STAGES['withdrawal']['withdraw_select']
+
+        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_scan(state, ui):
     ui.showScreen('withdraw_scan')
-    assert state['withdrawal']['uid'] is not None
-    ui.setText(
-        'wscan_fiat_amount_lbl',
-        amounts.format_fiat_amount_pretty(state['withdrawal']['fiat_amount'], prefix=True))
-    ui.setText(
-        'wscan_btc_amount_lbl',
-        amounts.format_btc_amount_pretty(state['withdrawal']['btc_amount'], prefix=True))
-    ui.setText(
-        'wscan_xrate_amount_lbl',
-        amounts.format_exchange_rate_pretty(state['withdrawal']['exchange_rate']))
+    stage_timeout = 30
     state['client'].start_qr_scanner()
     while True:
         default_address = state['gui_config'].get('default_withdrawal_address')
@@ -432,20 +451,10 @@ def withdraw_scan(state, ui):
             state['client'].stop_qr_scanner()
             state['withdrawal']['address'] = address
             return settings.STAGES['withdrawal']['withdraw_confirm']
-        if state['screen_buttons']['wscan_goback_btn'] or \
-                state['keypad'].last_key_pressed == 'backspace':
-            state['screen_buttons']['wscan_goback_btn'] = False
-            state['client'].stop_qr_scanner()
-            _clear_withdrawal_runtime(state, ui, clear_amount=False,
-                                      cancel_order=True)
-            return settings.STAGES['withdrawal']['withdraw_select']
 
-        try:
-            _wait_for_screen_timeout(state, ui, 'withdraw_scan', timeout=300)
-        except StageTimeout:
+        if state['last_activity_timestamp'] + stage_timeout < time.time():
             state['client'].stop_qr_scanner()
-            _clear_withdrawal_runtime(state, ui, clear_amount=False)
-            return settings.STAGES['withdrawal']['withdraw_select']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
@@ -599,12 +608,8 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
     state['withdrawal']['address'] = None
     state['withdrawal']['receipt_url'] = None
 
-    ui.setText('wscan_fiat_amount_lbl',
+    ui.setText('wwait_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
-    ui.setText('wscan_btc_amount_lbl',
-               amounts.format_btc_amount_pretty(Decimal(0), prefix=True))
-    ui.setText('wscan_xrate_amount_lbl',
-               amounts.format_exchange_rate_pretty(Decimal(0)))
     ui.setText('wconfirm_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
     ui.setText('wconfirm_btc_amount_lbl',

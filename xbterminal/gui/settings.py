@@ -1,6 +1,6 @@
 import os
 
-VERSION = '0.13.1'
+VERSION = '0.14.0'
 
 STAGES = {
     'bootup': 'bootup',
@@ -19,6 +19,7 @@ STAGES = {
     'withdrawal': {
         'withdraw_select': 'withdraw_select',
         'withdraw_loading1': 'withdraw_loading1',
+        'withdraw_wait': 'withdraw_wait',
         'withdraw_scan': 'withdraw_scan',
         'withdraw_confirm': 'withdraw_confirm',
         'withdraw_loading2': 'withdraw_loading2',
@@ -41,11 +42,12 @@ SCREENS = {
     'pay_receipt': 10,
     'pay_cancel': 11,
     'withdraw_select': 12,
-    'withdraw_scan': 13,
-    'withdraw_confirm': 14,
-    'withdraw_receipt': 15,
-    'error': 16,
-    'timeout': 17,
+    'withdraw_wait': 13,
+    'withdraw_scan': 14,
+    'withdraw_confirm': 15,
+    'withdraw_receipt': 16,
+    'error': 17,
+    'timeout': 18,
 }
 
 BUTTONS = [
@@ -65,7 +67,8 @@ BUTTONS = [
     'preceipt_goback_btn',
     'wselect_fiat_btn',
     'wselect_bitcoin_btn',
-    'wscan_goback_btn',
+    'wwait_goback_btn',
+    'wwait_scan_btn',
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',
     'wreceipt_goback_btn',

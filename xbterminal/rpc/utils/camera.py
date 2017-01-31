@@ -1,59 +1,67 @@
 import logging
-import os
-import time
-import threading
 import subprocess
-
-from PIL import Image
-try:
-    import cv2
-except ImportError:
-    pass
-
-from xbterminal.rpc.utils import qr
-from xbterminal.rpc.settings import RUNTIME_PATH
+import threading
+import re
 
 logger = logging.getLogger(__name__)
 
 
-class OpenCVBackend(object):
+class Worker(threading.Thread):
 
-    source_index = 0
+    ZBAR_MSG_REGEX = re.compile(
+        r'''
+        "zbar0"
+        .+?
+        symbol=\(string\)(?P<data>[^,\s]+),
+        ''',
+        re.VERBOSE)
+
+    def __init__(self, pipeline_config):
+        super(Worker, self).__init__()
+        self.daemon = True
+        self.pipeline = None
+        self.pipeline_config = pipeline_config
+        self.data = None
+        self._stop = threading.Event()
+
+    def run(self):
+        self.pipeline = subprocess.Popen(
+            self.pipeline_config,
+            stdout=subprocess.PIPE)
+        logger.debug('qr scanner started')
+        while True:
+            if self._stop.is_set():
+                break
+            line = self.pipeline.stdout.readline()
+            if not line:
+                break
+            match = self.ZBAR_MSG_REGEX.search(line)
+            if match:
+                data = match.group('data')
+                logger.debug('qr scanner has decoded message: {0}'.format(data))
+                self.data = data
+        logger.debug('qr scanner stopped')
+
+    def stop(self):
+        self.pipeline.kill()
+        self._stop.set()
+
+
+class QRScanner(object):
+
+    FPS = 2
 
     def __init__(self):
-        self._camera = cv2.VideoCapture(self.source_index)
-
-    def is_available(self):
-        return self._camera is not None and self._camera.isOpened()
-
-    def get_image(self):
-        """
-        Should return PIL Image instance or None
-        """
-        retcode, data = self._camera.read()
-        if not retcode or not data.any():
-            return None
-        image = Image.fromarray(data[..., ::-1])  # Convert from BGR to RGB
-        return image
-
-
-class FsWebCamBackend(object):
-
-    fps = 30
-
-    def __init__(self):
-        self.image_path = os.path.join(RUNTIME_PATH, 'camera.jpg')
         self.device = None
         for idx in range(5):
             path = '/dev/video{}'.format(idx)
             if self._check_device(path):
                 self.device = path
-                if idx == 0:
-                    self.resolution = '480x320'
-                else:
-                    self.resolution = '640x480'
                 logger.info('camera found at {}'.format(self.device))
                 break
+        else:
+            logger.warning('camera is not available')
+        self.worker = None
 
     def _check_device(self, path):
         try:
@@ -65,86 +73,58 @@ class FsWebCamBackend(object):
         else:
             return 'Captured frame' in output
 
-    def is_available(self):
-        if self.device:
-            return self._check_device(self.device)
-        else:
-            return False
-
-    def get_image(self):
-        """
-        Returns PIL.Image instance or None
-        """
+    def _get_pipeline_config(self):
         try:
-            output = subprocess.check_output([
-                'fswebcam',
-                '--device', self.device,
-                '--resolution', self.resolution,
-                '--fps', str(self.fps),
-                '--skip', '1',
-                '--no-banner',
-                self.image_path,
-            ], stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as error:
-            logger.exception(error)
-            return None
-        if 'Writing JPEG image' not in output:
-            return None
-        image = Image.open(self.image_path)
-        return image
-
-
-class Worker(threading.Thread):
-
-    fps = 2
-
-    def __init__(self, camera):
-        super(Worker, self).__init__()
-        self.daemon = True
-        self.camera = camera
-        self.data = None
-        self._stop = threading.Event()
-
-    def run(self):
-        logger.debug('qr scanner started')
-        while True:
-            if self._stop.is_set():
-                break
-            image = self.camera.get_image()
-            time.sleep(1 / self.fps)
-            if not image:
-                logger.error('could not get image from camera')
-                break
-            data = qr.decode(image)
-            if data:
-                logger.debug('qr scanner has decoded message: {0}'.format(data))
-                self.data = data
-        logger.debug('qr scanner stopped')
-
-    def stop(self):
-        self._stop.set()
-
-
-class QRScanner(object):
-
-    backends = {
-        'opencv': OpenCVBackend,
-        'fswebcam': FsWebCamBackend,
-    }
-
-    def __init__(self, backend='opencv'):
-        logger.info('using {0} backend'.format(backend))
-        self.camera = self.backends[backend]()
-        if not self.camera.is_available():
-            logger.warning('camera is not available')
+            with open('/dev/null', 'w') as devnull:
+                subprocess.check_call(
+                    ['gst-inspect-1.0', 'imxv4l2src'],
+                    stdout=devnull,
+                    stderr=devnull)
+        except subprocess.CalledProcessError:
+            logger.warning('imx plugins for gstreamer are not available')
+            return [
+                'gst-launch-1.0', '-v', '-m',
+                'v4l2src', 'device={}'.format(self.device),
+                '!', 'tee', 'name=t',
+                '!', 'queue',
+                '!', 'videoconvert',
+                '!', 'videoflip', 'method=horizontal-flip',
+                '!', 'videoscale',
+                '!', 'video/x-raw,width=480,height=272',
+                '!', 'ximagesink', 'sync=false', 'display=:0',
+                't.',
+                '!', 'queue',
+                '!', 'videorate',
+                '!', 'video/x-raw,framerate={}/1'.format(self.FPS),
+                '!', 'zbar',
+                '!', 'fakesink',
+            ]
         else:
-            logger.info('camera is active')
-        self.worker = None
+            return [
+                'gst-launch-1.0', '-v', '-m',
+                'imxv4l2src', 'device={}'.format(self.device),
+                '!', 'tee', 'name=t',
+                '!', 'queue',
+                '!', 'videoconvert',
+                '!', 'imxvideoconvert_pxp', 'rotation=horizontal-flip',
+                '!', 'imxv4l2sink',
+                't.',
+                '!', 'queue',
+                '!', 'videoconvert',
+                '!', 'videorate',
+                '!', 'video/x-raw,framerate={}/1'.format(self.FPS),
+                '!', 'zbar',
+                '!', 'fakesink',
+            ]
 
     def start(self):
-        if self.camera.is_available() and not self.worker:
-            self.worker = Worker(self.camera)
-            self.worker.start()
+        if not self.device:
+            return
+        if self.worker is not None:
+            logger.warning('qr worker already started')
+            return
+        self.worker = Worker(self._get_pipeline_config())
+        self.worker.start()
 
     def stop(self):
         if self.worker and self.worker.is_alive():
