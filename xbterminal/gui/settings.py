@@ -85,7 +85,6 @@ PROJECT_LOCAL_PATH = os.path.join(BASE_DIR, 'xbterminal')
 
 RUNTIME_PATH = os.path.join(PROJECT_LOCAL_PATH, 'runtime')
 GUI_CONFIG_FILE_PATH = os.path.join(RUNTIME_PATH, 'gui_config')
-QR_IMAGE_PATH = os.path.join(RUNTIME_PATH, 'qr.png')
 
 UI_TRANSLATIONS_PATH = os.path.join(PROJECT_LOCAL_PATH, 'gui', 'ts')
 UI_DEFAULT_LANGUAGE = 'en'

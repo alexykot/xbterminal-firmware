@@ -457,6 +457,7 @@ class PayLoadingStageTestCase(unittest.TestCase):
                 'payment_uri': 'test',
             },
         })
+        qr_gen_mock.return_value = 'image'
         state = {
             'client': client_mock,
             'payment': {
@@ -471,7 +472,8 @@ class PayLoadingStageTestCase(unittest.TestCase):
             client_mock.create_payment_order.call_args[1]['fiat_amount'],
             Decimal('1.00'))
         self.assertEqual(state['payment']['uid'], 'testUid')
-        self.assertTrue(qr_gen_mock.call_args[0][0], 'test')
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test')
+        self.assertEqual(state['payment']['qrcode'], 'image')
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_info'])
 
@@ -608,6 +610,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                 'btc_amount': Decimal(0),
                 'exchange_rate': Decimal(0),
                 'payment_uri': 'test',
+                'qrcode': 'image',
             },
         }
         ui = Mock()
@@ -625,6 +628,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                          'testUid')
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['payment_uri'])
+        self.assertIsNone(state['payment']['qrcode'])
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
@@ -654,12 +658,15 @@ class PayWaitStageTestCase(unittest.TestCase):
                 'btc_amount': Decimal('0.05'),
                 'exchange_rate': Decimal('20'),
                 'payment_uri': 'test',
+                'qrcode': 'image',
             },
         }
         ui = Mock()
         next_stage = stages.pay_wait(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'pay_wait')
+        self.assertEqual(ui.setImage.call_args[0][1],
+                         state['payment']['qrcode'])
         self.assertTrue(client_mock.start_bluetooth_server.called)
         self.assertTrue(client_mock.stop_bluetooth_server.called)
         self.assertTrue(client_mock.start_nfc_server.called)
@@ -701,6 +708,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                 'btc_amount': Decimal('0.1'),
                 'exchange_rate': Decimal('20'),
                 'payment_uri': 'test',
+                'qrcode': 'image',
             },
         }
         ui = Mock()
@@ -737,6 +745,7 @@ class PayWaitStageTestCase(unittest.TestCase):
                 'btc_amount': Decimal(0),
                 'exchange_rate': Decimal(0),
                 'payment_uri': 'test',
+                'qrcode': 'image',
             },
         }
         ui = Mock()
@@ -758,6 +767,7 @@ class PayProgressStageTestCase(unittest.TestCase):
             'get_payment_receipt.return_value': 'test_url',
             'host_add_credit.return_value': True,
         })
+        qr_gen_mock.return_value = 'image'
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
@@ -783,8 +793,9 @@ class PayProgressStageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.host_add_credit.call_args[1]['fiat_amount'],
             Decimal('1.00'))
-        self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(state['payment']['receipt_url'], 'test_url')
+        self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
+        self.assertEqual(state['payment']['qrcode'], 'image')
         self.assertIsNotNone(state['payment']['uid'])
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_receipt'])
@@ -806,6 +817,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
                 'uid': 'testUid',
                 'btc_amount': Decimal('0.05'),
                 'receipt_url': 'test',
+                'qrcode': 'image',
             },
         }
         ui = Mock()
@@ -815,6 +827,8 @@ class PayReceiptStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args_list[1][0][0],
                          'load_indefinite')
         self.assertIn('50.00', ui.setText.call_args_list[0][0][1])
+        self.assertEqual(ui.setImage.call_args[0][1],
+                         state['payment']['qrcode'])
         self.assertEqual(
             client_mock.start_nfc_server.call_args[1]['message'],
             'test')
@@ -822,6 +836,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
         self.assertIsNone(state['payment']['uid'])
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['receipt_url'])
+        self.assertIsNone(state['payment']['qrcode'])
         self.assertEqual(next_stage,
                          settings.STAGES['idle'])
         self.assertFalse(any(state for state
@@ -841,6 +856,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
                 'uid': 'testUid',
                 'btc_amount': Decimal('0.05'),
                 'receipt_url': 'test',
+                'qrcode': 'image',
             },
             'withdrawal': {},
         }
@@ -1247,6 +1263,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             },
             'get_withdrawal_receipt.return_value': 'test_url',
         })
+        qr_gen_mock.return_value = 'image'
         state = {
             'client': client_mock,
             'withdrawal': {
@@ -1264,6 +1281,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
+        self.assertEqual(state['withdrawal']['qrcode'], 'image')
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_receipt'])
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.41'))
@@ -1319,6 +1337,7 @@ class WithdrawReceiptStageTestCase(unittest.TestCase):
                 'fiat_amount': Decimal('1.00'),
                 'btc_amount': Decimal('0.05'),
                 'receipt_url': 'test',
+                'qrcode': 'image',
             },
         }
         ui = Mock()
@@ -1328,6 +1347,8 @@ class WithdrawReceiptStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args_list[1][0][0],
                          'load_indefinite')
         self.assertIn('50.00', ui.setText.call_args_list[0][0][1])
+        self.assertEqual(ui.setImage.call_args[0][1],
+                         state['withdrawal']['qrcode'])
         self.assertEqual(
             client_mock.start_nfc_server.call_args[1]['message'],
             'test')

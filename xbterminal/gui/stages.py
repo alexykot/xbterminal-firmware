@@ -191,8 +191,7 @@ def pay_loading(state, ui):
             # Payment parameters loaded
             state['payment'].update(payment_info)
             # Prepare QR image
-            qr.qr_gen(state['payment']['payment_uri'],
-                      settings.QR_IMAGE_PATH)
+            state['payment']['qrcode'] = qr.qr_gen(state['payment']['payment_uri'])
             return settings.STAGES['payment']['pay_info']
 
 
@@ -234,7 +233,7 @@ def pay_wait(state, ui):
     ui.showScreen('pay_wait')
     ui.setText('pwait_btc_amount_lbl',
                amounts.format_btc_amount_pretty(state['payment']['btc_amount'], prefix=True))
-    ui.setImage('pwait_qr_img', settings.QR_IMAGE_PATH)
+    ui.setImage('pwait_qr_img', state['payment']['qrcode'])
     logger.info(
         'local payment requested, '
         'amount fiat: {amount_fiat}, '
@@ -298,8 +297,7 @@ def pay_progress(state, ui):
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
             state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
-            qr.qr_gen(state['payment']['receipt_url'],
-                      settings.QR_IMAGE_PATH)
+            state['payment']['qrcode'] = qr.qr_gen(state['payment']['receipt_url'])
             time.sleep(3)
             return settings.STAGES['payment']['pay_receipt']
 
@@ -319,7 +317,7 @@ def pay_receipt(state, ui):
     ui.showScreen('pay_receipt')
     ui.setText('preceipt_btc_amount_lbl',
                amounts.format_btc_amount_pretty(state['payment']['btc_amount']))
-    ui.setImage('preceipt_receipt_qr_img', settings.QR_IMAGE_PATH)
+    ui.setImage('preceipt_receipt_qr_img', state['payment']['qrcode'])
     state['client'].start_nfc_server(message=state['payment']['receipt_url'])
     while True:
         if state['screen_buttons']['preceipt_goback_btn'] or \
@@ -523,8 +521,7 @@ def withdraw_loading2(state, ui):
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(
                 state['withdrawal']['receipt_url']))
-            qr.qr_gen(state['withdrawal']['receipt_url'],
-                      settings.QR_IMAGE_PATH)
+            state['withdrawal']['qrcode'] = qr.qr_gen(state['withdrawal']['receipt_url'])
             return settings.STAGES['withdrawal']['withdraw_receipt']
 
         try:
@@ -539,7 +536,7 @@ def withdraw_loading2(state, ui):
 def withdraw_receipt(state, ui):
     ui.showScreen('withdraw_receipt')
     assert state['withdrawal']['receipt_url']
-    ui.setImage('wreceipt_receipt_qr_img', settings.QR_IMAGE_PATH)
+    ui.setImage('wreceipt_receipt_qr_img', state['withdrawal']['qrcode'])
     ui.setText('wreceipt_btc_amount_lbl',
                amounts.format_btc_amount_pretty(state['withdrawal']['btc_amount']))
     state['client'].start_nfc_server(message=state['withdrawal']['receipt_url'])
@@ -574,6 +571,7 @@ def _clear_payment_runtime(state, ui, cancel_order=False):
     state['payment']['exchange_rate'] = None
     state['payment']['payment_uri'] = None
     state['payment']['receipt_url'] = None
+    state['payment']['qrcode'] = None
 
     ui.hideWidget('pwait_paid_lbl')
     ui.hideWidget('pwait_paid_btc_amount_lbl')
@@ -607,6 +605,7 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
     state['withdrawal']['exchange_rate'] = None
     state['withdrawal']['address'] = None
     state['withdrawal']['receipt_url'] = None
+    state['withdrawal']['qrcode'] = None
 
     ui.setText('wwait_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))
