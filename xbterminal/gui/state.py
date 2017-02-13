@@ -25,6 +25,7 @@ def get_initial_gui_state():
             'exchange_rate': None,
             'payment_uri': None,
             'receipt_url': None,
+            'qrcode': None,
         },
         'withdrawal': {
             # Variables related to withdrawal process
@@ -34,6 +35,7 @@ def get_initial_gui_state():
             'exchange_rate': None,
             'address': None,
             'receipt_url': None,
+            'qrcode': None,
         },
     }
 

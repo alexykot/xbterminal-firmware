@@ -247,9 +247,11 @@ class GUI(QtGui.QMainWindow):
         widget = getattr(self.ui, widget_name)
         widget.setText(text)
 
-    def setImage(self, widget_name, image_path):
+    def setImage(self, widget_name, image_data):
         widget = getattr(self.ui, widget_name)
-        widget.setPixmap(QtGui.QPixmap(image_path))
+        image = QtGui.QImage.fromData(image_data)
+        pixmap = QtGui.QPixmap.fromImage(image)
+        widget.setPixmap(pixmap)
 
     def setStyle(self, widget_name, css):
         widget = getattr(self.ui, widget_name)
