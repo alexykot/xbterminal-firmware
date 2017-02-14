@@ -43,9 +43,9 @@ def load_remote_config():
         if cmp(state['remote_config'], remote_config):
             logger.info('remote config loaded, contents:\n{config_contents}'.format(
                 config_contents=pprint.pformat(remote_config)))
+            save_remote_config_cache(remote_config)
         else:
             logger.debug('remote config loaded, unchanged')
-        save_remote_config_cache(remote_config)
         return remote_config
 
 
