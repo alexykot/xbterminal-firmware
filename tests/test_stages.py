@@ -874,7 +874,10 @@ class PayCancelStageTestCase(unittest.TestCase):
 
     def test_return(self):
         state = {
-            'keypad': Mock(last_key_pressed='enter'),
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'pcancel_goback_btn': True,
+            },
             'payment': {},
         }
         ui = Mock()
@@ -882,7 +885,7 @@ class PayCancelStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args_list[0][0][0],
                          'pay_cancel')
         self.assertEqual(next_stage,
-                         settings.STAGES['idle'])
+                         settings.STAGES['payment']['pay_amount'])
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
@@ -891,6 +894,9 @@ class PayCancelStageTestCase(unittest.TestCase):
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'pcancel_goback_btn': False,
+            },
             'payment': {},
             'withdrawal': {},
         }
