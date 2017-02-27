@@ -1343,6 +1343,25 @@ tap NFC around camera</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QPushButton" name="pcancel_goback_btn">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>150</y>
+       <width>241</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Start again</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="withdraw_select_scrn">
     <widget class="QPushButton" name="wselect_fiat_btn">

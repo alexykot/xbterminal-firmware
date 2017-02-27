@@ -65,6 +65,7 @@ BUTTONS = [
     'pwait_cancel_btn',
     'pwait_cancel_refund_btn',
     'preceipt_goback_btn',
+    'pcancel_goback_btn',
     'wselect_fiat_btn',
     'wselect_bitcoin_btn',
     'wwait_goback_btn',

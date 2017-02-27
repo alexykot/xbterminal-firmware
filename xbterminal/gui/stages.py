@@ -347,9 +347,11 @@ def pay_receipt(state, ui):
 def pay_cancel(state, ui):
     ui.showScreen('pay_cancel')
     while True:
-        if state['keypad'].last_key_pressed is not None:
+        if state['screen_buttons']['pcancel_goback_btn'] or \
+                state['keypad'].last_key_pressed is not None:
+            state['screen_buttons']['pcancel_goback_btn'] = False
             _clear_payment_runtime(state, ui)
-            return settings.STAGES['idle']
+            return settings.STAGES['payment']['pay_amount']
 
         payout = state['client'].host_get_payout()
         if payout:
