@@ -13,6 +13,12 @@ def flake8():
 
 
 @task
+def bandit():
+    with prefix('. venv/bin/activate'):
+        local('bandit -r -c .bandit xbterminal')
+
+
+@task
 def unit():
     with prefix('. venv/bin/activate'):
         local('coverage run tests/run.py')
@@ -22,4 +28,5 @@ def unit():
 @task(default=True)
 def all():
     flake8()
+    bandit()
     unit()

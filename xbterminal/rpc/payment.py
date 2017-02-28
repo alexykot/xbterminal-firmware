@@ -86,7 +86,7 @@ class Payment(object):
         try:
             response = api.send_request('get', payment_check_url)
             result = response.json()
-        except Exception:
+        except Exception:  # nosec
             pass
         else:
             if self.status != result['status']:
