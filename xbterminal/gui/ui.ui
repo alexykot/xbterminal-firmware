@@ -243,6 +243,10 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <zorder>idle_bc_logo_image</zorder>
+    <zorder>idle_nfc_lbl</zorder>
+    <zorder>idle_begin_lbl</zorder>
+    <zorder>idle_begin_btn</zorder>
    </widget>
    <widget class="QWidget" name="standby_scrn">
     <widget class="QPushButton" name="standby_wake_btn">
