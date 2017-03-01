@@ -34,11 +34,11 @@ class BluetoothServerTestCase(unittest.TestCase):
         args_1 = check_call_mock.call_args_list[0][0][0]
         self.assertEqual(
             args_1,
-            ['/usr/bin/hciconfig', 'hci0', 'sspmode', '0'])
+            ['/usr/sbin/hciconfig', 'hci0', 'sspmode', '0'])
         args_2 = check_call_mock.call_args_list[1][0][0]
         self.assertEqual(
             args_2,
-            ['/usr/bin/hciconfig', 'hci0', 'noauth'])
+            ['/usr/sbin/hciconfig', 'hci0', 'noauth'])
 
     @patch('xbterminal.rpc.utils.bt.subprocess.check_output')
     def test_init_proc_error(self, check_output_mock):
@@ -64,7 +64,7 @@ class BluetoothServerTestCase(unittest.TestCase):
         bt_server.start('test')
         self.assertEqual(check_call_mock.call_count, 1)
         self.assertEqual(check_call_mock.call_args[0][0],
-                         ['/usr/bin/hciconfig', 'hci0', 'piscan'])
+                         ['/usr/sbin/hciconfig', 'hci0', 'piscan'])
         self.assertEqual(len(bt_server.workers), 2)
         self.assertEqual(preq_worker_cls_mock.call_args[0][1], 'test')
         self.assertTrue(preq_worker_mock.start.called)
@@ -76,7 +76,7 @@ class BluetoothServerTestCase(unittest.TestCase):
         bt_server.stop()
         self.assertEqual(check_call_mock.call_count, 1)
         self.assertEqual(check_call_mock.call_args[0][0],
-                         ['/usr/bin/hciconfig', 'hci0', 'noscan'])
+                         ['/usr/sbin/hciconfig', 'hci0', 'noscan'])
         self.assertEqual(len(bt_server.workers), 0)
         self.assertFalse(bt_server.is_running())
 
