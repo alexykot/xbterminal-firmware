@@ -2,7 +2,7 @@ from fabric.api import task, local, prefix
 
 
 @task
-def flake8():
+def style():
     with prefix('. venv/bin/activate'):
         local('flake8 --max-line-length=110 fabfile')
         local('flake8 --max-line-length=100 '
@@ -13,7 +13,7 @@ def flake8():
 
 
 @task
-def bandit():
+def security():
     with prefix('. venv/bin/activate'):
         local('bandit -r -c .bandit xbterminal')
 
@@ -27,6 +27,6 @@ def unit():
 
 @task(default=True)
 def all():
-    flake8()
-    bandit()
+    style()
+    security()
     unit()
