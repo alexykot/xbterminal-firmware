@@ -27,7 +27,7 @@ class QRScannerTestCase(unittest.TestCase):
         qr_scanner = QRScanner()
         qr_scanner.start()
         self.assertEqual(worker_cls_mock.call_args[0][0][0],
-                         'gst-launch-1.0')
+                         '/usr/bin/gst-launch-1.0')
         self.assertIs(worker_mock.start.called, True)
         self.assertEqual(qr_scanner.get_data(), 'test')
         qr_scanner.stop()

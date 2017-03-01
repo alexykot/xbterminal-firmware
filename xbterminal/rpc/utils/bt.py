@@ -25,6 +25,8 @@ BLUETOOTH_SERVICE_UUIDS = {
     'Bitcoin classic': '3357A7BB-762D-464A-8D9A-DCA592D57D5B',
 }
 
+HCICONFIG_BIN = '/usr/sbin/hciconfig'
+
 HCICONFIG_REGEX = re.compile(
     r"""
     ^\s*(?P<device>hci[0-9]).+
@@ -56,7 +58,7 @@ def create_sdp_record_xml(service_name, channel):
     """
     Create xml file for SDP record
     """
-    record = xml_et.fromstring(SDP_RECORD_XML_TEMPLATE)
+    record = xml_et.fromstring(SDP_RECORD_XML_TEMPLATE)  # nosec
     # 0x0001 - ServiceClassIDList
     sequence = record.find('./attribute[@id="0x0001"]/sequence')
     uuid = xml_et.SubElement(sequence, 'uuid')
@@ -205,7 +207,7 @@ class BluetoothServer(object):
         self.workers = []
         # Read config
         try:
-            hciconfig_result = subprocess.check_output(['hciconfig'])
+            hciconfig_result = subprocess.check_output([HCICONFIG_BIN])  # nosec
         except subprocess.CalledProcessError as error:
             logger.exception(error)
             return
@@ -216,16 +218,32 @@ class BluetoothServer(object):
         self.device_id = match.group('device')
         self.mac_address = match.group('mac')
         # Disable SSP
-        subprocess.check_call(['hciconfig', self.device_id, 'sspmode', '0'])
+        subprocess.check_call([  # nosec
+            HCICONFIG_BIN,
+            self.device_id,
+            'sspmode', '0',
+        ])
         # Disable auth
-        subprocess.check_call(['hciconfig', self.device_id, 'noauth'])
+        subprocess.check_call([  # nosec
+            HCICONFIG_BIN,
+            self.device_id,
+            'noauth',
+        ])
         logger.info("bluetooth init done, mac address: {0}".format(self.mac_address))
 
     def make_discoverable(self):
-        subprocess.check_call(['hciconfig', self.device_id, 'piscan'])
+        subprocess.check_call([  # nosec
+            HCICONFIG_BIN,
+            self.device_id,
+            'piscan',
+        ])
 
     def make_hidden(self):
-        subprocess.check_call(['hciconfig', self.device_id, 'noscan'])
+        subprocess.check_call([  # nosec
+            HCICONFIG_BIN,
+            self.device_id,
+            'noscan',
+        ])
 
     def start(self, payment):
         if not self.device_id:

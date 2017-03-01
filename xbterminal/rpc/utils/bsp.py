@@ -52,7 +52,8 @@ class BSPLibraryInterface(object):
             self._module = itl_bsp
             logger.info('using ITL BSP library')
         self._module.initialize()
-        assert self._module.get_apm_status() == APM_STATUS_ACTIVE
+        if self._module.get_apm_status() != APM_STATUS_ACTIVE:
+            raise RuntimeError
         logger.info('BSP init done')
 
     def add_credit(self, amount):

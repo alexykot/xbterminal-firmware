@@ -200,8 +200,8 @@ class GUI(QtGui.QMainWindow):
         btn_height = self.ui.standby_wake_btn.height()
         widget_width = self.ui.standby_wake_widget.width()
         widget_height = self.ui.standby_wake_widget.height()
-        widget_x = random.randint(0, btn_width - widget_width)
-        widget_y = random.randint(0, btn_height - widget_height)
+        widget_x = random.randint(0, btn_width - widget_width)  # nosec
+        widget_y = random.randint(0, btn_height - widget_height)  # nosec
         self.ui.standby_wake_widget.setGeometry(
             widget_x, widget_y, widget_width, widget_height)
 

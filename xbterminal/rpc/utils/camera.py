@@ -5,6 +5,10 @@ import re
 
 logger = logging.getLogger(__name__)
 
+FSWEBCAM_BIN = '/usr/bin/fswebcam'
+GST_INSPECT_BIN = '/usr/bin/gst-inspect-1.0'
+GST_LAUNCH_BIN = '/usr/bin/gst-launch-1.0'
+
 
 class Worker(threading.Thread):
 
@@ -25,7 +29,7 @@ class Worker(threading.Thread):
         self._stop = threading.Event()
 
     def run(self):
-        self.pipeline = subprocess.Popen(
+        self.pipeline = subprocess.Popen(  # nosec
             self.pipeline_config,
             stdout=subprocess.PIPE)
         logger.debug('qr scanner started')
@@ -65,8 +69,8 @@ class QRScanner(object):
 
     def _check_device(self, path):
         try:
-            output = subprocess.check_output(
-                ['fswebcam', '--device', path],
+            output = subprocess.check_output(  # nosec
+                [FSWEBCAM_BIN, '--device', path],
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError:
             return False
@@ -76,14 +80,14 @@ class QRScanner(object):
     def _get_pipeline_config(self):
         try:
             with open('/dev/null', 'w') as devnull:
-                subprocess.check_call(
-                    ['gst-inspect-1.0', 'imxv4l2src'],
+                subprocess.check_call(  # nosec
+                    [GST_INSPECT_BIN, 'imxv4l2src'],
                     stdout=devnull,
                     stderr=devnull)
         except subprocess.CalledProcessError:
             logger.warning('imx plugins for gstreamer are not available')
             return [
-                'gst-launch-1.0', '-v', '-m',
+                GST_LAUNCH_BIN, '-v', '-m',
                 'v4l2src', 'device={}'.format(self.device),
                 '!', 'tee', 'name=t',
                 '!', 'queue',
@@ -101,7 +105,7 @@ class QRScanner(object):
             ]
         else:
             return [
-                'gst-launch-1.0', '-v', '-m',
+                GST_LAUNCH_BIN, '-v', '-m',
                 'imxv4l2src', 'device={}'.format(self.device),
                 '!', 'tee', 'name=t',
                 '!', 'queue',
