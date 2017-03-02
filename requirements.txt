@@ -11,7 +11,7 @@ libusb1==1.5.0
 nfcpy==0.11.1
 ntplib==0.3.3
 pbkdf2==1.3
-Pillow==2.8.1
+Pillow==4.0.0
 protobuf==2.5.0
 psutil==3.1.1
 pyasn1==0.1.9
