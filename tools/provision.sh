@@ -21,7 +21,7 @@ apt-get install --yes python-pip python-dev \
     python-qt4 python-dbus python-zbar \
     bluez libbluetooth-dev libusb-0.1-4 libusb-1.0-0 \
     libssl-dev libjpeg-dev libffi-dev
-ln -s /usr/sbin/hciconfig /usr/bin/hciconfig
+ln -s /bin/hciconfig /usr/sbin/hciconfig
 
 # Install salt and generate device key
 apt-get install --yes salt-minion
