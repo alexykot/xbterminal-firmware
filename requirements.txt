@@ -2,7 +2,7 @@ backports-abc==0.4
 backports.ssl-match-hostname==3.5.0.1
 certifi==2016.2.28
 cffi==1.5.2
-cryptography==1.3.1
+cryptography==1.7.2
 enum34==1.1.2
 idna==2.1
 ipaddress==1.0.14
@@ -11,7 +11,7 @@ libusb1==1.5.0
 nfcpy==0.11.1
 ntplib==0.3.3
 pbkdf2==1.3
-Pillow==2.8.1
+Pillow==4.0.0
 protobuf==2.5.0
 psutil==3.1.1
 pyasn1==0.1.9
@@ -22,5 +22,5 @@ pyusb==1.0.0
 qrcode==5.1
 requests==2.7.0
 singledispatch==3.4.0.3
-six==1.9.0
+six==1.10.0
 tornado==4.3
