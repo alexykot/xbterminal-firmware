@@ -227,22 +227,28 @@ class GUI(QtGui.QMainWindow):
         Accepts:
             error: error name, string
         """
-        state['error'] = error
+        if error in state['errors']:
+            # Error screen already active
+            return
+        state['errors'].add(error)
         error_code, error_message = getattr(ERRORS, error)
         error_code_str = unicode(error_code).zfill(4)
         error_message = unicode(error_message)
-        logger.error('{0} - {1}'.format(error_code_str, error_message))
+        logger.error('{}'.format(error))
         self.ui.error_code_val_lbl.setText(error_code_str)
         self.ui.error_message_val_lbl.setText(error_message)
-        if self.currentScreen() == 'error':
-            return
         self._saved_screen = self.currentScreen()
         self.showScreen('error')
 
-    def hideErrorScreen(self):
-        state['error'] = None
-        if self.currentScreen() == 'error':
-            # Restore previous screen
+    def hideErrorScreen(self, error):
+        """
+        Accepts:
+            error: error name, string
+        """
+        state['errors'].remove(error)
+        logger.info('{} resolved'.format(error))
+        if not state['errors'] and self.currentScreen() == 'error':
+            # Restore previous screen if there is no errors
             self.showScreen(self._saved_screen or 'idle')
             self._saved_screen = None
 
