@@ -117,6 +117,8 @@ class ERRORS(object):
         'MainWindow', 'connection error', None))
     SERVER_ERROR = (3, _translate(
         'MainWindow', 'server error', None))
+    MAX_PAYOUT_ERROR = (201, _translate(
+        'MainWindow', 'max payout threshold violation', None))
 
 
 class PAYMENT_STATUSES:

@@ -34,7 +34,12 @@ class JSONRPCClientTestCase(unittest.TestCase):
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
-                'error': {'data': {'type': 'NetworkError'}},
+                'error': {
+                    'data': {
+                        'type': 'NetworkError',
+                        'args': [],
+                    },
+                },
                 'id': 0,
             },
         })

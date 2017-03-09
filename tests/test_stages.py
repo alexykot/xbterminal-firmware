@@ -1029,6 +1029,26 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_select'])
 
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_max_payout_error(self, sleep_mock):
+        client_mock = Mock(**{
+            'create_withdrawal_order.side_effect': ServerError({
+                'device': ['Amount exceeds max payout for current device.'],
+            }),
+        })
+        state = {
+            'client': client_mock,
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading1(state, ui)
+        self.assertEqual(ui.showErrorScreen.call_args[0][0],
+                         'MAX_PAYOUT_ERROR')
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_select'])
+
 
 class WithdrawWaitStageTestCase(unittest.TestCase):
 
