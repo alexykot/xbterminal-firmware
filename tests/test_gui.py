@@ -69,16 +69,19 @@ class GUITestCase(unittest.TestCase):
         self.assertEqual(ui_mock.timeout_desc_lbl.setText.call_args[0][0],
                          'SCREEN')
 
+    @patch('xbterminal.gui.gui.logger')
     @patch('xbterminal.gui.gui.Application')
     @patch('xbterminal.gui.gui.appui')
     @patch.dict('xbterminal.gui.gui.state', {'gui_config': {}})
-    def test_error_screen(self, appui_mock, app_cls_mock):
+    def test_error_screen(self, appui_mock, app_cls_mock, logger_mock):
         appui_mock.Ui_MainWindow.return_value = Mock(**{
             'main_stackedWidget.currentIndex.side_effect': [2, 2, 17],
         })
         window = GUI()
         window.showErrorScreen('NETWORK_ERROR')
         self.assertEqual(window._saved_screen, 'idle')
+        self.assertEqual(logger_mock.error.call_args[0][0],
+                         '0001 - connection error')
         self.assertEqual(
             window.ui.error_code_val_lbl.setText.call_args[0][0],
             '0001')

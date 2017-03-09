@@ -106,7 +106,11 @@ class Application(QtGui.QApplication):
 
 
 class ERRORS(object):
-
+    """
+    001-099: general errors
+    101-199: payment errors
+    201-299: withdrawal errors
+    """
     NETWORK_ERROR = (1, _translate(
         'MainWindow', 'connection error', None))
     RPC_ERROR = (2, _translate(
@@ -219,10 +223,17 @@ class GUI(QtGui.QMainWindow):
         self.showScreen('timeout')
 
     def showErrorScreen(self, error):
+        """
+        Accepts:
+            error: error name, string
+        """
         state['error'] = error
         error_code, error_message = getattr(ERRORS, error)
-        self.ui.error_code_val_lbl.setText(unicode(error_code).zfill(4))
-        self.ui.error_message_val_lbl.setText(unicode(error_message))
+        error_code_str = unicode(error_code).zfill(4)
+        error_message = unicode(error_message)
+        logger.error('{0} - {1}'.format(error_code_str, error_message))
+        self.ui.error_code_val_lbl.setText(error_code_str)
+        self.ui.error_message_val_lbl.setText(error_message)
         if self.currentScreen() == 'error':
             return
         self._saved_screen = self.currentScreen()
