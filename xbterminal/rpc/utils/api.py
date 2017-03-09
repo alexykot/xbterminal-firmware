@@ -51,7 +51,10 @@ def send_request(method, url, data=None, headers=None, signed=False):
         raise NetworkError
 
     if response.status_code not in VALID_STATUS_CODES:
-        logger.error(response.content)
-        raise ServerError
+        try:
+            error_data = response.json()
+        except ValueError:
+            error_data = response.content
+        raise ServerError(error_data)
 
     return response
