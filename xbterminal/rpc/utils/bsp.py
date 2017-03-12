@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+PAYOUT_STATUS_ERROR = -1
 PAYOUT_STATUS_IDLE = 0x10
 PAYOUT_STATUS_PENDING = 0x11
 PAYOUT_STATUS_COMPLETE = 0x12
@@ -13,6 +14,12 @@ APM_STATUS_OUTOFSERVICE = 0x22
 
 
 class BSPLibraryMock(object):
+
+    def get_hw_version(self):
+        return 0, 0, 0
+
+    def get_lib_version(self):
+        return 0, 0, 0
 
     def initialize(self):
         pass
@@ -46,15 +53,17 @@ class BSPLibraryInterface(object):
     def __init__(self, use_mock=True):
         if use_mock:
             self._module = BSPLibraryMock()
-            logger.info('using BSP library mock')
         else:
             import itl_bsp
             self._module = itl_bsp
-            logger.info('using ITL BSP library')
+        hw_version = self._module.get_hw_version()
+        logger.info('ITL hardware v{0}.{1}.{2}'.format(*hw_version))
+        lib_version = self._module.get_lib_version()
+        logger.info('ITL BSP library v{0}.{1}.{2}'.format(*lib_version))
         self._module.initialize()
         if self._module.get_apm_status() != APM_STATUS_ACTIVE:
             raise RuntimeError
-        logger.info('BSP init done')
+        logger.info('ITL BSP library initialization done')
 
     def add_credit(self, amount):
         """
@@ -71,7 +80,10 @@ class BSPLibraryInterface(object):
             amount: Decimal
         """
         status = self._module.get_payout_status()
-        if status == PAYOUT_STATUS_IDLE:
+        if status == PAYOUT_STATUS_ERROR:
+            logger.error('payout error')
+            return None
+        elif status == PAYOUT_STATUS_IDLE:
             return None
         elif status == PAYOUT_STATUS_PENDING:
             logger.debug('payout pending')
