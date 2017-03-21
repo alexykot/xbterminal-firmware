@@ -401,8 +401,11 @@ def withdraw_loading1(state, ui):
             logger.warning('network error, retry in 5 seconds')
             time.sleep(5)
             continue
-        except ServerError:
-            ui.showErrorScreen('SERVER_ERROR')
+        except ServerError as error:
+            if error.contains('Amount exceeds max payout for current device.'):
+                ui.showErrorScreen('MAX_PAYOUT_ERROR')
+            else:
+                ui.showErrorScreen('SERVER_ERROR')
             time.sleep(300)
             _clear_withdrawal_runtime(state, ui, clear_amount=False)
             return settings.STAGES['withdrawal']['withdraw_select']

@@ -106,13 +106,19 @@ class Application(QtGui.QApplication):
 
 
 class ERRORS(object):
-
+    """
+    001-099: general errors
+    101-199: payment errors
+    201-299: withdrawal errors
+    """
     NETWORK_ERROR = (1, _translate(
         'MainWindow', 'connection error', None))
     RPC_ERROR = (2, _translate(
         'MainWindow', 'connection error', None))
     SERVER_ERROR = (3, _translate(
         'MainWindow', 'server error', None))
+    MAX_PAYOUT_ERROR = (201, _translate(
+        'MainWindow', 'max payout threshold violation', None))
 
 
 class PAYMENT_STATUSES:
@@ -219,19 +225,32 @@ class GUI(QtGui.QMainWindow):
         self.showScreen('timeout')
 
     def showErrorScreen(self, error):
-        state['error'] = error
-        error_code, error_message = getattr(ERRORS, error)
-        self.ui.error_code_val_lbl.setText(unicode(error_code).zfill(4))
-        self.ui.error_message_val_lbl.setText(unicode(error_message))
-        if self.currentScreen() == 'error':
+        """
+        Accepts:
+            error: error name, string
+        """
+        if error in state['errors']:
+            # Error screen already active
             return
+        state['errors'].add(error)
+        error_code, error_message = getattr(ERRORS, error)
+        error_code_str = unicode(error_code).zfill(4)
+        error_message = unicode(error_message)
+        logger.error('{}'.format(error))
+        self.ui.error_code_val_lbl.setText(error_code_str)
+        self.ui.error_message_val_lbl.setText(error_message)
         self._saved_screen = self.currentScreen()
         self.showScreen('error')
 
-    def hideErrorScreen(self):
-        state['error'] = None
-        if self.currentScreen() == 'error':
-            # Restore previous screen
+    def hideErrorScreen(self, error):
+        """
+        Accepts:
+            error: error name, string
+        """
+        state['errors'].remove(error)
+        logger.info('{} resolved'.format(error))
+        if not state['errors'] and self.currentScreen() == 'error':
+            # Restore previous screen if there is no errors
             self.showScreen(self._saved_screen or 'idle')
             self._saved_screen = None
 

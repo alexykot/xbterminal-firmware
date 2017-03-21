@@ -46,9 +46,11 @@ def main():
             if connection_status == 'offline':
                 main_window.showErrorScreen('NETWORK_ERROR')
                 continue
-            elif connection_status == 'online' and \
-                    state['error'] in ['NETWORK_ERROR', 'RPC_ERROR']:
-                main_window.hideErrorScreen()
+            elif connection_status == 'online':
+                if 'NETWORK_ERROR' in state['errors']:
+                    main_window.hideErrorScreen('NETWORK_ERROR')
+                if 'RPC_ERROR' in state['errors']:
+                    main_window.hideErrorScreen('RPC_ERROR')
 
         # Reload remote config
         if state['remote_config_last_update'] + \

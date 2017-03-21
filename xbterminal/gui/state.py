@@ -16,7 +16,7 @@ def get_initial_gui_state():
         'screen_buttons': {button_name: False for button_name
                            in settings.BUTTONS},
         'CURRENT_STAGE': settings.STAGES['bootup'],
-        'error': None,
+        'errors': set(),
         'payment': {
             # Variables related to payment process
             'uid': None,
