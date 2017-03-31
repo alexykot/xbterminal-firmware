@@ -257,6 +257,7 @@ class IdleStageTestCase(unittest.TestCase):
         sleep_mock.side_effect = ValueError  # Break cycle on first iter
         with self.assertRaises(ValueError):
             stages.idle(state, ui)
+        self.assertIs(client_mock.disable_display.called, True)
         self.assertIs(client_mock.host_get_payout.called, False)
         self.assertIs(client_mock.stop_nfc_server.called, False)
         self.assertIs(state['is_suspended'], True)
@@ -281,6 +282,7 @@ class IdleStageTestCase(unittest.TestCase):
         next_stage = stages.idle(state, ui)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_amount'])
+        self.assertIs(client_mock.enable_display.called, True)
         self.assertIs(state['is_suspended'], False)
 
 

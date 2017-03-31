@@ -340,6 +340,22 @@ class APITestCase(unittest.TestCase):
             result = api.get_scanned_address()
         self.assertEqual(result, address)
 
+    def test_enable_display(self):
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.enable_display()
+        self.assertIs(result, True)
+        self.assertIs(bsp_mock.enable_display.called, True)
+
+    def test_disable_display(self):
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.disable_display()
+        self.assertIs(result, True)
+        self.assertIs(bsp_mock.disable_display.called, True)
+
     def test_host_add_credit(self):
         bsp_mock = Mock()
         state = {'bsp_interface': bsp_mock}

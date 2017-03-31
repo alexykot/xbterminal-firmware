@@ -45,15 +45,17 @@ def idle(state, ui):
     while True:
         if state['remote_config']['status'] == 'suspended':
             if not state['is_suspended']:
-                logger.warning('device suspended')
+                state['client'].disable_display()
                 state['is_suspended'] = True
+                logger.warning('device suspended')
             # Freeze GUI if device is suspended
             time.sleep(settings.STAGE_LOOP_PERIOD)
             continue
         elif state['remote_config']['status'] == 'active':
             if state['is_suspended']:
-                logger.warning('device reenabled')
+                state['client'].enable_display()
                 state['is_suspended'] = False
+                logger.warning('device reenabled')
 
         if state['screen_buttons']['idle_begin_btn'] or \
                 state['screen_buttons']['standby_wake_btn'] or \
