@@ -45,6 +45,12 @@ class BSPLibraryMock(object):
     def erase_ndef(self):
         pass
 
+    def enable_display(self):
+        pass
+
+    def disable_display(self):
+        pass
+
 
 class BSPLibraryInterface(object):
 
@@ -61,6 +67,7 @@ class BSPLibraryInterface(object):
         lib_version = self._module.get_lib_version()
         logger.info('ITL BSP library v{0}.{1}.{2}'.format(*lib_version))
         self._module.initialize()
+        self._module.enable_display()
         if self._module.get_apm_status() != APM_STATUS_ACTIVE:
             raise RuntimeError
         logger.info('ITL BSP library initialization done')
@@ -119,3 +126,17 @@ class BSPLibraryInterface(object):
         """
         self._module.erase_ndef()
         logger.info('NDEF message erased')
+
+    def enable_display(self):
+        """
+        Enables display
+        """
+        self._module.enable_display()
+        logger.info('display enabled')
+
+    def disable_display(self):
+        """
+        Disables display
+        """
+        self._module.disable_display()
+        logger.info('display disabled')
