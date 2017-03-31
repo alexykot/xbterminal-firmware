@@ -16,6 +16,7 @@ class MainTestCase(unittest.TestCase):
             'get_device_config.return_value': {
                 'language': {'code': 'en'},
                 'currency': {'prefix': '$'},
+                'status': 'active',
             },
         })
         gui_mock.return_value = main_window_mock = Mock()

@@ -20,7 +20,7 @@ def bootup(state, ui):
         state['remote_config']['language']['code'],
         state['remote_config']['currency']['prefix'])
 
-    if state['remote_config']['status'] == 'active':
+    if state['remote_config']['status'] in ['active', 'suspended']:
         return settings.STAGES['idle']
     else:
         return settings.STAGES['activate']
@@ -43,6 +43,18 @@ def idle(state, ui):
     state['client'].start_nfc_server(message=settings.HELP_PAGE_URL)
     standby_screen_last_refresh = 0
     while True:
+        if state['remote_config']['status'] == 'suspended':
+            if not state['is_suspended']:
+                logger.warning('device suspended')
+                state['is_suspended'] = True
+            # Freeze GUI if device is suspended
+            time.sleep(settings.STAGE_LOOP_PERIOD)
+            continue
+        elif state['remote_config']['status'] == 'active':
+            if state['is_suspended']:
+                logger.warning('device reenabled')
+                state['is_suspended'] = False
+
         if state['screen_buttons']['idle_begin_btn'] or \
                 state['screen_buttons']['standby_wake_btn'] or \
                 state['keypad'].last_key_pressed == 'enter':

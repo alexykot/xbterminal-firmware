@@ -91,11 +91,15 @@ class IdleStageTestCase(unittest.TestCase):
         })
         state = {
             'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
             'screen_buttons': {
                 'idle_begin_btn': True,
                 'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
+            'is_suspended': False,
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
@@ -114,12 +118,16 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='enter')
         state = {
             'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
                 'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
+            'is_suspended': False,
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
@@ -150,12 +158,16 @@ class IdleStageTestCase(unittest.TestCase):
         })
         state = {
             'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
                 'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
+            'is_suspended': False,
             'withdrawal': {},
         }
         ui = Mock()
@@ -171,6 +183,9 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='alt')
         state = {
             'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
             'keypad': keypad,
             'gui_config': {'default_withdrawal_amount': '0.23'},
             'screen_buttons': {
@@ -178,6 +193,7 @@ class IdleStageTestCase(unittest.TestCase):
                 'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
+            'is_suspended': False,
             'withdrawal': {},
         }
         ui = Mock()
@@ -194,12 +210,16 @@ class IdleStageTestCase(unittest.TestCase):
         state = {
             'last_activity_timestamp': 0,
             'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
                 'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
+            'is_suspended': False,
             'withdrawal': {},
         }
 
@@ -215,6 +235,53 @@ class IdleStageTestCase(unittest.TestCase):
                          settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
+
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_suspended(self, sleep_mock):
+        client_mock = Mock()
+        state = {
+            'client': client_mock,
+            'remote_config': {
+                'remote_server': 'https://xbterminal.io',
+                'status': 'suspended',
+            },
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'standby_wake_btn': False,
+            },
+            'is_suspended': False,
+            'withdrawal': {},
+        }
+        ui = Mock()
+        sleep_mock.side_effect = ValueError  # Break cycle on first iter
+        with self.assertRaises(ValueError):
+            stages.idle(state, ui)
+        self.assertIs(client_mock.host_get_payout.called, False)
+        self.assertIs(client_mock.stop_nfc_server.called, False)
+        self.assertIs(state['is_suspended'], True)
+
+    def test_reenabled(self):
+        client_mock = Mock()
+        state = {
+            'client': client_mock,
+            'remote_config': {
+                'remote_server': 'https://xbterminal.io',
+                'status': 'active',
+            },
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'idle_begin_btn': True,
+                'standby_wake_btn': False,
+            },
+            'is_suspended': True,
+            'withdrawal': {},
+        }
+        ui = Mock()
+        next_stage = stages.idle(state, ui)
+        self.assertEqual(next_stage,
+                         settings.STAGES['payment']['pay_amount'])
+        self.assertIs(state['is_suspended'], False)
 
 
 class HelpStageTestCase(unittest.TestCase):

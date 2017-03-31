@@ -15,6 +15,7 @@ def get_initial_gui_state():
         'keyboard_events': deque(maxlen=1),  # Only for keyboard driver
         'screen_buttons': {button_name: False for button_name
                            in settings.BUTTONS},
+        'is_suspended': False,
         'CURRENT_STAGE': settings.STAGES['bootup'],
         'errors': set(),
         'payment': {
