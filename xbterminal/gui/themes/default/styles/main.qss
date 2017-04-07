@@ -51,7 +51,6 @@ QPushButton:pressed {
 }
 
 #pamount_desc_lbl,
-#pconfirm_desc_lbl,
 #pload_desc_lbl,
 #pinfo_desc_lbl,
 #pinfo_fiat_amount_lbl,
@@ -75,7 +74,6 @@ QPushButton:pressed {
 #pamount_opt1_btn,
 #pamount_opt2_btn,
 #pamount_opt3_btn,
-#pconfirm_confirm_btn,
 #pinfo_pay_btn,
 #wselect_fiat_btn,
 #wselect_bitcoin_btn,
@@ -89,7 +87,6 @@ QPushButton:pressed {
 #pamount_opt1_btn:pressed,
 #pamount_opt2_btn:pressed,
 #pamount_opt3_btn:pressed,
-#pconfirm_confirm_btn:pressed,
 #pinfo_pay_btn:pressed,
 #wselect_fiat_btn:pressed,
 #wselect_bitcoin_btn:pressed,

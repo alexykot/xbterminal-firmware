@@ -17,8 +17,6 @@ QPushButton:pressed {
     border-image: url(:/images/btn-orange-pressed.png) 12 14 16 10 repeat;
 }
 
-#pamount_cancel_btn,
-#pconfirm_goback_btn,
 #pinfo_cancel_btn,
 #pwait_cancel_btn,
 #wwait_goback_btn,
@@ -36,13 +34,7 @@ QPushButton:pressed {
 
 #pamount_opt1_btn,
 #pamount_opt2_btn,
-#pamount_opt3_btn,
-#pamount_opt4_btn,
-#pamount_cancel_btn,
-#pconfirm_decr_btn,
-#pconfirm_incr_btn,
-#pconfirm_goback_btn,
-#pconfirm_confirm_btn {
+#pamount_opt3_btn {
     border: none;
     border-image: none;
     padding-top: -8px;
@@ -50,7 +42,6 @@ QPushButton:pressed {
 }
 
 #pamount_desc_lbl,
-#pconfirm_desc_lbl,
 #pinfo_desc_lbl,
 #preceipt_desc_lbl,
 #pcancel_desc_lbl,
@@ -142,26 +133,22 @@ QPushButton:pressed {
 }
 
 #pamount_desc_lbl,
-#pconfirm_desc_lbl,
 #wwait_desc_lbl {
     qproperty-geometry: rect(0 0 350 70);
 }
 
-#pamount_icon1_lbl,
-#pconfirm_icon1_lbl {
+#pamount_icon1_lbl {
     background-image: url(:/images/coin-icon-small.png);
     qproperty-geometry: rect(350 28 23 20);
 }
 
 #pamount_credit_lbl,
-#pconfirm_credit_lbl,
 #wwait_fiat_amount_lbl {
     qproperty-geometry: rect(380 0 100 78);
     font-size: 17pt;
 }
 
-#pamount_add_lbl,
-#pconfirm_incrdecr_lbl {
+#pamount_add_lbl {
     qproperty-geometry: rect(0 70 480 21);
 }
 
@@ -185,65 +172,6 @@ QPushButton:pressed {
 }
 #pamount_opt3_btn:pressed {
     background-image: url(:/images/pill-orange-btn-1-pressed.png);
-}
-#pamount_opt4_btn {
-    background-image: url(:/images/pill-orange-btn-2.png);
-    qproperty-geometry: rect(210 193 240 67);
-}
-#pamount_opt4_btn:pressed {
-    background-image: url(:/images/pill-orange-btn-2-pressed.png);
-}
-#pamount_cancel_btn {
-    background-image: url(:/images/pill-grey-btn-1.png);
-    qproperty-geometry: rect(35 193 155 67);
-}
-#pamount_cancel_btn:pressed {
-    background-image: url(:/images/pill-grey-btn-1-pressed.png);
-}
-
-#pconfirm_amount_lbl {
-    font-size: 32pt;
-    qproperty-geometry: rect(145 110 180 70);
-}
-#pconfirm_icon2_lbl {
-    background-image: url(:/images/orange-up-arrow-small.png);
-    qproperty-geometry: rect(107 73 20 15);
-}
-#pconfirm_icon3_lbl {
-    background-image: url(:/images/orange-down-arrow-small.png);
-    qproperty-geometry: rect(168 73 20 15);
-}
-#pconfirm_decr_btn {
-    background-image: url(:/images/round-orange-down-btn.png);
-    padding-top: -100px;
-    qproperty-geometry: rect(90 115 68 69);
-    qproperty-text: '';
-}
-#pconfirm_decr_btn:pressed {
-    background-image: url(:/images/round-orange-down-btn-pressed.png);
-}
-#pconfirm_incr_btn {
-    background-image: url(:/images/round-orange-up-btn.png);
-    padding-top: -100px;
-    qproperty-geometry: rect(320 115 68 69);
-    qproperty-text: '';
-}
-#pconfirm_incr_btn:pressed {
-    background-image: url(:/images/round-orange-up-btn-pressed.png);
-}
-#pconfirm_goback_btn {
-    background-image: url(:/images/pill-grey-btn-2.png);
-    qproperty-geometry: rect(70 200 166 57);
-}
-#pconfirm_goback_btn:pressed {
-    background-image: url(:/images/pill-grey-btn-2-pressed.png);
-}
-#pconfirm_confirm_btn {
-    background-image: url(:/images/pill-orange-btn-3.png);
-    qproperty-geometry: rect(260 200 166 57);
-}
-#pconfirm_confirm_btn:pressed {
-    background-image: url(:/images/pill-orange-btn-3-pressed.png);
 }
 
 #pinfo_desc_lbl {
