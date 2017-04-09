@@ -13,22 +13,15 @@ QPushButton {
 }
 
 QPushButton:pressed {
-    border-image: url(:/images/btn-orange-pressed.png) 12 14 16 10 repeat;
 }
 
 #pinfo_cancel_btn,
 #pwait_cancel_btn,
 #wwait_goback_btn,
 #wconfirm_cancel_btn {
-    border-image: url(:/images/btn-grey.png) 12 14 16 10 repeat;
-    color: #CCCCCC;
-}
-
-#pinfo_cancel_btn:pressed,
-#pwait_cancel_btn:pressed,
-#wwait_goback_btn:pressed,
-#wconfirm_cancel_btn:pressed {
-    border-image: url(:/images/btn-grey-pressed.png) 12 14 16 10 repeat;
+    background-color: #b3b3b3;
+    border-top: 2px solid #cbcbcb;
+    color: #000;
 }
 
 #pamount_desc_lbl,
@@ -97,38 +90,39 @@ QPushButton:pressed {
 }
 
 #pinfo_desc_lbl {
+    color: #7afff4;
     qproperty-geometry: rect(0 0 480 70);
 }
-
 #pinfo_fiat_amount_lbl {
-    font-size: 20pt;
+    font-size: 28pt;
     qproperty-geometry: rect(200 40 130 90);
 }
-
-#pinfo_btc1_lbl,
+#pinfo_btc1_lbl {
+    color: #edbfbf;
+    font-size: 14pt;
+    qproperty-geometry: rect(60 120 151 31);
+}
 #pinfo_btc2_lbl {
     color: #edbfbf;
+    font-size: 14pt;
+    qproperty-geometry: rect(330 120 121 31);
 }
-
 #pinfo_btc_amount_lbl {
     color: #f4cc50;
     font-size: 20pt;
-    qproperty-geometry: rect(220 107 100 30);
+    qproperty-geometry: rect(220 117 101 31);
 }
-
 #pinfo_xrate_lbl {
     color: #CCCCCC;
+    font-size: 12pt;
 }
-
 #pinfo_icon1_lbl {
     background-image: url(:/images/send-icon.png);
     qproperty-geometry: rect(213 217 27 24);
 }
-
 #pinfo_cancel_btn {
     qproperty-geometry: rect(20 200 150 60);
 }
-
 #pinfo_pay_btn {
     qproperty-geometry: rect(200 200 260 60);
     padding-left: 35px;
