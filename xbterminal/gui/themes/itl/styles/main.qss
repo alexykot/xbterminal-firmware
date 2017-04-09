@@ -4,10 +4,9 @@ QLabel {
 }
 
 QPushButton {
-    background-color: transparent;
-    border-width: 12px 12px 16px 10px;
-    border-image: url(:/images/btn-orange.png) 12 14 16 10 repeat;
-    color: #321c03;
+    background-color: #f79b24;
+    border-top: 2px solid #f9ba68;
+    color: #371e03;
     font-family: 'Lato';
     outline: none;
     text-transform: uppercase;
@@ -32,15 +31,6 @@ QPushButton:pressed {
     border-image: url(:/images/btn-grey-pressed.png) 12 14 16 10 repeat;
 }
 
-#pamount_opt1_btn,
-#pamount_opt2_btn,
-#pamount_opt3_btn {
-    border: none;
-    border-image: none;
-    padding-top: -8px;
-    padding-left: -4px;
-}
-
 #pamount_desc_lbl,
 #pinfo_desc_lbl,
 #preceipt_desc_lbl,
@@ -54,7 +44,7 @@ QPushButton:pressed {
 }
 
 #main_stackedWidget {
-    background-image: url(:/images/background.png);
+    background-color: #323232;
 }
 
 #activation_server_lbl {
@@ -132,46 +122,20 @@ QPushButton:pressed {
     qproperty-geometry: rect(265 196 29 25);
 }
 
-#pamount_desc_lbl,
-#wwait_desc_lbl {
-    qproperty-geometry: rect(0 0 350 70);
+#pamount_desc_lbl {
+    color: #7afff4;
 }
-
-#pamount_icon1_lbl {
-    background-image: url(:/images/coin-icon-small.png);
-    qproperty-geometry: rect(350 28 23 20);
-}
-
-#pamount_credit_lbl,
-#wwait_fiat_amount_lbl {
-    qproperty-geometry: rect(380 0 100 78);
-    font-size: 17pt;
-}
-
 #pamount_add_lbl {
-    qproperty-geometry: rect(0 70 480 21);
+    qproperty-text: '';
 }
-
 #pamount_opt1_btn {
-    background-image: url(:/images/pill-orange-btn-1.png);
-    qproperty-geometry: rect(20 100 131 84);
-}
-#pamount_opt1_btn:pressed {
-    background-image: url(:/images/pill-orange-btn-1-pressed.png);
+    qproperty-geometry: rect(20 190 131 61);
 }
 #pamount_opt2_btn {
-    background-image: url(:/images/pill-orange-btn-1.png);
-    qproperty-geometry: rect(180 100 131 84);
-}
-#pamount_opt2_btn:pressed {
-    background-image: url(:/images/pill-orange-btn-1-pressed.png);
+    qproperty-geometry: rect(175 190 131 61);
 }
 #pamount_opt3_btn {
-    background-image: url(:/images/pill-orange-btn-1.png);
-    qproperty-geometry: rect(340 100 131 84);
-}
-#pamount_opt3_btn:pressed {
-    background-image: url(:/images/pill-orange-btn-1-pressed.png);
+    qproperty-geometry: rect(330 190 131 61);
 }
 
 #pinfo_desc_lbl {
@@ -268,6 +232,8 @@ QPushButton:pressed {
 
 #wwait_fiat_amount_lbl {
     qproperty-alignment: 'AlignLeft | AlignVCenter';
+    qproperty-geometry: rect(380 0 100 78);
+    font-size: 17pt;
 }
 
 #wscan_bg_lbl {

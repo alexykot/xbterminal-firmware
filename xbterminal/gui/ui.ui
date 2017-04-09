@@ -333,7 +333,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Top up your credit</string>
+      <string>Add credit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
