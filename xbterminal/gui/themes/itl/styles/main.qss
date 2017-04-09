@@ -80,48 +80,6 @@ QPushButton:pressed {
     text-transform: uppercase;
 }
 
-#sel_amount_lbl {
-    font-size: 30pt;
-    qproperty-geometry: rect(40 40 440 61);
-}
-
-#sel_icon1_lbl {
-    background-image: url(:/images/coin-icon.png);
-    qproperty-geometry: rect(160 56 34 30);
-}
-
-#sel_desc_lbl {
-    font-family: 'Lato Light';
-    font-size: 12pt;
-    qproperty-geometry: rect(0 100 480 41);
-    text-transform: uppercase;
-}
-
-#sel_icon2_lbl {
-    background-image: url(:/images/skinny-up-arrow.png);
-    qproperty-geometry: rect(228 100 20 7);
-}
-
-#sel_pay_btn {
-    qproperty-geometry: rect(40 170 190 80);
-    padding-left: 40px;
-}
-
-#sel_icon3_lbl {
-    background-image: url(:/images/send-icon.png);
-    qproperty-geometry: rect(75 197 27 24);
-}
-
-#sel_withdraw_btn {
-    qproperty-geometry: rect(250 170 190 80);
-    padding-left: 30px;
-}
-
-#sel_icon4_lbl {
-    background-image: url(:/images/withdraw-icon.png);
-    qproperty-geometry: rect(265 196 29 25);
-}
-
 #pamount_desc_lbl {
     color: #7afff4;
 }
