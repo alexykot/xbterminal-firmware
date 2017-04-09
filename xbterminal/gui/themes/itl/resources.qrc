@@ -6,7 +6,6 @@
     <file>images/btn-grey-pressed.png</file>
     <file>images/screen-idle.png</file>
     <file>images/background.png</file>
-    <file>images/loading.gif</file>
     <file>images/coin-icon.png</file>
     <file>images/coin-icon-small.png</file>
     <file>images/skinny-up-arrow.png</file>
@@ -40,6 +39,9 @@
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>
     <file>fonts/Lato-Light.ttf</file>
+  </qresource>
+  <qresource>
+    <file>animations/loader.gif</file>
   </qresource>
   <qresource>
     <file>styles/main.qss</file>

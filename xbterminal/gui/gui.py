@@ -40,6 +40,7 @@ class Application(QtGui.QApplication):
         super(Application, self).__init__(*args, **kwargs)
         self.loadConfig()
         self.initResources()
+        self.animations = {}
         self._translators = {}
         self.language = settings.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
@@ -63,6 +64,13 @@ class Application(QtGui.QApplication):
         for font_file_name in fonts_dir.entryList(QtCore.QDir.Files):
             QtGui.QFontDatabase.addApplicationFont(
                 fonts_dir.filePath(font_file_name))
+
+    def loadAnimations(self):
+        animations_dir = QtCore.QDir(':/animations')
+        for ani_file_name in animations_dir.entryList(QtCore.QDir.Files):
+            animation = QtGui.QMovie(animations_dir.filePath(ani_file_name))
+            name = os.path.splitext(unicode(ani_file_name))[0]
+            self.animations[name] = animation
 
     def loadStyles(self):
         """
@@ -134,6 +142,7 @@ class GUI(QtGui.QMainWindow):
         # Initialize Qt application
         application = Application(sys.argv)
         application.loadFonts()
+        application.loadAnimations()
         if state['gui_config'].get('show_cursor'):
             application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         else:
@@ -154,12 +163,13 @@ class GUI(QtGui.QMainWindow):
         # Version
         if state['gui_config'].get('debug', False):
             self.ui.version_lbl.setText(settings.VERSION)
-        # Loaders
-        self.loader = QtGui.QMovie(':/images/loading.gif')
-        self.ui.loader_lbl.setMovie(self.loader)
-        self.ui.pload_loader_lbl.setMovie(self.loader)
-        self.ui.pprogress_loader_lbl.setMovie(self.loader)
-        self.loader.start()
+        # Animations
+        for animation_name, animation in self._application.animations.items():
+            for label in self.ui.main_stackedWidget.findChildren(
+                    QtGui.QLabel,
+                    QtCore.QRegExp('{}_lbl'.format(animation_name))):
+                label.setMovie(animation)
+            animation.start()
         # Set up buttons
         for button_name in settings.BUTTONS:
             button = getattr(self.ui, button_name)

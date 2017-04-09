@@ -16,17 +16,20 @@ class GUITestCase(unittest.TestCase):
         self.assertTrue(load_config_mock.called)
         self.assertEqual(application.language, settings.UI_DEFAULT_LANGUAGE)
         self.assertEqual(len(application._translators.keys()), 3)
+        self.assertEqual(application.animations, {})
 
     @patch('xbterminal.gui.gui.Application')
     @patch('xbterminal.gui.gui.appui')
     def test_init_gui(self, appui_mock, app_cls_mock):
-        app_cls_mock.return_value = app_mock = Mock()
+        app_cls_mock.return_value = app_mock = Mock(animations={})
         appui_mock.Ui_MainWindow.return_value = Mock(**{
             'main_stackedWidget.currentIndex.return_value': 0,
         })
         state = {'gui_config': {}}
         with patch.dict('xbterminal.gui.gui.state', state):
             window = GUI()
+        self.assertIs(app_mock.loadFonts.called, True)
+        self.assertIs(app_mock.loadAnimations.called, True)
         self.assertEqual(window._application, app_mock)
         self.assertIsNotNone(window.ui)
         self.assertIsNone(window._saved_screen)
