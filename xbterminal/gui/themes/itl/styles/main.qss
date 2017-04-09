@@ -129,31 +129,28 @@ QPushButton:pressed {
 }
 
 #pwait_qr_img {
-    qproperty-geometry: rect(10 10 250 250);
+    qproperty-geometry: rect(208 0 272 272);
 }
-
 #pwait_btc_amount_lbl {
     color: #f4cc50;
     font-size: 24pt;
-    qproperty-geometry: rect(260 7 220 50);
+    qproperty-geometry: rect(0 120 208 40);
 }
-
 #pwait_desc_lbl {
-    qproperty-geometry: rect(260 40 220 90);
+    qproperty-geometry: rect(0 0 208 90);
 }
-
-#pwait_icon1_lbl {
-    background-image: url(:/images/touch-nfc-icon.png);
-    qproperty-geometry: rect(325 125 88 56);
+#pwait_pay_lbl {
+    qproperty-geometry: rect(0 90 208 30);
 }
-
-#pwait_icon2_lbl {
-    background-image: url(:/images/orange-arrow-right.png);
-    qproperty-geometry: rect(270 65 8 16);
+#pwait_paid_lbl {
+    qproperty-geometry: rect(8 170 61 31);
 }
-
-#pwait_cancel_btn {
-    qproperty-geometry: rect(295 200 150 60);
+#pwait_paid_amount_lbl {
+    qproperty-geometry: rect(68 170 121 31);
+}
+#pwait_cancel_btn,
+#pwait_cancel_refund_btn {
+    qproperty-geometry: rect(0 212 190 60);
 }
 
 #preceipt_desc_lbl,
