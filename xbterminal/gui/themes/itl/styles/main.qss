@@ -270,6 +270,11 @@ QPushButton:pressed {
     qproperty-geometry: rect(160 212 320 60);
 }
 
-#errors_lbl {
-    color: #990000;
+#error_desc_lbl {
+    color: #f85a5a;
+    padding-right: 40px;
+}
+#error_icon1_lbl {
+    qproperty-geometry: rect(350 41 17 17);
+    qproperty-pixmap: url(':/images/red-cross.png');
 }
