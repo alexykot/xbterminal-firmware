@@ -26,6 +26,7 @@ QPushButton:pressed {
 
 #pamount_desc_lbl,
 #pinfo_desc_lbl,
+#pprogress_desc_lbl,
 #preceipt_desc_lbl,
 #pcancel_desc_lbl,
 #wwait_desc_lbl,
@@ -155,6 +156,10 @@ QPushButton:pressed {
 #pwait_cancel_btn,
 #pwait_cancel_refund_btn {
     qproperty-geometry: rect(0 212 190 60);
+}
+
+#pprogress_status_lbl {
+    color: #8fb1d4;
 }
 
 #preceipt_desc_lbl,
