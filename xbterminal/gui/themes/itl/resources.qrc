@@ -35,6 +35,8 @@
     <file>images/pill-grey-btn-2.png</file>
     <file>images/pill-grey-btn-2-pressed.png</file>
     <file>images/bc_logo_small.png</file>
+    <file>images/top-up.png</file>
+    <file>images/arrow-right.png</file>
   </qresource>
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>

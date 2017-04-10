@@ -49,7 +49,7 @@ QPushButton:pressed {
 #idle_begin_btn {
     border: none;
     border-image: none;
-    background-color: #000000;
+    background-color: transparent;
     background-image: url(:/images/screen-idle.png);
     background-repeat: no-repeat;
     color: rgba(0, 0, 0, 0);
@@ -77,6 +77,10 @@ QPushButton:pressed {
 
 #pamount_desc_lbl {
     color: #7afff4;
+}
+#pamount_icon1_lbl {
+    qproperty-geometry: rect(150 90 171 71);
+    qproperty-pixmap: url(':/images/top-up.png');
 }
 #pamount_add_lbl {
     qproperty-text: '';
@@ -136,6 +140,10 @@ QPushButton:pressed {
 
 #pwait_qr_img {
     qproperty-geometry: rect(208 0 272 272);
+}
+#pwait_icon1_lbl {
+    qproperty-geometry: rect(195 37 8 16);
+    qproperty-pixmap: url(':/images/arrow-right.png');
 }
 #pwait_btc_amount_lbl {
     color: #f4cc50;
