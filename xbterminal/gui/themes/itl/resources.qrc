@@ -41,7 +41,8 @@
     <file>fonts/Lato-Light.ttf</file>
   </qresource>
   <qresource>
-    <file>animations/loader.gif</file>
+    <file>animations/orange-dots-animation.gif</file>
+    <file>animations/transfer-funds3.gif</file>
   </qresource>
   <qresource>
     <file>styles/main.qss</file>

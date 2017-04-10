@@ -89,6 +89,11 @@ QPushButton:pressed {
     qproperty-geometry: rect(330 190 131 61);
 }
 
+#pload_desc_lbl,
+#pload_status_lbl {
+    qproperty-text: '';
+}
+
 #pinfo_desc_lbl {
     color: #7afff4;
     qproperty-geometry: rect(0 0 480 70);

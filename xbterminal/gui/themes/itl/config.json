@@ -1,7 +1,7 @@
 {
     "animations": {
-        "loader_lbl": ":/animations/loader.gif",
-        "pload_loader_lbl": ":/animations/loader.gif",
-        "pprogress_loader_lbl": ":/animations/loader.gif"
+        "loader_lbl": ":/animations/orange-dots-animation.gif",
+        "pload_loader_lbl": ":/animations/transfer-funds3.gif",
+        "pprogress_loader_lbl": ":/animations/orange-dots-animation.gif"
     }
 }
