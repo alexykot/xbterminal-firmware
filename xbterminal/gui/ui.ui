@@ -790,7 +790,7 @@
       </font>
      </property>
      <property name="text">
-      <string>bitcoins</string>
+      <string>mbits</string>
      </property>
     </widget>
     <widget class="QLabel" name="pinfo_xrate_lbl">
