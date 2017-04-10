@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import os
 import re
@@ -66,11 +67,12 @@ class Application(QtGui.QApplication):
                 fonts_dir.filePath(font_file_name))
 
     def loadAnimations(self):
-        animations_dir = QtCore.QDir(':/animations')
-        for ani_file_name in animations_dir.entryList(QtCore.QDir.Files):
-            animation = QtGui.QMovie(animations_dir.filePath(ani_file_name))
-            name = os.path.splitext(unicode(ani_file_name))[0]
-            self.animations[name] = animation
+        config_file = QtCore.QFile(':/config.json')
+        config_file.open(QtCore.QIODevice.ReadOnly)
+        config = json.loads(unicode(config_file.readAll()))
+        for element_name, path in config.get('animations', {}).items():
+            animation = QtGui.QMovie(path)
+            self.animations[element_name] = animation
 
     def loadStyles(self):
         """
@@ -164,11 +166,9 @@ class GUI(QtGui.QMainWindow):
         if state['gui_config'].get('debug', False):
             self.ui.version_lbl.setText(settings.VERSION)
         # Animations
-        for animation_name, animation in self._application.animations.items():
-            for label in self.ui.main_stackedWidget.findChildren(
-                    QtGui.QLabel,
-                    QtCore.QRegExp('{}_lbl'.format(animation_name))):
-                label.setMovie(animation)
+        for element_name, animation in self._application.animations.items():
+            label = getattr(self.ui, element_name)
+            label.setMovie(animation)
             animation.start()
         # Set up buttons
         for button_name in settings.BUTTONS:

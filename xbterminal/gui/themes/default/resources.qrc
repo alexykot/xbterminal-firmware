@@ -13,4 +13,7 @@
   <qresource>
     <file>styles/main.qss</file>
   </qresource>
+  <qresource>
+    <file>config.json</file>
+  </qresource>
 </RCC>
