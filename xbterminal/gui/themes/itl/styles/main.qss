@@ -180,7 +180,7 @@ QPushButton:pressed {
 #preceipt_icon1_lbl,
 #wreceipt_icon1_lbl {
     background-image: url(:/images/touch-nfc-icon.png);
-    qproperty-geometry: rect(290 92 88 56);
+    qproperty-geometry: rect(290 130 88 56);
 }
 
 #preceipt_goback_btn,
