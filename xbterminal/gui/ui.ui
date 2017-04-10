@@ -1495,7 +1495,7 @@ tap NFC around camera</string>
       </font>
      </property>
      <property name="text">
-      <string>Pay out</string>
+      <string>Payout</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -1773,7 +1773,7 @@ for address QR code scanning</string>
       </font>
      </property>
      <property name="text">
-      <string>Pay out amount</string>
+      <string>Payout</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>

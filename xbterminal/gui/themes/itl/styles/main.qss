@@ -212,46 +212,54 @@ QPushButton:pressed {
 }
 
 #wconfirm_desc_lbl {
+    color: #7afff4;
     qproperty-geometry: rect(0 0 480 70);
 }
-
 #wconfirm_fiat_amount_lbl {
-    font-size: 20pt;
+    font-size: 28pt;
     qproperty-geometry: rect(0 35 480 90);
     qproperty-alignment: 'AlignVCenter | AlignHCenter';
 }
-
-#wconfirm_btc1_lbl,
+#wconfirm_btc1_lbl {
+    color: #edbfbf;
+    qproperty-geometry: rect(50 110 141 31);
+}
 #wconfirm_btc2_lbl {
     color: #edbfbf;
+    qproperty-geometry: rect(310 110 121 31);
 }
-
 #wconfirm_btc_amount_lbl {
     color: #f4cc50;
     font-size: 20pt;
-    qproperty-geometry: rect(190 97 120 30);
+    qproperty-geometry: rect(190 107 120 30);
 }
-
 #wconfirm_address_lbl {
     color: #8fb1d4;
+    qproperty-geometry: rect(0 140 480 41);
 }
-
 #wconfirm_xrate_lbl {
     color: #CCCCCC;
+    qproperty-geometry: rect(0 180 121 21);
 }
-
-#wconfirm_icon1_lbl {
-    background-image: url(:/images/withdraw-icon.png);
-    qproperty-geometry: rect(180 216 29 25);
+#wconfirm_xrate_amount_lbl {
+    qproperty-geometry: rect(130 180 141 21);
 }
-
+#wconfirm_fee1_lbl {
+    color: #CCCCCC;
+    qproperty-geometry: rect(260 180 101 21);
+}
+#wconfirm_fee2_lbl {
+    color: #CCCCCC;
+    qproperty-geometry: rect(420 180 61 21);
+}
+#wconfirm_fee_amount_lbl {
+    qproperty-geometry: rect(360 180 61 21);
+}
 #wconfirm_cancel_btn {
-    qproperty-geometry: rect(20 200 130 60);
+    qproperty-geometry: rect(0 212 159 60);
 }
-
 #wconfirm_confirm_btn {
-    qproperty-geometry: rect(170 200 290 60);
-    padding-left: 35px;
+    qproperty-geometry: rect(160 212 320 60);
 }
 
 #errors_lbl {
