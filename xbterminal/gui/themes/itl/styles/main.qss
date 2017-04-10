@@ -29,6 +29,7 @@ QPushButton:pressed {
 #pprogress_desc_lbl,
 #preceipt_desc_lbl,
 #pcancel_desc_lbl,
+#wselect_desc_lbl,
 #wwait_desc_lbl,
 #wconfirm_desc_lbl,
 #wreceipt_desc_lbl,
@@ -188,10 +189,22 @@ QPushButton:pressed {
     qproperty-geometry: rect(270 200 130 60);
 }
 
+#wselect_desc_lbl {
+    color: #7afff4;
+}
+
+#wwait_desc_lbl {
+    color: #7afff4;
+}
 #wwait_fiat_amount_lbl {
-    qproperty-alignment: 'AlignLeft | AlignVCenter';
-    qproperty-geometry: rect(380 0 100 78);
-    font-size: 17pt;
+    font-size: 28pt;
+    qproperty-geometry: rect(160 90 151 31);
+}
+#wwait_goback_btn {
+    qproperty-geometry: rect(0 212 159 60);
+}
+#wwait_scan_btn {
+    qproperty-geometry: rect(160 212 320 60);
 }
 
 #wscan_bg_lbl {
