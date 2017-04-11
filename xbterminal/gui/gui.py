@@ -175,6 +175,9 @@ class GUI(QtGui.QMainWindow):
             button = getattr(self.ui, button_name)
             button.clicked.connect(
                 functools.partial(self.buttonPressEvent, button_name))
+        # Make standby screen logo transparent for clicks
+        self.ui.standby_wake_widget.setAttribute(
+            QtCore.Qt.WA_TransparentForMouseEvents)
         # Hide elements
         self.ui.pwait_paid_lbl.hide()
         self.ui.pwait_paid_btc_amount_lbl.hide()
