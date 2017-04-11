@@ -39,11 +39,9 @@ QPushButton:pressed {
     background-color: #000000;
     border-width: 0px;
 }
-
 #standby_bc_logo_image {
     qproperty-pixmap: url(':/images/bc_logo_small.png');
 }
-
 #standby_wake_lbl {
     color: #EEEEEE;
     font-weight: bold;

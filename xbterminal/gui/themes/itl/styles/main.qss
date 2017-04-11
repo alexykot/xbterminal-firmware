@@ -60,19 +60,19 @@ QPushButton:pressed {
 }
 
 #standby_wake_btn {
-    background-color: #000000;
+    background-color: transparent;
     border-image: none;
     border-width: 0px;
 }
-
-#standby_bc_logo_image {
-    qproperty-pixmap: url(':/images/bc_logo_small.png');
+#standby_wake_widget {
+    qproperty-geometry: rect(0 0 287 64);
 }
-
+#standby_bc_logo_image {
+    qproperty-geometry: rect(0 0 287 64);
+    qproperty-pixmap: url(':/images/screensaver.png');
+}
 #standby_wake_lbl {
-    color: #EEEEEE;
-    font-weight: bold;
-    text-transform: uppercase;
+    qproperty-text: '';
 }
 
 #pamount_desc_lbl {
