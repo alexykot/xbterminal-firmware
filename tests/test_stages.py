@@ -237,23 +237,28 @@ class IdleStageTestCase(unittest.TestCase):
 
 class HelpStageTestCase(unittest.TestCase):
 
-    def test_backspace_key(self):
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_goback_button(self, qr_gen_mock):
         client_mock = Mock(**{
             'start_nfc_server.return_value': True,
         })
-        keypad = Mock(last_key_pressed='backspace')
+        qr_gen_mock.return_value = 'image'
         state = {
             'client': client_mock,
             'remote_config': {
                 'remote_server': 'https://xbterminal.io',
             },
-            'keypad': keypad,
+            'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
+                'help_goback_btn': True,
             },
         }
         ui = Mock()
         next_stage = stages.help(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'help')
+        self.assertEqual(ui.setImage.call_args[0][1], 'image')
+        self.assertEqual(ui.setText.call_args[0][1],
+                         state['remote_config']['remote_server'])
         self.assertIs(client_mock.start_nfc_server.called, True)
         self.assertIs(client_mock.stop_nfc_server.called, True)
         self.assertEqual(next_stage, settings.STAGES['idle'])

@@ -56,6 +56,7 @@ BUTTONS = [
     'idle_begin_btn',
     'idle_help_btn',
     'standby_wake_btn',
+    'help_goback_btn',
     'pamount_opt1_btn',
     'pamount_opt2_btn',
     'pamount_opt3_btn',
