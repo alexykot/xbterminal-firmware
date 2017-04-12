@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import os
 import re
@@ -40,6 +41,7 @@ class Application(QtGui.QApplication):
         super(Application, self).__init__(*args, **kwargs)
         self.loadConfig()
         self.initResources()
+        self.animations = {}
         self._translators = {}
         self.language = settings.UI_DEFAULT_LANGUAGE
         self.loadTranslations()
@@ -63,6 +65,14 @@ class Application(QtGui.QApplication):
         for font_file_name in fonts_dir.entryList(QtCore.QDir.Files):
             QtGui.QFontDatabase.addApplicationFont(
                 fonts_dir.filePath(font_file_name))
+
+    def loadAnimations(self):
+        config_file = QtCore.QFile(':/config.json')
+        config_file.open(QtCore.QIODevice.ReadOnly)
+        config = json.loads(unicode(config_file.readAll()))
+        for element_name, path in config.get('animations', {}).items():
+            animation = QtGui.QMovie(path)
+            self.animations[element_name] = animation
 
     def loadStyles(self):
         """
@@ -134,6 +144,7 @@ class GUI(QtGui.QMainWindow):
         # Initialize Qt application
         application = Application(sys.argv)
         application.loadFonts()
+        application.loadAnimations()
         if state['gui_config'].get('show_cursor'):
             application.setOverrideCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         else:
@@ -154,17 +165,19 @@ class GUI(QtGui.QMainWindow):
         # Version
         if state['gui_config'].get('debug', False):
             self.ui.version_lbl.setText(settings.VERSION)
-        # Loaders
-        self.loader = QtGui.QMovie(':/images/loading.gif')
-        self.ui.loader_lbl.setMovie(self.loader)
-        self.ui.pload_loader_lbl.setMovie(self.loader)
-        self.ui.pprogress_loader_lbl.setMovie(self.loader)
-        self.loader.start()
+        # Animations
+        for element_name, animation in self._application.animations.items():
+            label = getattr(self.ui, element_name)
+            label.setMovie(animation)
+            animation.start()
         # Set up buttons
         for button_name in settings.BUTTONS:
             button = getattr(self.ui, button_name)
             button.clicked.connect(
                 functools.partial(self.buttonPressEvent, button_name))
+        # Make standby screen logo transparent for clicks
+        self.ui.standby_wake_widget.setAttribute(
+            QtCore.Qt.WA_TransparentForMouseEvents)
         # Hide elements
         self.ui.pwait_paid_lbl.hide()
         self.ui.pwait_paid_btc_amount_lbl.hide()

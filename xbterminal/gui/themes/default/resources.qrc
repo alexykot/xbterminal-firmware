@@ -1,6 +1,5 @@
 <RCC>
   <qresource>
-    <file>images/loading.gif</file>
     <file>images/bg.png</file>
     <file>images/bc_logo.png</file>
     <file>images/bc_logo_small.png</file>
@@ -9,6 +8,12 @@
     <file>fonts/OpenSans-Regular.ttf</file>
   </qresource>
   <qresource>
+    <file>animations/loader.gif</file>
+  </qresource>
+  <qresource>
     <file>styles/main.qss</file>
+  </qresource>
+  <qresource>
+    <file>config.json</file>
   </qresource>
 </RCC>

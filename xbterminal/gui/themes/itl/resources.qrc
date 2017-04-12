@@ -6,7 +6,6 @@
     <file>images/btn-grey-pressed.png</file>
     <file>images/screen-idle.png</file>
     <file>images/background.png</file>
-    <file>images/loading.gif</file>
     <file>images/coin-icon.png</file>
     <file>images/coin-icon-small.png</file>
     <file>images/skinny-up-arrow.png</file>
@@ -36,12 +35,22 @@
     <file>images/pill-grey-btn-2.png</file>
     <file>images/pill-grey-btn-2-pressed.png</file>
     <file>images/bc_logo_small.png</file>
+    <file>images/top-up.png</file>
+    <file>images/arrow-right.png</file>
+    <file>images/screensaver.png</file>
   </qresource>
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>
     <file>fonts/Lato-Light.ttf</file>
   </qresource>
   <qresource>
+    <file>animations/orange-dots-animation.gif</file>
+    <file>animations/transfer-funds3.gif</file>
+  </qresource>
+  <qresource>
     <file>styles/main.qss</file>
+  </qresource>
+  <qresource>
+    <file>config.json</file>
   </qresource>
 </RCC>

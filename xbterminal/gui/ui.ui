@@ -333,7 +333,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Top up your credit</string>
+      <string>Add credit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -901,10 +901,10 @@ touch with NFC</string>
     <widget class="QLabel" name="pwait_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>0</x>
        <y>120</y>
-       <width>201</width>
-       <height>41</height>
+       <width>220</width>
+       <height>40</height>
       </rect>
      </property>
      <property name="font">
@@ -1008,10 +1008,10 @@ touch with NFC</string>
     <widget class="QLabel" name="pwait_pay_lbl">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>0</x>
        <y>90</y>
-       <width>201</width>
-       <height>31</height>
+       <width>220</width>
+       <height>30</height>
       </rect>
      </property>
      <property name="font">
@@ -1495,7 +1495,7 @@ tap NFC around camera</string>
       </font>
      </property>
      <property name="text">
-      <string>Pay out</string>
+      <string>Payout</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -1773,7 +1773,7 @@ for address QR code scanning</string>
       </font>
      </property>
      <property name="text">
-      <string>Pay out amount</string>
+      <string>Payout</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
@@ -2052,8 +2052,8 @@ tap NFC around camera</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>140</y>
-       <width>230</width>
+       <y>130</y>
+       <width>250</width>
        <height>41</height>
       </rect>
      </property>
@@ -2100,38 +2100,12 @@ tap NFC around camera</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="error_message_lbl">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>170</y>
-       <width>230</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>message:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QLabel" name="error_code_val_lbl">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>140</y>
-       <width>230</width>
+       <x>270</x>
+       <y>130</y>
+       <width>210</width>
        <height>41</height>
       </rect>
      </property>
@@ -2143,7 +2117,7 @@ tap NFC around camera</string>
       </font>
      </property>
      <property name="text">
-      <string>001</string>
+      <string>0001</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2155,9 +2129,9 @@ tap NFC around camera</string>
     <widget class="QLabel" name="error_message_val_lbl">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>0</x>
        <y>170</y>
-       <width>230</width>
+       <width>480</width>
        <height>41</height>
       </rect>
      </property>
@@ -2172,10 +2146,23 @@ tap NFC around camera</string>
       <string>connection error</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="error_icon1_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
