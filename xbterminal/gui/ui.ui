@@ -243,11 +243,31 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QPushButton" name="idle_help_btn">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>0</y>
+       <width>70</width>
+       <height>70</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>?</string>
+     </property>
+    </widget>
     <zorder>idle_bc_logo_image</zorder>
     <zorder>idle_nfc_lbl</zorder>
     <zorder>idle_begin_lbl</zorder>
     <zorder>idle_begin_btn</zorder>
+    <zorder>idle_help_btn</zorder>
    </widget>
+   <widget class="QWidget" name="help_scrn"/>
    <widget class="QWidget" name="standby_scrn">
     <widget class="QPushButton" name="standby_wake_btn">
      <property name="geometry">

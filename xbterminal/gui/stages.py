@@ -51,6 +51,10 @@ def idle(state, ui):
             state['screen_buttons']['standby_wake_btn'] = False
             state['client'].stop_nfc_server()
             return settings.STAGES['payment']['pay_amount']
+        elif state['screen_buttons']['idle_help_btn']:
+            state['screen_buttons']['idle_help_btn'] = False
+            state['client'].stop_nfc_server()
+            return settings.STAGES['help']
 
         # Communicate with the host system
         payout = state['client'].host_get_payout()
@@ -68,6 +72,21 @@ def idle(state, ui):
                 standby_screen_last_refresh + settings.STANDBY_SCREEN_REFRESH_CYCLE < current_time:
             standby_screen_last_refresh = current_time
             ui.showStandByScreen()
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def help(state, ui):
+    ui.showScreen('help')
+    state['client'].start_nfc_server(
+        message=state['remote_config']['remote_server'])
+    while True:
+        if state['keypad'].last_key_pressed == 'backspace':
+            state['client'].stop_nfc_server()
+            return settings.STAGES['idle']
+        try:
+            _wait_for_screen_timeout(state, ui, 'help')
+        except StageTimeout:
+            return settings.STAGES['idle']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
