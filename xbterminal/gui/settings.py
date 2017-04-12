@@ -144,3 +144,5 @@ OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 
 BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 5
+
+HELP_PAGE_URL = 'http://www.apmodule.co.uk/'

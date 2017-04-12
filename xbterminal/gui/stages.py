@@ -76,11 +76,10 @@ def idle(state, ui):
 
 
 def help(state, ui):
-    help_url = state['remote_config']['remote_server']
     ui.showScreen('help')
-    ui.setText('help_url_lbl', help_url)
-    ui.setImage('help_qr_img', qr.qr_gen(help_url))
-    state['client'].start_nfc_server(message=help_url)
+    ui.setText('help_url_lbl', settings.HELP_PAGE_URL)
+    ui.setImage('help_qr_img', qr.qr_gen(settings.HELP_PAGE_URL))
+    state['client'].start_nfc_server(message=settings.HELP_PAGE_URL)
     while True:
         if state['screen_buttons']['help_goback_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':

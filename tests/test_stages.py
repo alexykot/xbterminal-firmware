@@ -245,9 +245,7 @@ class HelpStageTestCase(unittest.TestCase):
         qr_gen_mock.return_value = 'image'
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
+            'remote_config': {},
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'help_goback_btn': True,
@@ -258,7 +256,7 @@ class HelpStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0], 'help')
         self.assertEqual(ui.setImage.call_args[0][1], 'image')
         self.assertEqual(ui.setText.call_args[0][1],
-                         state['remote_config']['remote_server'])
+                         'http://www.apmodule.co.uk/')
         self.assertIs(client_mock.start_nfc_server.called, True)
         self.assertIs(client_mock.stop_nfc_server.called, True)
         self.assertEqual(next_stage, settings.STAGES['idle'])
