@@ -356,7 +356,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>13</pointsize>
+       <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
@@ -387,7 +387,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="help_nfc_lbl">
+    <widget class="QLabel" name="help_touch_lbl">
      <property name="geometry">
       <rect>
        <x>200</x>
@@ -398,7 +398,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>13</pointsize>
+       <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
@@ -445,15 +445,37 @@
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QLabel" name="help_nfc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>220</y>
+       <width>280</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>NFC enabled phones only</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
     <zorder>help_desc_lbl</zorder>
     <zorder>help_goback_btn</zorder>
     <zorder>help_url_lbl</zorder>
     <zorder>help_scan_lbl</zorder>
     <zorder>help_or_lbl</zorder>
-    <zorder>help_nfc_lbl</zorder>
+    <zorder>help_touch_lbl</zorder>
     <zorder>help_icon1_lbl</zorder>
     <zorder>help_desc_empty_lbl</zorder>
     <zorder>help_qr_img</zorder>
+    <zorder>help_nfc_lbl</zorder>
    </widget>
    <widget class="QWidget" name="standby_scrn">
     <widget class="QPushButton" name="standby_wake_btn">

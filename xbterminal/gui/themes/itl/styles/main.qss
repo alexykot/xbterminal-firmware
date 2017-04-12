@@ -24,6 +24,7 @@ QPushButton:pressed {
     color: #000;
 }
 
+#help_desc_lbl,
 #pamount_desc_lbl,
 #pinfo_desc_lbl,
 #pprogress_desc_lbl,
@@ -33,7 +34,8 @@ QPushButton:pressed {
 #wwait_desc_lbl,
 #wconfirm_desc_lbl,
 #wreceipt_desc_lbl,
-#error_desc_lbl {
+#error_desc_lbl,
+#timeout_desc_lbl {
     font-family: 'Lato Light';
     font-size: 28pt;
 }
@@ -58,6 +60,15 @@ QPushButton:pressed {
 #idle_nfc_lbl {
     qproperty-text: '';
 }
+#idle_help_btn {
+    background-color: #fff;
+    border-bottom-left-radius: 70px;
+    border-width: 0;
+    color: #ce730a;
+    font-size: 24pt;
+    padding-left: 15px;
+    padding-bottom: 15px;
+}
 
 #standby_wake_btn {
     background-color: transparent;
@@ -73,6 +84,41 @@ QPushButton:pressed {
 }
 #standby_wake_lbl {
     qproperty-text: '';
+}
+
+#help_desc_lbl {
+    color: #7afff4;
+}
+#help_qr_img {
+    qproperty-geometry: rect(0 0 200 200);
+}
+#help_goback_btn {
+    qproperty-geometry: rect(0 212 200 60);
+}
+#help_url_lbl {
+    qproperty-geometry: rect(200 70 280 31);
+}
+#help_scan_lbl {
+    qproperty-geometry: rect(200 100 280 30);
+}
+#help_or_lbl {
+    background-image: url(:/images/or.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    font-size: 12pt;
+    qproperty-geometry: rect(200 130 280 20);
+    text-transform: uppercase;
+}
+#help_touch_lbl {
+    qproperty-geometry: rect(200 150 280 30);
+}
+#help_nfc_lbl {
+    color: #8fb1d4;
+    qproperty-geometry: rect(200 180 280 20);
+}
+#help_icon1_lbl {
+    background-image: url(:/images/touch-nfc-icon.png);
+    qproperty-geometry: rect(295 205 88 56);
 }
 
 #pamount_desc_lbl {

@@ -38,6 +38,7 @@
     <file>images/top-up.png</file>
     <file>images/arrow-right.png</file>
     <file>images/screensaver.png</file>
+    <file>images/or.png</file>
   </qresource>
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>
