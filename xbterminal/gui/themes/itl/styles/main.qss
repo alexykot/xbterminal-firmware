@@ -6,6 +6,7 @@ QLabel {
 QPushButton {
     background-color: #f79b24;
     border-top: 2px solid #f9ba68;
+    border-bottom: none;
     color: #371e03;
     font-family: 'Lato';
     outline: none;
@@ -154,6 +155,12 @@ QPushButton:pressed {
     font-size: 28pt;
     qproperty-geometry: rect(190 40 130 90);
 }
+#pinfo_icon1_lbl {
+    background-image: url(:/images/line.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    qproperty-geometry: rect(0 120 480 1);
+}
 #pinfo_btc1_lbl {
     color: #edbfbf;
     font-size: 14pt;
@@ -178,10 +185,18 @@ QPushButton:pressed {
     qproperty-geometry: rect(230 160 161 31);
 }
 #pinfo_cancel_btn {
+    background-image: url(:/images/icon-cancel.png);
+    background-position: center;
+    background-repeat: no-repeat;
     qproperty-geometry: rect(0 212 159 60);
+    qproperty-text: '';
 }
 #pinfo_pay_btn {
+    background-image: url(:/images/icon-pay.png);
+    background-position: center;
+    background-repeat: no-repeat;
     qproperty-geometry: rect(160 212 320 60);
+    qproperty-text: '';
 }
 
 #pwait_qr_img {
