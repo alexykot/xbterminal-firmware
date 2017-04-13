@@ -339,6 +339,12 @@ QPushButton:pressed {
     qproperty-geometry: rect(0 35 480 90);
     qproperty-alignment: 'AlignVCenter | AlignHCenter';
 }
+#wconfirm_icon1_lbl {
+    background-image: url(:/images/line.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    qproperty-geometry: rect(0 105 480 1);
+}
 #wconfirm_btc1_lbl {
     color: #edbfbf;
     qproperty-geometry: rect(50 110 141 31);
@@ -375,10 +381,18 @@ QPushButton:pressed {
     qproperty-geometry: rect(360 180 61 21);
 }
 #wconfirm_cancel_btn {
+    background-image: url(:/images/icon-back.png);
+    background-position: center;
+    background-repeat: no-repeat;
     qproperty-geometry: rect(0 212 159 60);
+    qproperty-text: '';
 }
 #wconfirm_confirm_btn {
+    background-image: url(:/images/icon-payout-btc.png);
+    background-position: center;
+    background-repeat: no-repeat;
     qproperty-geometry: rect(160 212 320 60);
+    qproperty-text: '';
 }
 
 #error_desc_lbl {
