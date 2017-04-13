@@ -42,6 +42,8 @@
     <file>images/line.png</file>
     <file>images/icon-cancel.png</file>
     <file>images/icon-pay.png</file>
+    <file>images/icon-back.png</file>
+    <file>images/touch-nfc-icon-small.png</file>
   </qresource>
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>

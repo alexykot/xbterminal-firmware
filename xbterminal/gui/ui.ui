@@ -1319,6 +1319,72 @@ touch with NFC</string>
       <string>Cancel &amp;&amp; refund</string>
      </property>
     </widget>
+    <widget class="QLabel" name="pwait_scan_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>0</width>
+       <height>0</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Scan QR code</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_or_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>0</width>
+       <height>0</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>or</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pwait_touch_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>0</width>
+       <height>0</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Touch with NFC</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
     <zorder>pwait_btc_amount_lbl</zorder>
     <zorder>pwait_cancel_btn</zorder>
     <zorder>pwait_desc_lbl</zorder>
@@ -1330,6 +1396,9 @@ touch with NFC</string>
     <zorder>pwait_paid_btc_amount_lbl</zorder>
     <zorder>pwait_paid_lbl</zorder>
     <zorder>pwait_cancel_refund_btn</zorder>
+    <zorder>pwait_scan_lbl</zorder>
+    <zorder>pwait_or_lbl</zorder>
+    <zorder>pwait_touch_lbl</zorder>
    </widget>
    <widget class="QWidget" name="pay_progress_scrn">
     <widget class="QLabel" name="pprogress_loader_lbl">
