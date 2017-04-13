@@ -1809,6 +1809,45 @@ touch with NFC</string>
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="wload_scrn">
+    <widget class="QLabel" name="wload_desc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Payout processing</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wload_loader_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>272</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="withdraw_wait_scrn">
     <widget class="QLabel" name="wwait_fiat_amount_lbl">
      <property name="geometry">

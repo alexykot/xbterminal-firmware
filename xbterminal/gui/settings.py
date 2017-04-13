@@ -44,12 +44,13 @@ SCREENS = {
     'pay_receipt': 11,
     'pay_cancel': 12,
     'withdraw_select': 13,
-    'withdraw_wait': 14,
-    'withdraw_scan': 15,
-    'withdraw_confirm': 16,
-    'withdraw_receipt': 17,
-    'error': 18,
-    'timeout': 19,
+    'withdraw_loading': 14,
+    'withdraw_wait': 15,
+    'withdraw_scan': 16,
+    'withdraw_confirm': 17,
+    'withdraw_receipt': 18,
+    'error': 19,
+    'timeout': 20,
 }
 
 BUTTONS = [
