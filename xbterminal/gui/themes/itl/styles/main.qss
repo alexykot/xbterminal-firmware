@@ -17,6 +17,7 @@ QPushButton:pressed {
 }
 
 #pinfo_cancel_btn,
+#wselect_fiat_btn,
 #wwait_goback_btn,
 #wconfirm_cancel_btn {
     background-color: #b3b3b3;
@@ -287,6 +288,20 @@ QPushButton:pressed {
 
 #wselect_desc_lbl {
     color: #7afff4;
+}
+#wselect_fiat_btn {
+    background-image: url(:/images/icon-payout-fiat.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    qproperty-geometry: rect(0 192 239 80);
+    qproperty-text: '';
+}
+#wselect_bitcoin_btn {
+    background-image: url(:/images/icon-payout-btc.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    qproperty-geometry: rect(240 192 240 80);
+    qproperty-text: '';
 }
 
 #wwait_desc_lbl {
