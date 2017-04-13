@@ -46,6 +46,7 @@
     <file>images/touch-nfc-icon-small.png</file>
     <file>images/icon-payout-fiat.png</file>
     <file>images/icon-payout-btc.png</file>
+    <file>images/icon-scan.png</file>
   </qresource>
   <qresource>
     <file>fonts/Lato-Medium.ttf</file>
