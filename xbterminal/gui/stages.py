@@ -413,7 +413,7 @@ def withdraw_select(state, ui):
 
 
 def withdraw_loading1(state, ui):
-    ui.showScreen('load_indefinite')
+    ui.showScreen('withdraw_loading')
     assert state['withdrawal']['fiat_amount'] > 0
     while True:
         try:
@@ -520,7 +520,7 @@ def withdraw_confirm(state, ui):
 
 
 def withdraw_loading2(state, ui):
-    ui.showScreen('load_indefinite')
+    ui.showScreen('withdraw_loading')
     assert state['withdrawal']['address'] is not None
     while True:
         try:
@@ -552,7 +552,7 @@ def withdraw_loading2(state, ui):
             return settings.STAGES['withdrawal']['withdraw_receipt']
 
         try:
-            _wait_for_screen_timeout(state, ui, 'load_indefinite', timeout=300)
+            _wait_for_screen_timeout(state, ui, 'withdraw_loading', timeout=300)
         except StageTimeout:
             _clear_withdrawal_runtime(state, ui, clear_amount=False)
             return settings.STAGES['withdrawal']['withdraw_select']

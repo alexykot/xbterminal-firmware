@@ -80,7 +80,7 @@ class GUITestCase(unittest.TestCase):
     })
     def test_error_screen(self, appui_mock, app_cls_mock, logger_mock):
         appui_mock.Ui_MainWindow.return_value = Mock(**{
-            'main_stackedWidget.currentIndex.side_effect': [2, 18],
+            'main_stackedWidget.currentIndex.side_effect': [2, 19],
         })
         window = GUI()
         window.showErrorScreen('NETWORK_ERROR')
@@ -94,7 +94,7 @@ class GUITestCase(unittest.TestCase):
             window.ui.error_message_val_lbl.setText.call_args[0][0],
             'connection error')
         widget_mock = window.ui.main_stackedWidget
-        self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 18)
+        self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 19)
         window.hideErrorScreen('NETWORK_ERROR')
         self.assertEqual(widget_mock.setCurrentIndex.call_args[0][0], 2)
 
