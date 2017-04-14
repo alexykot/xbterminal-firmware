@@ -1987,7 +1987,7 @@ for address QR code scanning</string>
       <rect>
        <x>50</x>
        <y>100</y>
-       <width>141</width>
+       <width>151</width>
        <height>31</height>
       </rect>
      </property>
@@ -1998,7 +1998,7 @@ for address QR code scanning</string>
       </font>
      </property>
      <property name="text">
-      <string>withdraw</string>
+      <string>send exactly</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2070,7 +2070,7 @@ for address QR code scanning</string>
     <widget class="QLabel" name="wconfirm_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>200</x>
        <y>100</y>
        <width>121</width>
        <height>31</height>
@@ -2178,7 +2178,7 @@ for address QR code scanning</string>
     <widget class="QLabel" name="wconfirm_btc2_lbl">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>320</x>
        <y>100</y>
        <width>121</width>
        <height>31</height>
@@ -2191,7 +2191,7 @@ for address QR code scanning</string>
       </font>
      </property>
      <property name="text">
-      <string>mbits</string>
+      <string>mbits to</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
