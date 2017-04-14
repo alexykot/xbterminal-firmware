@@ -1459,7 +1459,7 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="pprogress_btc_lbl">
+    <widget class="QLabel" name="pprogress_amount_lbl">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1480,7 +1480,7 @@ touch with NFC</string>
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="pprogress_btc_amount_lbl">
+    <widget class="QLabel" name="pprogress_amount_val_lbl">
      <property name="geometry">
       <rect>
        <x>250</x>
@@ -1889,6 +1889,52 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="wload_amount_val_lbl">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>220</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>m฿1.00000</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wload_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>220</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>for amount of</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <zorder>wload_loader_lbl</zorder>
+    <zorder>wload_amount_val_lbl</zorder>
+    <zorder>wload_amount_lbl</zorder>
+    <zorder>wload_desc_lbl</zorder>
    </widget>
    <widget class="QWidget" name="withdraw_wait_scrn">
     <widget class="QLabel" name="wwait_fiat_amount_lbl">

@@ -836,7 +836,7 @@ class PayProgressStageTestCase(unittest.TestCase):
         next_stage = stages.pay_progress(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0],
                          'pay_progress')
-        self.assertEqual(ui.setText.call_count, 3)
+        self.assertEqual(ui.setText.call_count, 4)
         self.assertEqual(
             client_mock.get_payment_status.call_args[1]['uid'],
             'testUid')
@@ -1051,6 +1051,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_loading1(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
+        self.assertIn('1.00', ui.setText.call_args[0][1])
         self.assertEqual(
             client_mock.create_withdrawal_order.call_args[1]['fiat_amount'],
             Decimal('1.00'))
@@ -1357,6 +1358,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_loading2(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
+        self.assertIn('400.00', ui.setText.call_args[0][1])
         self.assertEqual(client_mock.get_withdrawal_status.call_count, 1)
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
@@ -1381,6 +1383,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             'withdrawal': {
                 'uid': 'testUid',
                 'fiat_amount': Decimal('0.50'),
+                'btc_amount': Decimal('0.4'),
                 'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
             },
         }

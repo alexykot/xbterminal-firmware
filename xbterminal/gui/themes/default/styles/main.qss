@@ -105,7 +105,8 @@ QPushButton:pressed {
 }
 
 #pload_loader_lbl,
-#pprogress_loader_lbl {
+#pprogress_loader_lbl,
+#wload_loader_lbl {
     qproperty-geometry: rect(0 30 480 272);
 }
 

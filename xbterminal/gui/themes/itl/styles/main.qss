@@ -257,12 +257,12 @@ QPushButton:pressed {
     qproperty-text: '';
 }
 
-#pprogress_btc_lbl {
+#pprogress_amount_lbl {
     color: #8fb1d4;
     qproperty-alignment: 'AlignVCenter | AlignHCenter';
     qproperty-geometry: rect(0 80 480 20);
 }
-#pprogress_btc_amount_lbl {
+#pprogress_amount_val_lbl {
     color: #f4cc50;
     font-size: 16pt;
     qproperty-alignment: 'AlignVCenter | AlignHCenter';
@@ -359,6 +359,21 @@ QPushButton:pressed {
     background-repeat: no-repeat;
     qproperty-geometry: rect(240 192 240 80);
     qproperty-text: '';
+}
+
+#wload_amount_lbl {
+    color: #8fb1d4;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 80 480 20);
+}
+#wload_amount_val_lbl {
+    color: #f4cc50;
+    font-size: 16pt;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 100 480 30);
+}
+#wload_loader_lbl {
+    qproperty-geometry: rect(0 60 480 212);
 }
 
 #wwait_desc_lbl {
