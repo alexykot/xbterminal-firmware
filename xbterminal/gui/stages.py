@@ -51,6 +51,10 @@ def idle(state, ui):
             state['screen_buttons']['standby_wake_btn'] = False
             state['client'].stop_nfc_server()
             return settings.STAGES['payment']['pay_amount']
+        elif state['screen_buttons']['idle_help_btn']:
+            state['screen_buttons']['idle_help_btn'] = False
+            state['client'].stop_nfc_server()
+            return settings.STAGES['help']
 
         # Communicate with the host system
         payout = state['client'].host_get_payout()
@@ -68,6 +72,24 @@ def idle(state, ui):
                 standby_screen_last_refresh + settings.STANDBY_SCREEN_REFRESH_CYCLE < current_time:
             standby_screen_last_refresh = current_time
             ui.showStandByScreen()
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def help(state, ui):
+    ui.showScreen('help')
+    ui.setText('help_url_lbl', settings.HELP_PAGE_URL)
+    ui.setImage('help_qr_img', qr.qr_gen(settings.HELP_PAGE_URL))
+    state['client'].start_nfc_server(message=settings.HELP_PAGE_URL)
+    while True:
+        if state['screen_buttons']['help_goback_btn'] or \
+                state['keypad'].last_key_pressed == 'backspace':
+            state['screen_buttons']['help_goback_btn'] = False
+            state['client'].stop_nfc_server()
+            return settings.STAGES['idle']
+        try:
+            _wait_for_screen_timeout(state, ui, 'help')
+        except StageTimeout:
+            return settings.STAGES['idle']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 

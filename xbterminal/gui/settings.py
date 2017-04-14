@@ -6,6 +6,7 @@ STAGES = {
     'bootup': 'bootup',
     'activate': 'activate',
     'idle': 'idle',
+    'help': 'help',
     'payment': {
         'pay_amount': 'pay_amount',
         'pay_confirm': 'pay_confirm',
@@ -32,27 +33,30 @@ SCREENS = {
     'load_indefinite': 0,
     'activation': 1,
     'idle': 2,
-    'standby': 3,
-    'pay_amount': 4,
-    'pay_confirm': 5,
-    'pay_loading': 6,
-    'pay_info': 7,
-    'pay_wait': 8,
-    'pay_progress': 9,
-    'pay_receipt': 10,
-    'pay_cancel': 11,
-    'withdraw_select': 12,
-    'withdraw_wait': 13,
-    'withdraw_scan': 14,
-    'withdraw_confirm': 15,
-    'withdraw_receipt': 16,
-    'error': 17,
-    'timeout': 18,
+    'help': 3,
+    'standby': 4,
+    'pay_amount': 5,
+    'pay_confirm': 6,
+    'pay_loading': 7,
+    'pay_info': 8,
+    'pay_wait': 9,
+    'pay_progress': 10,
+    'pay_receipt': 11,
+    'pay_cancel': 12,
+    'withdraw_select': 13,
+    'withdraw_wait': 14,
+    'withdraw_scan': 15,
+    'withdraw_confirm': 16,
+    'withdraw_receipt': 17,
+    'error': 18,
+    'timeout': 19,
 }
 
 BUTTONS = [
     'idle_begin_btn',
+    'idle_help_btn',
     'standby_wake_btn',
+    'help_goback_btn',
     'pamount_opt1_btn',
     'pamount_opt2_btn',
     'pamount_opt3_btn',
@@ -140,3 +144,5 @@ OUTPUT_DEC_PLACES = 2  # fractional decimal places to show on screen
 
 BITCOIN_SCALE_DIVIZER = 1000  # 1 for BTC, 1000 for mBTC, 1000000 for uBTC
 BITCOIN_OUTPUT_DEC_PLACES = 5
+
+HELP_PAGE_URL = 'http://www.apmodule.co.uk/'

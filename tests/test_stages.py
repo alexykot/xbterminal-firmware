@@ -96,6 +96,7 @@ class IdleStageTestCase(unittest.TestCase):
             },
             'screen_buttons': {
                 'idle_begin_btn': True,
+                'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
         }
@@ -122,6 +123,7 @@ class IdleStageTestCase(unittest.TestCase):
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
+                'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
         }
@@ -129,6 +131,27 @@ class IdleStageTestCase(unittest.TestCase):
         next_stage = stages.idle(state, ui)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_amount'])
+
+    def test_help_button(self):
+        client_mock = Mock()
+        state = {
+            'client': client_mock,
+            'remote_config': {
+                'remote_server': 'https://xbterminal.io',
+            },
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'idle_help_btn': True,
+                'standby_wake_btn': False,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.idle(state, ui)
+        self.assertIs(client_mock.stop_nfc_server.called, True)
+        self.assertEqual(next_stage, settings.STAGES['help'])
+        self.assertFalse(any(state for state
+                             in state['screen_buttons'].values()))
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
@@ -142,6 +165,7 @@ class IdleStageTestCase(unittest.TestCase):
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
+                'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
             'withdrawal': {},
@@ -166,6 +190,7 @@ class IdleStageTestCase(unittest.TestCase):
             'gui_config': {'default_withdrawal_amount': '0.23'},
             'screen_buttons': {
                 'idle_begin_btn': False,
+                'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
             'withdrawal': {},
@@ -190,6 +215,7 @@ class IdleStageTestCase(unittest.TestCase):
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
+                'idle_help_btn': False,
                 'standby_wake_btn': False,
             },
             'withdrawal': {},
@@ -207,6 +233,33 @@ class IdleStageTestCase(unittest.TestCase):
                          settings.STAGES['payment']['pay_amount'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
+
+
+class HelpStageTestCase(unittest.TestCase):
+
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_goback_button(self, qr_gen_mock):
+        client_mock = Mock(**{
+            'start_nfc_server.return_value': True,
+        })
+        qr_gen_mock.return_value = 'image'
+        state = {
+            'client': client_mock,
+            'remote_config': {},
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'help_goback_btn': True,
+            },
+        }
+        ui = Mock()
+        next_stage = stages.help(state, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0], 'help')
+        self.assertEqual(ui.setImage.call_args[0][1], 'image')
+        self.assertEqual(ui.setText.call_args[0][1],
+                         'http://www.apmodule.co.uk/')
+        self.assertIs(client_mock.start_nfc_server.called, True)
+        self.assertIs(client_mock.stop_nfc_server.called, True)
+        self.assertEqual(next_stage, settings.STAGES['idle'])
 
 
 class PaymentAmountStageTestCase(unittest.TestCase):
