@@ -257,8 +257,23 @@ QPushButton:pressed {
     qproperty-text: '';
 }
 
+#pprogress_btc_lbl {
+    color: #8fb1d4;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 80 480 20);
+}
+#pprogress_btc_amount_lbl {
+    color: #f4cc50;
+    font-size: 16pt;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 100 480 30);
+}
 #pprogress_status_lbl {
     color: #8fb1d4;
+    qproperty-geometry: rect(0 220 480 20);
+}
+#pprogress_loader_lbl {
+    qproperty-geometry: rect(0 60 480 212);
 }
 
 #preceipt_desc_lbl,
