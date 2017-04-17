@@ -257,8 +257,23 @@ QPushButton:pressed {
     qproperty-text: '';
 }
 
+#pprogress_amount_lbl {
+    color: #8fb1d4;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 80 480 20);
+}
+#pprogress_amount_val_lbl {
+    color: #f4cc50;
+    font-size: 16pt;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 100 480 30);
+}
 #pprogress_status_lbl {
     color: #8fb1d4;
+    qproperty-geometry: rect(0 220 480 20);
+}
+#pprogress_loader_lbl {
+    qproperty-geometry: rect(0 60 480 212);
 }
 
 #preceipt_desc_lbl,
@@ -346,6 +361,21 @@ QPushButton:pressed {
     qproperty-text: '';
 }
 
+#wload_amount_lbl {
+    color: #8fb1d4;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 80 480 20);
+}
+#wload_amount_val_lbl {
+    color: #f4cc50;
+    font-size: 16pt;
+    qproperty-alignment: 'AlignVCenter | AlignHCenter';
+    qproperty-geometry: rect(0 100 480 30);
+}
+#wload_loader_lbl {
+    qproperty-geometry: rect(0 60 480 212);
+}
+
 #wwait_desc_lbl {
     color: #7afff4;
 }
@@ -389,16 +419,16 @@ QPushButton:pressed {
 }
 #wconfirm_btc1_lbl {
     color: #edbfbf;
-    qproperty-geometry: rect(50 110 141 31);
+    qproperty-geometry: rect(50 110 151 31);
 }
 #wconfirm_btc2_lbl {
     color: #edbfbf;
-    qproperty-geometry: rect(310 110 121 31);
+    qproperty-geometry: rect(320 110 121 31);
 }
 #wconfirm_btc_amount_lbl {
     color: #f4cc50;
     font-size: 20pt;
-    qproperty-geometry: rect(190 107 120 30);
+    qproperty-geometry: rect(200 107 120 30);
 }
 #wconfirm_address_lbl {
     color: #8fb1d4;

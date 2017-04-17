@@ -308,6 +308,8 @@ def pay_wait(state, ui):
 def pay_progress(state, ui):
     ui.showScreen('pay_progress')
     ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.RECEIVED)
+    ui.setText('pprogress_btc_amount_lbl',
+               amounts.format_btc_amount_pretty(state['payment']['btc_amount'], prefix=True))
     time.sleep(2)
     ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.WAITING)
     while True:
@@ -413,8 +415,12 @@ def withdraw_select(state, ui):
 
 
 def withdraw_loading1(state, ui):
-    ui.showScreen('withdraw_loading')
     assert state['withdrawal']['fiat_amount'] > 0
+    ui.showScreen('withdraw_loading')
+    ui.setText(
+        'wload_amount_val_lbl',
+        amounts.format_fiat_amount_pretty(
+            state['withdrawal']['fiat_amount'], prefix=True))
     while True:
         try:
             withdrawal_info = state['client'].create_withdrawal_order(
@@ -520,8 +526,12 @@ def withdraw_confirm(state, ui):
 
 
 def withdraw_loading2(state, ui):
-    ui.showScreen('withdraw_loading')
     assert state['withdrawal']['address'] is not None
+    ui.showScreen('withdraw_loading')
+    ui.setText(
+        'wload_amount_val_lbl',
+        amounts.format_btc_amount_pretty(
+            state['withdrawal']['btc_amount'], prefix=True))
     while True:
         try:
             withdrawal_info = state['client'].confirm_withdrawal(

@@ -1442,7 +1442,7 @@ touch with NFC</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>220</y>
+       <y>240</y>
        <width>480</width>
        <height>21</height>
       </rect>
@@ -1457,6 +1457,48 @@ touch with NFC</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pprogress_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>220</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>for amount of</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pprogress_amount_val_lbl">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>220</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>m฿1.00000</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>
@@ -1847,6 +1889,52 @@ touch with NFC</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="wload_amount_val_lbl">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>220</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>m฿1.00000</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wload_amount_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>220</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>for amount of</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <zorder>wload_loader_lbl</zorder>
+    <zorder>wload_amount_val_lbl</zorder>
+    <zorder>wload_amount_lbl</zorder>
+    <zorder>wload_desc_lbl</zorder>
    </widget>
    <widget class="QWidget" name="withdraw_wait_scrn">
     <widget class="QLabel" name="wwait_fiat_amount_lbl">
@@ -1987,7 +2075,7 @@ for address QR code scanning</string>
       <rect>
        <x>50</x>
        <y>100</y>
-       <width>141</width>
+       <width>151</width>
        <height>31</height>
       </rect>
      </property>
@@ -1998,7 +2086,7 @@ for address QR code scanning</string>
       </font>
      </property>
      <property name="text">
-      <string>withdraw</string>
+      <string>send exactly</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2070,7 +2158,7 @@ for address QR code scanning</string>
     <widget class="QLabel" name="wconfirm_btc_amount_lbl">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>200</x>
        <y>100</y>
        <width>121</width>
        <height>31</height>
@@ -2178,7 +2266,7 @@ for address QR code scanning</string>
     <widget class="QLabel" name="wconfirm_btc2_lbl">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>320</x>
        <y>100</y>
        <width>121</width>
        <height>31</height>
@@ -2191,7 +2279,7 @@ for address QR code scanning</string>
       </font>
      </property>
      <property name="text">
-      <string>mbits</string>
+      <string>mbits to</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
