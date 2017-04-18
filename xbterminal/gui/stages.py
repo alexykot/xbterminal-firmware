@@ -308,7 +308,7 @@ def pay_wait(state, ui):
 def pay_progress(state, ui):
     ui.showScreen('pay_progress')
     ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.RECEIVED)
-    ui.setText('pprogress_btc_amount_lbl',
+    ui.setText('pprogress_amount_val_lbl',
                amounts.format_btc_amount_pretty(state['payment']['btc_amount'], prefix=True))
     time.sleep(2)
     ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.WAITING)
