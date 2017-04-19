@@ -73,7 +73,6 @@ BUTTONS = [
     'pcancel_goback_btn',
     'wselect_fiat_btn',
     'wselect_bitcoin_btn',
-    'wwait_goback_btn',
     'wwait_scan_btn',
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',
