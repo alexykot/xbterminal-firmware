@@ -91,9 +91,6 @@ class IdleStageTestCase(unittest.TestCase):
         })
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'screen_buttons': {
                 'idle_begin_btn': True,
                 'idle_help_btn': False,
@@ -105,7 +102,7 @@ class IdleStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0], 'idle')
         self.assertEqual(
             client_mock.start_nfc_server.call_args[1]['message'],
-            'https://xbterminal.io')
+            'http://www.apmodule.co.uk/')
         self.assertTrue(client_mock.stop_nfc_server.called)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_amount'])
@@ -117,9 +114,6 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='enter')
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -136,9 +130,6 @@ class IdleStageTestCase(unittest.TestCase):
         client_mock = Mock()
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -159,9 +150,6 @@ class IdleStageTestCase(unittest.TestCase):
         })
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -175,7 +163,7 @@ class IdleStageTestCase(unittest.TestCase):
         self.assertTrue(client_mock.host_get_payout.called)
         self.assertTrue(client_mock.stop_nfc_server.called)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.15'))
 
     def test_alt_key_input(self):
@@ -183,9 +171,6 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='alt')
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': keypad,
             'gui_config': {'default_withdrawal_amount': '0.23'},
             'screen_buttons': {
@@ -199,7 +184,7 @@ class IdleStageTestCase(unittest.TestCase):
         next_stage = stages.idle(state, ui)
         self.assertTrue(client_mock.host_get_payout.called)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.23'))
 
     @patch('xbterminal.gui.stages.time.sleep')
@@ -209,9 +194,6 @@ class IdleStageTestCase(unittest.TestCase):
         state = {
             'last_activity_timestamp': 0,
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -380,7 +362,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.00'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
 
     def test_timeout(self):
         client_mock = Mock(**{'host_get_payout.return_value': None})
@@ -636,7 +618,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.0'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
 
 
 class PayWaitStageTestCase(unittest.TestCase):
@@ -920,7 +902,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.0'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
 
 
 class PayCancelStageTestCase(unittest.TestCase):
@@ -958,7 +940,7 @@ class PayCancelStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.0'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
 
 
 class WithdrawSelectStageTestCase(unittest.TestCase):
@@ -1082,7 +1064,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
 
     @patch('xbterminal.gui.stages.time.sleep')
     def test_max_payout_error(self, sleep_mock):
@@ -1102,7 +1084,7 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(ui.showErrorScreen.call_args[0][0],
                          'MAX_PAYOUT_ERROR')
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
 
 
 class WithdrawWaitStageTestCase(unittest.TestCase):
@@ -1111,9 +1093,8 @@ class WithdrawWaitStageTestCase(unittest.TestCase):
         client_mock = Mock()
         state = {
             'client': client_mock,
-            'keypad': Mock(last_key_pressed=None),
+            'keypad': Mock(last_key_pressed='backspace'),
             'screen_buttons': {
-                'wwait_goback_btn': True,
                 'wwait_scan_btn': False,
             },
             'gui_config': {},
@@ -1125,7 +1106,7 @@ class WithdrawWaitStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_wait(state, ui)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertTrue(client_mock.cancel_withdrawal.call_args[1]['uid'],
                         'testUid')
         self.assertIsNone(state['withdrawal']['uid'])
@@ -1139,7 +1120,6 @@ class WithdrawWaitStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'wwait_goback_btn': False,
                 'wwait_scan_btn': True,
             },
             'gui_config': {},
@@ -1162,7 +1142,6 @@ class WithdrawWaitStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
-                'wwait_goback_btn': False,
                 'wwait_scan_btn': False,
             },
             'gui_config': {},
@@ -1175,7 +1154,7 @@ class WithdrawWaitStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_wait(state, ui)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertTrue(client_mock.cancel_withdrawal.call_args[1]['uid'],
                         'testUid')
         self.assertIsNone(state['withdrawal']['uid'])
@@ -1289,13 +1268,10 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_confirm(state, ui)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
-        self.assertEqual(
-            client_mock.cancel_withdrawal.call_args[1]['uid'],
-            'testUid')
-        self.assertIsNone(state['withdrawal']['uid'])
-        self.assertIsNone(state['withdrawal']['address'])
-        self.assertIsNotNone(state['withdrawal']['fiat_amount'])
+                         settings.STAGES['withdrawal']['withdraw_wait'])
+        self.assertIs(client_mock.cancel_withdrawal.called, False)
+        self.assertIsNotNone(state['withdrawal']['uid'])
+        self.assertIsNotNone(state['withdrawal']['address'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 
@@ -1397,7 +1373,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
                          'SERVER_ERROR')
         self.assertFalse(client_mock.cancel_withdrawal.called)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
+                         settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNone(state['withdrawal']['address'])
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])

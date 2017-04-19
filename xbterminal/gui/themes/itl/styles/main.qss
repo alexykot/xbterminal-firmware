@@ -95,7 +95,11 @@ QPushButton:pressed {
     qproperty-geometry: rect(0 0 200 200);
 }
 #help_goback_btn {
+    background-image: url(:/images/icon-back.png);
+    background-position: center;
+    background-repeat: no-repeat;
     qproperty-geometry: rect(0 212 200 60);
+    qproperty-text: '';
 }
 #help_url_lbl {
     qproperty-geometry: rect(200 70 280 31);
@@ -383,18 +387,11 @@ QPushButton:pressed {
     font-size: 28pt;
     qproperty-geometry: rect(160 90 151 31);
 }
-#wwait_goback_btn {
-    background-image: url(:/images/icon-back.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    qproperty-geometry: rect(0 212 159 60);
-    qproperty-text: '';
-}
 #wwait_scan_btn {
     background-image: url(:/images/icon-scan.png);
     background-position: center;
     background-repeat: no-repeat;
-    qproperty-geometry: rect(160 212 320 60);
+    qproperty-geometry: rect(0 212 480 60);
     qproperty-text: '';
 }
 
