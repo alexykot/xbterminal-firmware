@@ -1271,13 +1271,10 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_confirm(state, ui)
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_select'])
-        self.assertEqual(
-            client_mock.cancel_withdrawal.call_args[1]['uid'],
-            'testUid')
-        self.assertIsNone(state['withdrawal']['uid'])
-        self.assertIsNone(state['withdrawal']['address'])
-        self.assertIsNotNone(state['withdrawal']['fiat_amount'])
+                         settings.STAGES['withdrawal']['withdraw_wait'])
+        self.assertIs(client_mock.cancel_withdrawal.called, False)
+        self.assertIsNotNone(state['withdrawal']['uid'])
+        self.assertIsNotNone(state['withdrawal']['address'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
 

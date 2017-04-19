@@ -511,9 +511,7 @@ def withdraw_confirm(state, ui):
         elif state['screen_buttons']['wconfirm_cancel_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['wconfirm_cancel_btn'] = False
-            _clear_withdrawal_runtime(state, ui, clear_amount=False,
-                                      cancel_order=True)
-            return settings.STAGES['withdrawal']['withdraw_select']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         try:
             _wait_for_screen_timeout(state, ui, 'withdraw_confirm', timeout=300)
