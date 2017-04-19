@@ -91,9 +91,6 @@ class IdleStageTestCase(unittest.TestCase):
         })
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'screen_buttons': {
                 'idle_begin_btn': True,
                 'idle_help_btn': False,
@@ -105,7 +102,7 @@ class IdleStageTestCase(unittest.TestCase):
         self.assertEqual(ui.showScreen.call_args[0][0], 'idle')
         self.assertEqual(
             client_mock.start_nfc_server.call_args[1]['message'],
-            'https://xbterminal.io')
+            'http://www.apmodule.co.uk/')
         self.assertTrue(client_mock.stop_nfc_server.called)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_amount'])
@@ -117,9 +114,6 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='enter')
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -136,9 +130,6 @@ class IdleStageTestCase(unittest.TestCase):
         client_mock = Mock()
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -159,9 +150,6 @@ class IdleStageTestCase(unittest.TestCase):
         })
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
@@ -183,9 +171,6 @@ class IdleStageTestCase(unittest.TestCase):
         keypad = Mock(last_key_pressed='alt')
         state = {
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': keypad,
             'gui_config': {'default_withdrawal_amount': '0.23'},
             'screen_buttons': {
@@ -209,9 +194,6 @@ class IdleStageTestCase(unittest.TestCase):
         state = {
             'last_activity_timestamp': 0,
             'client': client_mock,
-            'remote_config': {
-                'remote_server': 'https://xbterminal.io',
-            },
             'keypad': keypad,
             'screen_buttons': {
                 'idle_begin_btn': False,

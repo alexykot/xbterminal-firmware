@@ -40,8 +40,7 @@ def activate(state, ui):
 
 def idle(state, ui):
     ui.showScreen('idle')
-    state['client'].start_nfc_server(
-        message=state['remote_config']['remote_server'])
+    state['client'].start_nfc_server(message=settings.HELP_PAGE_URL)
     standby_screen_last_refresh = 0
     while True:
         if state['screen_buttons']['idle_begin_btn'] or \
