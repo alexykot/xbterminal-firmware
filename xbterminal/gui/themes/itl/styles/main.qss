@@ -295,19 +295,19 @@ QPushButton:pressed {
 #wreceipt_btc1_lbl {
     color: #7afff4;
     font-size: 10pt;
-    qproperty-geometry: rect(20 30 40 30);
+    qproperty-geometry: rect(20 30 50 30);
 }
 #preceipt_btc2_lbl,
 #wreceipt_btc2_lbl {
     color: #7afff4;
     font-size: 10pt;
-    qproperty-geometry: rect(140 30 40 30);
+    qproperty-geometry: rect(150 30 40 30);
 }
 #preceipt_btc_amount_lbl,
 #wreceipt_btc_amount_lbl {
     color: #7afff4;
     font-size: 10pt;
-    qproperty-geometry: rect(70 30 60 30);
+    qproperty-geometry: rect(80 30 60 30);
 }
 #preceipt_scan_lbl,
 #wreceipt_scan_lbl {
