@@ -138,12 +138,16 @@ class IdleStageTestCase(unittest.TestCase):
         client_mock = Mock()
         state = {
             'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
                 'idle_begin_btn': False,
                 'idle_help_btn': True,
                 'standby_wake_btn': False,
             },
+            'is_suspended': False,
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
