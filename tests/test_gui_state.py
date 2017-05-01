@@ -26,6 +26,7 @@ class InitTestCase(unittest.TestCase):
         self.assertFalse(state['screen_buttons']['pconfirm_incr_btn'])
         self.assertFalse(state['screen_buttons']['pconfirm_confirm_btn'])
         self.assertFalse(state['screen_buttons']['wconfirm_confirm_btn'])
+        self.assertIs(state['is_suspended'], False)
         self.assertEqual(state['CURRENT_STAGE'], settings.STAGES['bootup'])
         self.assertEqual(state['errors'], set())
         self.assertIsNone(state['payment']['uid'])

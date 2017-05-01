@@ -8,13 +8,17 @@ from xbterminal.rpc.utils.bsp import BSPLibraryInterface
 class BSPLibraryInterfaceTestCase(unittest.TestCase):
 
     @patch('xbterminal.rpc.utils.bsp.logger')
-    def test_init(self, logger_mock):
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.initialize')
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.enable_display')
+    def test_init(self, enable_display_mock, initialize_mock, logger_mock):
         bsp_interface = BSPLibraryInterface(use_mock=True)
         self.assertEqual(logger_mock.info.call_args_list[0][0][0],
                          'ITL hardware v0.0.0')
         self.assertEqual(logger_mock.info.call_args_list[1][0][0],
                          'ITL BSP library v0.0.0')
         self.assertIsNotNone(bsp_interface._module)
+        self.assertIs(initialize_mock.called, True)
+        self.assertIs(enable_display_mock.called, True)
 
     def test_payin_payout(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)
@@ -27,3 +31,8 @@ class BSPLibraryInterfaceTestCase(unittest.TestCase):
         bsp_interface = BSPLibraryInterface(use_mock=True)
         self.assertIsNone(bsp_interface.write_ndef('test'))
         self.assertIsNone(bsp_interface.erase_ndef())
+
+    def test_display(self):
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        self.assertIsNone(bsp_interface.disable_display())
+        self.assertIsNone(bsp_interface.enable_display())

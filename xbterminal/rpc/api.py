@@ -198,6 +198,18 @@ def stop_qr_scanner(**kwargs):
 
 
 @dispatcher.add_method
+def enable_display(**kwargs):
+    state['bsp_interface'].enable_display()
+    return True
+
+
+@dispatcher.add_method
+def disable_display(**kwargs):
+    state['bsp_interface'].disable_display()
+    return True
+
+
+@dispatcher.add_method
 def host_add_credit(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
     state['bsp_interface'].add_credit(amount)

@@ -3,17 +3,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-PAYOUT_STATUS_ERROR = -1
-PAYOUT_STATUS_IDLE = 0x10
-PAYOUT_STATUS_PENDING = 0x11
-PAYOUT_STATUS_COMPLETE = 0x12
-
-APM_STATUS_IDLE = 0x20
-APM_STATUS_ACTIVE = 0x21
-APM_STATUS_OUTOFSERVICE = 0x22
-
 
 class BSPLibraryMock(object):
+
+    FAIL = -1
+    PAYOUT_IDLE = 0x10
+    PAYOUT_PENDING = 0x11
+    PAYOUT_COMPLETE = 0x12
+
+    APM_IDLE = 0x20
+    APM_ACTIVE = 0x21
+    APM_OUTOFSERVICE = 0x22
+
+    BACKLIGHT_OFF = 0
+    BACKLIGHT_LEVEL6 = 6
 
     def get_hw_version(self):
         return 0, 0, 0
@@ -25,13 +28,13 @@ class BSPLibraryMock(object):
         pass
 
     def get_apm_status(self):
-        return APM_STATUS_ACTIVE
+        return self.APM_ACTIVE
 
     def add_credit(self, amount):
         pass
 
     def get_payout_status(self):
-        return PAYOUT_STATUS_IDLE
+        return self.PAYOUT_IDLE
 
     def get_payout(self):
         return 0
@@ -43,6 +46,15 @@ class BSPLibraryMock(object):
         pass
 
     def erase_ndef(self):
+        pass
+
+    def enable_display(self):
+        pass
+
+    def disable_display(self):
+        pass
+
+    def set_backlight_level(self, level):
         pass
 
 
@@ -61,7 +73,8 @@ class BSPLibraryInterface(object):
         lib_version = self._module.get_lib_version()
         logger.info('ITL BSP library v{0}.{1}.{2}'.format(*lib_version))
         self._module.initialize()
-        if self._module.get_apm_status() != APM_STATUS_ACTIVE:
+        self._module.enable_display()
+        if self._module.get_apm_status() != self._module.APM_ACTIVE:
             raise RuntimeError
         logger.info('ITL BSP library initialization done')
 
@@ -80,15 +93,15 @@ class BSPLibraryInterface(object):
             amount: Decimal
         """
         status = self._module.get_payout_status()
-        if status == PAYOUT_STATUS_ERROR:
+        if status == self._module.FAIL:
             logger.error('payout error')
             return None
-        elif status == PAYOUT_STATUS_IDLE:
+        elif status == self._module.PAYOUT_IDLE:
             return None
-        elif status == PAYOUT_STATUS_PENDING:
+        elif status == self._module.PAYOUT_PENDING:
             logger.debug('payout pending')
             return None
-        elif status == PAYOUT_STATUS_COMPLETE:
+        elif status == self._module.PAYOUT_COMPLETE:
             logger.debug('payout completed')
             coins = self._module.get_payout()
             amount = Decimal(coins) / self.factor
@@ -119,3 +132,19 @@ class BSPLibraryInterface(object):
         """
         self._module.erase_ndef()
         logger.info('NDEF message erased')
+
+    def enable_display(self):
+        """
+        Enables display
+        """
+        self._module.enable_display()
+        self._module.set_backlight_level(self._module.BACKLIGHT_LEVEL6)
+        logger.info('display enabled')
+
+    def disable_display(self):
+        """
+        Disables display
+        """
+        self._module.disable_display()
+        self._module.set_backlight_level(self._module.BACKLIGHT_OFF)
+        logger.info('display disabled')
