@@ -115,9 +115,8 @@ def compile_and_package(working_dir):
         package_name = 'xbterminal-firmware_{pv}_{arch}'.format(
             arch=arch, pv=version)
 
-        # Remove package dir
-        run('rm -rf build/pkg/')
-        run('rm -rf build/{pn}/'.format(pn=package_name))
+        # Clear build dir
+        run('rm -rf build/')
 
         # Run compilation
         puts(magenta('Nuitka {0}'.format(nuitka_version)))
