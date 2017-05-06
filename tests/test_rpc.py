@@ -356,6 +356,14 @@ class APITestCase(unittest.TestCase):
         self.assertIs(result, True)
         self.assertIs(bsp_mock.disable_display.called, True)
 
+    def test_beep(self):
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.beep()
+        self.assertIs(result, True)
+        self.assertIs(bsp_mock.beep.called, True)
+
     def test_host_add_credit(self):
         bsp_mock = Mock()
         state = {'bsp_interface': bsp_mock}
