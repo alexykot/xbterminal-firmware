@@ -874,6 +874,7 @@ class PayProgressStageTestCase(unittest.TestCase):
             },
             'get_payment_receipt.return_value': 'test_url',
             'host_add_credit.return_value': True,
+            'beep.return_value': True,
         })
         qr_gen_mock.return_value = 'image'
         state = {
@@ -901,6 +902,7 @@ class PayProgressStageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.host_add_credit.call_args[1]['fiat_amount'],
             Decimal('1.00'))
+        self.assertIs(client_mock.beep.called, True)
         self.assertEqual(state['payment']['receipt_url'], 'test_url')
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(state['payment']['qrcode'], 'image')

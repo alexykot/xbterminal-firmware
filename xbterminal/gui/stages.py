@@ -329,12 +329,13 @@ def pay_progress(state, ui):
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
         if payment_status['status'] in ['notified', 'confirmed']:
-            ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.DONE)
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
-            state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
             state['payment']['qrcode'] = qr.qr_gen(state['payment']['receipt_url'])
+            state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
+            ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.DONE)
+            state['client'].beep()
             time.sleep(3)
             return settings.STAGES['payment']['pay_receipt']
 
