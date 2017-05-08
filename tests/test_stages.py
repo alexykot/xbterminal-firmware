@@ -1089,77 +1089,6 @@ class WithdrawSelectStageTestCase(unittest.TestCase):
                          settings.STAGES['idle'])
 
 
-class WithdrawLoading1StageTestCase(unittest.TestCase):
-
-    def test_proceed(self):
-        client_mock = Mock(**{
-            'create_withdrawal_order.return_value': {
-                'uid': 'testUid',
-                'btc_amount': Decimal('0.5'),
-                'tx_fee_btc_amount': Decimal('0.0001'),
-            },
-        })
-        state = {
-            'client': client_mock,
-            'withdrawal': {'fiat_amount': Decimal('1.00')},
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_loading1(state, ui)
-        self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
-        self.assertIn('1.00', ui.setText.call_args[0][1])
-        self.assertEqual(
-            client_mock.create_withdrawal_order.call_args[1]['fiat_amount'],
-            Decimal('1.00'))
-        self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_confirm'])
-        self.assertEqual(state['withdrawal']['uid'], 'testUid')
-        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.5'))
-        self.assertEqual(state['withdrawal']['tx_fee_btc_amount'],
-                         Decimal('0.0001'))
-
-    @patch('xbterminal.gui.stages.time.sleep')
-    def test_server_error(self, sleep_mock):
-        client_mock = Mock(**{
-            'create_withdrawal_order.side_effect': ServerError,
-        })
-        state = {
-            'client': client_mock,
-            'withdrawal': {
-                'fiat_amount': Decimal('1.00'),
-            },
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_loading1(state, ui)
-        self.assertTrue(ui.showErrorScreen.called)
-        self.assertEqual(ui.showErrorScreen.call_args[0][0],
-                         'SERVER_ERROR')
-        self.assertFalse(client_mock.cancel_withdrawal.called)
-        self.assertIsNone(state['withdrawal']['uid'])
-        self.assertIsNotNone(state['withdrawal']['fiat_amount'])
-        self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_wait'])
-
-    @patch('xbterminal.gui.stages.time.sleep')
-    def test_max_payout_error(self, sleep_mock):
-        client_mock = Mock(**{
-            'create_withdrawal_order.side_effect': ServerError({
-                'device': ['Amount exceeds max payout for current device.'],
-            }),
-        })
-        state = {
-            'client': client_mock,
-            'withdrawal': {
-                'fiat_amount': Decimal('1.00'),
-            },
-        }
-        ui = Mock()
-        next_stage = stages.withdraw_loading1(state, ui)
-        self.assertEqual(ui.showErrorScreen.call_args[0][0],
-                         'MAX_PAYOUT_ERROR')
-        self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_wait'])
-
-
 class WithdrawWaitStageTestCase(unittest.TestCase):
 
     def test_return(self):
@@ -1274,6 +1203,77 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_scan(state, ui)
         self.assertIs(client_mock.cancel_withdrawal.called, False)
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_wait'])
+
+
+class WithdrawLoading1StageTestCase(unittest.TestCase):
+
+    def test_proceed(self):
+        client_mock = Mock(**{
+            'create_withdrawal_order.return_value': {
+                'uid': 'testUid',
+                'btc_amount': Decimal('0.5'),
+                'tx_fee_btc_amount': Decimal('0.0001'),
+            },
+        })
+        state = {
+            'client': client_mock,
+            'withdrawal': {'fiat_amount': Decimal('1.00')},
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading1(state, ui)
+        self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
+        self.assertIn('1.00', ui.setText.call_args[0][1])
+        self.assertEqual(
+            client_mock.create_withdrawal_order.call_args[1]['fiat_amount'],
+            Decimal('1.00'))
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_confirm'])
+        self.assertEqual(state['withdrawal']['uid'], 'testUid')
+        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.5'))
+        self.assertEqual(state['withdrawal']['tx_fee_btc_amount'],
+                         Decimal('0.0001'))
+
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_server_error(self, sleep_mock):
+        client_mock = Mock(**{
+            'create_withdrawal_order.side_effect': ServerError,
+        })
+        state = {
+            'client': client_mock,
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading1(state, ui)
+        self.assertTrue(ui.showErrorScreen.called)
+        self.assertEqual(ui.showErrorScreen.call_args[0][0],
+                         'SERVER_ERROR')
+        self.assertFalse(client_mock.cancel_withdrawal.called)
+        self.assertIsNone(state['withdrawal']['uid'])
+        self.assertIsNotNone(state['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_wait'])
+
+    @patch('xbterminal.gui.stages.time.sleep')
+    def test_max_payout_error(self, sleep_mock):
+        client_mock = Mock(**{
+            'create_withdrawal_order.side_effect': ServerError({
+                'device': ['Amount exceeds max payout for current device.'],
+            }),
+        })
+        state = {
+            'client': client_mock,
+            'withdrawal': {
+                'fiat_amount': Decimal('1.00'),
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading1(state, ui)
+        self.assertEqual(ui.showErrorScreen.call_args[0][0],
+                         'MAX_PAYOUT_ERROR')
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_wait'])
 

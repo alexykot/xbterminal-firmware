@@ -427,34 +427,6 @@ def withdraw_select(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
-def withdraw_loading1(state, ui):
-    assert state['withdrawal']['fiat_amount'] > 0
-    ui.showScreen('withdraw_loading')
-    ui.setText(
-        'wload_amount_val_lbl',
-        amounts.format_fiat_amount_pretty(
-            state['withdrawal']['fiat_amount'], prefix=True))
-    while True:
-        try:
-            withdrawal_info = state['client'].create_withdrawal_order(
-                fiat_amount=state['withdrawal']['fiat_amount'])
-        except NetworkError:
-            logger.warning('network error, retry in 5 seconds')
-            time.sleep(5)
-            continue
-        except ServerError as error:
-            if error.contains('Amount exceeds max payout for current device.'):
-                ui.showErrorScreen('MAX_PAYOUT_ERROR')
-            else:
-                ui.showErrorScreen('SERVER_ERROR')
-            time.sleep(300)
-            _clear_withdrawal_runtime(state, ui, clear_amount=False)
-            return settings.STAGES['withdrawal']['withdraw_wait']
-        else:
-            state['withdrawal'].update(withdrawal_info)
-            return settings.STAGES['withdrawal']['withdraw_confirm']
-
-
 def withdraw_wait(state, ui):
     ui.showScreen('withdraw_wait')
     ui.setText(
@@ -490,6 +462,34 @@ def withdraw_scan(state, ui):
             return settings.STAGES['withdrawal']['withdraw_wait']
 
         time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def withdraw_loading1(state, ui):
+    assert state['withdrawal']['fiat_amount'] > 0
+    ui.showScreen('withdraw_loading')
+    ui.setText(
+        'wload_amount_val_lbl',
+        amounts.format_fiat_amount_pretty(
+            state['withdrawal']['fiat_amount'], prefix=True))
+    while True:
+        try:
+            withdrawal_info = state['client'].create_withdrawal_order(
+                fiat_amount=state['withdrawal']['fiat_amount'])
+        except NetworkError:
+            logger.warning('network error, retry in 5 seconds')
+            time.sleep(5)
+            continue
+        except ServerError as error:
+            if error.contains('Amount exceeds max payout for current device.'):
+                ui.showErrorScreen('MAX_PAYOUT_ERROR')
+            else:
+                ui.showErrorScreen('SERVER_ERROR')
+            time.sleep(300)
+            _clear_withdrawal_runtime(state, ui, clear_amount=False)
+            return settings.STAGES['withdrawal']['withdraw_wait']
+        else:
+            state['withdrawal'].update(withdrawal_info)
+            return settings.STAGES['withdrawal']['withdraw_confirm']
 
 
 def withdraw_confirm(state, ui):
