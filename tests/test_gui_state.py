@@ -29,6 +29,7 @@ class InitTestCase(unittest.TestCase):
         self.assertIs(state['is_suspended'], False)
         self.assertEqual(state['CURRENT_STAGE'], settings.STAGES['bootup'])
         self.assertEqual(state['errors'], set())
+        self.assertIs(state['timeout'], False)
         self.assertIsNone(state['payment']['uid'])
         self.assertIsNone(state['payment']['fiat_amount'])
         self.assertIsNone(state['payment']['btc_amount'])

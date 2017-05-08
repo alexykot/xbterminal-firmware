@@ -86,6 +86,7 @@ def main():
                 state['CURRENT_STAGE'] = worker.next_stage
             worker_thread = None
             state['keypad'].reset_key()
+            state['timeout'] = False
 
 
 if __name__ == "__main__":
