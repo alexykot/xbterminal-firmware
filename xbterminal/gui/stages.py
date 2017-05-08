@@ -77,7 +77,7 @@ def idle(state, ui):
         if payout:
             state['withdrawal']['fiat_amount'] = payout
             state['client'].stop_nfc_server()
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         # Show standby screen when idle for a long time
         current_time = time.time()
@@ -420,10 +420,47 @@ def withdraw_select(state, ui):
         if state['screen_buttons']['wselect_bitcoin_btn'] or \
                 state['keypad'].last_key_pressed == 'alt':
             state['screen_buttons']['wselect_bitcoin_btn'] = False
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
         if state['keypad'].last_key_pressed == 'backspace':
             _clear_withdrawal_runtime(state, ui)
             return settings.STAGES['idle']
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def withdraw_wait(state, ui):
+    ui.showScreen('withdraw_wait')
+    ui.setText(
+        'wwait_fiat_amount_lbl',
+        amounts.format_fiat_amount_pretty(state['withdrawal']['fiat_amount'], prefix=True))
+    while True:
+        if state['keypad'].last_key_pressed == 'backspace':
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
+        elif state['screen_buttons']['wwait_scan_btn'] or \
+                state['keypad'].last_key_pressed == 'enter':
+            state['screen_buttons']['wwait_scan_btn'] = False
+            return settings.STAGES['withdrawal']['withdraw_scan']
+
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
+def withdraw_scan(state, ui):
+    ui.showScreen('withdraw_scan')
+    stage_timeout = 30
+    state['client'].start_qr_scanner()
+    while True:
+        default_address = state['gui_config'].get('default_withdrawal_address')
+        address = state['client'].get_scanned_address() or default_address
+        if address:
+            logger.debug('address scanned: {0}'.format(address))
+            state['client'].stop_qr_scanner()
+            state['withdrawal']['address'] = address
+            return settings.STAGES['withdrawal']['withdraw_loading1']
+
+        if state['last_activity_timestamp'] + stage_timeout < time.time():
+            state['client'].stop_qr_scanner()
+            return settings.STAGES['withdrawal']['withdraw_wait']
+
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
@@ -449,57 +486,10 @@ def withdraw_loading1(state, ui):
                 ui.showErrorScreen('SERVER_ERROR')
             time.sleep(300)
             _clear_withdrawal_runtime(state, ui, clear_amount=False)
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
         else:
             state['withdrawal'].update(withdrawal_info)
-            return settings.STAGES['withdrawal']['withdraw_wait']
-
-
-def withdraw_wait(state, ui):
-    ui.showScreen('withdraw_wait')
-    assert state['withdrawal']['uid'] is not None
-    ui.setText(
-        'wwait_fiat_amount_lbl',
-        amounts.format_fiat_amount_pretty(state['withdrawal']['fiat_amount'], prefix=True))
-    while True:
-        if state['keypad'].last_key_pressed == 'backspace':
-            state['screen_buttons']['wwait_goback_btn'] = False
-            _clear_withdrawal_runtime(state, ui, clear_amount=False,
-                                      cancel_order=True)
-            return settings.STAGES['withdrawal']['withdraw_loading1']
-        elif state['screen_buttons']['wwait_scan_btn'] or \
-                state['keypad'].last_key_pressed == 'enter':
-            state['screen_buttons']['wwait_scan_btn'] = False
-            return settings.STAGES['withdrawal']['withdraw_scan']
-
-        try:
-            _wait_for_screen_timeout(state, ui, 'withdraw_wait', timeout=300)
-        except StageTimeout:
-            _clear_withdrawal_runtime(state, ui, clear_amount=False,
-                                      cancel_order=True)
-            return settings.STAGES['withdrawal']['withdraw_loading1']
-
-        time.sleep(settings.STAGE_LOOP_PERIOD)
-
-
-def withdraw_scan(state, ui):
-    ui.showScreen('withdraw_scan')
-    stage_timeout = 30
-    state['client'].start_qr_scanner()
-    while True:
-        default_address = state['gui_config'].get('default_withdrawal_address')
-        address = state['client'].get_scanned_address() or default_address
-        if address:
-            logger.debug('address scanned: {0}'.format(address))
-            state['client'].stop_qr_scanner()
-            state['withdrawal']['address'] = address
             return settings.STAGES['withdrawal']['withdraw_confirm']
-
-        if state['last_activity_timestamp'] + stage_timeout < time.time():
-            state['client'].stop_qr_scanner()
-            return settings.STAGES['withdrawal']['withdraw_wait']
-
-        time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
 def withdraw_confirm(state, ui):
@@ -524,13 +514,16 @@ def withdraw_confirm(state, ui):
         elif state['screen_buttons']['wconfirm_cancel_btn'] or \
                 state['keypad'].last_key_pressed == 'backspace':
             state['screen_buttons']['wconfirm_cancel_btn'] = False
+            _clear_withdrawal_runtime(state, ui, clear_amount=False,
+                                      cancel_order=True)
             return settings.STAGES['withdrawal']['withdraw_wait']
 
         try:
             _wait_for_screen_timeout(state, ui, 'withdraw_confirm', timeout=300)
         except StageTimeout:
-            _clear_withdrawal_runtime(state, ui, clear_amount=False)
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            _clear_withdrawal_runtime(state, ui, clear_amount=False,
+                                      cancel_order=True)
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
@@ -554,8 +547,7 @@ def withdraw_loading2(state, ui):
         except ServerError:
             ui.showErrorScreen('SERVER_ERROR')
             time.sleep(300)
-            _clear_withdrawal_runtime(state, ui, clear_amount=False)
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_confirm']
         state['withdrawal'].update(withdrawal_info)
         logger.info('withdrawal {} confirmed'.format(
             state['withdrawal']['uid']))
@@ -574,8 +566,8 @@ def withdraw_loading2(state, ui):
         try:
             _wait_for_screen_timeout(state, ui, 'withdraw_loading', timeout=300)
         except StageTimeout:
-            _clear_withdrawal_runtime(state, ui, clear_amount=False)
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            _clear_withdrawal_runtime(state, ui)
+            return settings.STAGES['idle']
 
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
