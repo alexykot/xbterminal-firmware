@@ -19,9 +19,9 @@ STAGES = {
     },
     'withdrawal': {
         'withdraw_select': 'withdraw_select',
-        'withdraw_loading1': 'withdraw_loading1',
         'withdraw_wait': 'withdraw_wait',
         'withdraw_scan': 'withdraw_scan',
+        'withdraw_loading1': 'withdraw_loading1',
         'withdraw_confirm': 'withdraw_confirm',
         'withdraw_loading2': 'withdraw_loading2',
         'withdraw_receipt': 'withdraw_receipt',
