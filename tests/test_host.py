@@ -36,3 +36,10 @@ class BSPLibraryInterfaceTestCase(unittest.TestCase):
         bsp_interface = BSPLibraryInterface(use_mock=True)
         self.assertIsNone(bsp_interface.disable_display())
         self.assertIsNone(bsp_interface.enable_display())
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.play_tone')
+    def test_beep(self, play_mock):
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        self.assertIsNone(bsp_interface.beep())
+        self.assertIs(play_mock.called, True)
+        self.assertEqual(play_mock.call_args[0], (1000, 1000))

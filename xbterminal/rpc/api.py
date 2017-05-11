@@ -210,6 +210,12 @@ def disable_display(**kwargs):
 
 
 @dispatcher.add_method
+def beep(**kwargs):
+    state['bsp_interface'].beep()
+    return True
+
+
+@dispatcher.add_method
 def host_add_credit(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
     state['bsp_interface'].add_credit(amount)

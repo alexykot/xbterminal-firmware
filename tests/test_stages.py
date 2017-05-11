@@ -444,6 +444,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
             'keypad': Mock(last_key_pressed=None),
             'remote_config': self.remote_config,
             'last_activity_timestamp': 0,
+            'timeout': False,
             'screen_buttons': {
                 'pamount_opt1_btn': False,
                 'pamount_opt2_btn': False,
@@ -454,6 +455,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.pay_amount(state, ui)
+        self.assertEqual(client_mock.beep.call_count, 1)
         self.assertEqual(next_stage,
                          settings.STAGES['idle'])
         self.assertFalse(any(state for state
@@ -843,6 +845,7 @@ class PayWaitStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'last_activity_timestamp': 0,
+            'timeout': False,
             'screen_buttons': {
                 'pwait_cancel_btn': False,
                 'pwait_cancel_refund_btn': False,
@@ -858,6 +861,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.pay_wait(state, ui)
+        self.assertEqual(client_mock.beep.call_count, 1)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_cancel'])
 
@@ -874,6 +878,7 @@ class PayProgressStageTestCase(unittest.TestCase):
             },
             'get_payment_receipt.return_value': 'test_url',
             'host_add_credit.return_value': True,
+            'beep.return_value': True,
         })
         qr_gen_mock.return_value = 'image'
         state = {
@@ -901,6 +906,7 @@ class PayProgressStageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.host_add_credit.call_args[1]['fiat_amount'],
             Decimal('1.00'))
+        self.assertIs(client_mock.beep.called, True)
         self.assertEqual(state['payment']['receipt_url'], 'test_url')
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(state['payment']['qrcode'], 'image')
@@ -1195,14 +1201,17 @@ class WithdrawScanStageTestCase(unittest.TestCase):
             'keypad': Mock(last_key_pressed=None),
             'gui_config': {},
             'last_activity_timestamp': 0,
+            'timeout': False,
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
             },
         }
         ui = Mock()
         next_stage = stages.withdraw_scan(state, ui)
+        self.assertEqual(client_mock.beep.call_count, 1)
         self.assertIs(client_mock.cancel_withdrawal.called, False)
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])
+        self.assertIs(client_mock.stop_qr_scanner.called, True)
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_wait'])
 

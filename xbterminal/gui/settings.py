@@ -1,6 +1,6 @@
 import os
 
-VERSION = '0.18.0'
+VERSION = '0.18.1'
 
 STAGES = {
     'bootup': 'bootup',
@@ -50,7 +50,6 @@ SCREENS = {
     'withdraw_confirm': 17,
     'withdraw_receipt': 18,
     'error': 19,
-    'timeout': 20,
 }
 
 BUTTONS = [
@@ -77,8 +76,6 @@ BUTTONS = [
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',
     'wreceipt_goback_btn',
-    'timeout_no_btn',
-    'timeout_yes_btn',
 ]
 
 try:

@@ -18,6 +18,7 @@ def get_initial_gui_state():
         'is_suspended': False,
         'CURRENT_STAGE': settings.STAGES['bootup'],
         'errors': set(),
+        'timeout': False,
         'payment': {
             # Variables related to payment process
             'uid': None,

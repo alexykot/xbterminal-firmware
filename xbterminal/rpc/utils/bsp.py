@@ -57,6 +57,9 @@ class BSPLibraryMock(object):
     def set_backlight_level(self, level):
         pass
 
+    def play_tone(self, freq, duration):
+        pass
+
 
 class BSPLibraryInterface(object):
 
@@ -148,3 +151,7 @@ class BSPLibraryInterface(object):
         self._module.disable_display()
         self._module.set_backlight_level(self._module.BACKLIGHT_OFF)
         logger.info('display disabled')
+
+    def beep(self):
+        self._module.play_tone(1000, 1000)
+        logger.info('signal played')

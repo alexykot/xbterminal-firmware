@@ -329,12 +329,13 @@ def pay_progress(state, ui):
         payment_status = state['client'].get_payment_status(
             uid=state['payment']['uid'])
         if payment_status['status'] in ['notified', 'confirmed']:
-            ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.DONE)
             state['payment']['receipt_url'] = state['client'].get_payment_receipt(
                 uid=state['payment']['uid'])
             logger.debug('payment received, receipt: {}'.format(state['payment']['receipt_url']))
-            state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
             state['payment']['qrcode'] = qr.qr_gen(state['payment']['receipt_url'])
+            state['client'].host_add_credit(fiat_amount=state['payment']['fiat_amount'])
+            ui.setText('pprogress_status_lbl', PAYMENT_STATUSES.DONE)
+            state['client'].beep()
             time.sleep(3)
             return settings.STAGES['payment']['pay_receipt']
 
@@ -446,7 +447,6 @@ def withdraw_wait(state, ui):
 
 def withdraw_scan(state, ui):
     ui.showScreen('withdraw_scan')
-    stage_timeout = 30
     state['client'].start_qr_scanner()
     while True:
         default_address = state['gui_config'].get('default_withdrawal_address')
@@ -457,7 +457,9 @@ def withdraw_scan(state, ui):
             state['withdrawal']['address'] = address
             return settings.STAGES['withdrawal']['withdraw_loading1']
 
-        if state['last_activity_timestamp'] + stage_timeout < time.time():
+        try:
+            _wait_for_screen_timeout(state, ui, 'withdraw_scan', timeout=30)
+        except StageTimeout:
             state['client'].stop_qr_scanner()
             return settings.STAGES['withdrawal']['withdraw_wait']
 
@@ -663,14 +665,8 @@ def _wait_for_screen_timeout(state, ui, current_screen,
                              timeout=settings.SCREEN_TIMEOUT):
     if state['last_activity_timestamp'] + \
             timeout - settings.SCREEN_TIMEOUT_CONFIRMATION_TIME < time.time():
-        ui.showTimeoutScreen()
+        if not state['timeout']:
+            state['client'].beep()
+            state['timeout'] = True
         if state['last_activity_timestamp'] + timeout < time.time():
             raise StageTimeout
-    if state['screen_buttons']['timeout_no_btn'] or \
-            state['keypad'].last_key_pressed == 'backspace':
-        state['screen_buttons']['timeout_no_btn'] = False
-        raise StageTimeout
-    if state['screen_buttons']['timeout_yes_btn'] or \
-            state['keypad'].last_key_pressed == 'enter':
-        state['screen_buttons']['timeout_yes_btn'] = False
-        ui.showScreen(current_screen)

@@ -224,19 +224,6 @@ class GUI(QtGui.QMainWindow):
         self.ui.standby_wake_widget.setGeometry(
             widget_x, widget_y, widget_width, widget_height)
 
-    def showTimeoutScreen(self):
-        if self.currentScreen() == 'timeout':
-            return
-        screen = self.ui.main_stackedWidget.currentWidget()
-        screen_title = None
-        for label in screen.findChildren(QtGui.QLabel,
-                                         QtCore.QRegExp('_desc_lbl')):
-            screen_title = label.text()
-            if screen_title:
-                break
-        self.ui.timeout_desc_lbl.setText(screen_title)
-        self.showScreen('timeout')
-
     def showErrorScreen(self, error):
         """
         Accepts:
