@@ -142,7 +142,7 @@ def pay_amount(state, ui):
         if payout:
             _clear_payment_runtime(state, ui)
             state['withdrawal']['fiat_amount'] = payout
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_amount')
@@ -253,7 +253,7 @@ def pay_info(state, ui):
         if payout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['withdrawal']['fiat_amount'] = payout
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_info')
@@ -370,7 +370,7 @@ def pay_receipt(state, ui):
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
             state['withdrawal']['fiat_amount'] = payout
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_receipt')
@@ -395,7 +395,7 @@ def pay_cancel(state, ui):
         if payout:
             _clear_payment_runtime(state, ui)
             state['withdrawal']['fiat_amount'] = payout
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            return settings.STAGES['withdrawal']['withdraw_wait']
 
         if state['last_activity_timestamp'] + settings.SCREEN_TIMEOUT < time.time():
             return settings.STAGES['idle']

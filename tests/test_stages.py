@@ -435,7 +435,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.00'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_loading1'])
+                         settings.STAGES['withdrawal']['withdraw_wait'])
 
     def test_timeout(self):
         client_mock = Mock(**{'host_get_payout.return_value': None})
@@ -693,7 +693,7 @@ class PayInfoStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.0'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_loading1'])
+                         settings.STAGES['withdrawal']['withdraw_wait'])
 
 
 class PayWaitStageTestCase(unittest.TestCase):
@@ -981,7 +981,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.0'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_loading1'])
+                         settings.STAGES['withdrawal']['withdraw_wait'])
 
 
 class PayCancelStageTestCase(unittest.TestCase):
@@ -1019,7 +1019,7 @@ class PayCancelStageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['fiat_amount'],
                          Decimal('10.0'))
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_loading1'])
+                         settings.STAGES['withdrawal']['withdraw_wait'])
 
 
 class WithdrawSelectStageTestCase(unittest.TestCase):
