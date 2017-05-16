@@ -99,6 +99,12 @@ def help(state, ui):
             state['screen_buttons']['help_goback_btn'] = False
             state['client'].stop_nfc_server()
             return settings.STAGES['idle']
+
+        payout = state['client'].host_get_payout()
+        if payout:
+            state['withdrawal']['fiat_amount'] = payout
+            return settings.STAGES['withdrawal']['withdraw_wait']
+
         try:
             _wait_for_screen_timeout(state, ui, 'help')
         except StageTimeout:
