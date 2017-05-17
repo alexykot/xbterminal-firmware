@@ -314,7 +314,7 @@ def pay_wait(state, ui):
             return settings.STAGES['payment']['pay_progress']
 
         try:
-            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=450)
+            _wait_for_screen_timeout(state, ui, 'pay_wait', timeout=300)
         except StageTimeout:
             _clear_payment_runtime(state, ui, cancel_order=True)
             state['client'].stop_nfc_server()
