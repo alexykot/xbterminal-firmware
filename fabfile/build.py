@@ -170,6 +170,7 @@ def qemu_compile(working_dir='/srv/xbterminal'):
         put('tools', working_dir)
         put('VERSION', working_dir)
         put('LICENSE', working_dir)
+        put('CHANGELOG.md', working_dir)
 
         run("sed -i '/--clang/d' {}/tools/compile.sh".format(working_dir))
 
@@ -195,6 +196,7 @@ def remote_compile(working_dir='xbterminal',
                   delete=True)
     put('VERSION', working_dir)
     put('LICENSE', working_dir)
+    put('CHANGELOG.md', working_dir)
 
     run('echo "BASE_DIR = \'{0}\'" > {1}/xbterminal/nuitka_fix.py'.format(
         target_dir, working_dir))
