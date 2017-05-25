@@ -1,0 +1,23 @@
+# Change Log
+
+## Unreleased
+
+
+## 0.18.2
+
+- Allow to start withdrawal process from the help screen.
+- Bugfixes.
+
+## 0.18.1
+
+- Remove timeout screen, use sound signal instead.
+- Beep when payment is completed.
+
+## 0.18.0
+
+- Change the ordering of withdrawal stages; send request to server after scanning bitcoin address.
+
+## 0.17.0
+
+- Deactivate GUI and turn off display when device is suspended.
+- Update ITL BSP interface.

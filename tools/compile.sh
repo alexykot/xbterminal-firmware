@@ -55,6 +55,7 @@ mkdir -p build/pkg/xbterminal/runtime
 mkdir -p build/pkg/xbterminal/gui/themes
 mkdir -p build/pkg/xbterminal/gui/ts
 cp LICENSE build/pkg/
+cp CHANGELOG.md build/pkg
 cp build/main_gui.exe build/pkg/xbterminal/main_gui
 cp build/main_rpc.exe build/pkg/xbterminal/main_rpc
 cp build/themes/*.so build/pkg/xbterminal/gui/themes/
