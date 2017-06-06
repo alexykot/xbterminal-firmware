@@ -25,6 +25,7 @@ STAGES = {
         'withdraw_confirm': 'withdraw_confirm',
         'withdraw_loading2': 'withdraw_loading2',
         'withdraw_receipt': 'withdraw_receipt',
+        'withdraw_cancel': 'withdraw_cancel',
     },
     'application_halt': 'application_halt',
 }
@@ -49,7 +50,8 @@ SCREENS = {
     'withdraw_scan': 16,
     'withdraw_confirm': 17,
     'withdraw_receipt': 18,
-    'error': 19,
+    'withdraw_cancel': 19,
+    'error': 20,
 }
 
 BUTTONS = [
@@ -76,6 +78,7 @@ BUTTONS = [
     'wconfirm_confirm_btn',
     'wconfirm_cancel_btn',
     'wreceipt_goback_btn',
+    'wcancel_goback_btn',
 ]
 
 try:

@@ -605,6 +605,20 @@ def withdraw_receipt(state, ui):
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
+def withdraw_cancel(state, ui):
+    ui.showScreen('withdraw_cancel')
+    while True:
+        if state['screen_buttons']['wcancel_goback_btn'] or \
+                state['keypad'].last_key_pressed is not None:
+            state['screen_buttons']['wcancel_goback_btn'] = False
+            return settings.STAGES['withdrawal']['withdraw_scan']
+
+        screen_timeout = 15
+        if state['last_activity_timestamp'] + screen_timeout < time.time():
+            return settings.STAGES['withdrawal']['withdraw_scan']
+        time.sleep(settings.STAGE_LOOP_PERIOD)
+
+
 def _clear_payment_runtime(state, ui, cancel_order=False):
     logger.debug('clearing payment runtime')
     ui.showScreen('load_indefinite')
