@@ -4,7 +4,7 @@ import time
 
 from xbterminal.gui import settings
 from xbterminal.gui.gui import PAYMENT_STATUSES
-from xbterminal.gui.utils import amounts, qr
+from xbterminal.gui.utils import addresses, amounts, qr
 from xbterminal.gui.exceptions import (
     NetworkError,
     ServerError,
@@ -460,8 +460,11 @@ def withdraw_scan(state, ui):
         if address:
             logger.debug('address scanned: {0}'.format(address))
             state['client'].stop_qr_scanner()
-            state['withdrawal']['address'] = address
-            return settings.STAGES['withdrawal']['withdraw_loading1']
+            if addresses.is_valid_address(address, state['remote_config']['bitcoin_network']):
+                state['withdrawal']['address'] = address
+                return settings.STAGES['withdrawal']['withdraw_loading1']
+            else:
+                return settings.STAGES['withdrawal']['withdraw_cancel']
 
         try:
             _wait_for_screen_timeout(state, ui, 'withdraw_scan', timeout=30)
