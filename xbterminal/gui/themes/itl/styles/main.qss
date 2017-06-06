@@ -464,6 +464,10 @@ QPushButton:pressed {
     qproperty-text: '';
 }
 
+#wcancel_desc_lbl {
+    font-size: 24pt;
+}
+
 #error_desc_lbl {
     color: #f85a5a;
     padding-right: 40px;
