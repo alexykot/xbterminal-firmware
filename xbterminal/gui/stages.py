@@ -563,7 +563,7 @@ def withdraw_loading2(state, ui):
     while True:
         withdrawal_status = state['client'].get_withdrawal_status(
             uid=state['withdrawal']['uid'])
-        if withdrawal_status == 'completed':
+        if withdrawal_status in ['completed', 'notified', 'confirmed']:
             state['withdrawal']['receipt_url'] = state['client'].get_withdrawal_receipt(
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(
