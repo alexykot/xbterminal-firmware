@@ -1174,6 +1174,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'gui_config': {},
+            'remote_config': {'bitcoin_network': 'mainnet'},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
             },
@@ -1197,6 +1198,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'gui_config': {'default_withdrawal_address': self.address},
+            'remote_config': {'bitcoin_network': 'mainnet'},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
             },
@@ -1208,6 +1210,27 @@ class WithdrawScanStageTestCase(unittest.TestCase):
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_loading1'])
         self.assertEqual(state['withdrawal']['address'], self.address)
+
+    def test_invalid_address(self):
+        client_mock = Mock(**{
+            'start_qr_scanner.return_value': True,
+            'get_scanned_address.return_value': 'test',
+            'stop_qr_scanner.return_value': True,
+        })
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'gui_config': {},
+            'remote_config': {'bitcoin_network': 'mainnet'},
+            'withdrawal': {
+                'fiat_amount': Decimal('1.12'),
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_scan(state, ui)
+        self.assertIs(client_mock.stop_qr_scanner.called, True)
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_cancel'])
 
     def test_timeout(self):
         client_mock = Mock(**{
@@ -1482,3 +1505,44 @@ class WithdrawReceiptStageTestCase(unittest.TestCase):
                          settings.STAGES['idle'])
         self.assertFalse(any(state for state
                              in state['screen_buttons'].values()))
+
+
+class WithdrawCancelStageTestCase(unittest.TestCase):
+
+    def test_goback(self):
+        state = {
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wcancel_goback_btn': True,
+            },
+            'withdrawal': {
+                'fiat_amount': Decimal('1.12'),
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_cancel(state, ui)
+        self.assertEqual(ui.showScreen.call_args_list[0][0][0],
+                         'withdraw_cancel')
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_scan'])
+
+    def test_timeout(self):
+        client_mock = Mock()
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'wcancel_goback_btn': True,
+            },
+            'last_activity_timestamp': 0,
+            'timeout': False,
+            'withdrawal': {
+                'fiat_amount': Decimal('1.12'),
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_cancel(state, ui)
+        self.assertIs(client_mock.cancel_withdrawal.called, False)
+        self.assertIsNotNone(state['withdrawal']['fiat_amount'])
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_scan'])

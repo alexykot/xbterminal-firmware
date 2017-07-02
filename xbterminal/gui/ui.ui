@@ -2565,6 +2565,48 @@ for address QR code scanning</string>
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="wcancel_scrn">
+    <widget class="QLabel" name="wcancel_desc_lbl">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>480</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>17</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Invalid bitcoin address provided</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="wcancel_goback_btn">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>150</y>
+       <width>241</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Open Sans</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Start again</string>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="error_scrn">
     <widget class="QLabel" name="error_code_lbl">
      <property name="geometry">

@@ -36,6 +36,7 @@ QPushButton:pressed {
 #wwait_desc_lbl,
 #wconfirm_desc_lbl,
 #wreceipt_desc_lbl,
+#wcancel_desc_lbl,
 #error_desc_lbl {
     font-family: 'Lato Light';
     font-size: 28pt;
@@ -461,6 +462,10 @@ QPushButton:pressed {
     background-repeat: no-repeat;
     qproperty-geometry: rect(160 212 320 60);
     qproperty-text: '';
+}
+
+#wcancel_desc_lbl {
+    font-size: 24pt;
 }
 
 #error_desc_lbl {
