@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.19.1
+
+- Minor API changes for new payments backend.
+
+## 0.19.0
+
+- Withdrawal address validation on scanning.
 
 ## 0.18.2
 
