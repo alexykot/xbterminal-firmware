@@ -1,6 +1,7 @@
 import time
+import re
 
-from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get, puts
+from fabric.api import task, local, cd, lcd, run, settings, prefix, put, get, puts, abort
 from fabric.contrib.files import exists
 from fabric.contrib.project import rsync_project
 from fabric.context_managers import shell_env
@@ -43,6 +44,20 @@ def qt_translations():
 def qt():
     qt_ui()
     qt_resources()
+
+
+@task
+def version(part):
+    output = local(
+        'bumpversion --dry-run --allow-dirty --list {}'.format(part),
+        capture=True)
+    match = re.search('^new_version=([0-9.]+)$', output, re.MULTILINE)
+    next_version = match.group(1)
+    with settings(warn_only=True):
+        result = local('grep {} CHANGELOG.md'.format(next_version))
+    if result.failed:
+        abort('Changelog not updated.')
+    local('bumpversion {}'.format(part))
 
 
 @task

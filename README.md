@@ -75,7 +75,7 @@ JSON-RPC server accepts connections on port **8888**.
 
 To add a new version:
 
-1. Execute `bumpversion major|minor|patch`.
+1. Execute `fab build.version:patch`. Command argument can also be `major` or `minor`.
 2. Push changes to repo `git push origin --tags` ([more info](https://git-scm.com/book/en/v2/Git-Basics-Tagging)).
 
 ## Compiling
