@@ -1,6 +1,8 @@
 # Change Log
 
-## Unreleased
+## 0.19.2
+
+- Don't show error when scanning multisig address for withdrawal.
 
 ## 0.19.1
 
