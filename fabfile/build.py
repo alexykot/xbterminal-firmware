@@ -48,16 +48,18 @@ def qt():
 
 @task
 def version(part):
-    output = local(
-        'bumpversion --dry-run --allow-dirty --list {}'.format(part),
-        capture=True)
+    with prefix('. venv/bin/activate'):
+        output = local(
+            'bumpversion --dry-run --allow-dirty --list {}'.format(part),
+            capture=True)
     match = re.search('^new_version=([0-9.]+)$', output, re.MULTILINE)
     next_version = match.group(1)
     with settings(warn_only=True):
         result = local('grep {} CHANGELOG.md'.format(next_version))
     if result.failed:
         abort('Changelog not updated.')
-    local('bumpversion {}'.format(part))
+    with prefix('. venv/bin/activate'):
+        local('bumpversion {}'.format(part))
 
 
 @task

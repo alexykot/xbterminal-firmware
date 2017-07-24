@@ -76,10 +76,12 @@ def encode_base58(bytestring):
 
 
 def is_valid_address(bitcoin_address, network):
+    # Address prefixes
+    # https://github.com/richardkiss/pycoin/blob/master/pycoin/networks/all.py
     if network == 'mainnet':
-        magicbyte = (0,)
+        magicbyte = (b'\0', b'\5')
     elif network == 'testnet':
-        magicbyte = (111,)
+        magicbyte = (b'\x6f', b'\xc4')
     else:
         raise ValueError
     clen = len(bitcoin_address)
@@ -90,7 +92,7 @@ def is_valid_address(bitcoin_address, network):
     except ValueError:
         return False
     for mb in magicbyte:
-        if bcbytes.startswith(chr(int(mb))):
+        if bcbytes.startswith(mb):
             break
     else:
         return False
