@@ -380,11 +380,11 @@ class APITestCase(unittest.TestCase):
             result = api.host_get_payout_status()
         self.assertEqual(result, 'idle')
 
-    def test_host_get_payout(self):
-        bsp_mock = Mock(**{'get_payout.return_value': Decimal('0.25')})
+    def test_host_get_payout_amount(self):
+        bsp_mock = Mock(**{'get_payout_amount.return_value': Decimal('0.25')})
         state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
-            result = api.host_get_payout()
+            result = api.host_get_payout_amount()
         self.assertEqual(result, '0.25')
 
     def test_host_pay_cash(self):

@@ -229,8 +229,8 @@ def host_get_payout_status(**kwargs):
 
 
 @dispatcher.add_method
-def host_get_payout(**kwargs):
-    payout = state['bsp_interface'].get_payout()
+def host_get_payout_amount(**kwargs):
+    payout = state['bsp_interface'].get_payout_amount()
     return str(payout)
 
 

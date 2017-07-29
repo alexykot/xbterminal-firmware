@@ -121,6 +121,6 @@ class JSONRPCClient(object):
         result = self._make_request('host_get_payout_status')
         return result
 
-    def host_get_payout(self):
-        result = self._make_request('host_get_payout')
+    def host_get_payout_amount(self):
+        result = self._make_request('host_get_payout_amount')
         return Decimal(result)

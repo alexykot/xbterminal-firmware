@@ -8,8 +8,9 @@ class BSPLibraryMock(object):
 
     FAIL = -1
     PAYOUT_IDLE = 0x10
-    PAYOUT_PENDING = 0x11
-    PAYOUT_COMPLETE = 0x12
+    PAYOUT_HOST_PENDING = 0x11
+    PAYOUT_HOST_COMPLETE = 0x12
+    PAYOUT_INCOMPLETE = 0x14
 
     APM_IDLE = 0x20
     APM_ACTIVE = 0x21
@@ -36,8 +37,17 @@ class BSPLibraryMock(object):
     def get_payout_status(self):
         return self.PAYOUT_IDLE
 
-    def get_payout(self):
+    def get_payout_amount(self):
         return 0
+
+    def withdrawal_started(self, uid):
+        pass
+
+    def withdrawal_completed(self, uid, amount):
+        pass
+
+    def get_withdrawal_uid(self):
+        return None
 
     def pay_cash(self, amount):
         pass
@@ -102,26 +112,52 @@ class BSPLibraryInterface(object):
         if status == self._module.PAYOUT_IDLE:
             # Do nothing
             return 'idle'
-        elif status == self._module.PAYOUT_PENDING:
+        elif status == self._module.PAYOUT_HOST_PENDING:
             # Show loader
             return 'pending'
-        elif status == self._module.PAYOUT_COMPLETE:
+        elif status == self._module.PAYOUT_HOST_COMPLETE:
             # Start withdrawal process
             return 'complete'
+        elif status == self._module.PAYOUT_INCOMPLETE:
+            # Get withdrawal UID
+            return 'incomplete'
         elif status == self._module.FAIL:
             logger.error('payout error')
             return 'failed'
         else:
             logger.error('unknown payout status')
 
-    def get_payout(self):
+    def get_payout_amount(self):
         """
         Returns:
             amount: fiat amount to be paid, Decimal
         """
-        coins = self._module.get_payout()
+        coins = self._module.get_payout_amount()
         amount = Decimal(coins) / self.factor
         return amount
+
+    def withdrawal_started(self, uid):
+        """
+        Accepts:
+            uid: withdrawal UID, string
+        """
+        self._module.withdrawal_started(uid)
+
+    def withdrawal_completed(self, uid, amount):
+        """
+        Accepts:
+            uid: withdrawal UID, string
+            amount: fiat amount paid, Decimal
+        """
+        coins = int(amount * self.factor)
+        self._module.withdrawal_completed(uid, coins)
+
+    def get_withdrawal_uid(self):
+        """
+        Returns:
+            uid: withdrawal UID, string
+        """
+        self._module.get_withdrawal_uid()
 
     def pay_cash(self, amount):
         """

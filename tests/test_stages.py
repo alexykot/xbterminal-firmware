@@ -159,7 +159,7 @@ class IdleStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'complete',
-            'host_get_payout.return_value': Decimal('0.15'),
+            'host_get_payout_amount.return_value': Decimal('0.15'),
         })
         state = {
             'client': client_mock,
@@ -178,7 +178,7 @@ class IdleStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.idle(state, ui)
         self.assertIs(client_mock.host_get_payout_status.called, True)
-        self.assertTrue(client_mock.host_get_payout.called)
+        self.assertTrue(client_mock.host_get_payout_amount.called)
         self.assertTrue(client_mock.stop_nfc_server.called)
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_wait'])
@@ -211,7 +211,7 @@ class IdleStageTestCase(unittest.TestCase):
 
     @patch('xbterminal.gui.stages.time.sleep')
     def test_standby(self, sleep_mock):
-        client_mock = Mock(**{'host_get_payout.return_value': None})
+        client_mock = Mock(**{'host_get_payout_amount.return_value': None})
         keypad = Mock(last_key_pressed=None)
         state = {
             'last_activity_timestamp': 0,
@@ -264,7 +264,7 @@ class IdleStageTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             stages.idle(state, ui)
         self.assertIs(client_mock.disable_display.called, True)
-        self.assertIs(client_mock.host_get_payout.called, False)
+        self.assertIs(client_mock.host_get_payout_amount.called, False)
         self.assertIs(client_mock.stop_nfc_server.called, False)
         self.assertIs(state['is_suspended'], True)
 
@@ -321,7 +321,7 @@ class HelpStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'complete',
-            'host_get_payout.return_value': Decimal('10.0'),
+            'host_get_payout_amount.return_value': Decimal('10.0'),
         })
         state = {
             'client': client_mock,
@@ -367,7 +367,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_amount(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_amount')
-        self.assertFalse(client_mock.host_get_payout.called)
+        self.assertIs(client_mock.host_get_payout_amount.called, False)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_loading'])
         self.assertFalse(any(state for state
@@ -439,7 +439,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'complete',
-            'host_get_payout.return_value': Decimal('10.0'),
+            'host_get_payout_amount.return_value': Decimal('10.0'),
         })
         state = {
             'client': client_mock,
@@ -514,7 +514,7 @@ class PayConfirmStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_confirm(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'pay_confirm')
-        self.assertFalse(client_mock.host_get_payout.called)
+        self.assertIs(client_mock.host_get_payout_amount.called, False)
         self.assertEqual(ui.setText.call_args_list[0][0][1], '-0.07')
         self.assertEqual(ui.setText.call_args_list[1][0][1], '+0.07')
         self.assertEqual(ui.setText.call_args_list[2][0][1], u'\xa30.50')
@@ -693,7 +693,7 @@ class PayInfoStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'complete',
-            'host_get_payout.return_value': Decimal('10.0'),
+            'host_get_payout_amount.return_value': Decimal('10.0'),
         })
         state = {
             'client': client_mock,
@@ -983,7 +983,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'complete',
-            'host_get_payout.return_value': Decimal('10.0'),
+            'host_get_payout_amount.return_value': Decimal('10.0'),
         })
         state = {
             'client': client_mock,
@@ -1029,7 +1029,7 @@ class PayCancelStageTestCase(unittest.TestCase):
     def test_host_system_payout(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'complete',
-            'host_get_payout.return_value': Decimal('10.0'),
+            'host_get_payout_amount.return_value': Decimal('10.0'),
         })
         state = {
             'client': client_mock,
