@@ -15,23 +15,23 @@ def get_bitcoin_address(message):
 
 class Withdrawal(object):
 
-    def __init__(self, uid, btc_amount, tx_fee_btc_amount,
+    def __init__(self, uid, fiat_amount, btc_amount, tx_fee_btc_amount,
                  exchange_rate, status):
         self.uid = uid
+        self.fiat_amount = fiat_amount
         self.btc_amount = btc_amount
         self.tx_fee_btc_amount = tx_fee_btc_amount
         self.exchange_rate = exchange_rate
         self.status = status
-        self.confirmed = False
 
     @classmethod
-    def create_order(cls, device_key, fiat_amount):
+    def create(cls, device_key, fiat_amount):
         """
         Accepts:
             device_key: device key, string
             fiat_amount: amount to withdraw (Decimal)
         Returns:
-            class instance or None
+            class instance
         """
         url = api.get_url('withdrawal_init')
         payload = {
@@ -42,6 +42,7 @@ class Withdrawal(object):
         result = response.json()
         # Parse result
         instance = cls(result['uid'],
+                       Decimal(result['fiat_amount']),
                        Decimal(result['btc_amount']),
                        Decimal(result['tx_fee_btc_amount']),
                        Decimal(result['exchange_rate']),
@@ -60,7 +61,6 @@ class Withdrawal(object):
         result = response.json()
         self.btc_amount = Decimal(result['btc_amount'])
         self.exchange_rate = Decimal(result['exchange_rate'])
-        self.confirmed = True
         logger.info('confirmed withdrawal order {0}'.format(self.uid))
 
     def cancel(self):
@@ -75,7 +75,7 @@ class Withdrawal(object):
             return True
 
     def check(self):
-        url = api.get_url('withdrawal_check', uid=self.uid)
+        url = api.get_url('withdrawal_info', uid=self.uid)
         try:
             response = api.send_request('get', url)
             result = response.json()

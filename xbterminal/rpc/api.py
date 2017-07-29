@@ -39,9 +39,9 @@ def get_device_config(**kwargs):
 
 @dispatcher.add_method
 def create_payment_order(**kwargs):
-    order = Payment.create_order(state['device_key'],
-                                 kwargs['fiat_amount'],
-                                 state['bluetooth_server'].mac_address)
+    order = Payment.create(state['device_key'],
+                           kwargs['fiat_amount'],
+                           state['bluetooth_server'].mac_address)
     state['payments'][order.uid] = order
     result = {
         'uid': order.uid,
@@ -90,7 +90,7 @@ def get_payment_receipt(**kwargs):
 @dispatcher.add_method
 def create_withdrawal_order(**kwargs):
     fiat_amount = kwargs['fiat_amount']
-    order = Withdrawal.create_order(state['device_key'], fiat_amount)
+    order = Withdrawal.create(state['device_key'], fiat_amount)
     state['withdrawals'][order.uid] = order
     result = {
         'uid': order.uid,

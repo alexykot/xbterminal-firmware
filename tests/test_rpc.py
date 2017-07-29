@@ -125,7 +125,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['remote_server'],
                          'https://xbterminal.io')
 
-    @patch('xbterminal.rpc.api.Payment.create_order')
+    @patch('xbterminal.rpc.api.Payment.create')
     def test_create_payment_order(self, create_order_mock):
         state = {
             'device_key': 'test-key',
@@ -189,7 +189,7 @@ class APITestCase(unittest.TestCase):
             result = api.get_payment_receipt(uid='test-uid')
         self.assertEqual(result, 'test-url')
 
-    @patch('xbterminal.rpc.api.Withdrawal.create_order')
+    @patch('xbterminal.rpc.api.Withdrawal.create')
     def test_create_withdrawal_order(self, create_order_mock):
         state = {
             'device_key': 'test-key',
