@@ -20,12 +20,21 @@ class BSPLibraryInterfaceTestCase(unittest.TestCase):
         self.assertIs(initialize_mock.called, True)
         self.assertIs(enable_display_mock.called, True)
 
-    def test_payin_payout(self):
+    def test_get_payout_status(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)
-        self.assertIsNone(bsp_interface.get_payout())
-        bsp_interface.add_credit(Decimal('1.25'))
-        bsp_interface.pay_cash(Decimal('1.25'))
-        self.assertIsNone(bsp_interface.get_payout())
+        status = bsp_interface.get_payout_status()
+        self.assertEqual(status, 'idle')
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
+    def test_get_payout_status_invalid(self, get_mock):
+        get_mock.return_value = 12345
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        status = bsp_interface.get_payout_status()
+        self.assertIsNone(status)
+
+    def test_get_payout(self):
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        self.assertEqual(bsp_interface.get_payout(), Decimal(0))
 
     def test_nfc(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)

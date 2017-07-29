@@ -158,6 +158,7 @@ class IdleStageTestCase(unittest.TestCase):
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'complete',
             'host_get_payout.return_value': Decimal('0.15'),
         })
         state = {
@@ -176,6 +177,7 @@ class IdleStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
+        self.assertIs(client_mock.host_get_payout_status.called, True)
         self.assertTrue(client_mock.host_get_payout.called)
         self.assertTrue(client_mock.stop_nfc_server.called)
         self.assertEqual(next_stage,
@@ -202,7 +204,7 @@ class IdleStageTestCase(unittest.TestCase):
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
-        self.assertTrue(client_mock.host_get_payout.called)
+        self.assertIs(client_mock.host_get_payout_status.called, False)
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_wait'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.23'))
@@ -318,6 +320,7 @@ class HelpStageTestCase(unittest.TestCase):
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'complete',
             'host_get_payout.return_value': Decimal('10.0'),
         })
         state = {
@@ -349,7 +352,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         }
 
     def test_option_1(self):
-        client_mock = Mock(**{'host_get_payout.return_value': None})
+        client_mock = Mock(**{'host_get_payout_status.return_value': 'idle'})
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
@@ -372,7 +375,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertEqual(state['payment']['fiat_amount'], Decimal('0.50'))
 
     def test_option_2(self):
-        client_mock = Mock(**{'host_get_payout.return_value': None})
+        client_mock = Mock(**{'host_get_payout_status.return_value': 'idle'})
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
@@ -393,7 +396,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertEqual(state['payment']['fiat_amount'], Decimal('3.00'))
 
     def test_option_3(self):
-        client_mock = Mock(**{'host_get_payout.return_value': None})
+        client_mock = Mock(**{'host_get_payout_status.return_value': 'idle'})
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
@@ -414,7 +417,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
         self.assertEqual(state['payment']['fiat_amount'], Decimal('15.00'))
 
     def test_return(self):
-        client_mock = Mock(**{'host_get_payout.return_value': None})
+        client_mock = Mock(**{'host_get_payout_status.return_value': 'idle'})
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed='backspace'),
@@ -435,6 +438,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'complete',
             'host_get_payout.return_value': Decimal('10.0'),
         })
         state = {
@@ -457,7 +461,7 @@ class PaymentAmountStageTestCase(unittest.TestCase):
                          settings.STAGES['withdrawal']['withdraw_wait'])
 
     def test_timeout(self):
-        client_mock = Mock(**{'host_get_payout.return_value': None})
+        client_mock = Mock(**{'host_get_payout_status.return_value': 'idle'})
         state = {
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
@@ -688,6 +692,7 @@ class PayInfoStageTestCase(unittest.TestCase):
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'complete',
             'host_get_payout.return_value': Decimal('10.0'),
         })
         state = {
@@ -977,6 +982,7 @@ class PayReceiptStageTestCase(unittest.TestCase):
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'complete',
             'host_get_payout.return_value': Decimal('10.0'),
         })
         state = {
@@ -1022,6 +1028,7 @@ class PayCancelStageTestCase(unittest.TestCase):
 
     def test_host_system_payout(self):
         client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'complete',
             'host_get_payout.return_value': Decimal('10.0'),
         })
         state = {

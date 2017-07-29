@@ -223,12 +223,15 @@ def host_add_credit(**kwargs):
 
 
 @dispatcher.add_method
+def host_get_payout_status(**kwargs):
+    status = state['bsp_interface'].get_payout_status()
+    return status
+
+
+@dispatcher.add_method
 def host_get_payout(**kwargs):
     payout = state['bsp_interface'].get_payout()
-    if payout:
-        return str(payout)
-    else:
-        return None
+    return str(payout)
 
 
 @dispatcher.add_method

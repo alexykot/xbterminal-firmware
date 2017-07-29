@@ -90,27 +90,38 @@ class BSPLibraryInterface(object):
         self._module.add_credit(coins)
         logger.info('credit added to host machine')
 
+    def get_payout_status(self):
+        """
+        Returns current payout status:
+            idle
+            pending
+            complete
+            failed
+        """
+        status = self._module.get_payout_status()
+        if status == self._module.PAYOUT_IDLE:
+            # Do nothing
+            return 'idle'
+        elif status == self._module.PAYOUT_PENDING:
+            # Show loader
+            return 'pending'
+        elif status == self._module.PAYOUT_COMPLETE:
+            # Start withdrawal process
+            return 'complete'
+        elif status == self._module.FAIL:
+            logger.error('payout error')
+            return 'failed'
+        else:
+            logger.error('unknown payout status')
+
     def get_payout(self):
         """
         Returns:
-            amount: Decimal
+            amount: fiat amount to be paid, Decimal
         """
-        status = self._module.get_payout_status()
-        if status == self._module.FAIL:
-            logger.error('payout error')
-            return None
-        elif status == self._module.PAYOUT_IDLE:
-            return None
-        elif status == self._module.PAYOUT_PENDING:
-            logger.debug('payout pending')
-            return None
-        elif status == self._module.PAYOUT_COMPLETE:
-            logger.debug('payout completed')
-            coins = self._module.get_payout()
-            amount = Decimal(coins) / self.factor
-            return amount
-        else:
-            raise AssertionError
+        coins = self._module.get_payout()
+        amount = Decimal(coins) / self.factor
+        return amount
 
     def pay_cash(self, amount):
         """

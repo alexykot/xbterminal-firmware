@@ -373,19 +373,19 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(bsp_mock.add_credit.call_args[0][0],
                          Decimal('0.5'))
 
+    def test_host_get_payout_status(self):
+        bsp_mock = Mock(**{'get_payout_status.return_value': 'idle'})
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.host_get_payout_status()
+        self.assertEqual(result, 'idle')
+
     def test_host_get_payout(self):
         bsp_mock = Mock(**{'get_payout.return_value': Decimal('0.25')})
         state = {'bsp_interface': bsp_mock}
         with patch.dict('xbterminal.rpc.api.state', **state):
             result = api.host_get_payout()
         self.assertEqual(result, '0.25')
-
-    def test_host_get_payout_none(self):
-        bsp_mock = Mock(**{'get_payout.return_value': None})
-        state = {'bsp_interface': bsp_mock}
-        with patch.dict('xbterminal.rpc.api.state', **state):
-            result = api.host_get_payout()
-        self.assertIsNone(result)
 
     def test_host_pay_cash(self):
         bsp_mock = Mock()

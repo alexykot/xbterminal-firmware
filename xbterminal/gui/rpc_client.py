@@ -117,9 +117,10 @@ class JSONRPCClient(object):
         return result
 
     @use_cache(2.0)
+    def host_get_payout_status(self):
+        result = self._make_request('host_get_payout_status')
+        return result
+
     def host_get_payout(self):
         result = self._make_request('host_get_payout')
-        if result:
-            return Decimal(result)
-        else:
-            return Decimal(0)
+        return Decimal(result)
