@@ -50,6 +50,27 @@ class Withdrawal(object):
         logger.info('created withdrawal order {0}'.format(instance.uid))
         return instance
 
+    @classmethod
+    def get(cls, uid):
+        """
+        Accepts:
+            uid: withdrawal UID, string
+        Returns:
+            class instance
+        """
+        url = api.get_url('withdrawal_info', uid=uid)
+        response = api.send_request('get', url)
+        result = response.json()
+        # Parse result
+        instance = cls(result['uid'],
+                       Decimal(result['fiat_amount']),
+                       Decimal(result['btc_amount']),
+                       Decimal(result['tx_fee_btc_amount']),
+                       Decimal(result['exchange_rate']),
+                       result['status'])
+        logger.info('retrieved withdrawal order {0}'.format(instance.uid))
+        return instance
+
     def confirm(self, customer_address):
         """
         Accepts:

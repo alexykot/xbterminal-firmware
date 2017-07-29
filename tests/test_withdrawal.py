@@ -57,6 +57,29 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.status, 'new')
 
     @patch('xbterminal.rpc.withdrawal.api.send_request')
+    def test_get(self, send_mock):
+        send_mock.return_value = Mock(**{
+            'json.return_value': {
+                'uid': 'test_uid',
+                'fiat_amount': '50.0',
+                'btc_amount': '0.25',
+                'tx_fee_btc_amount': '0.0001',
+                'exchange_rate': '200.0',
+                'status': 'new',
+            },
+        })
+
+        order = Withdrawal.get('test_uid')
+        self.assertIs(send_mock.called, True)
+        self.assertIn('test_uid', send_mock.call_args[0][1])
+        self.assertEqual(order.uid, 'test_uid')
+        self.assertEqual(order.fiat_amount, Decimal('50.0'))
+        self.assertEqual(order.btc_amount, Decimal('0.25'))
+        self.assertEqual(order.tx_fee_btc_amount, Decimal('0.0001'))
+        self.assertEqual(order.exchange_rate, Decimal('200.0'))
+        self.assertEqual(order.status, 'new')
+
+    @patch('xbterminal.rpc.withdrawal.api.send_request')
     @patch('xbterminal.rpc.utils.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
     def test_confirm(self, send_mock):
