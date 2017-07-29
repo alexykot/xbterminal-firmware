@@ -124,3 +124,9 @@ class JSONRPCClient(object):
     def host_get_payout_amount(self):
         result = self._make_request('host_get_payout_amount')
         return Decimal(result)
+
+    def host_withdrawal_completed(self, uid, fiat_amount):
+        result = self._make_request('host_withdrawal_completed',
+                                    uid=uid,
+                                    fiat_amount=str(fiat_amount))
+        return result

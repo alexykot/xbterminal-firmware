@@ -69,7 +69,7 @@ def idle(state, ui):
             state['client'].stop_nfc_server()
             return settings.STAGES['help']
 
-        # Emulate payout
+        # Emulate host system payout
         if state['keypad'].last_key_pressed == 'alt':
             state['client'].stop_nfc_server()
             state['withdrawal']['fiat_amount'] = Decimal(state['gui_config'].get(
@@ -505,6 +505,7 @@ def withdraw_loading1(state, ui):
             return settings.STAGES['withdrawal']['withdraw_wait']
         else:
             state['withdrawal'].update(withdrawal_info)
+            state['client'].host_withdrawal_started(uid=state['withdrawal']['uid'])
             return settings.STAGES['withdrawal']['withdraw_confirm']
 
 
@@ -572,6 +573,9 @@ def withdraw_loading2(state, ui):
         withdrawal_status = state['client'].get_withdrawal_status(
             uid=state['withdrawal']['uid'])
         if withdrawal_status in ['completed', 'notified', 'confirmed']:
+            state['client'].host_withdrawal_completed(
+                uid=state['withdrawal']['uid'],
+                fiat_amount=state['withdrawal']['fiat_amount'])
             state['withdrawal']['receipt_url'] = state['client'].get_withdrawal_receipt(
                 uid=state['withdrawal']['uid'])
             logger.debug('withdrawal finished, receipt: {}'.format(

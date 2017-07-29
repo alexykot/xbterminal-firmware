@@ -387,6 +387,34 @@ class APITestCase(unittest.TestCase):
             result = api.host_get_payout_amount()
         self.assertEqual(result, '0.25')
 
+    def test_host_withdrawal_started(self):
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.host_withdrawal_started(uid='abcdef')
+        self.assertIs(result, True)
+        self.assertEqual(bsp_mock.withdrawal_started.call_args[0][0],
+                         'abcdef')
+
+    def test_host_withdrawal_completed(self):
+        bsp_mock = Mock()
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.host_withdrawal_completed(uid='abcdef',
+                                                   fiat_amount='10.0')
+        self.assertIs(result, True)
+        self.assertEqual(bsp_mock.withdrawal_completed.call_args[0][0],
+                         'abcdef')
+        self.assertEqual(bsp_mock.withdrawal_completed.call_args[0][1],
+                         Decimal('10.0'))
+
+    def test_host_get_withdrawal_uid(self):
+        bsp_mock = Mock(**{'get_withdrawal_uid.return_value': 'abcdef'})
+        state = {'bsp_interface': bsp_mock}
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.host_get_withdrawal_uid()
+        self.assertEqual(result, 'abcdef')
+
     def test_host_pay_cash(self):
         bsp_mock = Mock()
         state = {'bsp_interface': bsp_mock}

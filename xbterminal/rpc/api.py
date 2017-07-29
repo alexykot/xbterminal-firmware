@@ -235,6 +235,27 @@ def host_get_payout_amount(**kwargs):
 
 
 @dispatcher.add_method
+def host_withdrawal_started(**kwargs):
+    uid = kwargs['uid']
+    state['bsp_interface'].withdrawal_started(uid)
+    return True
+
+
+@dispatcher.add_method
+def host_withdrawal_completed(**kwargs):
+    uid = kwargs['uid']
+    amount = Decimal(kwargs['fiat_amount'])
+    state['bsp_interface'].withdrawal_completed(uid, amount)
+    return True
+
+
+@dispatcher.add_method
+def host_get_withdrawal_uid(**kwargs):
+    uid = state['bsp_interface'].get_withdrawal_uid()
+    return uid
+
+
+@dispatcher.add_method
 def host_pay_cash(**kwargs):
     amount = Decimal(kwargs['fiat_amount'])
     state['bsp_interface'].pay_cash(amount)

@@ -1292,6 +1292,10 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.5'))
         self.assertEqual(state['withdrawal']['tx_fee_btc_amount'],
                          Decimal('0.0001'))
+        self.assertIs(client_mock.host_withdrawal_started.called, True)
+        self.assertEqual(
+            client_mock.host_withdrawal_started.call_args[1]['uid'],
+            state['withdrawal']['uid'])
 
     @patch('xbterminal.gui.stages.time.sleep')
     def test_server_error(self, sleep_mock):
@@ -1428,10 +1432,16 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         next_stage = stages.withdraw_loading2(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
         self.assertIn('400.00', ui.setText.call_args[0][1])
-        self.assertEqual(client_mock.get_withdrawal_status.call_count, 1)
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
+        self.assertEqual(client_mock.get_withdrawal_status.call_count, 1)
+        self.assertEqual(
+            client_mock.host_withdrawal_completed.call_args[1]['uid'],
+            state['withdrawal']['uid'])
+        self.assertEqual(
+            client_mock.host_withdrawal_completed.call_args[1]['fiat_amount'],
+            state['withdrawal']['fiat_amount'])
         self.assertEqual(qr_gen_mock.call_args[0][0], 'test_url')
         self.assertEqual(state['withdrawal']['qrcode'], 'image')
         self.assertEqual(next_stage,
@@ -1461,6 +1471,7 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
+        self.assertIs(client_mock.host_withdrawal_completed.called, False)
         self.assertTrue(ui.showErrorScreen.called)
         self.assertEqual(ui.showErrorScreen.call_args[0][0],
                          'SERVER_ERROR')

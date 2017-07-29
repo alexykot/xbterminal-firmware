@@ -142,6 +142,7 @@ class BSPLibraryInterface(object):
             uid: withdrawal UID, string
         """
         self._module.withdrawal_started(uid)
+        logger.info('withdrawal UID saved to NVRAM')
 
     def withdrawal_completed(self, uid, amount):
         """
@@ -151,6 +152,7 @@ class BSPLibraryInterface(object):
         """
         coins = int(amount * self.factor)
         self._module.withdrawal_completed(uid, coins)
+        logger.info('withdrawal UID erased from NVRAM')
 
     def get_withdrawal_uid(self):
         """
