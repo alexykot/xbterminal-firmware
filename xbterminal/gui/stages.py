@@ -82,6 +82,13 @@ def idle(state, ui):
             state['client'].stop_nfc_server()
             state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
             return settings.STAGES['withdrawal']['withdraw_wait']
+        elif payout_status == 'incomplete':
+            state['client'].stop_nfc_server()
+            withdrawal_uid = state['client'].host_get_withdrawal_uid()
+            state['withdrawal'] = state['client'].get_withdrawal_info(
+                uid=withdrawal_uid)
+            assert state['withdrawal']['status'] == 'new'
+            return settings.STAGES['withdrawal']['withdraw_confirm']
 
         # Show standby screen when idle for a long time
         current_time = time.time()

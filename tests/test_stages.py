@@ -184,6 +184,47 @@ class IdleStageTestCase(unittest.TestCase):
                          settings.STAGES['withdrawal']['withdraw_wait'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.15'))
 
+    def test_host_system_payout_incomplete(self):
+        client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'incomplete',
+            'host_get_withdrawal_uid.return_value': 'abcdef',
+            'get_withdrawal_info.return_value': {
+                'uid': 'abcdef',
+                'fiat_amount': Decimal('2.5'),
+                'btc_amount': Decimal('0.25'),
+                'tx_fee_btc_amount': Decimal('0.0001'),
+                'exchange_rate': Decimal('10.0'),
+                'status': 'new',
+            },
+        })
+        state = {
+            'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'idle_help_btn': False,
+                'standby_wake_btn': False,
+            },
+            'is_suspended': False,
+            'withdrawal': {},
+        }
+        ui = Mock()
+        next_stage = stages.idle(state, ui)
+        self.assertIs(client_mock.host_get_payout_status.called, True)
+        self.assertIs(client_mock.host_get_payout_amount.called, False)
+        self.assertIs(client_mock.stop_nfc_server.called, True)
+        self.assertIs(client_mock.get_withdrawal_info.called, True)
+        self.assertEqual(
+            client_mock.get_withdrawal_info.call_args[1]['uid'],
+            'abcdef')
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_confirm'])
+        self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('2.5'))
+        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.25'))
+
     def test_alt_key_input(self):
         client_mock = Mock()
         keypad = Mock(last_key_pressed='alt')

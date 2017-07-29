@@ -213,6 +213,28 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['tx_fee_btc_amount'], '0.0001')
         self.assertEqual(result['exchange_rate'], '10.0')
 
+    @patch('xbterminal.rpc.api.Withdrawal.get')
+    def test_get_withdrawal_info(self, get_mock):
+        state = {'withdrawals': {}}
+        get_mock.return_value = order_mock = Mock(**{
+            'uid': 'test-uid',
+            'fiat_amount': Decimal('2.5'),
+            'btc_amount': Decimal('0.25'),
+            'tx_fee_btc_amount': Decimal('0.0001'),
+            'exchange_rate': Decimal('10.0'),
+            'status': 'new',
+        })
+        with patch.dict('xbterminal.rpc.api.state', **state):
+            result = api.get_withdrawal_info(uid='test-uid')
+
+        self.assertEqual(state['withdrawals']['test-uid'], order_mock)
+        self.assertEqual(result['uid'], 'test-uid')
+        self.assertEqual(result['fiat_amount'], '2.5')
+        self.assertEqual(result['btc_amount'], '0.25')
+        self.assertEqual(result['tx_fee_btc_amount'], '0.0001')
+        self.assertEqual(result['exchange_rate'], '10.0')
+        self.assertEqual(result['status'], 'new')
+
     def test_confirm_withdrawal(self):
         order_mock = Mock(btc_amount=Decimal('0.2'),
                           exchange_rate=Decimal('200'))

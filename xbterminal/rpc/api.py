@@ -102,6 +102,22 @@ def create_withdrawal_order(**kwargs):
 
 
 @dispatcher.add_method
+def get_withdrawal_info(**kwargs):
+    order_uid = kwargs['uid']
+    order = Withdrawal.get(order_uid)
+    state['withdrawals'][order_uid] = order
+    result = {
+        'uid': order.uid,
+        'fiat_amount': str(order.fiat_amount),
+        'btc_amount': str(order.btc_amount),
+        'tx_fee_btc_amount': str(order.tx_fee_btc_amount),
+        'exchange_rate': str(order.exchange_rate),
+        'status': order.status,
+    }
+    return result
+
+
+@dispatcher.add_method
 def confirm_withdrawal(**kwargs):
     order_uid = kwargs['uid']
     address = kwargs['address']

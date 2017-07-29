@@ -89,6 +89,17 @@ class JSONRPCClient(object):
             'exchange_rate': Decimal(result['exchange_rate']),
         }
 
+    def get_withdrawal_info(self, uid):
+        result = self._make_request('get_withdrawal_info', uid=uid)
+        return {
+            'uid': result['uid'],
+            'fiat_amount': Decimal(result['fiat_amount']),
+            'btc_amount': Decimal(result['btc_amount']),
+            'tx_fee_btc_amount': Decimal(result['tx_fee_btc_amount']),
+            'exchange_rate': Decimal(result['exchange_rate']),
+            'status': result['status'],
+        }
+
     def confirm_withdrawal(self, uid, address):
         result = self._make_request('confirm_withdrawal',
                                     uid=uid,
