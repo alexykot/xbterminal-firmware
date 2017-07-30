@@ -26,11 +26,35 @@ class BSPLibraryInterfaceTestCase(unittest.TestCase):
         self.assertEqual(status, 'idle')
 
     @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
-    def test_get_payout_status_invalid(self, get_mock):
+    @patch('xbterminal.rpc.utils.bsp.logger')
+    def test_get_payout_status_invalid(self, logger_mock, get_mock):
         get_mock.return_value = 12345
         bsp_interface = BSPLibraryInterface(use_mock=True)
         status = bsp_interface.get_payout_status()
         self.assertIsNone(status)
+        self.assertIs(logger_mock.error.called, True)
+        self.assertEqual(logger_mock.error.call_args[0][0],
+                         'unknown payout status')
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
+    @patch('xbterminal.rpc.utils.bsp.logger')
+    def test_get_payout_status_failed(self, logger_mock, get_mock):
+        get_mock.return_value = -1
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        status = bsp_interface.get_payout_status()
+        self.assertIsNone(status)
+        self.assertIs(logger_mock.error.called, True)
+        self.assertEqual(logger_mock.error.call_args[0][0],
+                         'ITL BSP call failed')
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
+    @patch('xbterminal.rpc.utils.bsp.logger')
+    def test_get_payout_status_error(self, logger_mock, get_mock):
+        get_mock.side_effect = ValueError
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        status = bsp_interface.get_payout_status()
+        self.assertIsNone(status)
+        self.assertIs(logger_mock.exception.called, True)
 
     def test_get_payout_amount(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)
