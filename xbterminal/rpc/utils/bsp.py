@@ -121,7 +121,7 @@ class BSPLibraryInterface(object):
             idle
             pending
             complete
-            failed
+            incomplete
         """
         status = self._call('get_payout_status')
         if status == self._module.PAYOUT_IDLE:
