@@ -194,13 +194,18 @@ class IdleStageTestCase(unittest.TestCase):
                 'btc_amount': Decimal('0.25'),
                 'tx_fee_btc_amount': Decimal('0.0001'),
                 'exchange_rate': Decimal('10.0'),
+                'address': None,
                 'status': 'new',
             },
         })
+        address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
         state = {
             'client': client_mock,
             'remote_config': {
                 'status': 'active',
+            },
+            'gui_config': {
+                'default_withdrawal_address': address,
             },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
@@ -224,6 +229,7 @@ class IdleStageTestCase(unittest.TestCase):
                          settings.STAGES['withdrawal']['withdraw_confirm'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('2.5'))
         self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.25'))
+        self.assertEqual(state['withdrawal']['address'], address)
 
     def test_alt_key_input(self):
         client_mock = Mock()

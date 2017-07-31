@@ -1,6 +1,7 @@
 from decimal import Decimal
 import logging
 import re
+import pprint
 
 from xbterminal.rpc.utils import api
 
@@ -71,7 +72,8 @@ class Withdrawal(object):
                        Decimal(result['exchange_rate']),
                        result['address'],
                        result['status'])
-        logger.info('retrieved withdrawal order {0}'.format(instance.uid))
+        logger.info('retrieved withdrawal order:\n{}'.format(
+            pprint.pformat(result)))
         return instance
 
     def confirm(self, customer_address):

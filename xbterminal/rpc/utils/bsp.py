@@ -174,7 +174,9 @@ class BSPLibraryInterface(object):
         Returns:
             uid: withdrawal UID, string
         """
-        self._call('get_withdrawal_uid')
+        uid = self._call('get_withdrawal_uid')
+        if uid:
+            return uid
 
     def pay_cash(self, amount):
         """

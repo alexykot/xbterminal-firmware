@@ -85,9 +85,12 @@ def idle(state, ui):
         elif payout_status == 'incomplete':
             state['client'].stop_nfc_server()
             withdrawal_uid = state['client'].host_get_withdrawal_uid()
+            logger.warning('incomplete withdrawal {}'.format(withdrawal_uid))
+            assert withdrawal_uid is not None
             state['withdrawal'] = state['client'].get_withdrawal_info(
                 uid=withdrawal_uid)
             assert state['withdrawal']['status'] == 'new'
+            state['withdrawal']['address'] = state['gui_config']['default_withdrawal_address']
             return settings.STAGES['withdrawal']['withdraw_confirm']
 
         # Show standby screen when idle for a long time

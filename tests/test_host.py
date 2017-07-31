@@ -70,10 +70,12 @@ class BSPLibraryInterfaceTestCase(unittest.TestCase):
         result = bsp_interface.withdrawal_completed('abcdef', 100)
         self.assertIsNone(result)
 
-    def test_get_withdrawal_uid(self):
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_withdrawal_uid')
+    def test_get_withdrawal_uid(self, get_mock):
+        get_mock.return_value = withdrawal_uid = 'aabbcc'
         bsp_interface = BSPLibraryInterface(use_mock=True)
         result = bsp_interface.get_withdrawal_uid()
-        self.assertIsNone(result)
+        self.assertEqual(result, withdrawal_uid)
 
     def test_nfc(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)
