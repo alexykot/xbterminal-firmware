@@ -11,6 +11,7 @@ class BSPLibraryMock(object):
     PAYOUT_HOST_PENDING = 0x11
     PAYOUT_HOST_COMPLETE = 0x12
     PAYOUT_INCOMPLETE = 0x14
+    PAYOUT_APM_PENDING = 0x13
 
     APM_IDLE = 0x20
     APM_ACTIVE = 0x21
@@ -132,7 +133,8 @@ class BSPLibraryInterface(object):
         elif status == self._module.PAYOUT_HOST_COMPLETE:
             # Start withdrawal process
             return 'complete'
-        elif status == self._module.PAYOUT_INCOMPLETE:
+        elif status in [self._module.PAYOUT_INCOMPLETE,
+                        self._module.PAYOUT_APM_PENDING]:
             # Get withdrawal UID
             return 'incomplete'
         elif status is None:
