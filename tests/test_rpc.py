@@ -222,6 +222,7 @@ class APITestCase(unittest.TestCase):
             'btc_amount': Decimal('0.25'),
             'tx_fee_btc_amount': Decimal('0.0001'),
             'exchange_rate': Decimal('10.0'),
+            'address': 'test-address',
             'status': 'new',
         })
         with patch.dict('xbterminal.rpc.api.state', **state):
@@ -233,6 +234,7 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(result['btc_amount'], '0.25')
         self.assertEqual(result['tx_fee_btc_amount'], '0.0001')
         self.assertEqual(result['exchange_rate'], '10.0')
+        self.assertEqual(result['address'], 'test-address')
         self.assertEqual(result['status'], 'new')
 
     def test_confirm_withdrawal(self):

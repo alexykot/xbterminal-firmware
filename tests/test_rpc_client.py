@@ -134,6 +134,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
                     'btc_amount': '0.50000000',
                     'tx_fee_btc_amount': '0.0001000',
                     'exchange_rate': '200.00000000',
+                    'address': 'test-address',
                     'status': 'new',
                 },
                 'id': 0,
@@ -146,6 +147,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(result['btc_amount'], Decimal('0.5'))
         self.assertEqual(result['tx_fee_btc_amount'], Decimal('0.0001'))
         self.assertEqual(result['exchange_rate'], Decimal('200.0'))
+        self.assertEqual(result['address'], 'test-address')
         self.assertEqual(result['status'], 'new')
 
     @patch('xbterminal.gui.rpc_client.requests.post')

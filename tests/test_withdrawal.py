@@ -28,6 +28,9 @@ class GetAddressTestCase(unittest.TestCase):
             remote_server='https://xbterminal.io')
 class WithdrawalTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
+
     @patch('xbterminal.rpc.withdrawal.api.send_request')
     @patch('xbterminal.rpc.utils.crypto.read_secret_key',
            new=mocks.read_secret_key_mock)
@@ -39,6 +42,7 @@ class WithdrawalTestCase(unittest.TestCase):
                 'btc_amount': '0.25',
                 'tx_fee_btc_amount': '0.0001',
                 'exchange_rate': '200.0',
+                'address': self.address,
                 'status': 'new',
             },
         })
@@ -54,6 +58,7 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.btc_amount, Decimal('0.25'))
         self.assertEqual(order.tx_fee_btc_amount, Decimal('0.0001'))
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
+        self.assertEqual(order.address, self.address)
         self.assertEqual(order.status, 'new')
 
     @patch('xbterminal.rpc.withdrawal.api.send_request')
@@ -65,6 +70,7 @@ class WithdrawalTestCase(unittest.TestCase):
                 'btc_amount': '0.25',
                 'tx_fee_btc_amount': '0.0001',
                 'exchange_rate': '200.0',
+                'address': self.address,
                 'status': 'new',
             },
         })
@@ -77,6 +83,7 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.btc_amount, Decimal('0.25'))
         self.assertEqual(order.tx_fee_btc_amount, Decimal('0.0001'))
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
+        self.assertEqual(order.address, self.address)
         self.assertEqual(order.status, 'new')
 
     @patch('xbterminal.rpc.withdrawal.api.send_request')
@@ -89,7 +96,8 @@ class WithdrawalTestCase(unittest.TestCase):
         }})
 
         order = Withdrawal('test_uid', Decimal('50.0'), Decimal('0.25'),
-                           Decimal('0.0001'), Decimal('200.0'), 'new')
+                           Decimal('0.0001'), Decimal('200.0'),
+                           self.address, 'new')
         order.confirm('1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE')
         self.assertTrue(send_mock.called)
         self.assertTrue(send_mock.call_args[1]['signed'])
@@ -103,7 +111,8 @@ class WithdrawalTestCase(unittest.TestCase):
         send_mock.return_value = Mock()
 
         order = Withdrawal('test_uid', Decimal('50.0'), Decimal('0.25'),
-                           Decimal('0.0001'), Decimal('200'), 'new')
+                           Decimal('0.0001'), Decimal('200'),
+                           self.address, 'new')
         result = order.cancel()
         self.assertTrue(result)
         self.assertTrue(send_mock.called)
@@ -116,7 +125,8 @@ class WithdrawalTestCase(unittest.TestCase):
         send_mock.side_effect = NetworkError
 
         order = Withdrawal('test_uid', Decimal('50.0'), Decimal('0.25'),
-                           Decimal('0.0001'), Decimal('200'), 'new')
+                           Decimal('0.0001'), Decimal('200'),
+                           self.address, 'new')
         result = order.cancel()
         self.assertFalse(result)
         self.assertTrue(send_mock.called)
@@ -124,7 +134,8 @@ class WithdrawalTestCase(unittest.TestCase):
     @patch('xbterminal.rpc.withdrawal.api.send_request')
     def test_check(self, send_mock):
         order = Withdrawal('test_uid', Decimal('50.0'), Decimal('0.25'),
-                           Decimal('0.0001'), Decimal('200'), 'new')
+                           Decimal('0.0001'), Decimal('200'),
+                           self.address, 'new')
         send_mock.return_value = Mock(**{
             'json.return_value': {'status': 'sent'},
         })
@@ -140,7 +151,8 @@ class WithdrawalTestCase(unittest.TestCase):
     @patch('xbterminal.rpc.withdrawal.api.send_request')
     def test_check_error(self, send_mock):
         order = Withdrawal('test_uid', Decimal('50.0'), Decimal('0.25'),
-                           Decimal('0.0001'), Decimal('200'), 'new')
+                           Decimal('0.0001'), Decimal('200'),
+                           self.address, 'new')
         send_mock.side_effect = NetworkError
         result = order.check()
         self.assertIsNone(result)
@@ -148,6 +160,7 @@ class WithdrawalTestCase(unittest.TestCase):
 
     def test_receipt_url(self):
         order = Withdrawal('test_uid', Decimal('50.0'), Decimal('0.25'),
-                           Decimal('0.0001'), Decimal('200'), 'new')
+                           Decimal('0.0001'), Decimal('200'),
+                           self.address, 'new')
         self.assertEqual(order.receipt_url,
                          'https://xbterminal.io/wrc/test_uid/')

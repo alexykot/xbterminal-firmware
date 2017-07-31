@@ -16,12 +16,13 @@ def get_bitcoin_address(message):
 class Withdrawal(object):
 
     def __init__(self, uid, fiat_amount, btc_amount, tx_fee_btc_amount,
-                 exchange_rate, status):
+                 exchange_rate, address, status):
         self.uid = uid
         self.fiat_amount = fiat_amount
         self.btc_amount = btc_amount
         self.tx_fee_btc_amount = tx_fee_btc_amount
         self.exchange_rate = exchange_rate
+        self.address = address
         self.status = status
 
     @classmethod
@@ -46,6 +47,7 @@ class Withdrawal(object):
                        Decimal(result['btc_amount']),
                        Decimal(result['tx_fee_btc_amount']),
                        Decimal(result['exchange_rate']),
+                       result['address'],
                        result['status'])
         logger.info('created withdrawal order {0}'.format(instance.uid))
         return instance
@@ -67,6 +69,7 @@ class Withdrawal(object):
                        Decimal(result['btc_amount']),
                        Decimal(result['tx_fee_btc_amount']),
                        Decimal(result['exchange_rate']),
+                       result['address'],
                        result['status'])
         logger.info('retrieved withdrawal order {0}'.format(instance.uid))
         return instance
