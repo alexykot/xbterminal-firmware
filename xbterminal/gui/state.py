@@ -34,6 +34,7 @@ def get_initial_gui_state():
             'uid': None,
             'fiat_amount': None,
             'btc_amount': None,
+            'tx_fee_btc_amount': None,
             'exchange_rate': None,
             'address': None,
             'receipt_url': None,

@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.20.0
+
+- Update ITL BSP interface to support latest version of ITL BSP library.
+- Notify host system about start and completion of withdrawal.
+- Preliminary support for withdrawal recovery.
+
 ## 0.19.2
 
 - Don't show error when scanning multisig address for withdrawal.

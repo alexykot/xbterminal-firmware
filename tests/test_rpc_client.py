@@ -124,6 +124,33 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(data['params']['fiat_amount'], '10.00')
 
     @patch('xbterminal.gui.rpc_client.requests.post')
+    def test_get_withdrawal_info(self, post_mock):
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'result': {
+                    'uid': 'abcdef',
+                    'fiat_amount': '100.00',
+                    'btc_amount': '0.50000000',
+                    'tx_fee_btc_amount': '0.0001000',
+                    'exchange_rate': '200.00000000',
+                    'address': 'test-address',
+                    'status': 'new',
+                },
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        result = cli.get_withdrawal_info(uid='abcdef')
+        self.assertEqual(result['uid'], 'abcdef')
+        self.assertEqual(result['fiat_amount'], Decimal('100.00'))
+        self.assertEqual(result['btc_amount'], Decimal('0.5'))
+        self.assertEqual(result['tx_fee_btc_amount'], Decimal('0.0001'))
+        self.assertEqual(result['exchange_rate'], Decimal('200.0'))
+        self.assertEqual(result['address'], 'test-address')
+        self.assertEqual(result['status'], 'new')
+
+    @patch('xbterminal.gui.rpc_client.requests.post')
     def test_confirm_withdrawal(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
@@ -160,8 +187,21 @@ class JSONRPCClientTestCase(unittest.TestCase):
 
     @patch('xbterminal.gui.rpc_client.requests.post')
     @patch('xbterminal.gui.rpc_client.time.time')
-    def test_host_get_payout(self, time_mock, post_mock):
+    def test_host_get_payout_status(self, time_mock, post_mock):
         time_mock.side_effect = [1000, 0]  # Disable cache
+        post_mock.return_value = Mock(**{
+            'json.return_value': {
+                'jsonrpc': '2.0',
+                'result': 'idle',
+                'id': 0,
+            },
+        })
+        cli = JSONRPCClient()
+        result = cli.host_get_payout_status()
+        self.assertEqual(result, 'idle')
+
+    @patch('xbterminal.gui.rpc_client.requests.post')
+    def test_host_get_payout_amount(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
@@ -170,23 +210,25 @@ class JSONRPCClientTestCase(unittest.TestCase):
             },
         })
         cli = JSONRPCClient()
-        result = cli.host_get_payout()
+        result = cli.host_get_payout_amount()
         self.assertEqual(result, Decimal('12.0'))
 
     @patch('xbterminal.gui.rpc_client.requests.post')
-    @patch('xbterminal.gui.rpc_client.time.time')
-    def test_host_get_payout_none(self, time_mock, post_mock):
-        time_mock.side_effect = [1000, 0]  # Disable cache
+    def test_host_withdrawal_completed(self, post_mock):
         post_mock.return_value = Mock(**{
             'json.return_value': {
                 'jsonrpc': '2.0',
-                'result': None,
+                'result': True,
                 'id': 0,
             },
         })
         cli = JSONRPCClient()
-        result = cli.host_get_payout()
-        self.assertEqual(result, Decimal('0.00'))
+        result = cli.host_withdrawal_completed('abcdef', Decimal('10.00'))
+        self.assertIs(result, True)
+        data = post_mock.call_args[1]['json']
+        self.assertEqual(data['method'], 'host_withdrawal_completed')
+        self.assertEqual(data['params']['uid'], 'abcdef')
+        self.assertEqual(data['params']['fiat_amount'], '10.00')
 
     @patch('xbterminal.gui.rpc_client.requests.post')
     def test_host_pay_cash(self, post_mock):
@@ -199,7 +241,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         })
         cli = JSONRPCClient()
         result = cli.host_pay_cash(Decimal('10.00'))
-        self.assertEqual(result, True)
+        self.assertIs(result, True)
         data = post_mock.call_args[1]['json']
         self.assertEqual(data['method'], 'host_pay_cash')
         self.assertEqual(data['params']['fiat_amount'], '10.00')

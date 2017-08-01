@@ -12,7 +12,7 @@ from xbterminal.rpc.exceptions import NetworkError
 class PaymentTestCase(unittest.TestCase):
 
     @patch('xbterminal.rpc.payment.api.send_request')
-    def test_create_order(self, send_mock):
+    def test_create(self, send_mock):
         send_mock.return_value = Mock(**{
             'json.return_value': {
                 'uid': 'test_uid',
@@ -25,7 +25,7 @@ class PaymentTestCase(unittest.TestCase):
         })
         mac_addr = '01:23:45:67:89:00'
 
-        order = Payment.create_order(
+        order = Payment.create(
             'paymentTestKey', Decimal('1.00'), mac_addr)
         self.assertTrue(send_mock.called)
         data = send_mock.call_args[1]['data']

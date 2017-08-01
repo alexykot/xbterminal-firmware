@@ -1,7 +1,7 @@
 import os
 from decimal import Decimal
 
-VERSION = '0.19.2'
+VERSION = '0.20.0'
 
 try:
     from xbterminal.nuitka_fix import BASE_DIR
@@ -62,12 +62,12 @@ REMOTE_API_ENDPOINTS = {
     'payment_init': '/api/v2/payments/',
     'payment_cancel': '/api/v2/payments/{uid}/cancel/',
     'payment_response': '/api/v2/payments/{uid}/response/',
-    'payment_check': '/api/v2/payments/{uid}/',
+    'payment_info': '/api/v2/payments/{uid}/',
     'payment_receipt': '/prc/{uid}/',
     'withdrawal_init': '/api/v2/withdrawals/',
     'withdrawal_confirm': '/api/v2/withdrawals/{uid}/confirm/',
     'withdrawal_cancel': '/api/v2/withdrawals/{uid}/cancel/',
-    'withdrawal_check': '/api/v2/withdrawals/{uid}/',
+    'withdrawal_info': '/api/v2/withdrawals/{uid}/',
     'withdrawal_receipt': '/wrc/{uid}/',
 }
 EXTERNAL_CALLS_TIMEOUT = 15

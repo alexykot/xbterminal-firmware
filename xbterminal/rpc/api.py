@@ -39,9 +39,9 @@ def get_device_config(**kwargs):
 
 @dispatcher.add_method
 def create_payment_order(**kwargs):
-    order = Payment.create_order(state['device_key'],
-                                 kwargs['fiat_amount'],
-                                 state['bluetooth_server'].mac_address)
+    order = Payment.create(state['device_key'],
+                           kwargs['fiat_amount'],
+                           state['bluetooth_server'].mac_address)
     state['payments'][order.uid] = order
     result = {
         'uid': order.uid,
@@ -90,13 +90,30 @@ def get_payment_receipt(**kwargs):
 @dispatcher.add_method
 def create_withdrawal_order(**kwargs):
     fiat_amount = kwargs['fiat_amount']
-    order = Withdrawal.create_order(state['device_key'], fiat_amount)
+    order = Withdrawal.create(state['device_key'], fiat_amount)
     state['withdrawals'][order.uid] = order
     result = {
         'uid': order.uid,
         'btc_amount': str(order.btc_amount),
         'tx_fee_btc_amount': str(order.tx_fee_btc_amount),
         'exchange_rate': str(order.exchange_rate),
+    }
+    return result
+
+
+@dispatcher.add_method
+def get_withdrawal_info(**kwargs):
+    order_uid = kwargs['uid']
+    order = Withdrawal.get(order_uid)
+    state['withdrawals'][order_uid] = order
+    result = {
+        'uid': order.uid,
+        'fiat_amount': str(order.fiat_amount),
+        'btc_amount': str(order.btc_amount),
+        'tx_fee_btc_amount': str(order.tx_fee_btc_amount),
+        'exchange_rate': str(order.exchange_rate),
+        'address': order.address,
+        'status': order.status,
     }
     return result
 
@@ -223,12 +240,36 @@ def host_add_credit(**kwargs):
 
 
 @dispatcher.add_method
-def host_get_payout(**kwargs):
-    payout = state['bsp_interface'].get_payout()
-    if payout:
-        return str(payout)
-    else:
-        return None
+def host_get_payout_status(**kwargs):
+    status = state['bsp_interface'].get_payout_status()
+    return status
+
+
+@dispatcher.add_method
+def host_get_payout_amount(**kwargs):
+    payout = state['bsp_interface'].get_payout_amount()
+    return str(payout)
+
+
+@dispatcher.add_method
+def host_withdrawal_started(**kwargs):
+    uid = kwargs['uid']
+    state['bsp_interface'].withdrawal_started(uid)
+    return True
+
+
+@dispatcher.add_method
+def host_withdrawal_completed(**kwargs):
+    uid = kwargs['uid']
+    amount = Decimal(kwargs['fiat_amount'])
+    state['bsp_interface'].withdrawal_completed(uid, amount)
+    return True
+
+
+@dispatcher.add_method
+def host_get_withdrawal_uid(**kwargs):
+    uid = state['bsp_interface'].get_withdrawal_uid()
+    return uid
 
 
 @dispatcher.add_method

@@ -20,12 +20,62 @@ class BSPLibraryInterfaceTestCase(unittest.TestCase):
         self.assertIs(initialize_mock.called, True)
         self.assertIs(enable_display_mock.called, True)
 
-    def test_payin_payout(self):
+    def test_get_payout_status(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)
-        self.assertIsNone(bsp_interface.get_payout())
-        bsp_interface.add_credit(Decimal('1.25'))
-        bsp_interface.pay_cash(Decimal('1.25'))
-        self.assertIsNone(bsp_interface.get_payout())
+        status = bsp_interface.get_payout_status()
+        self.assertEqual(status, 'idle')
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
+    @patch('xbterminal.rpc.utils.bsp.logger')
+    def test_get_payout_status_invalid(self, logger_mock, get_mock):
+        get_mock.return_value = 12345
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        status = bsp_interface.get_payout_status()
+        self.assertIsNone(status)
+        self.assertIs(logger_mock.error.called, True)
+        self.assertEqual(logger_mock.error.call_args[0][0],
+                         'unknown payout status')
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
+    @patch('xbterminal.rpc.utils.bsp.logger')
+    def test_get_payout_status_failed(self, logger_mock, get_mock):
+        get_mock.return_value = -1
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        status = bsp_interface.get_payout_status()
+        self.assertIsNone(status)
+        self.assertIs(logger_mock.error.called, True)
+        self.assertEqual(logger_mock.error.call_args[0][0],
+                         'ITL BSP call failed')
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_payout_status')
+    @patch('xbterminal.rpc.utils.bsp.logger')
+    def test_get_payout_status_error(self, logger_mock, get_mock):
+        get_mock.side_effect = ValueError
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        status = bsp_interface.get_payout_status()
+        self.assertIsNone(status)
+        self.assertIs(logger_mock.exception.called, True)
+
+    def test_get_payout_amount(self):
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        self.assertEqual(bsp_interface.get_payout_amount(), Decimal(0))
+
+    def test_withdrawal_started(self):
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        result = bsp_interface.withdrawal_started('abcdef')
+        self.assertIsNone(result)
+
+    def test_withdrawal_completed(self):
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        result = bsp_interface.withdrawal_completed('abcdef', 100)
+        self.assertIsNone(result)
+
+    @patch('xbterminal.rpc.utils.bsp.BSPLibraryMock.get_withdrawal_uid')
+    def test_get_withdrawal_uid(self, get_mock):
+        get_mock.return_value = withdrawal_uid = 'aabbcc'
+        bsp_interface = BSPLibraryInterface(use_mock=True)
+        result = bsp_interface.get_withdrawal_uid()
+        self.assertEqual(result, withdrawal_uid)
 
     def test_nfc(self):
         bsp_interface = BSPLibraryInterface(use_mock=True)

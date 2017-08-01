@@ -89,6 +89,18 @@ class JSONRPCClient(object):
             'exchange_rate': Decimal(result['exchange_rate']),
         }
 
+    def get_withdrawal_info(self, uid):
+        result = self._make_request('get_withdrawal_info', uid=uid)
+        return {
+            'uid': result['uid'],
+            'fiat_amount': Decimal(result['fiat_amount']),
+            'btc_amount': Decimal(result['btc_amount']),
+            'tx_fee_btc_amount': Decimal(result['tx_fee_btc_amount']),
+            'exchange_rate': Decimal(result['exchange_rate']),
+            'address': result['address'],
+            'status': result['status'],
+        }
+
     def confirm_withdrawal(self, uid, address):
         result = self._make_request('confirm_withdrawal',
                                     uid=uid,
@@ -117,9 +129,16 @@ class JSONRPCClient(object):
         return result
 
     @use_cache(2.0)
-    def host_get_payout(self):
-        result = self._make_request('host_get_payout')
-        if result:
-            return Decimal(result)
-        else:
-            return Decimal(0)
+    def host_get_payout_status(self):
+        result = self._make_request('host_get_payout_status')
+        return result
+
+    def host_get_payout_amount(self):
+        result = self._make_request('host_get_payout_amount')
+        return Decimal(result)
+
+    def host_withdrawal_completed(self, uid, fiat_amount):
+        result = self._make_request('host_withdrawal_completed',
+                                    uid=uid,
+                                    fiat_amount=str(fiat_amount))
+        return result

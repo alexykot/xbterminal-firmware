@@ -20,7 +20,7 @@ class Payment(object):
         self.request = request.decode('base64') if request else None
 
     @classmethod
-    def create_order(cls, device_key, fiat_amount, bt_mac):
+    def create(cls, device_key, fiat_amount, bt_mac):
         """
         Accepts:
             device_key: device key, string
@@ -82,7 +82,7 @@ class Payment(object):
         return payment_ack
 
     def check(self):
-        payment_check_url = api.get_url('payment_check', uid=self.uid)
+        payment_check_url = api.get_url('payment_info', uid=self.uid)
         try:
             response = api.send_request('get', payment_check_url)
             result = response.json()
