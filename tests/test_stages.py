@@ -184,28 +184,16 @@ class IdleStageTestCase(unittest.TestCase):
                          settings.STAGES['withdrawal']['withdraw_wait'])
         self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.15'))
 
-    def test_host_system_payout_incomplete(self):
+    def test_host_system_payout_incomplete_without_uid(self):
         client_mock = Mock(**{
             'host_get_payout_status.return_value': 'incomplete',
-            'host_get_withdrawal_uid.return_value': 'abcdef',
-            'get_withdrawal_info.return_value': {
-                'uid': 'abcdef',
-                'fiat_amount': Decimal('2.5'),
-                'btc_amount': Decimal('0.25'),
-                'tx_fee_btc_amount': Decimal('0.0001'),
-                'exchange_rate': Decimal('10.0'),
-                'address': None,
-                'status': 'new',
-            },
+            'host_get_withdrawal_uid.return_value': None,
+            'host_get_payout_amount.return_value': Decimal('0.15'),
         })
-        address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
         state = {
             'client': client_mock,
             'remote_config': {
                 'status': 'active',
-            },
-            'gui_config': {
-                'default_withdrawal_address': address,
             },
             'keypad': Mock(last_key_pressed=None),
             'screen_buttons': {
@@ -214,22 +202,49 @@ class IdleStageTestCase(unittest.TestCase):
                 'standby_wake_btn': False,
             },
             'is_suspended': False,
-            'withdrawal': {},
+            'withdrawal': {'uid': None, 'status': None},
         }
         ui = Mock()
         next_stage = stages.idle(state, ui)
         self.assertIs(client_mock.host_get_payout_status.called, True)
+        self.assertIs(client_mock.host_get_payout_amount.called, True)
+        self.assertIs(client_mock.host_get_withdrawal_uid.called, True)
+        self.assertIs(client_mock.stop_nfc_server.called, True)
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_wait'])
+        self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('0.15'))
+        self.assertIsNone(state['withdrawal']['uid'])
+        self.assertIsNone(state['withdrawal']['status'])
+
+    def test_host_system_payout_incomplete_with_uid(self):
+        client_mock = Mock(**{
+            'host_get_payout_status.return_value': 'incomplete',
+            'host_get_withdrawal_uid.return_value': 'abcdef',
+        })
+        state = {
+            'client': client_mock,
+            'remote_config': {
+                'status': 'active',
+            },
+            'keypad': Mock(last_key_pressed=None),
+            'screen_buttons': {
+                'idle_begin_btn': False,
+                'idle_help_btn': False,
+                'standby_wake_btn': False,
+            },
+            'is_suspended': False,
+            'withdrawal': {'uid': None, 'status': None},
+        }
+        ui = Mock()
+        next_stage = stages.idle(state, ui)
+        self.assertIs(client_mock.host_get_payout_status.called, True)
+        self.assertIs(client_mock.host_get_withdrawal_uid.called, True)
         self.assertIs(client_mock.host_get_payout_amount.called, False)
         self.assertIs(client_mock.stop_nfc_server.called, True)
-        self.assertIs(client_mock.get_withdrawal_info.called, True)
-        self.assertEqual(
-            client_mock.get_withdrawal_info.call_args[1]['uid'],
-            'abcdef')
         self.assertEqual(next_stage,
-                         settings.STAGES['withdrawal']['withdraw_confirm'])
-        self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('2.5'))
-        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.25'))
-        self.assertEqual(state['withdrawal']['address'], address)
+                         settings.STAGES['withdrawal']['withdraw_loading2'])
+        self.assertEqual(state['withdrawal']['uid'], 'abcdef')
+        self.assertEqual(state['withdrawal']['status'], 'sent')
 
     def test_alt_key_input(self):
         client_mock = Mock()
@@ -1341,10 +1356,6 @@ class WithdrawLoading1StageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['tx_fee_btc_amount'],
                          Decimal('0.0001'))
         self.assertEqual(state['withdrawal']['status'], 'new')
-        self.assertIs(client_mock.host_withdrawal_started.called, True)
-        self.assertEqual(
-            client_mock.host_withdrawal_started.call_args[1]['uid'],
-            state['withdrawal']['uid'])
 
     @patch('xbterminal.gui.stages.time.sleep')
     def test_server_error(self, sleep_mock):
@@ -1461,14 +1472,14 @@ class WithdrawConfirmStageTestCase(unittest.TestCase):
 class WithdrawLoading2StageTestCase(unittest.TestCase):
 
     @patch('xbterminal.gui.stages.qr.qr_gen')
-    def test_proceed(self, qr_gen_mock):
+    def test_proceed_from_new(self, qr_gen_mock):
         client_mock = Mock(**{
-            'get_withdrawal_status.return_value': 'notified',
             'confirm_withdrawal.return_value': {
-                'btc_amount': Decimal('0.41'),
-                'exchange_rate': Decimal('202.0'),
+                'btc_amount': Decimal('0.4'),
+                'exchange_rate': Decimal('201.0'),
                 'status': 'sent',
             },
+            'get_withdrawal_status.return_value': 'notified',
             'get_withdrawal_receipt.return_value': 'test_url',
         })
         qr_gen_mock.return_value = 'image'
@@ -1486,10 +1497,14 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_loading2(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
+        self.assertEqual(ui.setText.call_count, 1)
         self.assertIn('400.00', ui.setText.call_args[0][1])
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
+        self.assertEqual(
+            client_mock.host_withdrawal_started.call_args[1]['uid'],
+            state['withdrawal']['uid'])
         self.assertEqual(client_mock.get_withdrawal_status.call_count, 1)
         self.assertEqual(
             client_mock.host_withdrawal_completed.call_args[1]['uid'],
@@ -1501,17 +1516,56 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertEqual(state['withdrawal']['qrcode'], 'image')
         self.assertEqual(next_stage,
                          settings.STAGES['withdrawal']['withdraw_receipt'])
-        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.41'))
+        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.4'))
         self.assertEqual(state['withdrawal']['exchange_rate'],
-                         Decimal('202.0'))
+                         Decimal('201.0'))
         self.assertEqual(state['withdrawal']['receipt_url'], 'test_url')
+        self.assertEqual(state['withdrawal']['status'], 'notified')
+
+    @patch('xbterminal.gui.stages.qr.qr_gen')
+    def test_proceed_from_sent(self, qr_gen_mock):
+        client_mock = Mock(**{
+            'get_withdrawal_info.return_value': {
+                'uid': 'abcdef',
+                'fiat_amount': Decimal('2.5'),
+                'btc_amount': Decimal('0.25'),
+                'tx_fee_btc_amount': Decimal('0.0001'),
+                'exchange_rate': Decimal('10.0'),
+                'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+                'status': 'sent',
+            },
+            'get_withdrawal_status.return_value': 'notified',
+            'get_withdrawal_receipt.return_value': 'test_url',
+        })
+        qr_gen_mock.return_value = 'image'
+        state = {
+            'client': client_mock,
+            'withdrawal': {
+                'uid': 'abcdef',
+                'status': 'sent',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading2(state, ui)
+        self.assertIn('250.00', ui.setText.call_args[0][1])
+        self.assertEqual(
+            client_mock.get_withdrawal_info.call_args[1]['uid'],
+            'abcdef')
+        self.assertIs(client_mock.host_withdrawal_started.called, False)
+        self.assertEqual(client_mock.get_withdrawal_status.call_count, 1)
+        self.assertEqual(next_stage,
+                         settings.STAGES['withdrawal']['withdraw_receipt'])
+        self.assertEqual(state['withdrawal']['fiat_amount'], Decimal('2.5'))
+        self.assertEqual(state['withdrawal']['btc_amount'], Decimal('0.25'))
+        self.assertEqual(state['withdrawal']['exchange_rate'],
+                         Decimal('10.0'))
         self.assertEqual(state['withdrawal']['status'], 'notified')
 
     @patch('xbterminal.gui.stages.time.sleep')
     def test_server_error(self, sleep_mock):
         client_mock = Mock(**{
-            'get_withdrawal_status.return_value': 'new',
             'confirm_withdrawal.side_effect': ServerError,
+            'get_withdrawal_status.return_value': 'new',
         })
         state = {
             'client': client_mock,

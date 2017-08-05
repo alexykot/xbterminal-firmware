@@ -85,13 +85,17 @@ def idle(state, ui):
         elif payout_status == 'incomplete':
             state['client'].stop_nfc_server()
             withdrawal_uid = state['client'].host_get_withdrawal_uid()
-            logger.warning('incomplete withdrawal {}'.format(withdrawal_uid))
-            assert withdrawal_uid is not None
-            state['withdrawal'] = state['client'].get_withdrawal_info(
-                uid=withdrawal_uid)
-            assert state['withdrawal']['status'] == 'new'
-            state['withdrawal']['address'] = state['gui_config']['default_withdrawal_address']
-            return settings.STAGES['withdrawal']['withdraw_confirm']
+            if withdrawal_uid:
+                # Already sent
+                logger.warning('incomplete withdrawal {}'.format(withdrawal_uid))
+                state['withdrawal']['uid'] = withdrawal_uid
+                state['withdrawal']['status'] = 'sent'
+                return settings.STAGES['withdrawal']['withdraw_loading2']
+            else:
+                # Not sent yet
+                logger.warning('incomplete withdrawal, UID unknown')
+                state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
+                return settings.STAGES['withdrawal']['withdraw_wait']
 
         # Show standby screen when idle for a long time
         current_time = time.time()
@@ -515,7 +519,6 @@ def withdraw_loading1(state, ui):
             return settings.STAGES['withdrawal']['withdraw_wait']
         else:
             state['withdrawal'].update(withdrawal_info)
-            state['client'].host_withdrawal_started(uid=state['withdrawal']['uid'])
             return settings.STAGES['withdrawal']['withdraw_confirm']
 
 
@@ -556,17 +559,17 @@ def withdraw_confirm(state, ui):
 
 
 def withdraw_loading2(state, ui):
-    assert state['withdrawal']['address'] is not None
     ui.showScreen('withdraw_loading')
-    ui.setText(
-        'wload_amount_val_lbl',
-        amounts.format_btc_amount_pretty(
-            state['withdrawal']['btc_amount'], prefix=True))
     while True:
         try:
-            withdrawal_info = state['client'].confirm_withdrawal(
-                uid=state['withdrawal']['uid'],
-                address=state['withdrawal']['address'])
+            if state['withdrawal']['status'] == 'new':
+                withdrawal_info = state['client'].confirm_withdrawal(
+                    uid=state['withdrawal']['uid'],
+                    address=state['withdrawal']['address'])
+            else:
+                # Already sent
+                withdrawal_info = state['client'].get_withdrawal_info(
+                    uid=state['withdrawal']['uid'])
         except NetworkError:
             logger.warning('network error, retry in 5 seconds')
             time.sleep(5)
@@ -575,10 +578,16 @@ def withdraw_loading2(state, ui):
             ui.showErrorScreen('SERVER_ERROR')
             time.sleep(300)
             return settings.STAGES['withdrawal']['withdraw_confirm']
+        if state['withdrawal']['status'] == 'new':
+            state['client'].host_withdrawal_started(uid=state['withdrawal']['uid'])
+            logger.info('withdrawal {} processed'.format(
+                state['withdrawal']['uid']))
         state['withdrawal'].update(withdrawal_info)
-        logger.info('withdrawal {} processed'.format(
-            state['withdrawal']['uid']))
         break
+    ui.setText(
+        'wload_amount_val_lbl',
+        amounts.format_btc_amount_pretty(
+            state['withdrawal']['btc_amount'], prefix=True))
     while True:
         state['withdrawal']['status'] = state['client'].get_withdrawal_status(
             uid=state['withdrawal']['uid'])
