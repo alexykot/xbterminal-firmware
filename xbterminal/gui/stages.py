@@ -576,19 +576,19 @@ def withdraw_loading2(state, ui):
             time.sleep(300)
             return settings.STAGES['withdrawal']['withdraw_confirm']
         state['withdrawal'].update(withdrawal_info)
-        logger.info('withdrawal {} confirmed'.format(
+        logger.info('withdrawal {} processed'.format(
             state['withdrawal']['uid']))
         break
     while True:
-        withdrawal_status = state['client'].get_withdrawal_status(
+        state['withdrawal']['status'] = state['client'].get_withdrawal_status(
             uid=state['withdrawal']['uid'])
-        if withdrawal_status in ['completed', 'notified', 'confirmed']:
+        if state['withdrawal']['status'] in ['completed', 'notified', 'confirmed']:
             state['client'].host_withdrawal_completed(
                 uid=state['withdrawal']['uid'],
                 fiat_amount=state['withdrawal']['fiat_amount'])
             state['withdrawal']['receipt_url'] = state['client'].get_withdrawal_receipt(
                 uid=state['withdrawal']['uid'])
-            logger.debug('withdrawal finished, receipt: {}'.format(
+            logger.info('withdrawal completed, receipt: {}'.format(
                 state['withdrawal']['receipt_url']))
             state['withdrawal']['qrcode'] = qr.qr_gen(state['withdrawal']['receipt_url'])
             return settings.STAGES['withdrawal']['withdraw_receipt']
@@ -685,10 +685,12 @@ def _clear_withdrawal_runtime(state, ui, clear_amount=True, cancel_order=False):
 
     state['withdrawal']['uid'] = None
     state['withdrawal']['btc_amount'] = None
+    state['withdrawal']['tx_fee_btc_amount'] = None
     state['withdrawal']['exchange_rate'] = None
     state['withdrawal']['address'] = None
     state['withdrawal']['receipt_url'] = None
     state['withdrawal']['qrcode'] = None
+    state['withdrawal']['status'] = None
 
     ui.setText('wwait_fiat_amount_lbl',
                amounts.format_fiat_amount_pretty(Decimal(0), prefix=True))

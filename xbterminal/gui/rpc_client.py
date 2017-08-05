@@ -87,6 +87,7 @@ class JSONRPCClient(object):
             'btc_amount': Decimal(result['btc_amount']),
             'tx_fee_btc_amount': Decimal(result['tx_fee_btc_amount']),
             'exchange_rate': Decimal(result['exchange_rate']),
+            'status': result['status'],
         }
 
     def get_withdrawal_info(self, uid):
@@ -108,6 +109,7 @@ class JSONRPCClient(object):
         return {
             'btc_amount': Decimal(result['btc_amount']),
             'exchange_rate': Decimal(result['exchange_rate']),
+            'status': result['status'],
         }
 
     @use_cache(3.0)

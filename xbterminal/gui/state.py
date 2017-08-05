@@ -39,6 +39,7 @@ def get_initial_gui_state():
             'address': None,
             'receipt_url': None,
             'qrcode': None,
+            'status': None,
         },
     }
 
