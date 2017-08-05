@@ -1529,6 +1529,37 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         self.assertIsNotNone(state['withdrawal']['address'])
         self.assertIsNotNone(state['withdrawal']['fiat_amount'])
 
+    def test_timeout(self):
+        client_mock = Mock(**{
+            'confirm_withdrawal.return_value': {
+                'btc_amount': Decimal('0.41'),
+                'exchange_rate': Decimal('202.0'),
+            },
+            'get_withdrawal_status.return_value': None,
+        })
+        state = {
+            'client': client_mock,
+            'last_activity_timestamp': 0,
+            'timeout': False,
+            'withdrawal': {
+                'uid': 'testUid',
+                'fiat_amount': Decimal('0.50'),
+                'btc_amount': Decimal('0.4'),
+                'exchange_rate': Decimal('201.0'),
+                'address': '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.withdraw_loading2(state, ui)
+        self.assertIs(client_mock.confirm_withdrawal.called, True)
+        self.assertIs(client_mock.get_withdrawal_status.called, True)
+        self.assertEqual(client_mock.beep.call_count, 1)
+        self.assertIs(client_mock.cancel_withdrawal.called, False)
+        self.assertIsNone(state['withdrawal']['fiat_amount'])
+        self.assertIs(state['timeout'], True)
+        self.assertEqual(next_stage,
+                         settings.STAGES['idle'])
+
 
 class WithdrawReceiptStageTestCase(unittest.TestCase):
 
