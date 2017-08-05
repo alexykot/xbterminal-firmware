@@ -71,7 +71,7 @@ class WithdrawalTestCase(unittest.TestCase):
                 'tx_fee_btc_amount': '0.0001',
                 'exchange_rate': '200.0',
                 'address': self.address,
-                'status': 'new',
+                'status': 'sent',
             },
         })
 
@@ -84,7 +84,7 @@ class WithdrawalTestCase(unittest.TestCase):
         self.assertEqual(order.tx_fee_btc_amount, Decimal('0.0001'))
         self.assertEqual(order.exchange_rate, Decimal('200.0'))
         self.assertEqual(order.address, self.address)
-        self.assertEqual(order.status, 'new')
+        self.assertEqual(order.status, 'sent')
 
     @patch('xbterminal.rpc.withdrawal.api.send_request')
     @patch('xbterminal.rpc.utils.crypto.read_secret_key',
