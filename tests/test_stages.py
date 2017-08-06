@@ -1565,8 +1565,8 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.withdraw_loading2(state, ui)
         self.assertEqual(ui.showScreen.call_args[0][0], 'withdraw_loading')
-        self.assertEqual(ui.setText.call_count, 1)
-        self.assertIn('400.00', ui.setText.call_args[0][1])
+        self.assertEqual(ui.setText.call_count, 2)
+        self.assertIn('400.00', ui.setText.call_args_list[1][0][1])
         self.assertEqual(
             client_mock.confirm_withdrawal.call_args[1]['uid'],
             'testUid')
@@ -1610,12 +1610,15 @@ class WithdrawLoading2StageTestCase(unittest.TestCase):
             'client': client_mock,
             'withdrawal': {
                 'uid': 'abcdef',
+                'btc_amount': None,
                 'status': 'sent',
             },
         }
         ui = Mock()
         next_stage = stages.withdraw_loading2(state, ui)
-        self.assertIn('250.00', ui.setText.call_args[0][1])
+        self.assertEqual(ui.setText.call_count, 2)
+        self.assertIn('0.00', ui.setText.call_args_list[0][0][1])
+        self.assertIn('250.00', ui.setText.call_args_list[1][0][1])
         self.assertEqual(
             client_mock.get_withdrawal_info.call_args[1]['uid'],
             'abcdef')

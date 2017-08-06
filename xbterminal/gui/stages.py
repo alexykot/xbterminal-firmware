@@ -552,6 +552,10 @@ def withdraw_confirm(state, ui):
 
 def withdraw_loading2(state, ui):
     ui.showScreen('withdraw_loading')
+    ui.setText(
+        'wload_amount_val_lbl',
+        amounts.format_btc_amount_pretty(
+            state['withdrawal']['btc_amount'] or Decimal(0), prefix=True))
     while True:
         try:
             if state['withdrawal']['status'] == 'new':
