@@ -77,25 +77,10 @@ def idle(state, ui):
             return settings.STAGES['withdrawal']['withdraw_wait']
 
         # Communicate with the host system
-        payout_status = state['client'].host_get_payout_status()
-        if payout_status in ['pending', 'complete']:
+        withdrawal_stage = _check_host_payout(state)
+        if withdrawal_stage:
             state['client'].stop_nfc_server()
-            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-            return settings.STAGES['withdrawal']['withdraw_wait']
-        elif payout_status == 'incomplete':
-            state['client'].stop_nfc_server()
-            withdrawal_uid = state['client'].host_get_withdrawal_uid()
-            if withdrawal_uid:
-                # Already sent
-                logger.warning('incomplete withdrawal {}'.format(withdrawal_uid))
-                state['withdrawal']['uid'] = withdrawal_uid
-                state['withdrawal']['status'] = 'sent'
-                return settings.STAGES['withdrawal']['withdraw_loading2']
-            else:
-                # Not sent yet
-                logger.warning('incomplete withdrawal, UID unknown')
-                state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-                return settings.STAGES['withdrawal']['withdraw_wait']
+            return withdrawal_stage
 
         # Show standby screen when idle for a long time
         current_time = time.time()
@@ -118,11 +103,10 @@ def help(state, ui):
             state['client'].stop_nfc_server()
             return settings.STAGES['idle']
 
-        payout_status = state['client'].host_get_payout_status()
-        if payout_status == 'complete':
+        withdrawal_stage = _check_host_payout(state)
+        if withdrawal_stage:
             state['client'].stop_nfc_server()
-            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-            return settings.STAGES['withdrawal']['withdraw_wait']
+            return withdrawal_stage
 
         try:
             _wait_for_screen_timeout(state, ui, 'help')
@@ -163,11 +147,10 @@ def pay_amount(state, ui):
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
 
-        payout_status = state['client'].host_get_payout_status()
-        if payout_status == 'complete':
+        withdrawal_stage = _check_host_payout(state)
+        if withdrawal_stage:
             _clear_payment_runtime(state, ui)
-            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-            return settings.STAGES['withdrawal']['withdraw_wait']
+            return withdrawal_stage
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_amount')
@@ -274,11 +257,10 @@ def pay_info(state, ui):
             _clear_payment_runtime(state, ui, cancel_order=True)
             return settings.STAGES['payment']['pay_amount']
 
-        payout_status = state['client'].host_get_payout_status()
-        if payout_status == 'complete':
+        withdrawal_stage = _check_host_payout(state)
+        if withdrawal_stage:
             _clear_payment_runtime(state, ui, cancel_order=True)
-            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-            return settings.STAGES['withdrawal']['withdraw_wait']
+            return withdrawal_stage
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_info')
@@ -390,12 +372,11 @@ def pay_receipt(state, ui):
             _clear_payment_runtime(state, ui)
             return settings.STAGES['idle']
 
-        payout_status = state['client'].host_get_payout_status()
-        if payout_status == 'complete':
+        withdrawal_stage = _check_host_payout(state)
+        if withdrawal_stage:
             state['client'].stop_nfc_server()
             _clear_payment_runtime(state, ui)
-            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-            return settings.STAGES['withdrawal']['withdraw_wait']
+            return withdrawal_stage
 
         try:
             _wait_for_screen_timeout(state, ui, 'pay_receipt')
@@ -416,17 +397,17 @@ def pay_cancel(state, ui):
             _clear_payment_runtime(state, ui)
             return settings.STAGES['payment']['pay_amount']
 
-        payout_status = state['client'].host_get_payout_status()
-        if payout_status == 'complete':
+        withdrawal_stage = _check_host_payout(state)
+        if withdrawal_stage:
             _clear_payment_runtime(state, ui)
-            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
-            return settings.STAGES['withdrawal']['withdraw_wait']
+            return withdrawal_stage
 
         if state['last_activity_timestamp'] + settings.SCREEN_TIMEOUT < time.time():
             return settings.STAGES['idle']
         time.sleep(settings.STAGE_LOOP_PERIOD)
 
 
+# TODO: remove stage
 def withdraw_select(state, ui):
     assert state['withdrawal']['fiat_amount'] > 0
     ui.showScreen('withdraw_select')
@@ -734,3 +715,23 @@ def _wait_for_screen_timeout(state, ui, current_screen,
             state['timeout'] = True
         if state['last_activity_timestamp'] + timeout < time.time():
             raise StageTimeout
+
+
+def _check_host_payout(state):
+    payout_status = state['client'].host_get_payout_status()
+    if payout_status in ['pending', 'complete']:
+        state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
+        return settings.STAGES['withdrawal']['withdraw_wait']
+    elif payout_status == 'incomplete':
+        withdrawal_uid = state['client'].host_get_withdrawal_uid()
+        if withdrawal_uid:
+            # Already sent
+            logger.warning('incomplete withdrawal {}'.format(withdrawal_uid))
+            state['withdrawal']['uid'] = withdrawal_uid
+            state['withdrawal']['status'] = 'sent'
+            return settings.STAGES['withdrawal']['withdraw_loading2']
+        else:
+            # Not sent yet
+            logger.warning('incomplete withdrawal, UID unknown')
+            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
+            return settings.STAGES['withdrawal']['withdraw_wait']
