@@ -78,7 +78,7 @@ def idle(state, ui):
 
         # Communicate with the host system
         payout_status = state['client'].host_get_payout_status()
-        if payout_status == 'complete':
+        if payout_status in ['pending', 'complete']:
             state['client'].stop_nfc_server()
             state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
             return settings.STAGES['withdrawal']['withdraw_wait']
@@ -454,18 +454,29 @@ def withdraw_select(state, ui):
 
 
 def withdraw_wait(state, ui):
+    assert state['withdrawal']['fiat_amount'] > 0
     ui.showScreen('withdraw_wait')
     ui.setText(
         'wwait_fiat_amount_lbl',
         amounts.format_fiat_amount_pretty(state['withdrawal']['fiat_amount'], prefix=True))
     while True:
-        if state['keypad'].last_key_pressed == 'backspace':
-            _clear_withdrawal_runtime(state, ui)
-            return settings.STAGES['idle']
-        elif state['screen_buttons']['wwait_scan_btn'] or \
-                state['keypad'].last_key_pressed == 'enter':
-            state['screen_buttons']['wwait_scan_btn'] = False
-            return settings.STAGES['withdrawal']['withdraw_scan']
+        payout_status = state['client'].host_get_payout_status()
+        if payout_status == 'pending':
+            # Retrieve and show new value of payout amount
+            state['withdrawal']['fiat_amount'] = state['client'].host_get_payout_amount()
+            ui.setText(
+                'wwait_fiat_amount_lbl',
+                amounts.format_fiat_amount_pretty(
+                    state['withdrawal']['fiat_amount'], prefix=True))
+        else:
+            ui.showWidget('wwait_scan_btn')
+            if state['keypad'].last_key_pressed == 'backspace':
+                _clear_withdrawal_runtime(state, ui)
+                return settings.STAGES['idle']
+            elif state['screen_buttons']['wwait_scan_btn'] or \
+                    state['keypad'].last_key_pressed == 'enter':
+                state['screen_buttons']['wwait_scan_btn'] = False
+                return settings.STAGES['withdrawal']['withdraw_scan']
 
         time.sleep(settings.STAGE_LOOP_PERIOD)
 

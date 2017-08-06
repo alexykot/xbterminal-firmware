@@ -22,7 +22,7 @@ class GUITestCase(unittest.TestCase):
     @patch('xbterminal.gui.gui.appui')
     def test_init_gui(self, appui_mock, app_cls_mock):
         app_cls_mock.return_value = app_mock = Mock(animations={})
-        appui_mock.Ui_MainWindow.return_value = Mock(**{
+        appui_mock.Ui_MainWindow.return_value = ui_mock = Mock(**{
             'main_stackedWidget.currentIndex.return_value': 0,
         })
         state = {'gui_config': {}}
@@ -31,9 +31,14 @@ class GUITestCase(unittest.TestCase):
         self.assertIs(app_mock.loadFonts.called, True)
         self.assertIs(app_mock.loadAnimations.called, True)
         self.assertEqual(window._application, app_mock)
-        self.assertIsNotNone(window.ui)
+        self.assertEqual(window.ui, ui_mock)
         self.assertIsNone(window._saved_screen)
         self.assertTrue(window.show.called)
+        # Hidden elements
+        self.assertIs(ui_mock.pwait_paid_lbl.hide.called, True)
+        self.assertIs(ui_mock.pwait_paid_btc_amount_lbl.hide.called, True)
+        self.assertIs(ui_mock.pwait_cancel_refund_btn.hide.called, True)
+        self.assertIs(ui_mock.wwait_scan_btn.hide.called, True)
 
     @patch('xbterminal.gui.gui.Application')
     @patch('xbterminal.gui.gui.appui')
