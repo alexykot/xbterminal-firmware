@@ -39,6 +39,8 @@ class InitTestCase(unittest.TestCase):
         self.assertIsNone(state['withdrawal']['uid'])
         self.assertIsNone(state['withdrawal']['fiat_amount'])
         self.assertIsNone(state['withdrawal']['btc_amount'])
+        self.assertIsNone(state['withdrawal']['tx_fee_btc_amount'])
         self.assertIsNone(state['withdrawal']['exchange_rate'])
         self.assertIsNone(state['withdrawal']['address'])
         self.assertIsNone(state['withdrawal']['receipt_url'])
+        self.assertIsNone(state['withdrawal']['status'])

@@ -97,6 +97,7 @@ def create_withdrawal_order(**kwargs):
         'btc_amount': str(order.btc_amount),
         'tx_fee_btc_amount': str(order.tx_fee_btc_amount),
         'exchange_rate': str(order.exchange_rate),
+        'status': order.status,
     }
     return result
 
@@ -130,6 +131,7 @@ def confirm_withdrawal(**kwargs):
     result = {
         'btc_amount': str(order.btc_amount),
         'exchange_rate': str(order.exchange_rate),
+        'status': order.status,
     }
     return result
 

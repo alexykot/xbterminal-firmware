@@ -182,6 +182,7 @@ class GUI(QtGui.QMainWindow):
         self.ui.pwait_paid_lbl.hide()
         self.ui.pwait_paid_btc_amount_lbl.hide()
         self.ui.pwait_cancel_refund_btn.hide()
+        self.ui.wwait_scan_btn.hide()
         # Show window
         self._saved_screen = None
         self.show()

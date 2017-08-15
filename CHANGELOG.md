@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.21.0
+
+- Full support for withdrawal recovery.
+- Show wait screen when receiving payout in pending status.
+
 ## 0.20.0
 
 - Update ITL BSP interface to support latest version of ITL BSP library.

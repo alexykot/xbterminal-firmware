@@ -111,6 +111,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
                     'btc_amount': '0.50000000',
                     'tx_fee_btc_amount': '0.0001000',
                     'exchange_rate': '200.00000000',
+                    'status': 'new',
                 },
                 'id': 0,
             },
@@ -119,6 +120,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         result = cli.create_withdrawal_order(Decimal('10.00'))
         self.assertEqual(result['btc_amount'], Decimal('0.5'))
         self.assertEqual(result['exchange_rate'], Decimal('200.0'))
+        self.assertEqual(result['status'], 'new')
         data = post_mock.call_args[1]['json']
         self.assertEqual(data['method'], 'create_withdrawal_order')
         self.assertEqual(data['params']['fiat_amount'], '10.00')
@@ -135,7 +137,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
                     'tx_fee_btc_amount': '0.0001000',
                     'exchange_rate': '200.00000000',
                     'address': 'test-address',
-                    'status': 'new',
+                    'status': 'sent',
                 },
                 'id': 0,
             },
@@ -148,7 +150,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         self.assertEqual(result['tx_fee_btc_amount'], Decimal('0.0001'))
         self.assertEqual(result['exchange_rate'], Decimal('200.0'))
         self.assertEqual(result['address'], 'test-address')
-        self.assertEqual(result['status'], 'new')
+        self.assertEqual(result['status'], 'sent')
 
     @patch('xbterminal.gui.rpc_client.requests.post')
     def test_confirm_withdrawal(self, post_mock):
@@ -158,6 +160,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
                 'result': {
                     'btc_amount': '0.50000000',
                     'exchange_rate': '200.00000000',
+                    'status': 'sent',
                 },
                 'id': 0,
             },
@@ -166,6 +169,7 @@ class JSONRPCClientTestCase(unittest.TestCase):
         result = cli.confirm_withdrawal(1, 'address')
         self.assertEqual(result['btc_amount'], Decimal('0.5'))
         self.assertEqual(result['exchange_rate'], Decimal('200.0'))
+        self.assertEqual(result['status'], 'sent')
         data = post_mock.call_args[1]['json']
         self.assertEqual(data['method'], 'confirm_withdrawal')
 
