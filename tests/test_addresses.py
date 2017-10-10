@@ -22,3 +22,15 @@ class IsValidAddressTestCase(unittest.TestCase):
         self.assertIs(is_valid_address(address_3, 'TBTC'), True)
         address_4 = '3ELAsRvCtSNYC2CuEFZGCBhWxtDf3hxc9c'
         self.assertIs(is_valid_address(address_4, 'TBTC'), False)
+
+    def test_dash(self):
+        address_1 = 'Xv6J4DJtmLMbWEmUaqJEFhQXS2ToMJvDR7'
+        self.assertIs(is_valid_address(address_1, 'DASH'), True)
+        address_2 = '14Bg5acQDJgKsWrAKUyQNtD44Y2yQgz5KS'
+        self.assertIs(is_valid_address(address_2, 'DASH'), False)
+
+    def test_tdash(self):
+        address_1 = 'yfyzM58VsmjfbXtTzNrYH14TmJvY3Nn3Ms'
+        self.assertIs(is_valid_address(address_1, 'TDASH'), True)
+        address_2 = 'Xv6J4DJtmLMbWEmUaqJEFhQXS2ToMJvDR7'
+        self.assertIs(is_valid_address(address_2, 'TDASH'), False)

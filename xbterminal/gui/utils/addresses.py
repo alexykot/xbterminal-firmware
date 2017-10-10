@@ -75,15 +75,18 @@ def encode_base58(bytestring):
     return zeros * '1' + result[::-1]  # reverse string
 
 
+MAGICBYTES = {
+    'BTC': (b'\0', b'\5'),
+    'TBTC': (b'\x6f', b'\xc4'),
+    'DASH': (b'\x4c', b'\x10'),
+    'TDASH': (b'\x8c', b'\x13'),
+}
+
+
 def is_valid_address(address, coin_name):
     # Address prefixes
     # https://github.com/richardkiss/pycoin/blob/master/pycoin/networks/all.py
-    if coin_name == 'BTC':
-        magicbyte = (b'\0', b'\5')
-    elif coin_name == 'TBTC':
-        magicbyte = (b'\x6f', b'\xc4')
-    else:
-        raise ValueError
+    magicbyte = MAGICBYTES[coin_name]
     clen = len(address)
     if clen < 27 or clen > 35:
         return False
