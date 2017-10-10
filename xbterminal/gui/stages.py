@@ -471,7 +471,7 @@ def withdraw_scan(state, ui):
         if address:
             logger.debug('address scanned: {0}'.format(address))
             state['client'].stop_qr_scanner()
-            if addresses.is_valid_address(address, state['remote_config']['bitcoin_network']):
+            if addresses.is_valid_address(address, state['remote_config']['coin']):
                 state['withdrawal']['address'] = address
                 return settings.STAGES['withdrawal']['withdraw_loading1']
             else:

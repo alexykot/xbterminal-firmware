@@ -52,5 +52,6 @@ def init_step_2(state):
     state['remote_config'] = configs.load_remote_config()
     state['init']['remote_config'] = True
     state['remote_config_last_update'] = int(time.time())
-    logger.info('working with {0}'.format(
-        state['remote_config']['bitcoin_network']))
+    if state['remote_config']['coin']:
+        logger.info('working with {0} coin'.format(
+            state['remote_config']['coin']))
