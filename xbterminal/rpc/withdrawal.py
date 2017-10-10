@@ -8,8 +8,14 @@ from xbterminal.rpc.utils import api
 logger = logging.getLogger(__name__)
 
 
-def get_bitcoin_address(message):
-    match = re.match(r'(bitcoin:)?([a-zA-Z0-9]{26,35})(\?|$)', message)
+def parse_address(message):
+    match = re.match(
+        r'''
+        (bitcoin:|dash:)?
+        ([a-zA-Z0-9]{26,35})(\?|\s|$)
+        ''',
+        message,
+        re.VERBOSE)
     if match:
         return match.group(2)
 

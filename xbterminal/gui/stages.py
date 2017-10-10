@@ -475,6 +475,7 @@ def withdraw_scan(state, ui):
                 state['withdrawal']['address'] = address
                 return settings.STAGES['withdrawal']['withdraw_loading1']
             else:
+                logger.warning('invalid address')
                 return settings.STAGES['withdrawal']['withdraw_cancel']
 
         try:

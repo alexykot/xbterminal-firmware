@@ -4,7 +4,7 @@ from jsonrpc import Dispatcher
 from xbterminal.rpc.exceptions import OrderNotFound
 from xbterminal.rpc.state import state
 from xbterminal.rpc.payment import Payment
-from xbterminal.rpc.withdrawal import Withdrawal, get_bitcoin_address
+from xbterminal.rpc.withdrawal import Withdrawal, parse_address
 from xbterminal.rpc.utils import configs
 
 dispatcher = Dispatcher()
@@ -206,7 +206,7 @@ def start_qr_scanner(**kwargs):
 
 @dispatcher.add_method
 def get_scanned_address(**kwargs):
-    address = get_bitcoin_address(state['qr_scanner'].get_data() or '')
+    address = parse_address(state['qr_scanner'].get_data() or '')
     return address
 
 
