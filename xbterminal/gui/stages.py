@@ -349,7 +349,7 @@ def pay_progress(state, ui):
         try:
             _wait_for_screen_timeout(state, ui, 'pay_progress', timeout=900)
         except StageTimeout:
-            _clear_payment_runtime(state, ui, cancel_order=True)
+            _clear_payment_runtime(state, ui)
             state['client'].stop_nfc_server()
             state['client'].stop_bluetooth_server()
             return settings.STAGES['payment']['pay_cancel']

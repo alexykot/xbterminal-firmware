@@ -972,6 +972,7 @@ class PayWaitStageTestCase(unittest.TestCase):
         ui = Mock()
         next_stage = stages.pay_wait(state, ui)
         self.assertEqual(client_mock.beep.call_count, 1)
+        self.assertIs(client_mock.cancel_payment.called, True)
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_cancel'])
 
@@ -1023,6 +1024,34 @@ class PayProgressStageTestCase(unittest.TestCase):
         self.assertIsNotNone(state['payment']['uid'])
         self.assertEqual(next_stage,
                          settings.STAGES['payment']['pay_receipt'])
+
+    def test_timeout(self):
+        client_mock = Mock(**{
+            'get_payment_status.return_value': {
+                'paid_btc_amount': Decimal('0.05'),
+                'status': 'received',
+            },
+        })
+        state = {
+            'client': client_mock,
+            'keypad': Mock(last_key_pressed=None),
+            'last_activity_timestamp': 0,
+            'timeout': False,
+            'payment': {
+                'uid': 'testUid',
+                'fiat_amount': Decimal('1.00'),
+                'btc_amount': Decimal('0.05'),
+                'exchange_rate': Decimal('20'),
+                'payment_uri': 'test',
+            },
+        }
+        ui = Mock()
+        next_stage = stages.pay_progress(state, ui)
+
+        self.assertEqual(client_mock.beep.call_count, 1)
+        self.assertIs(client_mock.cancel_payment.called, False)
+        self.assertEqual(next_stage,
+                         settings.STAGES['payment']['pay_cancel'])
 
 
 class PayReceiptStageTestCase(unittest.TestCase):
