@@ -1,6 +1,6 @@
 import os
 
-VERSION = '0.21.0'
+VERSION = '0.21.1'
 
 STAGES = {
     'bootup': 'bootup',
