@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.21.1
+
+- Don't cancel deposit when timeout occurs on pay_progress screen.
+
 ## 0.21.0
 
 - Full support for withdrawal recovery.
