@@ -61,7 +61,7 @@ class InitTestCase(unittest.TestCase):
         is_registered_mock.return_value = True
         load_remote_config_mock.return_value = {
             'status': 'active',
-            'bitcoin_network': 'mainnet',
+            'coin': 'BTC',
         }
 
         state = {
@@ -92,7 +92,7 @@ class InitTestCase(unittest.TestCase):
         register_device_mock.return_value = 'testCode'
         load_remote_config_mock.return_value = {
             'status': 'activation',
-            'bitcoin_network': 'mainnet',
+            'coin': 'BTC',
         }
 
         state = {

@@ -4,24 +4,30 @@ import unittest
 from mock import patch, Mock
 from tests import mocks
 
-from xbterminal.rpc.withdrawal import Withdrawal, get_bitcoin_address
+from xbterminal.rpc.withdrawal import Withdrawal, parse_address
 from xbterminal.rpc.exceptions import NetworkError
 
 
-class GetAddressTestCase(unittest.TestCase):
+class ParseAddressTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
+        self.btc_address = '1PWVL1fW7Ysomg9rXNsS8ng5ZzURa2p9vE'
+        self.dash_address = 'Xv6J4DJtmLMbWEmUaqJEFhQXS2ToMJvDR7'
 
     def test_only_address(self):
-        message = self.address
-        result = get_bitcoin_address(message)
-        self.assertEqual(result, self.address)
+        message = self.btc_address
+        result = parse_address(message)
+        self.assertEqual(result, self.btc_address)
 
     def test_bitcoin_uri(self):
-        message = 'bitcoin:{0}?label=MyAddr'.format(self.address)
-        result = get_bitcoin_address(message)
-        self.assertEqual(result, self.address)
+        message = 'bitcoin:{}?label=MyAddr'.format(self.btc_address)
+        result = parse_address(message)
+        self.assertEqual(result, self.btc_address)
+
+    def test_dash_uri(self):
+        message = 'dash:{} '.format(self.dash_address)
+        result = parse_address(message)
+        self.assertEqual(result, self.dash_address)
 
 
 @patch.dict('xbterminal.rpc.utils.api.state',

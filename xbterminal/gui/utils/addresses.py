@@ -33,13 +33,13 @@ def _long_to_bytes(n, length, byteorder):
     return bytearray((n >> i * 8) & 0xff for i in indexes)
 
 
-def decode_base58(bitcoin_address, length):
+def decode_base58(address, length):
     """Decode a base58 encoded address
     This form of base58 decoding is bitcoind specific. Be careful outside of
     bitcoind context.
     """
     n = 0
-    for char in bitcoin_address:
+    for char in address:
         try:
             n = n * 58 + digits58.index(char)
         except:
@@ -75,20 +75,23 @@ def encode_base58(bytestring):
     return zeros * '1' + result[::-1]  # reverse string
 
 
-def is_valid_address(bitcoin_address, network):
+MAGICBYTES = {
+    'BTC': (b'\0', b'\5'),
+    'TBTC': (b'\x6f', b'\xc4'),
+    'DASH': (b'\x4c', b'\x10'),
+    'TDASH': (b'\x8c', b'\x13'),
+}
+
+
+def is_valid_address(address, coin_name):
     # Address prefixes
     # https://github.com/richardkiss/pycoin/blob/master/pycoin/networks/all.py
-    if network == 'mainnet':
-        magicbyte = (b'\0', b'\5')
-    elif network == 'testnet':
-        magicbyte = (b'\x6f', b'\xc4')
-    else:
-        raise ValueError
-    clen = len(bitcoin_address)
+    magicbyte = MAGICBYTES[coin_name]
+    clen = len(address)
     if clen < 27 or clen > 35:
         return False
     try:
-        bcbytes = decode_base58(bitcoin_address, 25)
+        bcbytes = decode_base58(address, 25)
     except ValueError:
         return False
     for mb in magicbyte:
@@ -103,4 +106,4 @@ def is_valid_address(bitcoin_address, network):
     # Encoded bytestring should be equal to the original address,
     # for example '14oLvT2' has a valid checksum, but is not a valid btc
     # address
-    return bitcoin_address == encode_base58(bcbytes)
+    return address == encode_base58(bcbytes)

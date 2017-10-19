@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.22.0
+
+- Add support for DASH currency.
+
 ## 0.21.1
 
 - Don't cancel deposit when timeout occurs on pay_progress screen.
