@@ -38,27 +38,44 @@ class DeviceKeyTestCase(unittest.TestCase):
             remote_server='https://xbterminal.io')
 class RemoteConfigTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.remote_config = {
+            'status': 'active',
+            'currency': {
+                'name': 'GBP',
+                'prefix': '\u00a3',
+                'postfix': '',
+            },
+            'coin': 'DASH',
+            'language': {
+                'code': 'en',
+                'fractional_split': '.',
+                'thousands_split': ',',
+            },
+        }
+
     @patch('xbterminal.rpc.utils.configs.api.send_request')
     @patch('xbterminal.rpc.utils.configs.load_remote_config_cache')
     @patch('xbterminal.rpc.utils.configs.save_remote_config_cache')
     def test_load_config(self, save_cache_mock, load_cache_mock, send_mock):
         send_mock.return_value = Mock(**{
-            'json.return_value': {'aaa': 111},
+            'json.return_value': self.remote_config.copy(),
         })
         remote_config = load_remote_config()
-        self.assertEqual(remote_config['aaa'], 111)
+        self.assertEqual(remote_config['status'], 'active')
+        self.assertEqual(remote_config['coin'], {'name': 'DASH'})
         self.assertFalse(load_cache_mock.called)
         self.assertTrue(save_cache_mock.called)
-        self.assertEqual(save_cache_mock.call_args[0][0]['aaa'], 111)
+        self.assertEqual(save_cache_mock.call_args[0][0], remote_config)
 
     @patch('xbterminal.rpc.utils.configs.api.send_request')
     @patch('xbterminal.rpc.utils.configs.load_remote_config_cache')
     @patch('xbterminal.rpc.utils.configs.save_remote_config_cache')
     def test_cache(self, save_cache_mock, load_cache_mock, send_mock):
         send_mock.side_effect = ValueError
-        load_cache_mock.return_value = {'aaa': 111}
+        load_cache_mock.return_value = self.remote_config.copy()
         remote_config = load_remote_config()
-        self.assertEqual(remote_config['aaa'], 111)
+        self.assertEqual(remote_config['status'], 'active')
         self.assertTrue(load_cache_mock.called)
         self.assertFalse(save_cache_mock.called)
 

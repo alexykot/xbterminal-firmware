@@ -1340,7 +1340,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'gui_config': {},
-            'remote_config': {'coin': 'BTC'},
+            'remote_config': {'coin': {'name': 'BTC'}},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
             },
@@ -1364,7 +1364,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'gui_config': {'default_withdrawal_address': self.address},
-            'remote_config': {'coin': 'BTC'},
+            'remote_config': {'coin': {'name': 'BTC'}},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
             },
@@ -1387,7 +1387,7 @@ class WithdrawScanStageTestCase(unittest.TestCase):
             'client': client_mock,
             'keypad': Mock(last_key_pressed=None),
             'gui_config': {},
-            'remote_config': {'coin': 'BTC'},
+            'remote_config': {'coin': {'name': 'BTC'}},
             'withdrawal': {
                 'fiat_amount': Decimal('1.12'),
             },

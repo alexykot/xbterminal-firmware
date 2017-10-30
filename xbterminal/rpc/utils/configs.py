@@ -39,6 +39,9 @@ def load_remote_config():
         except IOError:
             raise ConfigLoadError()
     else:
+        if isinstance(remote_config['coin'], basestring):
+            # Support different API versions
+            remote_config['coin'] = {'name': remote_config['coin']}
         # Compare configs
         if cmp(state['remote_config'], remote_config):
             logger.info('remote config loaded, contents:\n{config_contents}'.format(
