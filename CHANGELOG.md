@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.22.1
+
+- Prepare for API changes.
+
 ## 0.22.0
 
 - Add support for DASH currency.
